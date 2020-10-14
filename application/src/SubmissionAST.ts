@@ -35,7 +35,7 @@ export class SubmissionASTLeaf implements ISubmissionAST {
         throw new Error('Method not implemented.');
     }
 
-    //Unsuported operations
+    //Unsupported operations
     add(submissionAST: ISubmissionAST): void {
         throw new Error('Method not Supported.');
     }
