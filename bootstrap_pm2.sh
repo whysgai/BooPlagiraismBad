@@ -1,6 +1,10 @@
 #!/bin/bash
 
 pm2 startup systemd
+cd /vagrant/bpb-front/
+npm install
+cd /vagrant/
+npm install
 pm2 start /vagrant/processes.json
 echo ""
 echo "BPB Front-End should be available on: 192.168.33.10:3000"
