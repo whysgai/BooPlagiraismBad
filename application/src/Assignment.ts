@@ -9,9 +9,9 @@ export interface IAssignment {
 }
 
 export class Assignment implements IAssignment {
-    private id : String;
-    private name : String;
-    private submissionIDs : String[];
+    //private id : String;
+    //private name : String;
+    //private submissionIDs : String[];
     
     getID(): String {
         throw new Error("Method not implemented.");

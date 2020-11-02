@@ -1,5 +1,5 @@
 export interface IASTFactory {
-    buildAST(jsonFile : JSON)
+    //buildAST(jsonFile : JSON)
 }
 
 export class ASTFactory implements IASTFactory {

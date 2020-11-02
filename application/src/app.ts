@@ -1,4 +1,9 @@
-export class App {
-    const server : express;
-    const router : Router;
-}
+import express from 'express';
+
+let app = express();
+
+app.use(express.json());
+
+app.listen(8080, () => {
+    console.log(`Server is listening on port 8080`);
+});
