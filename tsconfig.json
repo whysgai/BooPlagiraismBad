@@ -1,9 +1,10 @@
  {
    "compilerOptions": {
-        "outDir": "./bpb-back/dist/",
+      "outDir": "./bpb-back/dist/",
       "noImplicitAny": true,
       "sourceMap": true,
-     "module": "commonjs",
+      "module": "commonjs",
+      "esModuleInterop": true,
       "target": "es6",
       "allowJs": true
     },
@@ -14,7 +15,3 @@
       "node_modules/*"
     ]
   }
-~
-~
-~
-~
