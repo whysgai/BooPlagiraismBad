@@ -1,5 +1,6 @@
 import { AnalysisResult } from './AnalysisResult';
 import {ISubmission} from './Submission';
+import { ISubmissionFactory } from './SubmissionFactory';
 
 export interface ISubmissionManager {
     getSubmissions() : ISubmission[];
@@ -11,8 +12,8 @@ export interface ISubmissionManager {
 }
 
 export class SubmissionManager implements ISubmissionManager {
-    submissions : ISubmission[];
-    submissionFactory : ISubmissionFactory;
+   // submissions : ISubmission[];
+    //submissionFactory : ISubmissionFactory;
     
     getSubmissions(): ISubmission[] {
         throw new Error('Method not implemented.');

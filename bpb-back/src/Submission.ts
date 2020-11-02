@@ -5,9 +5,10 @@ export interface ISubmission {
 }
 
 export class Submission implements ISubmission {
-    private id : String;
-    private name : String;
-    private submissionASTs : SubmissionAST[];
+    //private id : String;
+    //private name : String;
+   // private submissionASTs : SubmissionAST[];
+    
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         throw new Error("Method not implemented.");
     }
