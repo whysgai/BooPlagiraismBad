@@ -13,6 +13,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, path: "bootstrap.sh"
 
+  config.vm.provision :shell, privileged: false, path: "bootstrap_pm2.sh"
+
   config.vm.provider "virtualbox" do |v|
 	    v.memory = 2048
   		v.cpus = 2

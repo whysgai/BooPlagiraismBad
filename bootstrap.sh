@@ -8,14 +8,13 @@ sudo apt-get install -y mocha # Required to use test commands in shell
 sudo npm install -g npm@latest
 sudo npm install -g pm2@latest
 sudo npm install -g typescript@latest # Required to run tsc to compile back-end
+rm -r /vagrant/bpb-back/dist/* # Remove any previously compiled back-end files in dist
+
 cd /vagrant/bpb-front/
-npm install
-sudo pm2 startup systemd
+npm install --no-bin-links
 cd /vagrant/
 npm install --no-bin-links
-rm -r /vagrant/bpb-back/dist/*
 
-pm2 start processes.json
-echo ""
-echo "BPB Front-End should be available on: 192.168.33.10:3000"
-echo "BPB Back-End should be available on: 192.168.33.10:8080"
+sudo chown vagrant:vagrant /home/vagrant/.pm2/rpc.sock /home/vagrant/.pm2/pub.sock
+
+exit 0
