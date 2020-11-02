@@ -8,7 +8,7 @@ sudo apt-get install -y mocha # Required to use test commands in shell
 sudo npm install -g npm@latest
 sudo npm install -g pm2@latest
 sudo npm install -g typescript@latest # Required to run tsc to compile back-end
-rm -r /vagrant/bpb-back/dist/* # Remove any previously compiled back-end files in dist
+rm -rf /vagrant/bpb-back/dist/* # Remove any previously compiled back-end files in dist
 
 cd /vagrant/bpb-front/
 npm install --no-bin-links
