@@ -1,3 +1,4 @@
+import { Connection } from "mongoose";
 import { IAssignment } from "./Assignment";
 
 export interface IAssignmentDAO {
@@ -8,6 +9,12 @@ export interface IAssignmentDAO {
 }
 
 export class AssignmentDAO implements IAssignmentDAO {
+
+    private dbConnection : Connection;
+
+    constructor(dbConnection : Connection){
+        this.dbConnection = dbConnection;
+    }
 
     createAssignment(): IAssignment {
         throw new Error("Method not implemented.");
