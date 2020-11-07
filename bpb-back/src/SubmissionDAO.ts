@@ -1,4 +1,5 @@
 import {ISubmission} from './Submission'
+import {Connection} from 'mongoose'
 
 export interface ISubmissionDAO {
     createSubmission() : ISubmission;
@@ -8,6 +9,13 @@ export interface ISubmissionDAO {
 }
 
 export class SubmissionDAO implements ISubmissionDAO {
+    
+    private dbConnection : Connection;
+
+    constructor(dbConnection : Connection){
+        this.dbConnection = dbConnection;
+    }
+    
     createSubmission(): ISubmission {
         throw new Error('Method not implemented.');
     }
