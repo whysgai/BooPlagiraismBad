@@ -23,7 +23,6 @@
     "express": "^4.17.1",
     "mocha": "^8.2.0",
     "mongoose": "^5.10.13",
-    "react-test-renderer": "^17.0.1",
     "ts-mocha": "^8.0.0",
     "tsc": "^1.20150623.0",
     "tslint": "^6.1.3",
