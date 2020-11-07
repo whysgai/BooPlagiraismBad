@@ -1,43 +1,35 @@
-import express, {Router} from 'express';
+import IRouter from './IRouter';
+import AbstractRouter from './AbstractRouter';
 import assignmentModel from './AssignmentModel';
 
-class AssignmentRouter {
+class AssignmentRouter extends AbstractRouter implements IRouter {
   
-  private router : Router;
-  
-  constructor() {
-    this.router = express.Router();
-    this.initalizeRoutes();
+  constructor(app : any, route : string){
+    super(app,route);
+    app.get(route+'/helloworld',this.getHelloWorldFn);
   }
 
-  initalizeRoutes(){
-    this.router.get('/',this.getAssignmentsFn);
-    this.router.post('/',this.postAssignmentFn);
-    this.router.post('/helloworld',this.postHelloWorldFn);
-  }
-
-  getRouter() {
-    return this.router;
-  }
-
-  //POST: Create a single assignment
-  //Currently hardcoded
-  postAssignmentFn = async function(req : Express.Request,res : any){
-        
+  //POST /assignments: Create a new assignment
+  postFn = async function(req : Express.Request,res : any){
     var assignment = new assignmentModel({_id: "a"}); //TODO: Remove hardcoding
-
     await assignment.save();
-
     res.send(assignment);
   }
 
-  //GET: Get all assignments
-  getAssignmentsFn = async function(req : Express.Request,res : any){
+  //GET /assignments : Get all assignemtns
+  getFn = async function(req : Express.Request,res : any){
     var assignments = await assignmentModel.find();
     res.send(assignments);
   }
 
-  postHelloWorldFn = async function(req : Express.Request,res : any){
+  //GET /assignments/{id} : Get assignment with {id}
+  getSingleFn = async function(req : Express.Request,res : any){
+    //TODO: Implement]
+    res.send({"response":"Accessing single assignments is not yet supported"});
+  }
+
+  //Hello World function (for testing)
+  getHelloWorldFn = async function(req : Express.Request,res : any){
     res.send({"data":"hello from the bpb-back assignment router!!"});
   }
 }
