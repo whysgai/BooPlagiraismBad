@@ -2,9 +2,10 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
 import AssignmentRouter from './AssignmentRouter'
+import SubmissionRouter from './SubmissionRouter'
 
 class App {
-
+    
     constructor() {}
 
     run() {
@@ -19,10 +20,11 @@ class App {
             let app = express();
             app.use(express.json());
 
-            // Set up routes  
-            app.use('/assignment', new AssignmentRouter().getRouter());
-            //TODO: Add SubmissionRouter
-            
+            // Set up routers
+            let routers = []
+            routers.push(new SubmissionRouter(app,'/submissions'));
+            routers.push(new AssignmentRouter(app,'/assignments'));
+
             // Start listening for traffic
             app.listen(AppConfig.port,() => {
                 console.log(AppConfig.appName + " listening on port " + AppConfig.port);

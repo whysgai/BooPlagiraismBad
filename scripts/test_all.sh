@@ -1,0 +1,8 @@
+#!/bin/bash
+vagrant rsync
+echo "Executing BPB front-end tests....."
+echo ""
+vagrant ssh -c 'cd /vagrant/bpb-front;npm run test'
+echo "Executing back-end tests....."
+echo ""
+vagrant ssh -c 'cd /vagrant;npm run test'

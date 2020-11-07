@@ -19,6 +19,7 @@
     "@types/mocha": "^8.0.3",
     "@types/mongoose": "^5.7.37",
     "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "express": "^4.17.1",
     "mocha": "^8.2.0",
     "mongoose": "^5.10.13",

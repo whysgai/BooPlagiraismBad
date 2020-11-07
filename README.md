@@ -1,13 +1,12 @@
-# BPB (Team-25)
+# BPB
 
-Add the following entries to `~/.bashrc` or the equivalent to add command shortcuts: 
+# Getting Started (Development)
+* Install Vagrant and Virtualbox
+* Run `vagrant up`
 
-```
- bpb-test() {
-       ssh vagrant@192.168.33.10 'cd /vagrant;npm run test'
-  }
-
- bpb-reload() {
- 	   ssh vagrant@192.168.33.10 'pm2 reload all'
- }
-```
+# Scripts
+* Run `scripts/reload.sh` to resync files and restart app components in Vagrant
+* Run `scripts/test.sh` to execute all tests in the Vagrant environment
+* Run `scripts/test_back.sh` to run back-end tests only
+* Run `scripts/test_front.sh` to run front-end tests only
+* Run `scripts.monitor.sh` to monitor running apps and view logs

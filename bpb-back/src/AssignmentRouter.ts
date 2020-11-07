@@ -1,43 +1,59 @@
-import express, {Router} from 'express';
+import IRouter from './IRouter';
+import AbstractRouter from './AbstractRouter';
 import assignmentModel from './AssignmentModel';
+import { Router } from 'express';
 
-class AssignmentRouter {
+class AssignmentRouter extends AbstractRouter implements IRouter {
   
-  private router : Router;
-  
-  constructor() {
-    this.router = express.Router();
-    this.initalizeRoutes();
+  protected router : Router;
+
+  constructor(app : any, route : string){
+    super(app,route);
+    this.setupRoutes();
   }
 
-  initalizeRoutes(){
-    this.router.get('/',this.getAssignmentsFn);
-    this.router.post('/',this.postAssignmentFn);
-    this.router.post('/helloworld',this.postHelloWorldFn);
+  setupRoutes() {
+    this.router.put("/",this.putFn);
+    this.router.get("/",this.getFn)
+    this.router.post("/",this.postFn);
+    this.router.delete("/",this.deleteFn)
+    this.router.get("/helloworld",this.getHelloWorldFn);
   }
 
-  getRouter() {
-    return this.router;
-  }
-
-  //POST: Create a single assignment
-  //Currently hardcoded
-  postAssignmentFn = async function(req : Express.Request,res : any){
-        
-    var assignment = new assignmentModel({_id: "a"}); //TODO: Remove hardcoding
-
-    await assignment.save();
-
-    res.send(assignment);
-  }
-
-  //GET: Get all assignments
-  getAssignmentsFn = async function(req : Express.Request,res : any){
+  //GET /assignments: Get all assignments
+  getFn = async function(req : Express.Request,res : any){
     var assignments = await assignmentModel.find();
     res.send(assignments);
   }
 
-  postHelloWorldFn = async function(req : Express.Request,res : any){
+  //POST /assignments: Create a new assignment
+  postFn = async function(req : Express.Request,res : any){
+    var assignment = new assignmentModel({_id: "a"}); //TODO: Remove hardcoding
+    await assignment.save();
+    res.send(assignment);
+  }
+
+  //PUT /assignments : Update an assignment
+  putFn = async function(req : Express.Request,res : any){
+    res.send({"response":"Normally you would expect to update assignments here, but this is hardcoded."}); //TODO: Update and fix test
+  }
+
+  //DELETE /assignments/{id} : Delete assignment with {id}
+  deleteFn = async function(req : Express.Request,res : any){
+    //TODO: Implement
+    res.status(400);
+    res.send({"response":"Deleting assignments is not yet supported"});
+  }
+
+  //GET /assignments/{id} : Get assignment with {id}
+  getSingleFn = async function(req : Express.Request,res : any){
+    //TODO: Implement
+    res.status(400);
+    res.send({"response":"Accessing single assignments is not yet supported"});
+  }
+
+  //Hello World function (for testing)
+  getHelloWorldFn = async function(req : Express.Request,res : any){
     res.send({"data":"hello from the bpb-back assignment router!!"});
   }
 }
