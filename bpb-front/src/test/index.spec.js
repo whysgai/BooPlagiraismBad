@@ -10,7 +10,7 @@ import { expect } from 'chai';
 describe('index.js', () => {
     it('should render AssignmentListComponent', () => {
         const component = renderer.create(
-            <StaticRouter location='/' context={}>
+            <StaticRouter location='/' context={{}}>
                 <AssignmentListComponent/>
             </StaticRouter>
         )
