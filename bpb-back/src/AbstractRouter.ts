@@ -1,41 +1,14 @@
 import express, { Router } from "express";
-import IRouter from "./IRouter";
 
-abstract class AbstractRouter implements IRouter {
+abstract class AbstractRouter {
     
-    private router : Router;
+    protected router : Router;
+    route : string;
 
     constructor(app : any, route : string) {
         this.router = express.Router();
+        this.route = route;
         app.use(route,this.router);
-        this.setup();
-    }
-
-    setup() : void {
-        this.router.post('/',this.postFn);
-        this.router.get('/',this.getFn);
-        this.router.put('/',this.putFn);
-        this.router.delete('/',this.deleteFn);
-      }
-    
-    postFn = async function(req: Express.Request, res: any): Promise<void> {
-        res.status(400);
-        res.send({"response":"Router does not support POST requests (not implemented)"});
-    }
-
-    getFn = async function(req: Express.Request, res: any): Promise<void> {
-        res.status(400);
-        res.send({"response":"Router does not support GET requests (not implemented)"});
-    }
-
-    putFn = async function(req: Express.Request, res: any): Promise<void> {
-        res.status(400);
-        res.send({"response":"Router does not support PUT requests (not implemented)"});
-    }
-
-    deleteFn = async function(req: Express.Request, res: any): Promise<void> {
-        res.status(400);
-        res.send({"response":"Router does not support DELETE requests (not implemented)"});
     }
 }
 
