@@ -1,12 +1,29 @@
 import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
 import assignmentModel from './AssignmentModel';
+import { Router } from 'express';
 
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
+  protected router : Router;
+
   constructor(app : any, route : string){
     super(app,route);
-    app.get(route+'/helloworld',this.getHelloWorldFn);
+    this.setupRoutes();
+  }
+
+  setupRoutes() {
+    this.router.put("/",this.putFn);
+    this.router.get("/",this.getFn)
+    this.router.post("/",this.postFn);
+    this.router.delete("/",this.deleteFn)
+    this.router.get("/helloworld",this.getHelloWorldFn);
+  }
+
+  //GET /assignments: Get all assignments
+  getFn = async function(req : Express.Request,res : any){
+    var assignments = await assignmentModel.find();
+    res.send(assignments);
   }
 
   //POST /assignments: Create a new assignment
@@ -16,15 +33,22 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     res.send(assignment);
   }
 
-  //GET /assignments : Get all assignemtns
-  getFn = async function(req : Express.Request,res : any){
-    var assignments = await assignmentModel.find();
-    res.send(assignments);
+  //PUT /assignments : Update an assignment
+  putFn = async function(req : Express.Request,res : any){
+    res.send({"response":"Normally you would expect to update assignments here, but this is hardcoded."}); //TODO: Update and fix test
+  }
+
+  //DELETE /assignments/{id} : Delete assignment with {id}
+  deleteFn = async function(req : Express.Request,res : any){
+    //TODO: Implement
+    res.status(400);
+    res.send({"response":"Deleting assignments is not yet supported"});
   }
 
   //GET /assignments/{id} : Get assignment with {id}
   getSingleFn = async function(req : Express.Request,res : any){
-    //TODO: Implement]
+    //TODO: Implement
+    res.status(400);
     res.send({"response":"Accessing single assignments is not yet supported"});
   }
 

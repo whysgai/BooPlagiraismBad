@@ -5,7 +5,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   
   constructor(app : any,route : string) {
     super(app,route);
-    app.get(route+'/helloworld',this.getHelloWorldFn);
+    this.setupRoutes();
+  }
+
+  setupRoutes() {
+    this.router.get("helloworld",this.getHelloWorldFn);
   }
   
   getHelloWorldFn = async function(req : Express.Request,res : any){
