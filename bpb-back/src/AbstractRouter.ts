@@ -19,18 +19,22 @@ abstract class AbstractRouter implements IRouter {
       }
     
     postFn = async function(req: Express.Request, res: any): Promise<void> {
+        res.status(400);
         res.send({"response":"Router does not support POST requests (not implemented)"});
     }
 
     getFn = async function(req: Express.Request, res: any): Promise<void> {
+        res.status(400);
         res.send({"response":"Router does not support GET requests (not implemented)"});
     }
 
     putFn = async function(req: Express.Request, res: any): Promise<void> {
+        res.status(400);
         res.send({"response":"Router does not support PUT requests (not implemented)"});
     }
 
     deleteFn = async function(req: Express.Request, res: any): Promise<void> {
+        res.status(400);
         res.send({"response":"Router does not support DELETE requests (not implemented)"});
     }
 }
