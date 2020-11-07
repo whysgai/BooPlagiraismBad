@@ -1,13 +1,35 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import { AppConfig } from './AppConfig';
+import AssignmentRouter from './AssignmentRouter'
 
-let app = express();
+class App {
 
-app.use(express.json());
+    constructor() {}
 
-app.get('/', function(req, res){
-   res.send("Hello from BPB-back!!");
-});
+    run() {
+        // Set up database connection
+        mongoose.connect(AppConfig.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true}).then(async() => {
+            
+            console.log(AppConfig.appName + " connected to " + AppConfig.dbConnectionString);
 
-app.listen(8080, () => {
-    console.log(`Server is listening on port 8080`);
-});
+            mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
+            
+            // Set up express app
+            let app = express();
+            app.use(express.json());
+
+            // Set up routes  
+            app.use('/assignment', new AssignmentRouter().getRouter());
+            //TODO: Add SubmissionRouter
+            
+            // Start listening for traffic
+            app.listen(AppConfig.port,() => {
+                console.log(AppConfig.appName + " listening on port " + AppConfig.port);
+            });
+
+        }).catch(err => console.log(err));
+    }
+}
+
+export default App;
