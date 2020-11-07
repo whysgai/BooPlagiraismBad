@@ -5,7 +5,7 @@ import AssignmentListComponent from '../AssignmentListComponent';
 import renderer from 'react-test-renderer';
 import { Link } from 'react-router-dom'
 import { StaticRouter } from 'react-router'
-import { expect } from 'chai';
+
 
 describe('index.js', () => {
     it('should render AssignmentListComponent', () => {
