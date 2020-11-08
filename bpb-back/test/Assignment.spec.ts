@@ -10,14 +10,13 @@ describe("Assignment.ts",() => {
 
     describe("getSubmissionIds()",() => {
         it("Should return the assignment’s submission’s {id}s");
-    })
+    });
 
     describe("addSubmission()",() => {
-        it("Should add a submission to the assignment);
+        it("Should add a submission to the assignment");
     });
 
     describe("removeSubmission()",() => {
-        it("Should remove a submission from the assignment);
+        it("Should remove a submission from the assignment");
     });
-
 });

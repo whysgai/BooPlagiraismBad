@@ -39,7 +39,7 @@ describe('SubmissionRouter.ts',()=> {
     it("Should be able to interpret a failed request to GET /submission/{id} where {id} is invalid");
     it("Should be able to interpret a request to PUT /submission/{id} where {id} is valid");
     it("Should be able to interpret a failed request to PUT /submission/{id} where {id} is invalid");
-    it("Should be able to interpret a request to DELETE /submission/{id} where {id} is valid"):
+    it("Should be able to interpret a request to DELETE /submission/{id} where {id} is valid");
     it("Should be able to interpret a failed request to DELETE /submission/{id} where {id} is invalid");
     it("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}");
     it("Should be able to interpret a failed request to GET /submission/compare?a={submission_id_1}&b={submission_id_2} (1 does not exist)");

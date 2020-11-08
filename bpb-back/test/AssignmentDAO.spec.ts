@@ -1,5 +1,6 @@
 describe("AssignmentDAO.ts",() => {
 
+    //NOTE: See SubmissionDAO for DAO scratchwork
     describe("createAssignment()",() => {
         it("Should create an assignment database object if inputs are valid");
         it("Should throw an appropriate error if inputs are invalid");
