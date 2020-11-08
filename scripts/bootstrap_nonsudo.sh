@@ -21,3 +21,4 @@ echo "Run front-end tests using:"
 echo "     scripts/test_front.sh"
 echo "Run back-end tests using:"
 echo "     scripts/test_back.sh"
+exit 0
