@@ -18,18 +18,18 @@ export class SubmissionDAO implements ISubmissionDAO {
     }
     
     createSubmission(): ISubmission {
-        return null; //TODO
+        return undefined;
     }
     
     readSubmissions(): ISubmission[] {
-        return []; //TODO (also add to interface)
+        return undefined;
     }
 
     readSubmission(submissionID: String): ISubmission {
-        return undefined; //TODO
+        return undefined;
     }
     updateSubmission(submissionID: String, submission: ISubmission) : ISubmission {
-        throw new Error('Method not implemented.');
+        return undefined;
     }
     deleteSubmission(submissionID: String): ISubmission {
         return undefined;
