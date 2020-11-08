@@ -18,7 +18,7 @@ export class SubmissionDAO implements ISubmissionDAO {
     }
     
     createSubmission(): ISubmission {
-        throw new Error('Method not implemented.');
+        return null; //TODO
     }
     
     readSubmissions(): ISubmission[] {
