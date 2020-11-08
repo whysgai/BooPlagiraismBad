@@ -29,7 +29,7 @@ describe('AssignmentRouter.ts',()=> {
     it('should say hi back when GET /helloworld is queried',() => {
         chai.request(testServer).get("/assignments/helloworld").then(res  => {
             expect(res).to.have.status(200);
-            expect(res.body).to.have.property("response","hello from the bpb-back assignment router!!");
+            expect(res.body).to.have.property("response","the world and the bpb-back assignment router say hi back!!");
         });
     });
 

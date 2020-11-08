@@ -55,7 +55,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //Hello World function (for testing)
   getHelloWorldFn = async function(req : Express.Request,res : any){
-    res.send({"response":"hello from the bpb-back assignment router!!"});
+    res.send({"response":"the world and the bpb-back assignment router say hi back!!"});
   }
 }
 

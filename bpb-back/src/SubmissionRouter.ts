@@ -14,7 +14,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
   
   getHelloWorldFn = async function(req : Express.Request,res : any){
-    res.send({"response":"hello from the bpb-back submission router!!"});
+    res.send({"response":"the world and the bpb-back submission router say hi back!!"});
   }
 
   //TODO: Replace these
