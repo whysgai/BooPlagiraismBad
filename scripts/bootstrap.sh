@@ -13,7 +13,7 @@ rm -rf /vagrant/bpb-back/dist/* # Remove any previously compiled back-end files 
 sudo chown vagrant:vagrant /home/vagrant/.pm2/rpc.sock /home/vagrant/.pm2/pub.sock
 
 #Set up database service
-sudo mv /vagrant/mongodb.service /lib/systemd/mongodb.service
+sudo mv /vagrant/scripts/mongodb.service /lib/systemd/mongodb.service
 sudo systemctl enable mongodb
 
 exit 0
