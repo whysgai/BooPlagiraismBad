@@ -1,11 +1,38 @@
 
+import { expect } from "chai";
+import chai = require("chai");
+import chaiSpies = require("chai-spies");
+import { ISubmissionDAO, SubmissionDAO } from "../src/SubmissionDAO";
+import { ISubmissionManager, SubmissionManager } from "../src/SubmissionManager";
+import { Submission } from "../src/Submission";
+
 describe("SubmissionManager.ts",() => {
+
+    var testSubmissionDAO : ISubmissionDAO;
+    var testSubmissionManager : ISubmissionManager;
+
+    before(()=>{
+        chai.use(chaiSpies); 
+    });
+
+    beforeEach(()=>{
+        testSubmissionDAO = new SubmissionDAO(null); //TODO: may need to replace null with actual connection (?)
+        testSubmissionManager = new SubmissionManager(testSubmissionDAO);
+    });
 
     describe("getSubmissions()",() => {
         
-        it("Should return submissions if there are some");
+        it.skip("Should return submissions if there are some",()=> {
 
-        it("Should return no submissions if there are none");
+                const mockSubmission = new Submission();
+                chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [mockSubmission]});
+
+                expect(testSubmissionManager.getSubmissions()).to.be.an('array').that.is.not.empty;
+        });
+
+        it.skip("Should return no submissions if there are none",() =>{
+            expect(testSubmissionManager.getSubmissions()).to.be.an('array').that.is.empty;
+        });        
 
     });
 
@@ -37,9 +64,16 @@ describe("SubmissionManager.ts",() => {
     
     });
 
-    describe("deleteSubmission()",() =>{
+    describe("deleteSubmission({id})",() =>{
 
-        it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid");
+        it.skip("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
+           
+            var deleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
+            
+            testSubmissionManager.deleteSubmission();
+            
+            expect(deleteSubmission).to.have.been.called();
+        });
         
         it("Should throw an appropriate error if {id} is invalid");
     
