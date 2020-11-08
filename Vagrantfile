@@ -11,9 +11,9 @@ Vagrant.configure("2") do |config|
   
   config.vm.synced_folder ".", "/vagrant/", type: "rsync", rsync__auto: true, rsync__exclude: ['*node_modules*']
 
-  config.vm.provision :shell, path: "scripts/bootstrap.sh"
+  config.vm.provision :shell, path: "scripts/bootstrap_sudo.sh"
 
-  config.vm.provision :shell, privileged: false, path: "scripts/bootstrap_pm2.sh"
+  config.vm.provision :shell, privileged: false, path: "scripts/bootstrap_nonsudo.sh"
 
   config.vm.provider "virtualbox" do |v|
 	    v.memory = 2048

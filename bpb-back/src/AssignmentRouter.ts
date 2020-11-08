@@ -35,7 +35,8 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //PUT /assignments : Update an assignment
   putFn = async function(req : Express.Request,res : any){
-    res.send({"response":"Normally you would expect to update assignments here, but this is hardcoded."}); //TODO: Update and fix test
+    res.status(400);
+    res.send({"response":"Updating assignments is not yet supported"});
   }
 
   //DELETE /assignments/{id} : Delete assignment with {id}
@@ -54,7 +55,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //Hello World function (for testing)
   getHelloWorldFn = async function(req : Express.Request,res : any){
-    res.send({"data":"hello from the bpb-back assignment router!!"});
+    res.send({"response":"the world and the bpb-back assignment router say hi back!!"});
   }
 }
 

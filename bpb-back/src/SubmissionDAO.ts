@@ -3,6 +3,7 @@ import {Connection} from 'mongoose'
 
 export interface ISubmissionDAO {
     createSubmission() : ISubmission;
+    readSubmissions() : ISubmission[];
     readSubmission(submissionID : String) : ISubmission;
     updateSubmission(submissionID : String, submission : ISubmission) : ISubmission;
     deleteSubmission(submissionID : String) : ISubmission;
@@ -17,15 +18,20 @@ export class SubmissionDAO implements ISubmissionDAO {
     }
     
     createSubmission(): ISubmission {
-        throw new Error('Method not implemented.');
+        return undefined;
     }
+    
+    readSubmissions(): ISubmission[] {
+        return undefined;
+    }
+
     readSubmission(submissionID: String): ISubmission {
-        throw new Error('Method not implemented.');
+        return undefined;
     }
     updateSubmission(submissionID: String, submission: ISubmission) : ISubmission {
-        throw new Error('Method not implemented.');
+        return undefined;
     }
     deleteSubmission(submissionID: String): ISubmission {
-        throw new Error('Method not implemented.');
+        return undefined;
     }
 }

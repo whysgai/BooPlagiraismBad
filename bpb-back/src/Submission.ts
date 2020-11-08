@@ -8,7 +8,7 @@ export class Submission implements ISubmission {
     //private id : String;
     //private name : String;
    // private submissionASTs : SubmissionAST[];
-    
+    constructor(){}
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         throw new Error("Method not implemented.");
     }

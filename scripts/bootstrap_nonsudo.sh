@@ -3,9 +3,9 @@
 pm2 startup systemd
 cd /vagrant/bpb-front/
 npm install
-cd /vagrant/
+cd /vagrant/bpb-back/
 npm install
-pm2 start /vagrant/processes.json
+pm2 start /vagrant/scripts/processes.json
 echo ""
 echo "BPB Front-End should be available at: 192.168.33.10:3000"
 echo "BPB Back-End should be available at: 192.168.33.10:8080"
@@ -21,3 +21,4 @@ echo "Run front-end tests using:"
 echo "     scripts/test_front.sh"
 echo "Run back-end tests using:"
 echo "     scripts/test_back.sh"
+exit 0

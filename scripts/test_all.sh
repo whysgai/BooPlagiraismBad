@@ -5,4 +5,4 @@ echo ""
 vagrant ssh -c 'cd /vagrant/bpb-front;npm run test'
 echo "Executing back-end tests....."
 echo ""
-vagrant ssh -c 'cd /vagrant;npm run test'
+vagrant ssh -c 'cd /vagrant/bpb-back;npm run test'
