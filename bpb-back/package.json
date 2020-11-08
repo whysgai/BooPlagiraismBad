@@ -20,7 +20,6 @@
     "@types/express-fileupload": "^1.1.5",
     "@types/mocha": "^8.0.3",
     "@types/mongoose": "^5.7.37",
-    "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "chai-spies": "^1.0.0",

@@ -52,11 +52,13 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
                   "name": submissionFile.name,
                   "size": submissionFile.size
               }
-            });
-          }
-        } 
+            }
+          );
+        }
+      } 
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500);
+        res.send(err);
     }
   }
 }
