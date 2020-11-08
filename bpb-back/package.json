@@ -1,11 +1,11 @@
 {
   "name": "bpb-back",
   "version": "1.0.0",
-  "description": "BPB backend",
-  "main": "app.ts",
+  "description": "BPB backend API",
+  "main": "main.ts",
   "scripts": {
-    "test": "ts-mocha bpb-back/test/*.spec.ts",
-    "start": "tsc && node bpb-back/dist/src/main.js"
+    "test": "ts-mocha test/*.spec.ts",
+    "start": "tsc && node dist/src/main.js"
   },
   "repository": {
     "type": "git",
