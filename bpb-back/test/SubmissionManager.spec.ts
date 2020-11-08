@@ -27,7 +27,7 @@ describe("SubmissionManager.ts",() => {
 
     });
 
-    describe("saveSubmissionFile()",() =>{
+    describe("addFile()",() =>{
 
         it("Should save and add a frontend-”encoded” file into the submission specified by the client");
 
