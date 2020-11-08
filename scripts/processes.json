@@ -3,7 +3,7 @@
         {
             "name": "bpb-back",
             "script": "npm",
-            "args" : "start --prefix \"/vagrant\"",
+            "args" : "start --prefix \"/vagrant/bpb-back\"",
             "watch": ["./bpb-back/src","./bpb-back/test"]
         },
         {

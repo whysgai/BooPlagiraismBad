@@ -1,6 +1,6 @@
  {
    "compilerOptions": {
-      "outDir": "./bpb-back/dist/",
+      "outDir": "./dist/",
       "noImplicitAny": true,
       "sourceMap": true,
       "module": "commonjs",

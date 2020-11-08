@@ -3,7 +3,7 @@
 pm2 startup systemd
 cd /vagrant/bpb-front/
 npm install
-cd /vagrant/
+cd /vagrant/bpb-back/
 npm install
 pm2 start /vagrant/scripts/processes.json
 echo ""
