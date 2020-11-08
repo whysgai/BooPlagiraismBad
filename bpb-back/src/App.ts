@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyparser from "body-parser";
 import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
@@ -23,8 +22,7 @@ class App {
             app.use(express.json());
 
             // Add app middleware
-            app.use(bodyparser);
-            app.use(fileUpload);
+            app.use(fileUpload());
 
             // Set up routers
             let routers = []
