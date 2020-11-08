@@ -47,7 +47,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
           submissionFile.mv(AppConfig.submissionFileUploadDirectory + submissionFile.name);
 
           res.send({
-              "message": 'File Uploaded successfully.',
+              "response": 'File uploaded successfully.',
               "data": {
                   "name": submissionFile.name,
                   "size": submissionFile.size

@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import SubmissionRouter from "../src/SubmissionRouter"
 import express from "express";
 import IRouter from "../src/IRouter";
-
+import * as fs from 'fs';
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 
@@ -33,15 +33,23 @@ describe('SubmissionRouter.ts',()=> {
         });
     });
 
-    it("Should be able to interpret a request to POST /submission to create a submission");
-    it("Should be able to interpret a request to GET /submission to get all submissions");
-    it("Should be able to interpret a request to GET /submission/{id} where {id} is valid");
+    it("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
+        chai.request(testServer).post("/submissions/upload")
+        .attach("submissionfile",fs.readFileSync("test/App.spec.ts"),"App.spec.ts").then((res) => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response","File uploaded successfully.");
+        });
+    });
+    
+    it("Should be able to interpret a request to POST /submissions to create a submission");
+    it("Should be able to interpret a request to GET /submissions to get all submissions");
+    it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid");
     it("Should be able to interpret a failed request to GET /submission/{id} where {id} is invalid");
-    it("Should be able to interpret a request to PUT /submission/{id} where {id} is valid");
-    it("Should be able to interpret a failed request to PUT /submission/{id} where {id} is invalid");
-    it("Should be able to interpret a request to DELETE /submission/{id} where {id} is valid");
-    it("Should be able to interpret a failed request to DELETE /submission/{id} where {id} is invalid");
+    it("Should be able to interpret a request to PUT /submissions/{id} where {id} is valid");
+    it("Should be able to interpret a failed request to PUT /submissions/{id} where {id} is invalid");
+    it("Should be able to interpret a request to DELETE /submissions/{id} where {id} is valid");
+    it("Should be able to interpret a failed request to DELETE /submissions/{id} where {id} is invalid");
     it("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}");
-    it("Should be able to interpret a failed request to GET /submission/compare?a={submission_id_1}&b={submission_id_2} (1 does not exist)");
-    it("Should be able to interpret a failed request to GET /submission/compare?a={submission_id_1}&b={submission_id_2} (2 does not exist)");
+    it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (1 does not exist)");
+    it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (2 does not exist)");
 });
