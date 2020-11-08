@@ -1,5 +1,6 @@
 import IRouter from './IRouter'
 import AbstractRouter from './AbstractRouter'
+import { AppConfig } from './AppConfig';
 
 class SubmissionRouter extends AbstractRouter implements IRouter {
   
@@ -29,11 +30,35 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       });
   }
 
-  //TODO: Replace this
+  //TODO: Replace
   //Hardcoded test endpoint for example purposes
   postFileUploadFn = async function (req : Express.Request,res : any){
-    res.send({"response":"not yet implemented"}); //TODO
-  });
+    try {
+      if(!req.files) {
+          res.status(400);
+          res.send({response:"No file was included in this request. Please ensure a file is provided."})
+      } else {
+        let submissionFile = req.files.submissionfile;
+        
+        if(!submissionFile) {
+          res.status(400);
+          res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
+        } else {
+          submissionFile.mv(AppConfig.submissionFileUploadDirectory + submissionFile.name);
+
+          res.send({
+              "message": 'File Uploaded successfully.',
+              "data": {
+                  "name": submissionFile.name,
+                  "size": submissionFile.size
+              }
+            });
+          }
+        } 
+    } catch (err) {
+        res.status(500).send(err);
+    }
+  }
 }
 
 export default SubmissionRouter;
