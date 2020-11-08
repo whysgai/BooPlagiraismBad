@@ -15,11 +15,13 @@
   "license": "ISC",
   "dependencies": {
     "@types/chai": "^4.2.14",
+    "@types/chai-spies": "^1.0.2",
     "@types/express": "^4.17.8",
     "@types/mocha": "^8.0.3",
     "@types/mongoose": "^5.7.37",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "chai-spies": "^1.0.0",
     "express": "^4.17.1",
     "mocha": "^8.2.0",
     "mongoose": "^5.10.13",
