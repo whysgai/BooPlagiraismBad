@@ -11,6 +11,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   setupRoutes() {
     this.router.get("/helloworld",this.getHelloWorldFn);
     this.router.get("/compare/placeholder",this.getPlaceholderAnalysisResultFn);
+    this.router.post("/upload",this.postFileUploadFn);
   }
   
   getHelloWorldFn = async function(req : Express.Request,res : any){
@@ -19,7 +20,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //TODO: Replace these
   //Hardcoded endpoints for front-end development purposes
-  getPlaceholderAnalysisResultFn = async function(rq : Express.Request,res :any){
+  getPlaceholderAnalysisResultFn = async function(rq : Express.Request,res : any){
     res.send({
         "matches":[
             {"fromSubmission":"id1","toSubmission":"id2","fromFile":"test","toFile":"test","fromStart":1,"fromEnd":2,"toStart":3,"toEnd":6,"type":"BasicMatch","description":"Test Description for match 1"},
@@ -27,6 +28,12 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
         ] 
       });
   }
+
+  //TODO: Replace this
+  //Hardcoded test endpoint for example purposes
+  postFileUploadFn = async function (req : Express.Request,res : any){
+    res.send({"response":"not yet implemented"}); //TODO
+  });
 }
 
 export default SubmissionRouter;
