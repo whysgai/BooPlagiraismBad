@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import bodyParser from "body-parser";
-import AssignmentRouter from "../src/AssignmentRouter"
+import SubmissionRouter from "../src/SubmissionRouter"
 import express from "express";
 import IRouter from "../src/IRouter";
 
@@ -21,9 +21,16 @@ describe('SubmissionRouter.ts',()=> {
         app.use(bodyParser.json());            
         chai.use(chaiHttp);
 
-        testRouter = new AssignmentRouter(app,"/assignments"); 
+        testRouter = new SubmissionRouter(app,"/submissions"); 
         testServer = app.listen(8081);
 
+    });
+
+    it('should say hi back when GET /helloworld is queried',() => {
+        chai.request(testServer).get("/submissions/helloworld").then(res  => {
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property("response","hello from the bpb-back submission router!!");
+        });
     });
 
     it("Should be able to interpret a request to POST /submission to create a submission");

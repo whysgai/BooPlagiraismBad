@@ -25,17 +25,17 @@ describe('AssignmentRouter.ts',()=> {
         testServer = app.listen(8081);
 
     });
-
-    it('should return a hardcoded response message when GET / is queried',() => {
-        chai.request(testServer).get("/assignments/").then(res  => {
+    
+    it('should say hi back when GET /helloworld is queried',() => {
+        chai.request(testServer).get("/assignments/helloworld").then(res  => {
             expect(res).to.have.status(200);
-            expect(res.body).to.have.property("response","Normally you would expect to see assignments here, but this is hardcoded.");
+            expect(res.body).to.have.property("response","hello from the bpb-back assignment router!!");
         });
     });
 
     it("Should be able to interpret a request to POST /assignment to create an assignment");
 
-    //TODO: Spy on SubmissionManager(?)
+    //TODO: Spy on AssignmentManager(?)
     it("Should be able to interpret a request to GET /assignment to get all assignments");
 
     it("Should be able to interpret a request to GET /assignment/{id} where {id} is valid");
