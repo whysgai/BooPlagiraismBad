@@ -5,7 +5,7 @@ cd /vagrant/bpb-front/
 npm install
 cd /vagrant/
 npm install
-pm2 start /vagrant/processes.json
+pm2 start /vagrant/scripts/processes.json
 echo ""
 echo "BPB Front-End should be available at: 192.168.33.10:3000"
 echo "BPB Back-End should be available at: 192.168.33.10:8080"

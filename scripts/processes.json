@@ -1,0 +1,16 @@
+{
+    "apps": [
+        {
+            "name": "bpb-back",
+            "script": "npm",
+            "args" : "start --prefix \"/vagrant\"",
+            "watch": ["./bpb-back/src","./bpb-back/test"]
+        },
+        {
+        	"name": "bpb-front",
+            "script": "npm",
+            "args" : "run start --prefix \"/vagrant/bpb-front\"",
+            "watch": ["./bpb-front/src","./bpb-front/test"]
+        }
+    ]
+}
