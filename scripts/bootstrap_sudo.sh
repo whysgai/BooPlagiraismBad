@@ -16,4 +16,10 @@ sudo chown vagrant:vagrant /home/vagrant/.pm2/rpc.sock /home/vagrant/.pm2/pub.so
 sudo mv /vagrant/scripts/mongodb.service /lib/systemd/mongodb.service
 sudo systemctl enable mongodb
 
+# Set env variable(s)
+# To be accessed by react, env variables must include REACT_APP_ prefix
+sudo echo "REACT_APP_TESTVAR='Hello, World!'" >> /etc/environment
+sudo echo "REACT_APP_CLTADDR='client placeholder address'" >> /etc/environment
+sudo echo "REACT_APP_SRVADDR='server placeholder address'" >> /etc/environment
+
 exit 0
