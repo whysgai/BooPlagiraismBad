@@ -1,5 +1,6 @@
 import IRouter from './IRouter'
 import AbstractRouter from './AbstractRouter'
+import { AppConfig } from './AppConfig';
 
 class SubmissionRouter extends AbstractRouter implements IRouter {
   
@@ -11,6 +12,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   setupRoutes() {
     this.router.get("/helloworld",this.getHelloWorldFn);
     this.router.get("/compare/placeholder",this.getPlaceholderAnalysisResultFn);
+    this.router.post("/upload",this.postFileUploadFn);
   }
   
   getHelloWorldFn = async function(req : Express.Request,res : any){
@@ -19,13 +21,48 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //TODO: Replace these
   //Hardcoded endpoints for front-end development purposes
-  getPlaceholderAnalysisResultFn = async function(rq : Express.Request,res :any){
+  getPlaceholderAnalysisResultFn = async function(rq : Express.Request,res : any){
     res.send({
         "matches":[
             {"fromSubmission":"id1","toSubmission":"id2","fromFile":"test","toFile":"test","fromStart":1,"fromEnd":2,"toStart":3,"toEnd":6,"type":"BasicMatch","description":"Test Description for match 1"},
             {"fromSubmission":"id1","toSubmission":"id2","fromFile":"test2","toFile":"test3","fromStart":14,"fromEnd":22,"toStart":30,"toEnd":90,"type":"BasicMatch","description":"Test Description for match 2"}
         ] 
       });
+  }
+
+  //TODO: Replace
+  //Hardcoded test endpoint for example purposes
+  postFileUploadFn = async function (req : Express.Request,res : any){
+    console.log("FILES HERE");
+    console.log(req.files);
+
+    try {
+      if(!req.files) {
+          res.status(400);
+          res.send({response:"No file was included in this request. Please ensure a file is provided."})
+      } else {
+        let submissionFile = req.files.submissionfile;
+        
+        if(!submissionFile) {
+          res.status(400);
+          res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
+        } else {
+          submissionFile.mv(AppConfig.submissionFileUploadDirectory + submissionFile.name);
+
+          res.send({
+              "response": 'File uploaded successfully.',
+              "data": {
+                  "name": submissionFile.name,
+                  "size": submissionFile.size
+              }
+            }
+          );
+        }
+      } 
+    } catch (err) {
+        res.status(500);
+        res.send(err);
+    }
   }
 }
 

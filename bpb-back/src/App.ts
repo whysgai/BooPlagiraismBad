@@ -1,4 +1,5 @@
 import express from 'express';
+import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
 import AssignmentRouter from './AssignmentRouter'
@@ -19,6 +20,9 @@ class App {
             // Set up express app
             let app = express();
             app.use(express.json());
+
+            // Add app middleware
+            app.use(fileUpload());
 
             // Set up routers
             let routers = []
