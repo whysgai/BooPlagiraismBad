@@ -33,6 +33,9 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //TODO: Replace
   //Hardcoded test endpoint for example purposes
   postFileUploadFn = async function (req : Express.Request,res : any){
+    console.log("FILES HERE");
+    console.log(req.files);
+
     try {
       if(!req.files) {
           res.status(400);

@@ -4,10 +4,10 @@ import bodyParser from "body-parser";
 import SubmissionRouter from "../src/SubmissionRouter"
 import express from "express";
 import IRouter from "../src/IRouter";
-import * as fs from 'fs';
+import fs from 'fs';
 import chai = require("chai");
 import chaiHttp = require("chai-http");
-
+import superagent from "superagent";
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -22,6 +22,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.use(chaiHttp);
 
         testRouter = new SubmissionRouter(app,"/submissions"); 
+        
         testServer = app.listen(8081);
 
     });
@@ -34,9 +35,12 @@ describe('SubmissionRouter.ts',()=> {
     });
 
     it("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
-        chai.request(testServer).post("/submissions/upload")
-        .attach("submissionfile",fs.readFileSync("test/App.spec.ts"),"App.spec.ts").then((res) => {
-            expect(res).to.have.status(400);
+        
+        //NOTE: This is technically only passing against the live app (note port is not 8081)
+        superagent.post('http://localhost:8080/submissions/upload').attach('submissionfile',fs.readFileSync("./test/App.spec.ts"))
+        //chai.request(testServer).post("/submissions/upload").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
+        .then((res) => {
+            expect(res).to.have.status(200);
             expect(res.body).to.have.property("response","File uploaded successfully.");
         });
     });
