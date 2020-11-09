@@ -1,11 +1,14 @@
 #!/bin/bash
 
+
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u vagrant --hp /home/vagrant
 pm2 startup systemd
 cd /vagrant/bpb-front/
 npm install
 cd /vagrant/bpb-back/
 npm install
 pm2 start /vagrant/scripts/processes.json
+pm2 save
 echo ""
 echo "BPB Front-End should be available at: 192.168.33.10:3000"
 echo "BPB Back-End should be available at: 192.168.33.10:8080"
