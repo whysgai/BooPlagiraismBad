@@ -13,7 +13,6 @@ describe("Environment Variable Tests", () => {
         act(() => {
             render(<EnvVarTestComponent/>, component)
         });
-        console.log("p content is: " + component.getElementsByTagName('p').item(0).textContent);
         expect(component.getElementsByTagName('p').item(0).textContent).to.equal("Hello, World!");
     });
     
