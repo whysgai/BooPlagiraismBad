@@ -11,9 +11,9 @@ class App {
 
     run() {
         // Set up database connection
-        mongoose.connect(AppConfig.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true}).then(async() => {
+        mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true}).then(async() => {
             
-            console.log(AppConfig.appName + " connected to " + AppConfig.dbConnectionString);
+            console.log(AppConfig.appName + " connected to " + AppConfig.dbConnectionString());
 
             mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
             
@@ -30,8 +30,8 @@ class App {
             routers.push(new AssignmentRouter(app,'/assignments'));
 
             // Start listening for traffic
-            app.listen(AppConfig.port,() => {
-                console.log(AppConfig.appName + " listening on port " + AppConfig.port);
+            app.listen(AppConfig.port(),() => {
+                console.log(AppConfig.appName() + " listening on port " + AppConfig.port());
             });
 
         }).catch(err => console.log(err));
