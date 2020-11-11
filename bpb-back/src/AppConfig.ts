@@ -1,7 +1,7 @@
 export class AppConfig {
    
     public static port() : string {
-        return process.env.PORT;
+        return process.env.APIPORT;
     }
     
     public static submissionFileUploadDirectory() : string {
@@ -10,5 +10,11 @@ export class AppConfig {
 
     public static dbConnectionString() : string {
         return process.env.DBCONNECTIONSTRING;
+    }
+
+    public static printEnv() : void {
+        console.log("PORT: " + this.port());
+        console.log("UPLOAD DIR: " + this.submissionFileUploadDirectory());
+        console.log("DB Connection String: " + this.dbConnectionString());
     }
 }

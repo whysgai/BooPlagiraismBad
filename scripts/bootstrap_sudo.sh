@@ -21,9 +21,4 @@ sudo echo "REACT_APP_TESTVAR='Hello, World!'" >> /etc/environment
 sudo echo "REACT_APP_CLTADDR='client placeholder address'" >> /etc/environment
 sudo echo "REACT_APP_SRVADDR='server placeholder address'" >> /etc/environment
 
-# Back-end env variables
-sudo echo "DBCONNECTIONSTRING='mongodb://127.0.0.1:27017/bpb'" >> /etc/environment
-sudo echo "UPLOADDIRECTORY='/vagrant/bpb-back/uploads/'" >> /etc/environment
-sudo echo "PORT='8080'" >> /etc/environment
-
 exit 0
