@@ -23,7 +23,7 @@ describe("SubmissionDAO.ts",() => {
             //TODO: Unclear whether this works properly.
             mockMongoose = new MockMongoose(mongoose);
             mockMongoose.prepareStorage().then(()=> {
-                mongoose.connect(AppConfig.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+                mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
                    connection = mongoose.connection;
                 });
             });

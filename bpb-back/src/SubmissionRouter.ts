@@ -47,7 +47,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
           res.status(400);
           res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
         } else {
-          submissionFile.mv(AppConfig.submissionFileUploadDirectory + submissionFile.name);
+          submissionFile.mv(AppConfig.submissionFileUploadDirectory() + submissionFile.name);
 
           res.send({
               "response": 'File uploaded successfully.',
