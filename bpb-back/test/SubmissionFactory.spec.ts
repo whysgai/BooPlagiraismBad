@@ -5,7 +5,7 @@ import { expect } from "chai";
 describe("SubmissionFactory.ts",() => {
     
     describe("buildSubmission()",() => {
-        it("Should return a valid Submission with the expected properties");
+        it("Should return a valid Submission with the expected properties",() => {
 
             var factory = new SubmissionFactory();
             var id = "test";

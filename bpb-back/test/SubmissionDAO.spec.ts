@@ -1,6 +1,7 @@
 
 import { expect } from "chai";
 import chai = require("chai");
+import chaiAsPromised = require("chai-as-promised");
 import chaiSpies = require("chai-spies");
 import { AppConfig } from "../src/AppConfig";
 
@@ -15,7 +16,7 @@ describe("SubmissionDAO.ts",() => {
     var testSubmissionDAO : ISubmissionDAO;
 
     before((done) => {
-        chai.use(chaiSpies);
+        chai.use(chaiAsPromised);
         mongoose.connect(AppConfig.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
             done();
         });
@@ -43,7 +44,13 @@ describe("SubmissionDAO.ts",() => {
             });
         });
     
-        it("Should throw an appropriate error if inputs are invalid (ID exists)");
+        it("Should throw an appropriate error if inputs are invalid (ID exists)",() => {
+            var id = "testid";
+
+            return expect(testSubmissionDAO.createSubmission(id)).to.eventually.be.fulfilled.then((res) => {
+                expect(testSubmissionDAO.createSubmission(id)).to.eventually.be.fulfilled;
+            });
+        });
     });
 
     describe("readSubmission()",() => {
