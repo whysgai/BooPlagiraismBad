@@ -1,10 +1,12 @@
 import React from 'react';
 import './AssignmentListComponent.css';
 import AssignmentListCard from './AssignmentListCard'
+import {Link} from 'react-router-dom'
 
 function AssignmentListComponent({assignments}) {
   return (
-    <div className="App">
+    <div>
+      <Link to="#" className="new-assignment-btn">new</Link>
       <ul>
         {
           assignments.map((assignment,index) => {

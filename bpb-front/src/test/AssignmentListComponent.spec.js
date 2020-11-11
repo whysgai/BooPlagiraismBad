@@ -2,16 +2,18 @@ import React from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
 import { act } from "react-dom/test-utils";
 import AssignmentListComponent from "../AssignmentListComponent";
+import BrowserRouter from "react-router-dom";
+import Route from "react-router-dom";
 
 it('Should display no assignments if none exist', () =>{
     let container = document.createElement('div');
     document.body.appendChild(container);
 
     act(() =>{
-        render(<AssignmentListComponent/>, container);
-    });
+        render(<BrowserRouter><Route path="/" component={<AssignmentListComponent assignments={[]} /> }/></BrowserRouter>, container);
+    }); 
 
-    expect(container.getElementsByClassName('assignment-card').length).toBe(0);
+    expect(container.getElementsByClassName('assignment-list-card').length).toBe(0);
 });
 
 it('Should display one assignments if one exists', () => {
@@ -19,10 +21,10 @@ it('Should display one assignments if one exists', () => {
     document.body.appendChild(container);
 
     act(() =>{
-        render(<AssignmentListComponent assignments={assignments=[1]}/>, container);
+        render(<BrowserRouter><Route path="/" component={<AssignmentListComponent assignments={[1]} /> }/></BrowserRouter>, container);
     });
 
-    expect(container.getElementsByClassName('assignment-card').length).toBe(1);
+    expect(container.getElementsByClassName('assignment-list-card').length).toBe(1);
 });
 
 it('Should display 3 assignments if 3 exist', () => {
@@ -30,10 +32,10 @@ it('Should display 3 assignments if 3 exist', () => {
     document.body.appendChild(container);
 
     act(() =>{
-        render(<AssignmentListComponent assignments={assignments=[1,2,3]}/>, container);
+        render(<BrowserRouter><Route path="/" component={<AssignmentListComponent assignments={[1,2,3]} /> }/></BrowserRouter>, container);
     });
 
-    expect(container.getElementsByClassName('assignment-card').length).toBe(3);
+    expect(container.getElementsByClassName('assignment-list-card').length).toBe(3);
 });
 
 it('Should show a link that directs user to the assignment creation page', () => {
@@ -41,8 +43,9 @@ it('Should show a link that directs user to the assignment creation page', () =>
     document.body.appendChild(container);
 
     act(() =>{
-        render(<AssignmentListComponent/>, container);
+        render(<BrowserRouter><Route path="/" component={<AssignmentListComponent assignments={[]} /> }/></BrowserRouter>, container);
     });
-    //TODO enter link
+    
+    //TODO
     expect(container.getElementsByClassName('new-assignment-btn')).toBe('LINK');
 });

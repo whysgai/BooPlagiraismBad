@@ -1,8 +1,9 @@
 import React from 'react';
 
-function AssignmentListCard() {
+function AssignmentListCard({assignment}) {
   return (
-    <div className="AssignmentListCard">
+    <div className="assignment-list-card">
+      {assignment}
     </div>
   );
 }
