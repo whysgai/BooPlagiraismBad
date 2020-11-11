@@ -25,7 +25,9 @@
             },
             "env_vagrant":{
                 "NODE_ENV":"vagrant",
-                "REACT_APP_PLACEHOLDER":"test"
+                "REACT_APP_TESTVAR":"TESTY!",
+                "REACT_APP_CLTADDR":"client placeholder address",
+                "REACT_APP_SRVADDR":"server placeholder address"
             } 
         }
     ]
