@@ -12,7 +12,6 @@ import submissionModel from "../src/SubmissionModel";
 
 describe("SubmissionDAO.ts",() => {
 
-    var mockMongoose : any;
     var testSubmissionDAO : ISubmissionDAO;
 
     before((done) => {
@@ -34,21 +33,17 @@ describe("SubmissionDAO.ts",() => {
 
         it("Should create an submission database object if inputs are valid (ID doesn't exist)",()=> {
             
-            var id = "testid";
-
-            return testSubmissionDAO.createSubmission(id).then((res) => {
-                
-                submissionModel.findOne({_id:id}).then((res) => {
+            return testSubmissionDAO.createSubmission("testid").then((res) => {
+                submissionModel.findOne({_id:"testid"}).then((res) => {
                     expect(res).to.not.be.undefined;
                 });
             });
         });
     
         it("Should throw an appropriate error if inputs are invalid (ID exists)",() => {
-            var id = "testid";
-
-            return expect(testSubmissionDAO.createSubmission(id)).to.eventually.be.fulfilled.then((res) => {
-                expect(testSubmissionDAO.createSubmission(id)).to.eventually.be.fulfilled;
+            
+            return expect(testSubmissionDAO.createSubmission("testduplicateid")).to.eventually.be.fulfilled.then((res) => {
+                expect(testSubmissionDAO.createSubmission("testduplicateid")).to.eventually.be.rejected;
             });
         });
     });
@@ -68,7 +63,23 @@ describe("SubmissionDAO.ts",() => {
     });
 
     describe("deleteSubmission()",() => {
-        it("Should be able to delete an submission database object");
+        it("Should be able to delete an submission database object",() => {
+
+            var id = "test"
+            return expect(testSubmissionDAO.createSubmission(id)).to.eventually.be.fulfilled.then((createRes) => {
+
+                submissionModel.findOne({_id:id}).then((firstFindRes) =>{
+
+                    expect(firstFindRes).to.not.be.undefined;
+                     
+                    return expect(testSubmissionDAO.deleteSubmission(id)).to.eventually.be.fulfilled.then((deleteRes) => {
+                        submissionModel.findOne({_id:id}).then((secondFindRes) =>{
+                            expect(secondFindRes).to.be.undefined;               
+                        });
+                    });
+                });
+            });
+        });
     
         it("Should throw an appropriate error if {id} is invalid");
     }); 

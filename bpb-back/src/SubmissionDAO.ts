@@ -1,13 +1,12 @@
 import {ISubmission, Submission} from './Submission'
-import {Connection} from 'mongoose'
 import submissionModel from './SubmissionModel';
 
 export interface ISubmissionDAO {
     createSubmission(submissionId : String) : Promise<void>; //TODO: Change response type to non-void  (?)
-    readSubmissions() : ISubmission[];
-    readSubmission(submissionID : String) : ISubmission;
-    updateSubmission(submissionID : String, submission : ISubmission) : ISubmission;
-    deleteSubmission(submissionID : String) : ISubmission;
+    readSubmissions() : Promise<ISubmission[]>;
+    readSubmission(submissionID : String) : Promise<ISubmission>;
+    updateSubmission(submissionID : String, submission : ISubmission) : Promise<ISubmission>;
+    deleteSubmission(submissionID : String) : Promise<void>;
 }
 
 export class SubmissionDAO implements ISubmissionDAO {
@@ -22,17 +21,18 @@ export class SubmissionDAO implements ISubmissionDAO {
         return sub.save().then((res) => { return; });
     }
     
-    readSubmissions(): ISubmission[] {
+    async readSubmissions(): Promise<ISubmission[]> {
         return undefined;
     }
 
-    readSubmission(submissionID: String): ISubmission {
+    async readSubmission(submissionID: String): Promise<ISubmission> {
         return undefined;
     }
-    updateSubmission(submissionID: String, submission: ISubmission) : ISubmission {
+
+    async updateSubmission(submissionID: String, submission: ISubmission) : Promise<ISubmission> {
         return undefined;
     }
-    deleteSubmission(submissionID: String): ISubmission {
+    async deleteSubmission(submissionID: String): Promise<void> {
         return undefined;
     }
 }
