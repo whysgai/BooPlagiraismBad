@@ -43,7 +43,7 @@ describe("SubmissionDAO.ts",() => {
         it("Should throw an appropriate error if inputs are invalid (ID exists)",() => {
             
             return expect(testSubmissionDAO.createSubmission("testduplicateid")).to.eventually.be.fulfilled.then((res) => {
-                expect(testSubmissionDAO.createSubmission("testduplicateid")).to.eventually.be.rejected;
+                expect(testSubmissionDAO.createSubmission("testduplicateid")).to.eventually.be.rejectedWith("Error: A submission with the given ID exists in the database already.");
             });
         });
     });
@@ -81,6 +81,8 @@ describe("SubmissionDAO.ts",() => {
             });
         });
     
-        it("Should throw an appropriate error if {id} is invalid");
+        it("Should throw an appropriate error if {id} is invalid",() => {
+            return expect(testSubmissionDAO.deleteSubmission("some_nonexistent_id")).to.eventually.be.rejectedWith("A submission with the given ID does not exist in the database");
+        });
     }); 
 });
