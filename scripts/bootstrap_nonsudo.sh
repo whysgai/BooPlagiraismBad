@@ -9,7 +9,7 @@ mkdir /vagrant/bpb-back/dist/ #Deleted by su
 npm install
 
 sudo chown -R vagrant:vagrant /home/vagrant/.pm2/
-pm2 start /vagrant/scripts/processes.json
+pm2 start /vagrant/scripts/processes.json --env vagrant
 pm2 save
 echo ""
 echo "BPB Front-End should be available at: 192.168.33.10:3000"

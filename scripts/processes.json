@@ -5,6 +5,9 @@
             "script": "npm",
             "args" : "start --prefix \"/vagrant/bpb-back\"",
             "watch": ["./bpb-back/src","./bpb-back/test"],
+            "env":{
+                "TEST":"global value"
+            },
             "env_vagrant":{
                 "NODE_ENV":"vagrant",
                 "APIPORT":"8080",
@@ -17,8 +20,12 @@
             "script": "npm",
             "args" : "run start --prefix \"/vagrant/bpb-front\"",
             "watch": ["./bpb-front/src","./bpb-front/test"],
+            "env":{
+                "TEST":"global value"
+            },
             "env_vagrant":{
-                "NODE_ENV":"vagrant"
+                "NODE_ENV":"vagrant",
+                "REACT_APP_PLACEHOLDER":"test"
             } 
         }
     ]
