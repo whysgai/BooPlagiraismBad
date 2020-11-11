@@ -9,8 +9,7 @@ sudo apt-get install -y mongodb
 sudo npm install -g npm@latest
 sudo npm install -g pm2@latest
 sudo npm install -g typescript@latest # Required to run tsc to compile back-end
-rm -rf /vagrant/bpb-back/dist/* # Remove any previously compiled back-end files in dist
-sudo chown vagrant:vagrant /home/vagrant/.pm2/rpc.sock /home/vagrant/.pm2/pub.sock
+sudo rm -rf /vagrant/bpb-back/dist # Remove any previously compiled back-end files in dist
 
 #Set up database service
 sudo mv /vagrant/scripts/mongodb.service /lib/systemd/mongodb.service

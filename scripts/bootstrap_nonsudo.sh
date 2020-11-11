@@ -1,11 +1,13 @@
 #!/bin/bash
 
-
+sudo chown vagrant:vagrant /home/vagrant/.pm2/rpc.sock /home/vagrant/.pm2/pub.sock
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u vagrant --hp /home/vagrant
 pm2 startup systemd
 cd /vagrant/bpb-front/
 npm install
 cd /vagrant/bpb-back/
+mkdir /vagrant/bpb-back/dist/ #Deleted by su
+
 npm install
 pm2 start /vagrant/scripts/processes.json
 pm2 save
