@@ -2,23 +2,21 @@ import {ISubmission, Submission} from './Submission'
 import submissionModel from './SubmissionModel';
 
 export interface ISubmissionDAO {
-    createSubmission(submissionId : String) : Promise<void>; //TODO: Change response type to non-void  (?)
-    readSubmissions() : Promise<ISubmission[]>;
-    readSubmission(submissionID : String) : Promise<ISubmission>;
-    updateSubmission(submissionID : String, submission : ISubmission) : Promise<ISubmission>;
-    deleteSubmission(submissionID : String) : Promise<void>;
+    createSubmission(submission : ISubmission) : Promise<void>; 
+    readSubmissions(submissionIds : String[]) : Promise<ISubmission[]>;
+    readSubmission(submissionId : String) : Promise<ISubmission>;
+    updateSubmission(submission : ISubmission) : Promise<void>;
+    deleteSubmission(submission : ISubmission) : Promise<void>;
 }
 
 export class SubmissionDAO implements ISubmissionDAO {
     
-    constructor(){
-    }
+    constructor(){}
    
-    //TODO: Placeholder for createSubmission (testing SubmissionDAO)
-    //TODO: handle "id exists" error
-    async createSubmission(submissionID : String): Promise<void> {
-        var sub = new submissionModel({_id : submissionID});
-        return sub.save().then((res) => { return; });
+    async createSubmission(submission : ISubmission): Promise<void> {
+        //var sub = new submissionModel({_id : submission.getId()});
+        //return sub.save().then((res) => { return; });
+        return undefined;
     }
     
     async readSubmissions(): Promise<ISubmission[]> {
@@ -29,10 +27,10 @@ export class SubmissionDAO implements ISubmissionDAO {
         return undefined;
     }
 
-    async updateSubmission(submissionID: String, submission: ISubmission) : Promise<ISubmission> {
+    async updateSubmission(submission: ISubmission) : Promise<void> {
         return undefined;
     }
-    async deleteSubmission(submissionID: String): Promise<void> {
+    async deleteSubmission(submission: ISubmission): Promise<void> {
         return undefined;
     }
 }
