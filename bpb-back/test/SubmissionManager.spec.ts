@@ -16,7 +16,7 @@ describe("SubmissionManager.ts",() => {
     });
 
     beforeEach(()=>{
-        testSubmissionDAO = new SubmissionDAO(null); //TODO: may need to replace null with actual connection (?)
+        testSubmissionDAO = new SubmissionDAO(); //TODO: may need to replace null with actual connection (?)
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
     });
 
@@ -24,7 +24,7 @@ describe("SubmissionManager.ts",() => {
         
         it.skip("Should return submissions if there are some",()=> {
 
-                const mockSubmission = new Submission();
+                const mockSubmission = new Submission("test","test");
                 chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [mockSubmission]});
 
                 expect(testSubmissionManager.getSubmissions()).to.be.an('array').that.is.not.empty;
