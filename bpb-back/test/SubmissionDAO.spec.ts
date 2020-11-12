@@ -5,8 +5,6 @@ import chaiSpies = require("chai-spies");
 import { AppConfig } from "../src/AppConfig";
 
 var mongoose = require('mongoose');
-import { Connection } from "mongoose";
-var MockMongoose = require('mock-mongoose').MockMongoose;
 
 import { ISubmissionDAO, SubmissionDAO } from "../src/SubmissionDAO";
 import submissionModel from "../src/SubmissionModel";
@@ -14,51 +12,55 @@ import submissionModel from "../src/SubmissionModel";
 describe("SubmissionDAO.ts",() => {
 
     var mockMongoose : any;
-    var connection : Connection;
     var testSubmissionDAO : ISubmissionDAO;
 
-    before(() => {
-            chai.use(chaiSpies);
-
-            //TODO: Unclear whether this works properly.
-            mockMongoose = new MockMongoose(mongoose);
-            mockMongoose.prepareStorage().then(()=> {
-                mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
-                   connection = mongoose.connection;
-                });
-            });
+    before((done) => {
+        chai.use(chaiSpies);
+        mongoose.connect(AppConfig.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+            done();
+        });
     });
 
-    beforeEach(()=>{
-        testSubmissionDAO = new SubmissionDAO(mockMongoose.connection);
+    beforeEach((done)=>{
+        //TODO: Replace this with database mock (or something more elegant)
+        mongoose.connection.collections.submissions.drop(() => {
+            testSubmissionDAO = new SubmissionDAO();
+            done();
+        })
     });
 
     describe("createSubmission()",() => {
 
-        //TODO: This doesn't actually work right now. Or does it?
-        it.skip("Should create an submission database object if inputs are valid",()=>{
-            testSubmissionDAO.createSubmission(); 
-            submissionModel.find().then((res) => {
-                expect(res).to.be.not.null;
+        it("Should create an submission database object if inputs are valid (ID doesn't exist)",()=> {
+            
+            var id = "testid";
+
+            return testSubmissionDAO.createSubmission(id).then((res) => {
+                
+                submissionModel.findOne({_id:id}).then((res) => {
+                    expect(res).to.not.be.undefined;
+                });
             });
         });
     
-        it("Should throw an appropriate error if inputs are invalid");
+        it("Should throw an appropriate error if inputs are invalid (ID exists)");
     });
 
     describe("readSubmission()",() => {
 
         it("Should read an submission database object if {id} is valid");
     
-        it("Should throw an appropriate error when trying to update a nonexistent database object");
+        it("Should return an empty collection if no submissions exist in the database");
     });
 
     describe("updateSubmission()",() => {
     
         it("Should update an submission database object if {id} is valid");
     
-        it("Should throw an appropriate error if {id} is invaliddeleteSubmission()");
-    
+        it("Should throw an appropriate error if {id} is invalid()");
+    });
+
+    describe("deleteSubmission()",() => {
         it("Should be able to delete an submission database object");
     
         it("Should throw an appropriate error if {id} is invalid");

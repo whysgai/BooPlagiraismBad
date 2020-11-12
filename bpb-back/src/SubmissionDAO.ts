@@ -1,8 +1,9 @@
-import {ISubmission} from './Submission'
+import {ISubmission, Submission} from './Submission'
 import {Connection} from 'mongoose'
+import submissionModel from './SubmissionModel';
 
 export interface ISubmissionDAO {
-    createSubmission() : ISubmission;
+    createSubmission(submissionId : String) : Promise<void>; //TODO: Change response type to non-void  (?)
     readSubmissions() : ISubmission[];
     readSubmission(submissionID : String) : ISubmission;
     updateSubmission(submissionID : String, submission : ISubmission) : ISubmission;
@@ -11,14 +12,14 @@ export interface ISubmissionDAO {
 
 export class SubmissionDAO implements ISubmissionDAO {
     
-    private dbConnection : Connection;
-
-    constructor(dbConnection : Connection){
-        this.dbConnection = dbConnection;
+    constructor(){
     }
-    
-    createSubmission(): ISubmission {
-        return undefined;
+   
+    //TODO: Placeholder for createSubmission (testing SubmissionDAO)
+    //TODO: handle "id exists" error
+    async createSubmission(submissionID : String): Promise<void> {
+        var sub = new submissionModel({_id : submissionID});
+        return sub.save().then((res) => { return; });
     }
     
     readSubmissions(): ISubmission[] {
