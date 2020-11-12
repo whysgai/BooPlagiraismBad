@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { SubmissionFactory } from "../src/SubmissionFactory";
 
-describe("Submission.ts",() => {
+describe.skip("Submission.ts",() => {
 
     var factory : SubmissionFactory;
     var id : String;

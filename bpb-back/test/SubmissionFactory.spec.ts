@@ -2,7 +2,7 @@ import {SubmissionFactory} from "../src/SubmissionFactory"
 import {Submission} from "../src/Submission"
 import { expect } from "chai";
 
-describe("SubmissionFactory.ts",() => {
+describe.skip("SubmissionFactory.ts",() => {
     
     describe("buildSubmission()",() => {
         it("Should return a valid Submission with the expected properties",() => {

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { AssignmentFactory } from "../src/AssignmentFactory";
 
-describe("AssignmentFactory.ts",() => {
+describe.skip("AssignmentFactory.ts",() => {
 
     describe("buildAssignment()",() => {
         it("Should return a valid Assignment with the expected properties",() => {

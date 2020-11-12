@@ -1,10 +1,8 @@
 import { expect } from "chai";
-import { isAssignment } from "tslint";
-import { isAsExpression } from "typescript";
 import {Assignment,IAssignment} from "../src/Assignment"
 import {IAssignmentFactory,AssignmentFactory} from "../src/AssignmentFactory"
 
-describe("Assignment.ts",() => {
+describe.skip("Assignment.ts",() => {
 
     var assignment : IAssignment;
     var assignmentName : String;

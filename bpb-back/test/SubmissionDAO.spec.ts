@@ -16,13 +16,14 @@ describe("SubmissionDAO.ts",() => {
 
     before((done) => {
         chai.use(chaiAsPromised);
-        mongoose.connect(AppConfig.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+
+        //TODO: Replace this (and beforeEach) with database mock (or something more elegant)
+        mongoose.connect("mongodb://127.0.0.1:27017/bpb", {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
             done();
         });
     });
 
     beforeEach((done)=>{
-        //TODO: Replace this with database mock (or something more elegant)
         mongoose.connection.collections.submissions.drop(() => {
             testSubmissionDAO = new SubmissionDAO();
             done();
