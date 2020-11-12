@@ -72,7 +72,7 @@ describe("SubmissionDAO.ts",() => {
 
     describe("readSubmissions()",() => {
 
-        it("should throw an appropriate error if at least one of the provided submission ids is invalid",() {
+        it("should throw an appropriate error if at least one of the provided submission ids is invalid",() => {
 
             var submission = new Submission("id1","1");
             return testSubmissionDAO.createSubmission(submission).then((res) => {
