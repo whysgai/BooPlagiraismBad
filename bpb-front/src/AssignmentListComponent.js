@@ -17,3 +17,5 @@ function AssignmentListComponent({assignments}) {
     </div>
   );
 }
+
+export default AssignmentListComponent
