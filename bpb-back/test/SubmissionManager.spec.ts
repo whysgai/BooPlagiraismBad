@@ -1,10 +1,9 @@
-
 import { expect } from "chai";
 import chai = require("chai");
 import chaiSpies = require("chai-spies");
-import { ISubmissionDAO, SubmissionDAO } from "../src/SubmissionDAO";
-import { ISubmissionManager, SubmissionManager } from "../src/SubmissionManager";
-import { Submission } from "../src/Submission";
+import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
+import { ISubmissionManager, SubmissionManager } from "../src/model/SubmissionManager";
+import { Submission } from "../src/model/Submission";
 
 describe("SubmissionManager.ts",() => {
 
@@ -27,11 +26,11 @@ describe("SubmissionManager.ts",() => {
                 const mockSubmission = new Submission("test","test");
                 chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [mockSubmission]});
 
-                expect(testSubmissionManager.getSubmissions()).to.be.an('array').that.is.not.empty;
+                expect(testSubmissionManager.getSubmissions("test")).to.be.an('array').that.is.not.empty;
         });
 
         it.skip("Should return no submissions if there are none",() =>{
-            expect(testSubmissionManager.getSubmissions()).to.be.an('array').that.is.empty;
+            expect(testSubmissionManager.getSubmissions("test")).to.be.an('array').that.is.empty;
         });        
 
     });
@@ -66,11 +65,12 @@ describe("SubmissionManager.ts",() => {
 
     describe("deleteSubmission({id})",() =>{
 
+        //TODO: This is not a very good test.
         it.skip("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
            
             var deleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
-            testSubmissionManager.deleteSubmission();
+            testSubmissionManager.deleteSubmission(new Submission("test","test"));
             
             expect(deleteSubmission).to.have.been.called();
         });

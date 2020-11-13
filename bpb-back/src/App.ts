@@ -2,8 +2,8 @@ import express from 'express';
 import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
-import AssignmentRouter from './AssignmentRouter'
-import SubmissionRouter from './SubmissionRouter'
+import AssignmentRouter from './router/AssignmentRouter'
+import SubmissionRouter from './router/SubmissionRouter'
 
 /**
  * Represents the app itself.

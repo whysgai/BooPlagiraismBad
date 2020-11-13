@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
 import bodyParser from "body-parser";
-import AssignmentRouter from "../src/AssignmentRouter"
+import AssignmentRouter from "../src/router/AssignmentRouter"
 import express from "express";
-import IRouter from "../src/IRouter";
+import IRouter from "../src/router/IRouter";
 
 import chai = require("chai");
 import chaiHttp = require("chai-http");
