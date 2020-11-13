@@ -1,5 +1,11 @@
 export interface IAnalysisResultEntry {
     asJSON() : JSON
+    getHashValue(): String
+    getFilePath(): String
+    getContextType(): String
+    getLineNumberStart(): number
+    getLineNumberEnd(): number
+    getText(): String
 }
 
 /**
@@ -11,8 +17,27 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     constructor(submissionId : String, filePath : String, contextType : String, lineNumberStart : number, lineNumberEnd : number, hashValue : String, text : String) {
         //TODO
     }
+    getLineNumberStart(): number {
+        throw new Error("Method not implemented.");
+    }
+    getLineNumberEnd(): number {
+        throw new Error("Method not implemented.");
+    }
+    getText(): String {
+        throw new Error("Method not implemented.");
+    }
+    getFilePath(): String {
+        throw new Error("Method not implemented.");
+    }
+    getContextType(): String {
+        throw new Error("Method not implemented.");
+    }
 
     asJSON(): JSON {
+        throw new Error("Method not implemented.");
+    }
+
+    getHashValue(): String {
         throw new Error("Method not implemented.");
     }
 }
