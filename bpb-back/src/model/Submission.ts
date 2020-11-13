@@ -32,8 +32,9 @@ export interface ISubmission {
      }
 
      addFile(content : String, filePath : String) : void {
-        //Use library to parse content into a ParseTree
-        //Instantiates an AnalysisResultCollectorVisitor
+        //Use library to parse provided content into a ParseTree
+            //NOTE: Content is already loaded. filePath is included so that adding metadata to the AnalysisResultEntries is easier
+        //Instantiates an AnalysisResultCollectorVisitor (passing filePath into constructor)
         //Run AnalysisResultCollectorVisitor on the submission file's ParseTree
         //Gets list of entries from AnalysisResultCollectorVisitor.getEntries
         //Add AnalysisResultEntries to the submission
