@@ -23,6 +23,7 @@ export class SubmissionManager implements ISubmissionManager {
     }
 
     getSubmissions(): ISubmission[] {
+        //Load a submission and all of its NodeHashes from the DB
         throw new Error('Method not implemented.');
     }
     createSubmission(): ISubmission {
@@ -32,12 +33,16 @@ export class SubmissionManager implements ISubmissionManager {
         throw new Error('Method not implemented.');
     }
     addFile(jsonFile: JSON): void {
+        //Process a file into AST -> AnalysisResultEntries 
+        //Add file to the specified submission (included in jsonFile from request body)
+        //Save the submission with the new entries into the database
         throw new Error('Method not implemented.');
     }
     deleteSubmission(): void {
         throw new Error('Method not implemented.');
     }
     compareSubmission(aUID: String, bUID: String): AnalysisResult {
+        //TODO: Actually actively perform comparison of all hashes saved for each submission
         throw new Error('Method not implemented.');
     }
 

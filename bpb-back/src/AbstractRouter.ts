@@ -1,5 +1,9 @@
 import express, { Router } from "express"
 
+/**
+ * Represents an abstraction of a Router.
+ * Used to consolidate use of Express (all routers will register via express)
+ */
 abstract class AbstractRouter {
     
     protected router : Router;

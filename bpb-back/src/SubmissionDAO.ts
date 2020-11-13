@@ -20,14 +20,18 @@ export class SubmissionDAO implements ISubmissionDAO {
     }
     
     async readSubmissions(): Promise<ISubmission[]> {
+        //Return a list of all submissionIDs? This probably needs some kind of filter (i.e. assignments?)
+        //TODO: Add parameter for assignmentId to use as filter
         return undefined;
     }
 
     async readSubmission(submissionID: String): Promise<ISubmission> {
+        //Return submission and all of its AnalysisResultEntries
         return undefined;
     }
 
     async updateSubmission(submission: ISubmission) : Promise<void> {
+        //Add any new not-persisted AnalysisResultEntries into the database
         return undefined;
     }
     async deleteSubmission(submission: ISubmission): Promise<void> {

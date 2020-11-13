@@ -5,6 +5,10 @@ import { AppConfig } from './AppConfig';
 import AssignmentRouter from './AssignmentRouter'
 import SubmissionRouter from './SubmissionRouter'
 
+/**
+ * Represents the app itself.
+ * Insantiated and executed via _main.ts
+ */
 class App {
     
     constructor() {}

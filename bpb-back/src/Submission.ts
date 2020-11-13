@@ -10,7 +10,7 @@ export interface ISubmission {
 
     //private id : String;
     //private name : String;
-   // private submissionASTs : SubmissionAST[];
+   // private analysisResultEntries : AnalysisResultEntry[]
     constructor(id : String, name : String){
         //TODO
     }
@@ -22,6 +22,7 @@ export interface ISubmission {
          throw new Error("Method not implemented.");
      }
     compare(otherSubmission: ISubmission) : IAnalysisResult {
+        //TODO: Compare all AnalysisResultEntries for this submission with those from another submission
         throw new Error("Method not implemented.");
     }
 }
