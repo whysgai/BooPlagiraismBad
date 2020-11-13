@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 import { ISubmissionDAO, SubmissionDAO } from "../src/SubmissionDAO";
 import submissionModel from "../src/SubmissionModel";
 
-describe("SubmissionDAO.ts",() => {
+describe.skip("SubmissionDAO.ts",() => {
 
     var testSubmissionDAO : ISubmissionDAO;
 

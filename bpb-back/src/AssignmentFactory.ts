@@ -1,5 +1,6 @@
 import { IAssignment } from "./Assignment";
 
+
 export interface IAssignmentFactory {
     buildAssignment(id : String, name: String) : IAssignment
 }

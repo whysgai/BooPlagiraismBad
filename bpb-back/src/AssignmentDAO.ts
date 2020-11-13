@@ -1,6 +1,9 @@
 import { Connection } from "mongoose";
 import { IAssignment } from "./Assignment";
 
+/**
+ * Represents a Data Access Object for manipulating Assignment database objects.
+ */
 export interface IAssignmentDAO {
     createAssignment() : IAssignment
     readAssignment(assignmentID : String) : IAssignment
