@@ -1,3 +1,6 @@
+/**
+ * Provides access to environment configuration information.
+ */
 export class AppConfig {
    
     public static port() : string {

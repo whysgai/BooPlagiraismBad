@@ -1,15 +1,20 @@
+import { AnalysisResultEntry } from "./AnalysisResultEntry";
+
 export interface IAnalysisResult {
     asJSON() : JSON
-    addMatch(submission_A_file : String, submission_B_file : String, fromLineA: number, toLineA: number, fromLineB: number, toLineB: number, matchType : String, description : String) : void;
+    addMatch(analysisResultEntryA : AnalysisResultEntry, analysisResultEntryB : AnalysisResultEntry) : void
 }
 
+/**
+ * Represents a list of matches (i.e associations) between AnalysisResultEntries, representing matches between highlighted sections
+ */
 export class AnalysisResult implements IAnalysisResult {
     
-    constructor(submission_A_ID : String, submission_B_ID : String) {
+    constructor() {
         //TODO
     }
 
-    addMatch(submission_A_file : String, submission_B_file : String, fromLineA: number, toLineA: number, fromLineB: number, toLineB: number, matchType : String, description : String) {
+    addMatch(analysisResultEntryA : AnalysisResultEntry, analysisResultEntryB : AnalysisResultEntry) {
         //TODO
     }
 

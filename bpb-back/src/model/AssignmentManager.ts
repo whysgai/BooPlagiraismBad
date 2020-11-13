@@ -1,23 +1,26 @@
 import { IAssignment } from "./Assignment";
 
+/**
+ * Represents a controller for Assignment objects.
+ */
 export interface IAssignmentManager {
     getAssignments() : IAssignment[]
-    createAssignment() : IAssignment
-    updateAssignment(assignment : IAssignment) : IAssignment
-    deleteAssignment() : IAssignment
+    createAssignment(data : JSON) : IAssignment
+    updateAssignment(assignment : IAssignment, data : JSON) : void
+    deleteAssignment(assignment : IAssignment) : void
 }
 
 export class AssignmentManager implements IAssignmentManager {
     getAssignments(): IAssignment[] {
         throw new Error("Method not implemented.");
     }
-    createAssignment(): IAssignment {
+    createAssignment(data : JSON): IAssignment {
         throw new Error("Method not implemented.");
     }
-    updateAssignment(assignment: IAssignment) :IAssignment {
+    updateAssignment(assignment: IAssignment, data : JSON) : void {
         throw new Error("Method not implemented.");
     }
-    deleteAssignment() : IAssignment {
+    deleteAssignment(assignment : IAssignment) : void {
         throw new Error("Method not implemented.");
     }
 }

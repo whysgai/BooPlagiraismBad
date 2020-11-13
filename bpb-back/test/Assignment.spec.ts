@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import {Assignment,IAssignment} from "../src/Assignment"
-import {IAssignmentFactory,AssignmentFactory} from "../src/AssignmentFactory"
+import {Assignment,IAssignment} from "../src/model/Assignment"
+import {IAssignmentFactory,AssignmentFactory} from "../src/model/AssignmentFactory"
 
 describe.skip("Assignment.ts",() => {
 
@@ -9,8 +9,7 @@ describe.skip("Assignment.ts",() => {
     var assignmentId : String;
 
     before(() => {
-        var factory = new AssignmentFactory();
-        assignment = factory.buildAssignment(assignmentId,assignmentName);
+        assignment = AssignmentFactory.buildAssignment(assignmentId,assignmentName);
     });
 
     describe('getId()',() => {

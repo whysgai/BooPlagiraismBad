@@ -1,5 +1,8 @@
 import { IAssignmentManager } from "./AssignmentManager";
 
+/**
+ * Represents an Assignment to which Submissions may be made.
+ */
 export interface IAssignment {
     getID() : String
     getName() : String
