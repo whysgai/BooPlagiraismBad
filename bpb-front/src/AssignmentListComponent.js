@@ -5,13 +5,13 @@ import {Link} from 'react-router-dom'
 
 function AssignmentListComponent({assignments}) {
   return (
-    <div>
+    <div className='assignment-list'>
       <Link to="#" className="new-assignment-btn">new</Link>
       <ul>
         {
-          assignments.map((assignment,index) => {
+          assignments.map((assignment,index) => 
               <li><AssignmentListCard assignment={assignment}/></li>
-           })
+           )
         }
       </ul>
     </div>

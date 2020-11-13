@@ -17,7 +17,7 @@ import NavbarComponent from './NavbarComponent';
 ReactDOM.render(
   <BrowserRouter>
     <NavbarComponent />
-    <Route exact path="/" component={AssignmentListComponent}/>
+    <Route path="/"><AssignmentListComponent assignments={[]}/></Route>
     <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
     <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/>
     <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
