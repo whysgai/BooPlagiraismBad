@@ -20,6 +20,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
 
   //TODO: Replace these
+  //TODO: Update! Format is no longer accurate
   //Hardcoded endpoints for front-end development purposes
   getPlaceholderAnalysisResultFn = async function(rq : Express.Request,res : any){
     res.send({
@@ -48,6 +49,8 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
           res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
         } else {
           submissionFile.mv(AppConfig.submissionFileUploadDirectory() + submissionFile.name);
+
+          //TODO: call SubmissionManager.addFile here 
 
           res.send({
               "response": 'File uploaded successfully.',
