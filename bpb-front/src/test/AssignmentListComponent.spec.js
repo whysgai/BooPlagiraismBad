@@ -23,7 +23,8 @@ describe("AssignmentListComponent tests:", () => {
 
         act(() =>{
             render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[1,2,3]}/></StaticRouter>, container);  
-        }); 
+        });
+    })     
 
     it('Should display 3 assignments if 3 exist', () => {
         let container = document.createElement('div');
@@ -32,6 +33,7 @@ describe("AssignmentListComponent tests:", () => {
         act(() =>{
             render(<AssignmentListComponent assignments={assignments=[1,2,3]}/>, container);
         });
+    })   
 
     // it('Should display one assignments if one exists', () => {
     //     let container = document.createElement('div');
