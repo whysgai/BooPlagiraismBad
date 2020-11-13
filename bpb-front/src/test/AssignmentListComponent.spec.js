@@ -19,22 +19,15 @@ describe("AssignmentListComponent tests:", () => {
     })
 
 
-    it('Should display no assignments if none exist', () =>{       
-        act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);  
-        });
+    it('Should display no assignments if none exist', () =>{        
 
+        act(() =>{
+            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[1,2,3]}/></StaticRouter>, container);  
+        }); 
+
+        expect(container.getElementsByClassName('assignment-list').length).toBe(1);
         expect(container.getElementsByClassName('assignment-list-card').length).toBe(0);
-    })     
-
-    it('Should display 3 assignments if 3 exist', () => {
-        let container = document.createElement('div');
-        document.body.appendChild(container);
-
-        act(() =>{
-            render(<AssignmentListComponent assignments={assignments=[1,2,3]}/>, container);
-        });
-    })   
+    });
 
     // it('Should display one assignments if one exists', () => {
     //     let container = document.createElement('div');
