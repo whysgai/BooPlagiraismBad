@@ -8,7 +8,7 @@ export interface IAnalysisResultEntry {
  */
 export class AnalysisResultEntry implements IAnalysisResultEntry {
 
-    constructor(submissionId : String, contextType : String, lineNumberStart : number, lineNumberEnd : number, hashValue : String, text : String) {
+    constructor(submissionId : String, filePath : String, contextType : String, lineNumberStart : number, lineNumberEnd : number, hashValue : String, text : String) {
         //TODO
     }
 

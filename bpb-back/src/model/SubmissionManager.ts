@@ -39,9 +39,9 @@ export class SubmissionManager implements ISubmissionManager {
         throw new Error('Method not implemented.');
     }
     processSubmissionFile(submission : ISubmission, filePath : String): void {
-        //Process a file into AST -> AnalysisResultEntries 
-        //Add file to the specified submission
-        //Save the submission with the new entries into the database
+        //Get file content from disk
+        //Call submission.addfile on the submission
+        //Save the submission with the new entries into the database (including pointer to filePath as metadata)
         throw new Error('Method not implemented.');
     }
     deleteSubmission(submission : ISubmission): void {
@@ -50,6 +50,7 @@ export class SubmissionManager implements ISubmissionManager {
     }
     compareSubmission(submissionA : ISubmission, submissionB : ISubmission): AnalysisResult {
         //TODO: Actually actively perform comparison of all hashes saved for each submission
+        //Delegate comparison to one of the two submissions' compare methods and return the result
         //Later, could read from database to get comparisons that already occurred (i.e. create AnalysisResult some other way)
         throw new Error('Method not implemented.');
     }
