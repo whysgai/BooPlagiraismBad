@@ -1,9 +1,20 @@
-import { Connection } from "mongoose";
-
 export class AppConfig {
-    dbConnection : Connection;
-    public static appName : string = 'bpb-back';
-    public static port : number = 8080;
-    public static dbConnectionString : string = 'mongodb://127.0.0.1:27017/bpb';
-    public static submissionFileUploadDirectory : string = "/vagrant/bpb-back/uploads/";
+   
+    public static port() : string {
+        return process.env.APIPORT;
+    }
+    
+    public static submissionFileUploadDirectory() : string {
+        return process.env.UPLOADDIRECTORY;
+    }
+
+    public static dbConnectionString() : string {
+        return process.env.DBCONNECTIONSTRING;
+    }
+
+    public static printEnv() : void {
+        console.log("PORT: " + this.port());
+        console.log("UPLOAD DIR: " + this.submissionFileUploadDirectory());
+        console.log("DB Connection String: " + this.dbConnectionString());
+    }
 }

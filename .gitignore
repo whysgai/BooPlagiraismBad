@@ -2,3 +2,4 @@
 .vagrant
 */dist/*
 
+bpb-front/src/test/__snapshots__
