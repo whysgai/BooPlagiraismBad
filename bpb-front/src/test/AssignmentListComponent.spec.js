@@ -25,18 +25,13 @@ describe("AssignmentListComponent tests:", () => {
             render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[1,2,3]}/></StaticRouter>, container);  
         }); 
 
-        expect(container.getElementsByClassName('assignment-list').length).toBe(1);
-        expect(container.getElementsByClassName('assignment-list-card').length).toBe(0);
-    });
+    it('Should display 3 assignments if 3 exist', () => {
+        let container = document.createElement('div');
+        document.body.appendChild(container);
 
-    it('should render AssignmentListComponent', () => {
-        const component = renderer.create(
-            <AssignmentListComponent assignments={[1,2,3]}>
-            </AssignmentListComponent>
-        )
-        let tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
+        act(() =>{
+            render(<AssignmentListComponent assignments={assignments=[1,2,3]}/>, container);
+        });
 
     // it('Should display one assignments if one exists', () => {
     //     let container = document.createElement('div');
