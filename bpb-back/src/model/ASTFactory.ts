@@ -6,5 +6,4 @@ export class ASTFactory implements IASTFactory {
     buildAST(jsonFile: JSON) {
         throw new Error("Method not implemented.");
     }
-
 }

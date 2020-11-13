@@ -1,4 +1,4 @@
-import { IAnalysisResult } from "./AnalysisResult";
+import { IAnalysisResult } from "../AnalysisResult";
 
 export interface ISubmission {
     getId() : String;

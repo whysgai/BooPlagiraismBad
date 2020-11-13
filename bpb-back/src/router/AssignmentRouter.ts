@@ -1,6 +1,6 @@
 import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
-import assignmentModel from './AssignmentModel';
+import assignmentModel from '../model/AssignmentModel';
 import { Router } from 'express';
 
 class AssignmentRouter extends AbstractRouter implements IRouter {

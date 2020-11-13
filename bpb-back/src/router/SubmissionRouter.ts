@@ -1,6 +1,6 @@
 import IRouter from './IRouter'
 import AbstractRouter from './AbstractRouter'
-import { AppConfig } from './AppConfig';
+import { AppConfig } from '../AppConfig';
 
 class SubmissionRouter extends AbstractRouter implements IRouter {
   

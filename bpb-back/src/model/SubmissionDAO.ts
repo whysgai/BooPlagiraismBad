@@ -1,5 +1,5 @@
 import {ISubmission, Submission} from './Submission'
-import submissionModel from './SubmissionModel';
+//import submissionModel from './SubmissionModel';
 
 export interface ISubmissionDAO {
     createSubmission(submission : ISubmission) : Promise<void>; 
@@ -8,18 +8,24 @@ export interface ISubmissionDAO {
     updateSubmission(submission : ISubmission) : Promise<void>;
     deleteSubmission(submission : ISubmission) : Promise<void>;
 }
-
+/**
+ * Singleton Data Access Object for manipulating Assignment database objects.
+ */
 export class SubmissionDAO implements ISubmissionDAO {
     
-    constructor(){}
-   
+    constructor(){
+        //TODO: Singletonness
+    }
+    
     async createSubmission(submission : ISubmission): Promise<void> {
+        //Create the submission in DB
         //var sub = new submissionModel({_id : submission.getId()});
         //return sub.save().then((res) => { return; });
         return undefined;
     }
     
     async readSubmissions(): Promise<ISubmission[]> {
+        //Return the specified submissions from db
         //Return a list of all submissionIDs? This probably needs some kind of filter (i.e. assignments?)
         //TODO: Add parameter for assignmentId to use as filter
         return undefined;
@@ -35,6 +41,7 @@ export class SubmissionDAO implements ISubmissionDAO {
         return undefined;
     }
     async deleteSubmission(submission: ISubmission): Promise<void> {
+        //Delete the specified submission from the db
         return undefined;
     }
 }
