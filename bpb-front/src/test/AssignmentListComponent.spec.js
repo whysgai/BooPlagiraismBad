@@ -5,6 +5,7 @@ import AssignmentListComponent from "../AssignmentListComponent";
 import BrowserRouter from "react-router-dom";
 import Route from "react-router-dom";
 import { StaticRouter } from 'react-router'
+import AssignmentListCard from '../AssignmentListCard';
 
 
 describe("AssignmentListComponent tests:", () => {
@@ -26,6 +27,15 @@ describe("AssignmentListComponent tests:", () => {
 
         expect(container.getElementsByClassName('assignment-list').length).toBe(1);
         expect(container.getElementsByClassName('assignment-list-card').length).toBe(0);
+    });
+
+    it('should render AssignmentListComponent', () => {
+        const component = renderer.create(
+            <AssignmentListComponent assignments={[1,2,3]}>
+            </AssignmentListComponent>
+        )
+        let tree = component.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
     // it('Should display one assignments if one exists', () => {
