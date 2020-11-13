@@ -1,26 +1,18 @@
 import { expect } from "chai";
 import { AnalysisResult } from "../src/AnalysisResult";
+import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
 
 describe.skip("AnalysisResult.ts",() => {
-    describe("asJSON",() => {
+    describe("asJSON / addMatch",() => {
         it("Should return a valid JSON object with the expected properties",() => {
-
-            var expected = '[{"fromSubmission":"id1","toSubmission":"id2","fromFile":"testa","toFile":"testb","fromStart":1,"fromEnd":2,"toStart":3,"toEnd":6,"type":"BasicMatch","description":"Test description"}]'
+            var expected = '[[{"sub_id":"subid1","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","context":"method","start":5,"end":6,"hash":"423qq1","text":"void similar() { }"}]]'
             var expectedJSON = JSON.parse(expected);
-            var analysisResult = new AnalysisResult("id1","id2");
-            analysisResult.addMatch("testa","testb",1,2,3,6,"BasicMatch","Test Description");
+            var analysisResult = new AnalysisResult();
+            analysisResult.addMatch(
+                new AnalysisResultEntry("subid1","method",1,2,"245rr1","void test() { }"),
+                new AnalysisResultEntry("subid2","method",5,6,"423qq1","void similar() { }")
+            );
             expect(analysisResult.asJSON).to.equal(expectedJSON);
         });
     })
-
-    describe("addMatch",() => {
-        it("should correctly add match entries (that are then returned correctly)",() =>{
-            var expected = '[{"fromSubmission":"ida","toSubmission":"idb","fromFile":"ta","toFile":"tb","fromStart":10,"fromEnd":2,"toStart":3,"toEnd":10,"type":"BasicMatch","description":"Test description 1"},{"fromSubmission":"ida","toSubmission":"idb","fromFile":"testa","toFile":"testb","fromStart":1,"fromEnd":2,"toStart":3,"toEnd":6,"type":"BasicMatch","description":"Test description 2"}]'
-            var expectedJSON = JSON.parse(expected);
-            var analysisResult = new AnalysisResult("ida","idb");
-            analysisResult.addMatch("ta","bb",10,2,3,10,"BasicMatch","Test Description 1");
-            analysisResult.addMatch("testa","testb",1,2,3,6,"BasicMatch","Test Description 2");
-            expect(analysisResult.asJSON).to.equal(expectedJSON);
-        });
-    });
 })
