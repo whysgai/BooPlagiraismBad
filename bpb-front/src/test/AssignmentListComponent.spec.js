@@ -3,10 +3,6 @@ import {render, unmountComponentAtNode} from 'react-dom';
 import { act } from "react-dom/test-utils";
 import AssignmentListComponent from "../AssignmentListComponent";
 
-it('something or other callback', () => {
-    expect(true).toBe(true);
-});
-
 it('Should display no assignments if none exist', () =>{
     let container = document.createElement('div');
     document.body.appendChild(container);
@@ -23,18 +19,18 @@ it('Should display one assignments if one exists', () => {
     document.body.appendChild(container);
 
     act(() =>{
-        render(<AssignmentListComponent/>, container);
+        render(<AssignmentListComponent assignments={assignments=[1]}/>, container);
     });
 
     expect(container.getElementsByClassName('assignment-card').length).toBe(1);
 });
 
-it('Should display 3 assignments if 3 exists', () => {
+it('Should display 3 assignments if 3 exist', () => {
     let container = document.createElement('div');
     document.body.appendChild(container);
 
     act(() =>{
-        render(<AssignmentListComponent/>, container);
+        render(<AssignmentListComponent assignments={assignments=[1,2,3]}/>, container);
     });
 
     expect(container.getElementsByClassName('assignment-card').length).toBe(3);
