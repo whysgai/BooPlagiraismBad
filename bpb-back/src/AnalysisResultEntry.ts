@@ -14,7 +14,14 @@ export interface IAnalysisResultEntry {
  */
 export class AnalysisResultEntry implements IAnalysisResultEntry {
 
-    constructor(submissionId : String, filePath : String, contextType : String, lineNumberStart : number, lineNumberEnd : number, hashValue : String, text : String) {
+    constructor(private submissionId : String, 
+        private filePath : String, 
+        private contextType : String, 
+        private lineNumberStart : number, 
+        private privatelineNumberEnd : number,
+        private hashValue : String, 
+        private text : String) {
+            
         //TODO
     }
     getLineNumberStart(): number {
