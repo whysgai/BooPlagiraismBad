@@ -2,15 +2,18 @@ import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
 import { Router } from 'express';
 import { AssignmentFactory } from '../model/AssignmentFactory';
-import { Assignment } from '../model/Assignment'
+import { Assignment, IAssignment } from '../model/Assignment'
+import { AssignmentManager, IAssignmentManager } from '../model/AssignmentManager';
 
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
   protected router : Router;
+  assignmentManager : IAssignmentManager;
 
-  constructor(app : any, route : string){
+  constructor(app : any, route : string, assignmentManager : IAssignmentManager){
     super(app,route);
     this.setupRoutes();
+    this.assignmentManager = assignmentManager;
   }
 
   setupRoutes() {
@@ -23,8 +26,13 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //GET /assignments: Get all assignments
   getFn = async function(req : Express.Request,res : any){
-    var assignments = await Assignment.getStaticModel().find();
-    res.send(assignments);
+    // var assignments = await Assignment.getStaticModel().find();
+    this.assignmentManager.getAssignments()
+      .then((assignments: IAssignment[]) => {
+        res.send(assignments.map((assignment) => {
+          assignment.asJSON();
+        }))
+      });
   }
 
   //POST /assignments: Create a new assignment
