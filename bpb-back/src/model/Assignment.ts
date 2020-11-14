@@ -18,7 +18,7 @@ export interface IAssignment {
     getSubmissionIDs() : String[]
     addSubmission(submissionID : String) : void
     removeSubmission(submissionID : String) : void
-    getNewModelInstance() : Document;
+    getModelInstance() : Document;
 }
     
 export class Assignment implements IAssignment {
@@ -58,7 +58,7 @@ export class Assignment implements IAssignment {
             this.submissionIds = this.submissionIds.splice(foundValueIndex,1);
         }
     }
-    getNewModelInstance() : Document {
+    getModelInstance() : Document {
         return new Assignment.assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
     }
     static getStaticModel() : mongoose.Model<IAssignmentModel> {

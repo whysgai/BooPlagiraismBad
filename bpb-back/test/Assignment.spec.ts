@@ -68,7 +68,7 @@ describe("Assignment.ts",() => {
 
     describe("getModelInstance()",() => {
         it("should return a new model instance that matches the Assignment object",() => {
-            var model = assignment.getNewModelInstance();
+            var model = assignment.getModelInstance();
             expect(model.toJSON()).to.equal("test");
         });
     });
