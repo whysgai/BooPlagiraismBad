@@ -3,7 +3,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 /**
  * Represents an Assignment database model object
  */
-interface IAssignmentModel extends Document {
+export interface IAssignmentModel extends Document {
     _id : String
     name : String
     submissionIds : String[]
