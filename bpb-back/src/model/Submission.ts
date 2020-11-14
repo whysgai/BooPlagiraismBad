@@ -2,7 +2,7 @@ import { IAnalysisResult } from "../AnalysisResult";
 import { AnalysisResultEntry } from "../AnalysisResultEntry";
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
-//TODO: bring in the new TLSH library found at https://github.com/trendmicro/tlsh/blob/master/js_ext/tlsh.js
+import { Tlsh } from '../lib/tlsh';
 
 /**
  * Represents a single submission 
