@@ -33,21 +33,21 @@ describe('AssignmentRouter.ts',()=> {
         });
     });
 
-    it("Should be able to interpret a request to POST /assignment to create an assignment");
+    it("Should be able to interpret a request to POST /assignments to create an assignment");
 
     //TODO: Spy on AssignmentManager(?)
-    it("Should be able to interpret a request to GET /assignment to get all assignments");
+    it("Should be able to interpret a request to GET /assignments to get all assignments");
 
-    it("Should be able to interpret a request to GET /assignment/{id} where {id} is valid");
+    it("Should be able to interpret a request to GET /assignments/{id} where {id} is valid");
 
-    it("Should be able to interpret a failed request to GET /assignment/{id} where {id} is invalid");
+    it("Should be able to interpret a failed request to GET /assignments/{id} where {id} is invalid");
 
-    it("Should be able to interpret a request to PUT /assignment/{id} where {id} is valid");
+    it("Should be able to interpret a request to PUT /assignments/{id} where {id} is valid");
 
-    it("Should be able to interpret a failed request to PUT /assignment/{id} where {id} is invalid");
+    it("Should be able to interpret a failed request to PUT /assignments/{id} where {id} is invalid");
 
-    it("Should be able to interpret a request to DELETE /assignment/{id} where {id} is valid");
+    it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid");
 
-    it("Should be able to interpret a failed request to DELETE /assignment/{id} where {id} is invalid");
+    it("Should be able to interpret a failed request to DELETE /assignments/{id} where {id} is invalid");
 
 });
