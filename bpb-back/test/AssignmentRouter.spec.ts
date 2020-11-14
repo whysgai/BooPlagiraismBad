@@ -11,6 +11,7 @@ import chaiSpies = require("chai-spies");
 import { IAssignmentManager, AssignmentManager } from "../src/model/AssignmentManager";
 import { AssignmentDAO, IAssignmentDAO } from "../src/model/AssignmentDAO";
 import { Assignment, IAssignment } from "../src/model/Assignment";
+import { doesIntersect } from "tslint";
 
 
 describe('AssignmentRouter.ts',()=> {
@@ -20,7 +21,7 @@ describe('AssignmentRouter.ts',()=> {
     var testAssignmentMgr : IAssignmentManager;
     var testAssignmentDAO: IAssignmentDAO;
 
-    before(function() {
+    before((done) => {
 
         let app = express();
         app.use(express.json());
@@ -28,10 +29,14 @@ describe('AssignmentRouter.ts',()=> {
         chai.use(chaiHttp);
         chai.use(chaiSpies);
 
-        testRouter = new AssignmentRouter(app,"/assignments"); 
-        testServer = app.listen(8081);
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
+
+        testRouter = new AssignmentRouter(app,"/assignments", testAssignmentMgr); 
+        testServer = app.listen(8081);
+
+        done();
+        
     });
     
     it('should say hi back when GET /helloworld is queried',() => {
@@ -41,7 +46,10 @@ describe('AssignmentRouter.ts',()=> {
         });
     });
 
-    it("Should be able to interpret a request to POST /assignments to create an assignment", () => {
+    it("Should be able to interpret a request to POST /assignments to create an assignment");
+
+    //TODO: Spy on AssignmentManager(?)
+    it("Should be able to interpret a request to GET /assignments to get all assignments", () => {
         
         const mockAssignment = new Assignment('007', 'BondJamesBond');
         chai.spy.on(testAssignmentMgr,'getAssignments',() =>{return Promise.resolve(mockAssignment)});
@@ -51,9 +59,6 @@ describe('AssignmentRouter.ts',()=> {
             expect(res.body).to.have.property("assignments","the world and the bpb-back assignment router say hi back!!");
         });
     });
-
-    //TODO: Spy on AssignmentManager(?)
-    it("Should be able to interpret a request to GET /assignments to get all assignments");
 
     it("Should be able to interpret a request to GET /assignments/{id} where {id} is valid");
 
