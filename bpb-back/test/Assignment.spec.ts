@@ -63,4 +63,12 @@ describe.skip("Assignment.ts",() => {
             expect(assignment.getSubmissionIDs().length).to.equal(2);
         });
     });
+
+    describe("getModelInstance()",() => {
+        it("should return a new model isntance that matches the Assignment object");
+    });
+
+    describe("getStaticModel()",() => {
+        it("should return a valid Assignment model instance");
+    });
 });
