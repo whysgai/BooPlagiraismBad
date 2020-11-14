@@ -32,13 +32,28 @@ describe('AssignmentRouter.ts',()=> {
     });
     
     it('should say hi back when GET /helloworld is queried',() => {
-        chai.request(testServer).get("/assignments/helloworld").then(res  => {
+        chai.request(testServer).get("/assignments/helloworld")
+        .then(res  => {
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("response","the world and the bpb-back assignment router say hi back!!");
         });
     });
 
-    it("Should be able to interpret a request to POST /assignments to create an assignment");
+    it("Should be able to interpret a request to POST /assignments to create an assignment",() => {
+       
+        const expectedId = "CHER"
+        const expectedName = "test assignment"
+        const mockAssignment = new Assignment(expectedId,expectedName);
+
+        chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.resolve(mockAssignment)})
+
+        chai.request(testServer).post("/assignments/").send({"name":"test assignment name"})
+        .then(res => {
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property("name").which.equals(expectedName);
+            expect(res.body).to.have.property("_id").which.equals(expectedId);
+        });
+    });
 
     it("Should be able to interpret a request to GET /assignments to get all assignments", () => {
         
@@ -55,7 +70,8 @@ describe('AssignmentRouter.ts',()=> {
 
         chai.spy.on(testAssignmentMgr,'getAssignments',() =>{return Promise.resolve([firstMockAssignment,secondMockAssignment])});
 
-        chai.request(testServer).get("/assignments").then(res  => {
+        chai.request(testServer).get("/assignments")
+        .then(res  => {
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("assignments").that.deep.equals(expectedAssignments);
         });
