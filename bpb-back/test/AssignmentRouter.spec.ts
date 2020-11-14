@@ -1,18 +1,14 @@
 import { expect } from "chai";
-
 import bodyParser from "body-parser";
 import AssignmentRouter from "../src/router/AssignmentRouter"
 import express from "express";
 import IRouter from "../src/router/IRouter";
-
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
 import { IAssignmentManager, AssignmentManager } from "../src/model/AssignmentManager";
 import { AssignmentDAO, IAssignmentDAO } from "../src/model/AssignmentDAO";
-import { Assignment, IAssignment } from "../src/model/Assignment";
-import { AssignmentFactory } from '../src/model/AssignmentFactory';
-
+import { Assignment } from "../src/model/Assignment";
 
 describe('AssignmentRouter.ts',()=> {
     
@@ -21,7 +17,7 @@ describe('AssignmentRouter.ts',()=> {
     var testAssignmentMgr : IAssignmentManager;
     var testAssignmentDAO: IAssignmentDAO;
 
-    before((done) => {
+    before(() => {
 
         let app = express();
         app.use(express.json());
@@ -29,12 +25,10 @@ describe('AssignmentRouter.ts',()=> {
         chai.use(chaiHttp);
         chai.use(chaiSpies);
 
-         testAssignmentDAO = new AssignmentDAO();
-         testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
-         testRouter = new AssignmentRouter(app,"/assignments",testAssignmentMgr); 
-         testServer = app.listen(8081);
-                done();      
-        
+        testAssignmentDAO = new AssignmentDAO();
+        testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
+        testRouter = new AssignmentRouter(app,"/assignments",testAssignmentMgr); 
+        testServer = app.listen(8081);
     });
     
     it('should say hi back when GET /helloworld is queried',() => {
@@ -50,8 +44,10 @@ describe('AssignmentRouter.ts',()=> {
         
         const firstMockAssignment = new Assignment('007', 'BondJamesBond');
         const secondMockAssignment = new Assignment('008', 'SonOfJamesBond');
+
         secondMockAssignment.addSubmission("secret_mission");
         secondMockAssignment.addSubmission("where_eagles_dare");
+
         const expectedAssignments = [
                                         {"_id":"007","name":"BondJamesBond","submissionIds":[]},
                                         {"_id":"008","name":"SonOfJamesBond","submissionIds":["secret_mission","where_eagles_dare"]}
@@ -61,7 +57,6 @@ describe('AssignmentRouter.ts',()=> {
 
         chai.request(testServer).get("/assignments").then(res  => {
             expect(res).to.have.status(200);
-            console.log(res.body.assignments[1]);
             expect(res.body).to.have.property("assignments").that.deep.equals(expectedAssignments);
         });
     });
