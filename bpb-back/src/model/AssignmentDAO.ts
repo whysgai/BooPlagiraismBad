@@ -1,4 +1,5 @@
 import {IAssignment, Assignment} from './Assignment'
+import { AssignmentFactory } from './AssignmentFactory';
 //import AssignmentModel from './AssignmentModel';
 
 export interface IAssignmentDAO {
@@ -19,8 +20,8 @@ export class AssignmentDAO implements IAssignmentDAO {
     
     async createAssignment(Assignment : IAssignment): Promise<void> {
         //Create the Assignment in DB
-        //var sub = new AssignmentModel({_id : Assignment.getId()});
-        //return sub.save().then((res) => { return; });
+        //var assignment = AssignmentFactory.buildAssignment("test","test");
+        //return assignment.getNewModelInstance().save().then((res) => {return;})
         return undefined;
     }
     
