@@ -8,12 +8,12 @@ import { AssignmentManager, IAssignmentManager } from '../model/AssignmentManage
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
   protected router : Router;
-  assignmentManager : IAssignmentManager;
+  private assignmentManager : IAssignmentManager;
 
-  constructor(app : any, route : string, assignmentManager : IAssignmentManager){
+  constructor(app : any, route : string, assignMgr : IAssignmentManager){
     super(app,route);
     this.setupRoutes();
-    this.assignmentManager = assignmentManager;
+    this.assignmentManager = assignMgr;
   }
 
   setupRoutes() {
@@ -27,7 +27,8 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   //GET /assignments: Get all assignments
   getFn = async function(req : Express.Request,res : any){
     // var assignments = await Assignment.getStaticModel().find();
-    this.assignmentManager.getAssignments()
+    console.log("Mgr defined? " + assignmentManager);
+    assignmentManager.getAssignments()
       .then((assignments: IAssignment[]) => {
         res.send(assignments.map((assignment) => {
           assignment.asJSON();
