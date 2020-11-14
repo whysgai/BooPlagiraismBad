@@ -25,7 +25,8 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //GET /assignments: Get all assignments
   getFn = async(req : express.Request,res : any) => {
-      this.assignmentManager.getAssignments()
+      
+    this.assignmentManager.getAssignments()
         .then((assignments: IAssignment[]) => {
           var assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
           var responseBody = { assignments:assignmentEntries }
