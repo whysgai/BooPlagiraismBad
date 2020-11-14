@@ -17,10 +17,11 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   setupRoutes() {
     this.router.put("/",this.putFn);
-    this.router.get("/",this.getFn)
+    this.router.get("/",this.getFn);
+    this.router.get("/:id",this.getSingleFn);
+    this.router.get("/helloworld",this.getHelloWorldFn);
     this.router.post("/",this.postFn);
     this.router.delete("/",this.deleteFn)
-    this.router.get("/helloworld",this.getHelloWorldFn);
   }
 
   //GET /assignments: Get all assignments
@@ -33,6 +34,21 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
           res.send(responseBody);
         });
   };
+  
+  //GET /assignments/{id} : Get assignment with {id}
+  getSingleFn = async(req : express.Request,res : express.Response) => {
+    
+    var assignmentId = req.params.id;
+    
+    if(assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"No assignment id was provided"});
+    } else {
+      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
+          res.send(assignment.asJSON());
+      });
+    }
+  }
 
   //POST /assignments: Create a new assignment
   postFn = async(req : express.Request,res : express.Response) => {
@@ -61,13 +77,6 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     //TODO: Implement
     res.status(400);
     res.send({"response":"Deleting assignments is not yet supported"});
-  }
-
-  //GET /assignments/{id} : Get assignment with {id}
-  getSingleFn = async(req : express.Request,res : express.Response) => {
-    //TODO: Implement
-    res.status(400);
-    res.send({"response":"Accessing single assignments is not yet supported"});
   }
 
   //Hello World function (for testing)

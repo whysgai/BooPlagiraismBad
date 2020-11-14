@@ -104,7 +104,19 @@ describe('AssignmentRouter.ts',()=> {
         });
     });
 
-    it("Should be able to interpret a request to GET /assignments/{id} where {id} is valid");
+    it("Should be able to interpret a request to GET /assignments/{id} where {id} is valid",() => {
+
+        const expectedId = '009'
+        const mockAssignment = new Assignment(expectedId, 'Hercules Jones');
+        const mockMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.resolve(mockAssignment)});
+
+        chai.request(testServer).get("/assignments/"+expectedId)
+        .then(res  => {
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property("_id").which.equals(expectedId);
+            expect(mockMethod).to.have.been.called.with(expectedId);
+        });
+    });
 
     it("Should be able to interpret a failed request to GET /assignments/{id} where {id} is invalid");
 

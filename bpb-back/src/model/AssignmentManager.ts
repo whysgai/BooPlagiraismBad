@@ -6,23 +6,27 @@ import { IAssignmentDAO } from "./AssignmentDAO";
  */
 export interface IAssignmentManager {
     getAssignments() : Promise<IAssignment[]>;
+    getAssignment(assignmentId : String) : Promise<IAssignment>;
     createAssignment(data : JSON) : Promise<IAssignment>;
     updateAssignment(assignment : IAssignment, data : JSON) : Promise<void>;
     deleteAssignment(assignment : IAssignment) : Promise<void>;
 }
 
 export class AssignmentManager implements IAssignmentManager {
-    
+
     private assignmentDAO : IAssignmentDAO;
 
     constructor(assignmentDAO: IAssignmentDAO) {
         this.assignmentDAO = assignmentDAO;
     }    
-    
-    // TODO: Have this return real things
-    async getAssignments(): Promise<IAssignment[]> {
-        return Promise.resolve([]);
+    getAssignment(assignmentId: String): Promise<IAssignment> {
+        throw new Error("Method not implemented.");
     }
+    
+    async getAssignments(): Promise<IAssignment[]> {
+        throw new Error("Method not implemented")
+    }
+
     async createAssignment(data : JSON): Promise<IAssignment> {
         throw new Error("Method not implemented.");
     }
