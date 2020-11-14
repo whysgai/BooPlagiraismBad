@@ -14,15 +14,22 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.get("/compare?a=subid1&b=subid2",this.getComparisonResultFn); //TODO: un-hardcode
     this.router.post("/",this.postFileUploadFn);
     this.router.get("/",this.getFileContentFn);
+    this.router.get("/files?id=subid1",this.getSubmissionFilesFn);
   }
-  
+
   getHelloWorldFn = async function(req : Express.Request,res : any){
     res.send({"response":"the world and the bpb-back submission router say hi back!!"});
   }
-
-  //TODO: Replace these
+  
+  //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getComparisonResultFn = async function(rq : Express.Request,res : any){
+  getSubmissionFilesFn = async function(req : Express.Request,res : any){
+    res.send({"files":[{"fileName":"testy.java"},{"fileName":"son_of_testy.java"}]});
+  }
+
+  //TODO: Replace
+  //Hardcoded endpoints for front-end development purposes
+  getComparisonResultFn = async function(req : Express.Request,res : any){
     res.send({
         "matches":[
           [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
