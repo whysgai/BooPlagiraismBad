@@ -8,7 +8,7 @@ abstract class AbstractRouter {
     protected router : Router;
     route : string;
 
-    constructor(app : any, route : string) {
+    constructor(app : express.Application, route : string) {
         this.router = express.Router();
         this.route = route;
         app.use(route,this.router);
