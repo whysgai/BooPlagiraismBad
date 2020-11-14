@@ -8,7 +8,7 @@ export interface IAssignmentManager {
     getAssignments() : Promise<IAssignment[]>;
     getAssignment(assignmentId : String) : Promise<IAssignment>;
     createAssignment(data : JSON) : Promise<IAssignment>;
-    updateAssignment(assignment : IAssignment, data : JSON) : Promise<void>;
+    updateAssignment(assignment : IAssignment, data : JSON) : Promise<IAssignment>;
     deleteAssignment(assignment : IAssignment) : Promise<void>;
 }
 
@@ -31,7 +31,7 @@ export class AssignmentManager implements IAssignmentManager {
     async createAssignment(data : JSON): Promise<IAssignment> {
         throw new Error("Method not implemented.");
     }
-    async updateAssignment(assignment: IAssignment, data : JSON) : Promise<void> {
+    async updateAssignment(assignment: IAssignment, data : JSON) : Promise<IAssignment> {
         throw new Error("Method not implemented.");
     }
     async deleteAssignment(assignment : IAssignment) : Promise<void> {

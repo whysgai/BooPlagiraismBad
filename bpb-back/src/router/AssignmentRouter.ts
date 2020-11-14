@@ -44,7 +44,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     
     if(assignmentId == undefined) {
       res.status(400);
-      res.send({"response":"No assignment id was provided"});
+      res.send({"response":"An assignment id was not provided"});
     } else {
       this.assignmentManager.getAssignment(assignmentId)
       .then(assignment => {
@@ -77,9 +77,26 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //PUT /assignments : Update an assignment
   putFn = async(req : express.Request,res : express.Response) => {
-    //TODO: Implement
-    res.status(400);
-    res.send({"response":"Updating assignments is not yet supported"});
+
+    var assignmentId = req.params.id;
+    
+    if(assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"An assignment id was not provided"});
+    } else {
+      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
+        this.assignmentManager.updateAssignment(assignment,req.body)
+        .then(assignment => {
+          res.send(assignment.asJSON());
+        }).catch((err) => {
+          res.status(400);  
+          res.send({"response":err.message});
+        });
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
+    }
   }
 
   //DELETE /assignments/{id} : Delete assignment with {id}

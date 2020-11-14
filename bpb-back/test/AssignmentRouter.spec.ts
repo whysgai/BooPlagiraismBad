@@ -127,16 +127,18 @@ describe('AssignmentRouter.ts',()=> {
        
         const expectedId = '0010'
         const expectedName = "Dr. Wilhelm Falp's Assignment of Agony"
-        const mockUpdatedAssignment = new Assignment(expectedId,expectedName);
+        const mockAssignment = new Assignment(expectedId,expectedName);
         const putBody = {"_id":expectedId,"name":expectedName,"submissions":["test1","test2"]}
 
-        var mockMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockUpdatedAssignment)});
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
  
         chai.request(testServer).put("/assignments/"+expectedId)
         .send(putBody)
         .then(res => {
             expect(res).to.have.status(200);
-            expect(mockMethod).to.have.been.called.with(putBody);
+            expect(mockGetMethod).to.have.been.called.once;
+            expect(mockUpdateMethod).to.have.been.called.with(putBody);
         })
     });
 
@@ -145,17 +147,19 @@ describe('AssignmentRouter.ts',()=> {
         const expectedName = "Jims Bonde"
         const putBody = {"_id":expectedId,"name":expectedName,"submissions":["test21"]}
 
-        var mockMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
+        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
  
         chai.request(testServer).put("/assignments/"+expectedId)
         .send(putBody)
         .then(res => {
             expect(res).to.have.status(400);
             expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
-            expect(mockMethod).to.have.been.called.with(expectedId);
+            expect(mockGetMethod).to.have.been.called.once;
+            expect(mockUpdateMethod).not.to.have.been.called;
         })
     });
-
+    
     it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid");
 
     it("Should be able to interpret a failed request to DELETE /assignments/{id} where {id} is invalid");
