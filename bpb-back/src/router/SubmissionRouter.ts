@@ -11,31 +11,42 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   setupRoutes() {
     this.router.get("/helloworld",this.getHelloWorldFn);
-    this.router.get("/compare/placeholder",this.getPlaceholderAnalysisResultFn);
-    this.router.post("/upload",this.postFileUploadFn);
+    this.router.get("/compare?a=subid1&b=subid2",this.getComparisonResultFn); //TODO: un-hardcode
+    this.router.post("/sub1/files",this.postFileUploadFn);
+    this.router.get("/sub1/files",this.getSubmissionFilesFn);
+    this.router.get("/sub1/files/AXHFD",this.getFileContentFn);
   }
-  
+
   getHelloWorldFn = async function(req : Express.Request,res : any){
     res.send({"response":"the world and the bpb-back submission router say hi back!!"});
   }
-
-  //TODO: Replace these
-  //TODO: Update! Format is no longer accurate
+  
+  //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getPlaceholderAnalysisResultFn = async function(rq : Express.Request,res : any){
+  getSubmissionFilesFn = async function(req : Express.Request,res : any){
+    res.send({"sub_id":"sub1","files":[{"name":"testy.java","id":"AXHFD"},{"name":"son_of_testy.java","id":"NONEXISITO"}]});
+  }
+
+  //TODO: Replace
+  //Hardcoded endpoints for front-end development purposes
+  getComparisonResultFn = async function(req : Express.Request,res : any){
     res.send({
         "matches":[
-            {"fromSubmission":"id1","toSubmission":"id2","fromFile":"test","toFile":"test","fromStart":1,"fromEnd":2,"toStart":3,"toEnd":6,"type":"BasicMatch","description":"Test Description for match 1"},
-            {"fromSubmission":"id1","toSubmission":"id2","fromFile":"test2","toFile":"test3","fromStart":14,"fromEnd":22,"toStart":30,"toEnd":90,"type":"BasicMatch","description":"Test Description for match 2"}
+          [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
+          [{"sub_id":"subid1","file_path":"/test/file33.java","context":"method","start":5,"end":7,"hash":"jldf","text":"void simultaneous() { }"},{"sub_id":"subid2","file_path":"/test/filere.java","context":"method","start":8,"end":10,"hash":"423wqq1","text":"void simulate() { }"}]
         ] 
       });
   }
 
   //TODO: Replace
-  //Hardcoded test endpoint for example purposes
+  //Hardcoded endpoint for front-end development purposes
+  getFileContentFn = async function (req : Express.Request,res : any){
+    res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
+  }
+
+  //TODO: Replace
+  //Hardcoded test endpoint for front-end development purposes
   postFileUploadFn = async function (req : Express.Request,res : any){
-    console.log("FILES HERE");
-    console.log(req.files);
 
     try {
       if(!req.files) {
