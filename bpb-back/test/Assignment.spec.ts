@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import {Assignment,IAssignment} from "../src/model/Assignment"
-import {IAssignmentFactory,AssignmentFactory} from "../src/model/AssignmentFactory"
+import {AssignmentFactory} from "../src/model/AssignmentFactory"
 
 describe("Assignment.ts",() => {
 
@@ -9,6 +9,8 @@ describe("Assignment.ts",() => {
     var assignmentId : String;
 
     beforeEach(() => {
+        assignmentId = "test_id"
+        assignmentName = "test_name"
         assignment = AssignmentFactory.buildAssignment(assignmentId,assignmentName);
     });
 
@@ -66,11 +68,16 @@ describe("Assignment.ts",() => {
 
     describe("getModelInstance()",() => {
         it("should return a new model instance that matches the Assignment object",() => {
-
+            var model = assignment.getNewModelInstance();
+            expect(model.toJSON()).to.equal("test");
         });
     });
 
     describe("getStaticModel()",() => {
-        it("should return a valid Assignment model instance");
+        it("should return a valid Assignment model",() => {
+            var staticModel = Assignment.getStaticModel();
+            expect(staticModel).to.not.be.undefined;
+            expect(staticModel.schema).to.not.be.undefined;
+        });
     });
 });

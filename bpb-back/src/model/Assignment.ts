@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
 /**
  * Represents an Assignment database model object
@@ -61,7 +61,7 @@ export class Assignment implements IAssignment {
     getNewModelInstance() : Document {
         return new Assignment.assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
     }
-    static getStaticModel() : any {
+    static getStaticModel() : mongoose.Model<IAssignmentModel> {
         return this.assignmentModel;
     }
 }
