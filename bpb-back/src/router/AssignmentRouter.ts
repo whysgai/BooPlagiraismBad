@@ -18,7 +18,6 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   setupRoutes() {
     this.router.put("/",this.putFn);
     this.router.get("/",this.getFn);
-    this.router.get("/helloworld",this.getHelloWorldFn);
     this.router.get("/:id",this.getSingleFn);
     this.router.post("/",this.postFn);
     this.router.delete("/",this.deleteFn)
@@ -88,11 +87,6 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     //TODO: Implement
     res.status(400);
     res.send({"response":"Deleting assignments is not yet supported"});
-  }
-
-  //Hello World function (for testing)
-  getHelloWorldFn = async(req : express.Request,res : express.Response) => {
-    res.send({"response":"the world and the bpb-back assignment router say hi back!!"});
   }
 }
 

@@ -33,14 +33,6 @@ describe('AssignmentRouter.ts',()=> {
         testServer = app.listen(8081);
     });
     
-    it('should say hi back when GET /helloworld is queried',() => {
-        chai.request(testServer).get("/assignments/helloworld")
-        .then(res  => {
-            expect(res).to.have.status(200);
-            expect(res.body).to.have.property("response","the world and the bpb-back assignment router say hi back!!");
-        });
-    });
-
     it("Should be able to interpret a request to POST /assignments to create an assignment",() => {
        
         const expectedId = "CHER"
