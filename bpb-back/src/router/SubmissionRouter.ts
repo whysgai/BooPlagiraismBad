@@ -21,7 +21,6 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
 
   //TODO: Replace these
-  //TODO: Update! Format is no longer accurate
   //Hardcoded endpoints for front-end development purposes
   getComparisonResultFn = async function(rq : Express.Request,res : any){
     res.send({
@@ -33,12 +32,13 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
 
   //TODO: Replace
+  //Hardcoded endpoint for front-end development purposes
   getFileContentFn = async function (req : Express.Request,res : any){
-
+    res.send({fileData :"void this() { \n      is \n      an \n      examples! \n } "});
   }
 
   //TODO: Replace
-  //Hardcoded test endpoint for example purposes
+  //Hardcoded test endpoint for front-end development purposes
   postFileUploadFn = async function (req : Express.Request,res : any){
 
     try {
