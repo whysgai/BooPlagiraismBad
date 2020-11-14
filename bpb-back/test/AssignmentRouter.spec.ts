@@ -52,11 +52,17 @@ describe('AssignmentRouter.ts',()=> {
         const secondMockAssignment = new Assignment('008', 'SonOfJamesBond');
         secondMockAssignment.addSubmission("secret_mission");
         secondMockAssignment.addSubmission("where_eagles_dare");
+        const expectedAssignments = [
+                                        {"_id":"007","name":"BondJamesBond","submissionIds":[]},
+                                        {"_id":"008","name":"SonOfJamesBond","submissionIds":["secret_mission","where_eagles_dare"]}
+                                    ]
+
         chai.spy.on(testAssignmentMgr,'getAssignments',() =>{return Promise.resolve([firstMockAssignment,secondMockAssignment])});
 
         chai.request(testServer).get("/assignments").then(res  => {
             expect(res).to.have.status(200);
-            expect(res.body).to.have.property("assignments",[{"_id":"007","name":"BondJamesBond","submissions":[]},{"_id":"008","name":"SonOfJamesBond","submissions":["secret_mission","where_eagles_dare"]}]);
+            console.log(res.body.assignments[1]);
+            expect(res.body).to.have.property("assignments").that.deep.equals(expectedAssignments);
         });
     });
 
