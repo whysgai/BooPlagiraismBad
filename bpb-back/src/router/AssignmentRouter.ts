@@ -33,7 +33,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
           res.send(responseBody);
         }).catch((err) => {
           res.status(400)
-          res.send({"response":err});
+          res.send({"response":err.message});
         });
   };
   
@@ -70,7 +70,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
         res.send(assignment.asJSON());
       }).catch((err) => {
         res.status(400);  
-        res.send({"response":err});
+        res.send({"response":err.message});
       });
     }
   }
