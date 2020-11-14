@@ -19,28 +19,51 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
 
   setupRoutes() {
-    
-    this.router.put("/:id");
-    this.router.post("/");
-    this.router.delete("/:id");
-    this.router.post("/:id/files",this.postFileUploadFn);
-    this.router.post("/compare/?a=:ida&b=:idb");
-
-    //Development endpoints
-    this.router.get("/compare?a=subid1&b=subid2",this.getComparisonResultFn); //TODO: un-hardcode
-    this.router.get("/sub1/files",this.getSubmissionFilesFn);
-    this.router.get("/sub1/files/AXHFD",this.getFileContentFn);
-  }
   
-  //TODO: Replace
+    //Development Endpoints   
+    this.router.get("/sub1/files",this.mockGetSubmissionFilesFn);
+    this.router.get("/compare?a=subid1&b=subid2",this.mockGetComparisonResultFn); //TODO: un-hardcode
+    this.router.get("/sub1/files/AXHFD",this.mockGetSubmissionFileFn);
+  
+    //Endpoints
+    this.router.post("/",this.createSubmissionFn);
+    this.router.put("/:id",this.updateSubmissionFn);
+    this.router.delete("/:id",this.deleteSubmissionFn);
+    this.router.post("/:id/files",this.createSubmissionFileFn);
+    this.router.get("/:id/files",this.getSubmissionFilesFn);
+    this.router.get("/compare/?a=:ida&b=:idb",this.compareSubmissionsFn);
+    
+  }
+ createSubmissionFn = async(req : express.Request,res : express.Response) => {
+    res.status(400);
+    res.send({"response":"Not implemented"});
+  }
+ getSubmissionFn = async(req : express.Request,res : express.Response) => {
+    res.status(400);
+    res.send({"response":"Not implemented"});
+  }
+ updateSubmissionFn = async(req : express.Request,res : express.Response) => {
+    res.status(400);
+    res.send({"response":"Not implemented"});
+  }
+ deleteSubmissionFn = async(req : express.Request,res : express.Response) => {
+    res.status(400);
+    res.send({"response":"Not implemented"});
+  }
+  compareSubmissionsFn = async(req : express.Request,res : express.Response) => {
+    res.status(400);
+    res.send({"response":"Not implemented"});
+  }
+
+ //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
+  mockGetSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
     res.send({"sub_id":"sub1","files":[{"name":"testy.java","id":"AXHFD"},{"name":"son_of_testy.java","id":"NONEXISITO"}]});
   }
 
   //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getComparisonResultFn = async (req : express.Request,res : express.Response) => {
+  mockGetComparisonResultFn = async (req : express.Request,res : express.Response) => {
     res.send({
         "matches":[
           [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
@@ -51,11 +74,16 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //TODO: Replace
   //Hardcoded endpoint for front-end development purposes
-  getFileContentFn = async (req : express.Request,res : express.Response) => {
+  mockGetSubmissionFileFn = async (req : express.Request,res : express.Response) => {
     res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
   }
-
-  postFileUploadFn = async (req : express.Request,res : express.Response) => {
+ 
+  getSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
+    res.status(400);
+    res.send({"response":"Not implemented"});
+  }
+  
+  createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
     var submissionId = req.params.id;
     
