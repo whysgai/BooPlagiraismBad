@@ -1,7 +1,8 @@
 import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
-import assignmentModel from '../model/AssignmentModel';
 import { Router } from 'express';
+import { AssignmentFactory } from '../model/AssignmentFactory';
+import { Assignment } from '../model/Assignment'
 
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
@@ -22,14 +23,14 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //GET /assignments: Get all assignments
   getFn = async function(req : Express.Request,res : any){
-    var assignments = await assignmentModel.find();
+    var assignments = await Assignment.getStaticModel().find();
     res.send(assignments);
   }
 
   //POST /assignments: Create a new assignment
   postFn = async function(req : Express.Request,res : any){
-    var assignment = new assignmentModel({_id: "a"}); //TODO: Remove hardcoding
-    await assignment.save();
+    var assignment = AssignmentFactory.buildAssignment("test","test");
+    await assignment.getNewModelInstance().save();
     res.send(assignment);
   }
 

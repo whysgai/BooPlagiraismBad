@@ -1,4 +1,4 @@
-import { IAssignment } from "./Assignment";
+import { Assignment, IAssignment } from "./Assignment";
 
 export interface IAssignmentFactory {
     //buildAssignment(id : String, name: String) : IAssignment
@@ -8,6 +8,6 @@ export interface IAssignmentFactory {
  */
 export class AssignmentFactory implements IAssignmentFactory {
      static buildAssignment(id : String, name: String): IAssignment {
-        throw new Error("Method not implemented.");
+         return new Assignment(id,name);
     }
 }

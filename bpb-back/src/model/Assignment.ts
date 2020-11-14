@@ -1,4 +1,24 @@
-import { IAssignmentManager } from "./AssignmentManager";
+import mongoose, { Document, Schema } from "mongoose";
+
+/**
+ * Represents an Assignment database model object
+ */
+interface IAssignmentModel extends Document {
+    _id : String
+    name : String
+    submissionIds : String[]
+}
+
+/**
+ * Represents the schema for an Assignment database object
+ */
+const assignmentSchema = new Schema({
+    _id:  String,
+    name: String,
+    submissionIds: [String]
+  });
+
+const assignmentModel = mongoose.model<IAssignmentModel>('Assignment',assignmentSchema);
 
 /**
  * Represents an Assignment to which Submissions may be made.
@@ -9,27 +29,41 @@ export interface IAssignment {
     getSubmissionIDs() : String[]
     addSubmission(submissionID : String) : void
     removeSubmission(submissionID : String) : void
+    getNewModelInstance() : Document;
 }
 
 export class Assignment implements IAssignment {
-    //private id : String;
-    //private name : String;
-    //private submissionIDs : String[];
+    private submissionIds : String[];
     
+    constructor(private id : String, private name :String) {
+        this.id = id;
+        this.name = name
+        this.submissionIds = [];
+    }
     getID(): String {
-        throw new Error("Method not implemented.");
+        return this.id;
     }
     getName(): String {
-        throw new Error("Method not implemented.");
+        return this.name;
     }
     getSubmissionIDs(): String[] {
-        throw new Error("Method not implemented.");
+        return this.submissionIds;
     }
-    addSubmission(submissionID: String): void {
-        throw new Error("Method not implemented.");
+    addSubmission(submissionId: String): void {
+        if(!this.submissionIds.find( it => it == submissionId)) {
+            this.submissionIds.push(submissionId);
+        }
     }
-    removeSubmission(submissionID: String): void {
-        throw new Error("Method not implemented.");
+    removeSubmission(submissionId: String): void {
+        var foundValueIndex = this.submissionIds.findIndex( it => it == submissionId)
+        if(foundValueIndex != undefined) {
+            this.submissionIds = this.submissionIds.splice(foundValueIndex,1);
+        }
     }
-
+    getNewModelInstance() : Document {
+        return new assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
+    }
+    static getStaticModel() : any {
+        return assignmentModel;
+    }
 }
