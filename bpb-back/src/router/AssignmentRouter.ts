@@ -26,44 +26,42 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //GET /assignments: Get all assignments
   getFn = async(req : Express.Request,res : any) => {
-
       this.assignmentManager.getAssignments()
         .then((assignments: IAssignment[]) => {
           var assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
-          var responseBody = { "assignments":assignmentEntries}
+          var responseBody = { assignments:assignmentEntries }
           res.send(responseBody);
         });
   };
 
   //POST /assignments: Create a new assignment
-  postFn = async function(req : Express.Request,res : any){
-    var assignment = AssignmentFactory.buildAssignment("test","test");
-    await assignment.getModelInstance().save();
-    res.send(assignment);
+  postFn = async(req : Express.Request,res : any) => {
+    res.status(400);
+    res.send({"response":"Creating assignments is not yet supported"});
   }
 
   //PUT /assignments : Update an assignment
-  putFn = async function(req : Express.Request,res : any){
+  putFn = async(req : Express.Request,res : any) => {
     res.status(400);
     res.send({"response":"Updating assignments is not yet supported"});
   }
 
   //DELETE /assignments/{id} : Delete assignment with {id}
-  deleteFn = async function(req : Express.Request,res : any){
+  deleteFn = async(req : Express.Request,res : any) => {
     //TODO: Implement
     res.status(400);
     res.send({"response":"Deleting assignments is not yet supported"});
   }
 
   //GET /assignments/{id} : Get assignment with {id}
-  getSingleFn = async function(req : Express.Request,res : any){
+  getSingleFn = async(req : Express.Request,res : any) => {
     //TODO: Implement
     res.status(400);
     res.send({"response":"Accessing single assignments is not yet supported"});
   }
 
   //Hello World function (for testing)
-  getHelloWorldFn = async function(req : Express.Request,res : any){
+  getHelloWorldFn = async(req : Express.Request,res : any) => {
     res.send({"response":"the world and the bpb-back assignment router say hi back!!"});
   }
 }
