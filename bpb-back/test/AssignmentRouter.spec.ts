@@ -127,15 +127,10 @@ describe('AssignmentRouter.ts',()=> {
        
         const expectedId = '0010'
         const expectedName = "Dr. Wilhelm Falp's Assignment of Agony"
-        const mockAssignment = new Assignment(expectedId,expectedName);
         const mockUpdatedAssignment = new Assignment(expectedId,expectedName);
-        mockUpdatedAssignment.addSubmission("test1");
-        mockUpdatedAssignment.addSubmission("test2");
         const putBody = {"_id":expectedId,"name":expectedName,"submissions":["test1","test2"]}
 
-        chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.resolve(mockAssignment)});
         var mockMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockUpdatedAssignment)});
-
  
         chai.request(testServer).put("/assignments/"+expectedId)
         .send(putBody)
