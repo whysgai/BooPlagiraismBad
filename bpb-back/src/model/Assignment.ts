@@ -53,8 +53,8 @@ export class Assignment implements IAssignment {
         }
     }
     removeSubmission(submissionId: String): void {
-        var foundValueIndex = this.submissionIds.findIndex( it => it == submissionId)
-        if(foundValueIndex != undefined) {
+        var foundValueIndex = this.submissionIds.findIndex( it => it == submissionId);
+        if(foundValueIndex) {
             this.submissionIds = this.submissionIds.splice(foundValueIndex,1);
         }
     }

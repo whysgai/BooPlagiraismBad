@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { model } from "mongoose";
 import {Assignment,IAssignment} from "../src/model/Assignment"
 import {AssignmentFactory} from "../src/model/AssignmentFactory"
 
@@ -67,16 +68,25 @@ describe("Assignment.ts",() => {
     });
 
     describe("getModelInstance()",() => {
-        it("should return a new model instance that matches the Assignment object",() => {
-            var model = assignment.getModelInstance();
-            expect(model.toJSON()).to.equal("test");
+        it("should return a new model instance that matches the Assignment object if there are no submissions",() => {
+            var modelInstance = assignment.getModelInstance();
+            var expected  = '{ submissionIds: [], _id: \'test_id\', name: \'test_name\' }';
+            expect(modelInstance.toString()).to.equal(expected);
         });
+        
+        it("should return a new model instance that matches the Assignment object if there are submissions added",() => {
+            assignment.addSubmission("testy");
+            assignment.addSubmission("testy2");
+            var modelInstance = assignment.getModelInstance();
+            var expected  = '{\n submissionIds: [ \'testy\',\n \'testy2\' ],\n _id: \'test_id\',\n name: \'test_name\'\n}';
+            expect(modelInstance.toString()).to.equal(expected);
+        });
+
     });
 
     describe("getStaticModel()",() => {
         it("should return a valid Assignment model",() => {
             var staticModel = Assignment.getStaticModel();
-            expect(staticModel).to.not.be.undefined;
             expect(staticModel.schema).to.not.be.undefined;
         });
     });
