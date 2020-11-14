@@ -30,7 +30,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   //POST /assignments: Create a new assignment
   postFn = async function(req : Express.Request,res : any){
     var assignment = AssignmentFactory.buildAssignment("test","test");
-    await assignment.getNewModelInstance().save();
+    await assignment.getModelInstance().save();
     res.send(assignment);
   }
 
