@@ -10,6 +10,7 @@ import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
 import { IAssignmentManager, AssignmentManager } from "../src/model/AssignmentManager";
 import { AssignmentDAO, IAssignmentDAO } from "../src/model/AssignmentDAO";
+import { Assignment, IAssignment } from "../src/model/Assignment";
 
 
 describe('AssignmentRouter.ts',()=> {
@@ -42,6 +43,13 @@ describe('AssignmentRouter.ts',()=> {
 
     it("Should be able to interpret a request to POST /assignments to create an assignment", () => {
         
+        const mockAssignment = new Assignment('007', 'BondJamesBond');
+        chai.spy.on(testAssignmentMgr,'getAssignments',() =>{return Promise.resolve(mockAssignment)});
+
+        chai.request(testServer).get("/assignments").then(res  => {
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property("assignments","the world and the bpb-back assignment router say hi back!!");
+        });
     });
 
     //TODO: Spy on AssignmentManager(?)
