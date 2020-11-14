@@ -16,11 +16,11 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   }
 
   setupRoutes() {
-    this.router.put("/",this.putFn);
+    this.router.post("/",this.postFn);
     this.router.get("/",this.getFn);
     this.router.get("/:id",this.getSingleFn);
-    this.router.post("/",this.postFn);
-    this.router.delete("/",this.deleteFn)
+    this.router.put("/:id",this.putFn);
+    this.router.delete("/:id",this.deleteFn)
   }
 
   //GET /assignments: Get all assignments
