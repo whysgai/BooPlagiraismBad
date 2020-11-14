@@ -38,10 +38,12 @@ describe('AssignmentRouter.ts',()=> {
         const expectedId = "CHER"
         const expectedName = "test assignment"
         const mockAssignment = new Assignment(expectedId,expectedName);
+        const postBody = {"name":expectedName};
 
         chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.resolve(mockAssignment)})
 
-        chai.request(testServer).post("/assignments/").send({"name":expectedName})
+        chai.request(testServer).post("/assignments/")
+        .send(postBody)
         .then(res => {
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("name").which.equals(expectedName);
@@ -128,7 +130,7 @@ describe('AssignmentRouter.ts',()=> {
         const expectedId = '0010'
         const expectedName = "Dr. Wilhelm Falp's Assignment of Agony"
         const mockAssignment = new Assignment(expectedId,expectedName);
-        const putBody = {"_id":expectedId,"name":expectedName,"submissions":["test1","test2"]}
+        const putBody = {"name":expectedName,"submissions":["test1","test2"]}
 
         var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
         var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
@@ -138,7 +140,7 @@ describe('AssignmentRouter.ts',()=> {
         .then(res => {
             expect(res).to.have.status(200);
             expect(mockGetMethod).to.have.been.called.once;
-            expect(mockUpdateMethod).to.have.been.called.with(putBody);
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment,putBody);
         })
     });
 
@@ -155,7 +157,7 @@ describe('AssignmentRouter.ts',()=> {
         .then(res => {
             expect(res).to.have.status(400);
             expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
-            expect(mockGetMethod).to.have.been.called.once;
+            expect(mockGetMethod).to.have.been.called.with(expectedId);
             expect(mockUpdateMethod).not.to.have.been.called;
         })
     });
@@ -170,13 +172,14 @@ describe('AssignmentRouter.ts',()=> {
         const mockAssignment = new Assignment(expectedId,expectedName);
 
         var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
-        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{Promise.resolve()});
+        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.resolve()});
  
         chai.request(testServer).delete("/assignments/"+expectedId)
         .then(res => {
             expect(res).to.have.status(200);
-            expect(mockGetMethod).to.have.been.called.once;
-            expect(mockDeleteMethod).to.have.been.called.with(expectedId);
+            expect(mockGetMethod).to.have.been.called.with(expectedId);
+            expect(mockDeleteMethod).to.have.been.called.with(mockAssignment);
+            expect(res.body.response).to.equal("Deleted assignment "+expectedId);
         })
     });
 

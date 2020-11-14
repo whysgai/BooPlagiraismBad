@@ -101,9 +101,26 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //DELETE /assignments/{id} : Delete assignment with {id}
   deleteFn = async(req : express.Request,res : express.Response) => {
-    //TODO: Implement
-    res.status(400);
-    res.send({"response":"Deleting assignments is not yet supported"});
+
+    var assignmentId = req.params.id;
+    
+    if(assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"An assignment id was not provided"});
+    } else {
+      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
+        this.assignmentManager.deleteAssignment(assignment)
+        .then(() => {
+          res.send({"response":"Deleted assignment " + assignmentId});
+        }).catch((err) => {
+          res.status(400);  
+          res.send({"response":err.message});
+        });
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
+    }
   }
 }
 
