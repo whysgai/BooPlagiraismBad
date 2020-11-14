@@ -1,4 +1,7 @@
-import {AnalysisResultEntry} from "../AnalysisResultEntry"
+import {AnalysisResultEntry} from "../AnalysisResultEntry";
+import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
+import { ParseTree } from 'antlr4ts/tree/ParseTree';
+//TODO: bring in the new TLSH library found at https://github.com/trendmicro/tlsh/blob/master/js_ext/tlsh.js
 
 interface IAnalysisResultEntryCollectorVisitor {
     getAnalysisResultEntries(): AnalysisResultEntry[]    
