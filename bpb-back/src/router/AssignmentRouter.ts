@@ -8,12 +8,12 @@ import { AssignmentManager, IAssignmentManager } from '../model/AssignmentManage
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
   protected router : Router;
-  private assignmentManager : IAssignmentManager;
+  assignmentManager : IAssignmentManager;
 
-  constructor(app : any, route : string, assignMgr : IAssignmentManager){
+  constructor(app : any, route : string, assignmentManager : IAssignmentManager){
     super(app,route);
     this.setupRoutes();
-    this.assignmentManager = assignMgr;
+    this.assignmentManager = assignmentManager;
   }
 
   setupRoutes() {
@@ -25,18 +25,20 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   }
 
   //GET /assignments: Get all assignments
-  getFn = async function(req : Express.Request,res : any){
-   // console.log("MGR" + this.assignmentManager);
-    res.send({assignments:[]}) //TODO: remove
-    // var assignments = await Assignment.getStaticModel().find();
-   // console.log("Mgr defined? " + this.assignmentManager);
-    //this.assignmentManager.getAssignments()
-      //.then((assignments: IAssignment[]) => {
-        //res.send(assignments.map((assignment) => {
-          //assignment.asJSON();
-        //}))
-      //});
-  }
+  getFn = async(req : Express.Request,res : any) => {
+
+  //getFn = async function(req : Express.Request,res : any){
+      console.log("MGR" + this.assignmentManager);
+      res.send({assignments:[]}) //TODO: remove
+      // var assignments = await Assignment.getStaticModel().find();
+     // console.log("Mgr defined? " + this.assignmentManager);
+      //this.assignmentManager.getAssignments()
+        //.then((assignments: IAssignment[]) => {
+          //res.send(assignments.map((assignment) => {
+            //assignment.asJSON();
+          //}))
+        //});
+  };
 
   //POST /assignments: Create a new assignment
   postFn = async function(req : Express.Request,res : any){

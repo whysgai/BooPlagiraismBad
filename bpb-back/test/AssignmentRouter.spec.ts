@@ -29,16 +29,11 @@ describe('AssignmentRouter.ts',()=> {
         chai.use(chaiHttp);
         chai.use(chaiSpies);
 
-        // testAssignmentDAO = new AssignmentDAO();
-        // testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
-        AssignmentFactory.buildAssignmentManager()
-            .then((assignmentManager) => {
-                testAssignmentMgr = assignmentManager;
-                testRouter = new AssignmentRouter(app,"/assignments", testAssignmentMgr); 
-                testServer = app.listen(8081);
-                done();
-            }            
-        );        
+         testAssignmentDAO = new AssignmentDAO();
+         testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
+         testRouter = new AssignmentRouter(app,"/assignments",testAssignmentMgr); 
+         testServer = app.listen(8081);
+                done();      
         
     });
     
