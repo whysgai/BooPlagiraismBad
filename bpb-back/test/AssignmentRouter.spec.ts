@@ -7,12 +7,17 @@ import IRouter from "../src/router/IRouter";
 
 import chai = require("chai");
 import chaiHttp = require("chai-http");
+import chaiSpies = require("chai-spies");
+import { IAssignmentManager, AssignmentManager } from "../src/model/AssignmentManager";
+import { AssignmentDAO, IAssignmentDAO } from "../src/model/AssignmentDAO";
 
 
 describe('AssignmentRouter.ts',()=> {
     
     var testServer : any;
     var testRouter : IRouter;
+    var testAssignmentMgr : IAssignmentManager;
+    var testAssignmentDAO: IAssignmentDAO;
 
     before(function() {
 
@@ -20,10 +25,12 @@ describe('AssignmentRouter.ts',()=> {
         app.use(express.json());
         app.use(bodyParser.json());            
         chai.use(chaiHttp);
+        chai.use(chaiSpies);
 
         testRouter = new AssignmentRouter(app,"/assignments"); 
         testServer = app.listen(8081);
-
+        testAssignmentDAO = new AssignmentDAO();
+        testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
     });
     
     it('should say hi back when GET /helloworld is queried',() => {
@@ -33,7 +40,9 @@ describe('AssignmentRouter.ts',()=> {
         });
     });
 
-    it("Should be able to interpret a request to POST /assignments to create an assignment");
+    it("Should be able to interpret a request to POST /assignments to create an assignment", () => {
+        
+    });
 
     //TODO: Spy on AssignmentManager(?)
     it("Should be able to interpret a request to GET /assignments to get all assignments");
