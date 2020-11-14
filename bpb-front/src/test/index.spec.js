@@ -12,7 +12,7 @@ describe('index.js', () => {
     it('should render AssignmentListComponent', () => {
         const component = renderer.create(
             <StaticRouter location='/' context={{}}>
-                <AssignmentListComponent/>
+                <AssignmentListComponent assignments={[]}/>
             </StaticRouter>
         )
         let tree = component.toJSON();
