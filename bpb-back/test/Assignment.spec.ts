@@ -65,7 +65,9 @@ describe("Assignment.ts",() => {
     });
 
     describe("getModelInstance()",() => {
-        it("should return a new model isntance that matches the Assignment object");
+        it("should return a new model instance that matches the Assignment object",() => {
+
+        });
     });
 
     describe("getStaticModel()",() => {

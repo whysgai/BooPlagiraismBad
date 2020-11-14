@@ -10,17 +10,6 @@ interface IAssignmentModel extends Document {
 }
 
 /**
- * Represents the schema for an Assignment database object
- */
-const assignmentSchema = new Schema({
-    _id:  String,
-    name: String,
-    submissionIds: [String]
-  });
-
-const assignmentModel = mongoose.model<IAssignmentModel>('Assignment',assignmentSchema);
-
-/**
  * Represents an Assignment to which Submissions may be made.
  */
 export interface IAssignment {
@@ -31,8 +20,17 @@ export interface IAssignment {
     removeSubmission(submissionID : String) : void
     getNewModelInstance() : Document;
 }
-
+    
 export class Assignment implements IAssignment {
+    
+    private static assignmentSchema = new Schema({
+        _id:  String,
+        name: String,
+        submissionIds: [String]
+      });
+
+    private static assignmentModel = mongoose.model<IAssignmentModel>('Assignment',Assignment.assignmentSchema);
+    
     private submissionIds : String[];
     
     constructor(private id : String, private name :String) {
@@ -61,9 +59,9 @@ export class Assignment implements IAssignment {
         }
     }
     getNewModelInstance() : Document {
-        return new assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
+        return new Assignment.assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
     }
     static getStaticModel() : any {
-        return assignmentModel;
+        return this.assignmentModel;
     }
 }
