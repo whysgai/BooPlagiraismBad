@@ -35,9 +35,6 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
   //POST /assignments: Create a new assignment
   postFn = async(req : express.Request,res : express.Response) => {
-    //TODO: Implement
-    //res.status(400);
-    //res.send({"response":"Creating assignments is not yet supported"});
 
     var assignmentName = req.body.name;
 
