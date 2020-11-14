@@ -78,7 +78,7 @@ describe("Assignment.ts",() => {
             assignment.addSubmission("testy");
             assignment.addSubmission("testy2");
             var modelInstance = assignment.getModelInstance();
-            var expected  = '{\n submissionIds: [ \'testy\',\n \'testy2\' ],\n _id: \'test_id\',\n name: \'test_name\'\n}';
+            var expected  = '{\n  submissionIds: [ \'testy\', \'testy2\' ],\n  _id: \'test_id\',\n  name: \'test_name\'\n}';
             expect(modelInstance.toString()).to.equal(expected);
         });
 
