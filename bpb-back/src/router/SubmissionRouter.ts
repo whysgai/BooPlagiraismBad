@@ -11,7 +11,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   setupRoutes() {
     this.router.get("/helloworld",this.getHelloWorldFn);
-    this.router.get("/compare/placeholder",this.getPlaceholderAnalysisResultFn);
+    this.router.get("/compare?a=subid1&b=subid2",this.getComparisonResultFn); //TODO: un-hardcode
     this.router.post("/upload",this.postFileUploadFn);
   }
   
@@ -22,11 +22,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //TODO: Replace these
   //TODO: Update! Format is no longer accurate
   //Hardcoded endpoints for front-end development purposes
-  getPlaceholderAnalysisResultFn = async function(rq : Express.Request,res : any){
+  getComparisonResultFn = async function(rq : Express.Request,res : any){
     res.send({
         "matches":[
-            {"fromSubmission":"id1","toSubmission":"id2","fromFile":"test","toFile":"test","fromStart":1,"fromEnd":2,"toStart":3,"toEnd":6,"type":"BasicMatch","description":"Test Description for match 1"},
-            {"fromSubmission":"id1","toSubmission":"id2","fromFile":"test2","toFile":"test3","fromStart":14,"fromEnd":22,"toStart":30,"toEnd":90,"type":"BasicMatch","description":"Test Description for match 2"}
+          [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
+          [{"sub_id":"subid1","file_path":"/test/file33.java","context":"method","start":5,"end":7,"hash":"reeeetre","text":"void simultaneous() { }"},{"sub_id":"subid2","file_path":"/test/filere.java","context":"method","start":8,"end":10,"hash":"423wqq1","text":"void simulate() { }"}]
         ] 
       });
   }
