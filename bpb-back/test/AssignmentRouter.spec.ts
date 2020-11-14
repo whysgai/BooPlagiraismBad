@@ -132,14 +132,13 @@ describe('AssignmentRouter.ts',()=> {
         const mockAssignment = new Assignment(expectedId,expectedName);
         const putBody = {"name":expectedName,"submissions":["test1","test2"]}
 
-        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
         var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
  
         chai.request(testServer).put("/assignments/"+expectedId)
         .send(putBody)
         .then(res => {
             expect(res).to.have.status(200);
-            expect(mockGetMethod).to.have.been.called.once;
             expect(mockUpdateMethod).to.have.been.called.with(mockAssignment,putBody);
         })
     });
