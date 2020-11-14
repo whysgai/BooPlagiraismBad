@@ -12,7 +12,6 @@ import { IAssignmentManager, AssignmentManager } from "../src/model/AssignmentMa
 import { AssignmentDAO, IAssignmentDAO } from "../src/model/AssignmentDAO";
 import { Assignment, IAssignment } from "../src/model/Assignment";
 import { AssignmentFactory } from '../src/model/AssignmentFactory';
-import { doesIntersect } from "tslint";
 
 
 describe('AssignmentRouter.ts',()=> {
@@ -55,12 +54,15 @@ describe('AssignmentRouter.ts',()=> {
     //TODO: Spy on AssignmentManager(?)
     it("Should be able to interpret a request to GET /assignments to get all assignments", () => {
         
-        const mockAssignment = new Assignment('007', 'BondJamesBond');
-        chai.spy.on(testAssignmentMgr,'getAssignments',() =>{return Promise.resolve(mockAssignment)});
+        const firstMockAssignment = new Assignment('007', 'BondJamesBond');
+        const secondMockAssignment = new Assignment('008', 'SonOfJamesBond');
+        secondMockAssignment.addSubmission("secret_mission");
+        secondMockAssignment.addSubmission("where_eagles_dare");
+        chai.spy.on(testAssignmentMgr,'getAssignments',() =>{return Promise.resolve([firstMockAssignment,secondMockAssignment])});
 
         chai.request(testServer).get("/assignments").then(res  => {
             expect(res).to.have.status(200);
-            expect(res.body).to.have.property("assignments","the world and the bpb-back assignment router say hi back!!");
+            expect(res.body).to.have.property("assignments",[{"_id":"007","name":"BondJamesBond","submissions":[]},{"_id":"008","name":"SonOfJamesBond","submissions":["secret_mission","where_eagles_dare"]}]);
         });
     });
 
