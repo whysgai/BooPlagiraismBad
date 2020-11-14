@@ -12,7 +12,8 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   setupRoutes() {
     this.router.get("/helloworld",this.getHelloWorldFn);
     this.router.get("/compare?a=subid1&b=subid2",this.getComparisonResultFn); //TODO: un-hardcode
-    this.router.post("/upload",this.postFileUploadFn);
+    this.router.post("/",this.postFileUploadFn);
+    this.router.get("/",this.getFileContentFn);
   }
   
   getHelloWorldFn = async function(req : Express.Request,res : any){
@@ -33,7 +34,6 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //TODO: Replace
   getFileContentFn = async function (req : Express.Request,res : any){
-
 
   }
 
