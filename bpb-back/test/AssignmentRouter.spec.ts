@@ -159,9 +159,39 @@ describe('AssignmentRouter.ts',()=> {
             expect(mockUpdateMethod).not.to.have.been.called;
         })
     });
-    
-    it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid");
 
-    it("Should be able to interpret a failed request to DELETE /assignments/{id} where {id} is invalid");
+    //TODO: Add later
+    it('Should be able to interpret a failed request to PUT /assignments/{id} if any properties are missing');
 
+    it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid",() => {
+       
+        const expectedId = '89890'
+        const expectedName = "Assignment Name"
+        const mockAssignment = new Assignment(expectedId,expectedName);
+
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{Promise.resolve()});
+ 
+        chai.request(testServer).delete("/assignments/"+expectedId)
+        .then(res => {
+            expect(res).to.have.status(200);
+            expect(mockGetMethod).to.have.been.called.once;
+            expect(mockDeleteMethod).to.have.been.called.with(expectedId);
+        })
+    });
+
+    it("Should be able to interpret a failed request to DELETE /assignments/{id} where {id} is invalid",() => {
+        const expectedId = 'ewtr12'
+
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
+        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
+ 
+        chai.request(testServer).delete("/assignments/"+expectedId)
+        .then(res => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
+            expect(mockGetMethod).to.have.been.called.once;
+            expect(mockDeleteMethod).not.to.have.been.called;
+        })
+    });
 });
