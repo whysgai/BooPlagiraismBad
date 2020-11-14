@@ -12,19 +12,21 @@ import { Assignment } from "../src/model/Assignment";
 
 describe('AssignmentRouter.ts',()=> {
     
+    var app : express.Application;
     var testServer : any;
     var testRouter : IRouter;
     var testAssignmentMgr : IAssignmentManager;
     var testAssignmentDAO: IAssignmentDAO;
 
     before(() => {
-
-        let app = express();
-        app.use(express.json());
-        app.use(bodyParser.json());            
         chai.use(chaiHttp);
         chai.use(chaiSpies);
+    });
 
+    beforeEach(() => {
+        app = express();
+        app.use(express.json());
+        app.use(bodyParser.json());      
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
         testRouter = new AssignmentRouter(app,"/assignments",testAssignmentMgr); 
@@ -47,7 +49,7 @@ describe('AssignmentRouter.ts',()=> {
 
         chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.resolve(mockAssignment)})
 
-        chai.request(testServer).post("/assignments/").send({"name":"test assignment name"})
+        chai.request(testServer).post("/assignments/").send({"name":expectedName})
         .then(res => {
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("name").which.equals(expectedName);
@@ -55,6 +57,31 @@ describe('AssignmentRouter.ts',()=> {
         });
     });
 
+    it("Should be able to interpret a failed request to POST /assignments to create an assignment if name is not defined",() => {
+        
+        const mockAssignment = new Assignment("test","test");
+
+        chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.resolve(mockAssignment)})
+
+        chai.request(testServer).post("/assignments/").send({"name":undefined})
+        .then(res => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("An assignment name was not provided");
+        });
+    });
+    
+    it("Should be able to interpret a failed request to POST /assignments to create an assignment if no name is provided",() => {
+        
+        const mockAssignment = new Assignment("test","test");
+
+        chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.resolve(mockAssignment)})
+
+        chai.request(testServer).post("/assignments/").send({})
+        .then(res => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("An assignment name was not provided");
+        });
+    });
     it("Should be able to interpret a request to GET /assignments to get all assignments", () => {
         
         const firstMockAssignment = new Assignment('007', 'BondJamesBond');
