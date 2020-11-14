@@ -37,7 +37,7 @@ describe('SubmissionRouter.ts',()=> {
     it("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
         
         //NOTE: This is technically only passing against the live app (note port is not 8081)
-        superagent.post('http://localhost:8080/submissions').attach('submissionfile',fs.readFileSync("./test/App.spec.ts"))
+        superagent.post('http://localhost:8080/submissions/sub1/files').attach('submissionfile',fs.readFileSync("./test/App.spec.ts"))
         //chai.request(testServer).post("/submissions/upload").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
         .then((res) => {
             expect(res).to.have.status(200);

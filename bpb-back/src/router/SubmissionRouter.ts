@@ -12,9 +12,9 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   setupRoutes() {
     this.router.get("/helloworld",this.getHelloWorldFn);
     this.router.get("/compare?a=subid1&b=subid2",this.getComparisonResultFn); //TODO: un-hardcode
-    this.router.post("/",this.postFileUploadFn);
-    this.router.get("/",this.getFileContentFn);
-    this.router.get("/files?id=subid1",this.getSubmissionFilesFn);
+    this.router.post("/sub1/files",this.postFileUploadFn);
+    this.router.get("/sub1/files",this.getSubmissionFilesFn);
+    this.router.get("/sub1/files/AXHFD",this.getFileContentFn);
   }
 
   getHelloWorldFn = async function(req : Express.Request,res : any){
@@ -24,7 +24,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
   getSubmissionFilesFn = async function(req : Express.Request,res : any){
-    res.send({"files":[{"fileName":"testy.java"},{"fileName":"son_of_testy.java"}]});
+    res.send({"sub_id":"sub1","files":[{"name":"testy.java","id":"AXHFD"},{"name":"son_of_testy.java","id":"NONEXISITO"}]});
   }
 
   //TODO: Replace
@@ -33,7 +33,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     res.send({
         "matches":[
           [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
-          [{"sub_id":"subid1","file_path":"/test/file33.java","context":"method","start":5,"end":7,"hash":"reeeetre","text":"void simultaneous() { }"},{"sub_id":"subid2","file_path":"/test/filere.java","context":"method","start":8,"end":10,"hash":"423wqq1","text":"void simulate() { }"}]
+          [{"sub_id":"subid1","file_path":"/test/file33.java","context":"method","start":5,"end":7,"hash":"jldf","text":"void simultaneous() { }"},{"sub_id":"subid2","file_path":"/test/filere.java","context":"method","start":8,"end":10,"hash":"423wqq1","text":"void simulate() { }"}]
         ] 
       });
   }
@@ -41,7 +41,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //TODO: Replace
   //Hardcoded endpoint for front-end development purposes
   getFileContentFn = async function (req : Express.Request,res : any){
-    res.send({fileData :"void this() { \n      is \n      an \n      examples! \n } "});
+    res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
   }
 
   //TODO: Replace
