@@ -21,6 +21,7 @@ export class AssignmentManager implements IAssignmentManager {
     }    
     getAssignment(assignmentId: String): Promise<IAssignment> {
         throw new Error("Method not implemented.");
+        //should reject promise with "The requested assignment does not exist" if assignment doesn't exist with the given id
     }
     
     async getAssignments(): Promise<IAssignment[]> {

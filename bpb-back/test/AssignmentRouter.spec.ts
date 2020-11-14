@@ -118,7 +118,18 @@ describe('AssignmentRouter.ts',()=> {
         });
     });
 
-    it("Should be able to interpret a failed request to GET /assignments/{id} where {id} is invalid");
+    it("Should be able to interpret a failed request to GET /assignments/{id} where {id} is invalid",() => {
+
+        const expectedId = '0010'
+        const mockMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
+
+        chai.request(testServer).get("/assignments/"+expectedId)
+        .then(res  => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
+            expect(mockMethod).to.have.been.called.with(expectedId);
+        });
+    });
 
     it("Should be able to interpret a request to PUT /assignments/{id} where {id} is valid");
 

@@ -18,8 +18,8 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   setupRoutes() {
     this.router.put("/",this.putFn);
     this.router.get("/",this.getFn);
-    this.router.get("/:id",this.getSingleFn);
     this.router.get("/helloworld",this.getHelloWorldFn);
+    this.router.get("/:id",this.getSingleFn);
     this.router.post("/",this.postFn);
     this.router.delete("/",this.deleteFn)
   }
@@ -32,6 +32,9 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
           var assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
           var responseBody = { assignments:assignmentEntries }
           res.send(responseBody);
+        }).catch((err) => {
+          res.status(400)
+          res.send({"response":err});
         });
   };
   
@@ -44,8 +47,12 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.status(400);
       res.send({"response":"No assignment id was provided"});
     } else {
-      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-          res.send(assignment.asJSON());
+      this.assignmentManager.getAssignment(assignmentId)
+      .then(assignment => {
+        res.send(assignment.asJSON());
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
       });
     }
   }
@@ -59,8 +66,12 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.status(400);
       res.send({"response":"An assignment name was not provided"});
     } else {
-      this.assignmentManager.createAssignment(req.body).then(assignment => {
-          res.send(assignment.asJSON());
+      this.assignmentManager.createAssignment(req.body)
+      .then(assignment => {
+        res.send(assignment.asJSON());
+      }).catch((err) => {
+        res.status(400);  
+        res.send({"response":err});
       });
     }
   }
