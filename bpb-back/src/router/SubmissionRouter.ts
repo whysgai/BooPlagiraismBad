@@ -34,13 +34,13 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   
   //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getSubmissionFilesFn = async function(req : express.Request,res : express.Response){
+  getSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
     res.send({"sub_id":"sub1","files":[{"name":"testy.java","id":"AXHFD"},{"name":"son_of_testy.java","id":"NONEXISITO"}]});
   }
 
   //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getComparisonResultFn = async function(req : express.Request,res : express.Response){
+  getComparisonResultFn = async (req : express.Request,res : express.Response) => {
     res.send({
         "matches":[
           [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
@@ -51,11 +51,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //TODO: Replace
   //Hardcoded endpoint for front-end development purposes
-  getFileContentFn = async function (req : express.Request,res : express.Response){
+  getFileContentFn = async (req : express.Request,res : express.Response) => {
     res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
   }
 
-  postFileUploadFn = async function (req : express.Request,res : express.Response){
+  postFileUploadFn = async (req : express.Request,res : express.Response) => {
 
     var submissionId = req.params.id;
     
@@ -75,10 +75,14 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
             res.status(400);
             res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
           } else {
-            submissionFile.mv(AppConfig.submissionFileUploadDirectory() + submissionFile.name).then(() => {
-              this.submissionManager.getSubmission("someid").then((submission : ISubmission) => {
+              
+            const filePath = AppConfig.submissionFileUploadDirectory() + submissionFile.name;
 
-                this.submissionManager.processSubmissionFile(submission).then(() => {
+            submissionFile.mv(filePath).then(() => {
+              
+              this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
+
+                this.submissionManager.processSubmissionFile(submission,filePath).then(() => {
               
                   res.send({
                     "response": 'File uploaded successfully.',
