@@ -1,3 +1,9 @@
+/**
+ * File source: https://github.com/trendmicro/tlsh/blob/master/js_ext/tlsh.js
+ * 
+ * Necessary changes to source file can be found at: https://github.com/turecarlson/tlsh/commits/master
+ */
+
 /*
  * TLSH is provided for use under two licenses: Apache OR BSD.
  * Users may opt to use either license depending on the license
