@@ -19,8 +19,9 @@ export class AssignmentManager implements IAssignmentManager {
         this.assignmentDAO = assignmentDAO;
     }    
     
+    // TODO: Have this return real things
     async getAssignments(): Promise<IAssignment[]> {
-        throw new Error("Method not implemented.");
+        return Promise.resolve([]);
     }
     async createAssignment(data : JSON): Promise<IAssignment> {
         throw new Error("Method not implemented.");
