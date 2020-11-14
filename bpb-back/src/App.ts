@@ -2,6 +2,8 @@ import express from 'express';
 import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
+import { AssignmentDAO } from './model/AssignmentDAO';
+import { AssignmentManager } from './model/AssignmentManager';
 import AssignmentRouter from './router/AssignmentRouter'
 import SubmissionRouter from './router/SubmissionRouter'
 
@@ -21,6 +23,10 @@ class App {
             console.log("bpb-back connected to " + AppConfig.dbConnectionString());
 
             mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
+
+            // Set up Assignment DAO and Manager
+            let assignmentDAO = new AssignmentDAO();
+            let assignmentManager = new AssignmentManager(assignmentDAO);
             
             // Set up express app
             let app = express();
@@ -32,7 +38,7 @@ class App {
             // Set up routers
             let routers = []
             routers.push(new SubmissionRouter(app,'/submissions'));
-            routers.push(new AssignmentRouter(app,'/assignments'));
+            routers.push(new AssignmentRouter(app,'/assignments',assignmentManager));
 
             // Start listening for traffic
             app.listen(AppConfig.port(),() => {

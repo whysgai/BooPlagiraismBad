@@ -1,62 +1,126 @@
 import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
-import { Router } from 'express';
-import { AssignmentFactory } from '../model/AssignmentFactory';
-import { Assignment } from '../model/Assignment'
+import express, { Router } from 'express';
+import {IAssignment } from '../model/Assignment'
+import { IAssignmentManager } from '../model/AssignmentManager';
 
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
   protected router : Router;
+  assignmentManager : IAssignmentManager;
 
-  constructor(app : any, route : string){
+  constructor(app : express.Application, route : string, assignmentManager : IAssignmentManager){
     super(app,route);
     this.setupRoutes();
+    this.assignmentManager = assignmentManager;
   }
 
   setupRoutes() {
-    this.router.put("/",this.putFn);
-    this.router.get("/",this.getFn)
     this.router.post("/",this.postFn);
-    this.router.delete("/",this.deleteFn)
-    this.router.get("/helloworld",this.getHelloWorldFn);
+    this.router.get("/",this.getFn);
+    this.router.get("/:id",this.getSingleFn);
+    this.router.put("/:id",this.putFn);
+    this.router.delete("/:id",this.deleteFn)
   }
 
   //GET /assignments: Get all assignments
-  getFn = async function(req : Express.Request,res : any){
-    var assignments = await Assignment.getStaticModel().find();
-    res.send(assignments);
+  getFn = async(req : express.Request,res : express.Response) => {
+      
+    this.assignmentManager.getAssignments()
+        .then((assignments: IAssignment[]) => {
+          var assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
+          var responseBody = { assignments:assignmentEntries }
+          res.send(responseBody);
+        }).catch((err) => {
+          res.status(400)
+          res.send({"response":err.message});
+        });
+  };
+  
+  //GET /assignments/{id} : Get assignment with {id}
+  getSingleFn = async(req : express.Request,res : express.Response) => {
+    
+    var assignmentId = req.params.id;
+    
+    if(assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"An assignment id was not provided"});
+    } else {
+      this.assignmentManager.getAssignment(assignmentId)
+      .then(assignment => {
+        res.send(assignment.asJSON());
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
+    }
   }
 
   //POST /assignments: Create a new assignment
-  postFn = async function(req : Express.Request,res : any){
-    var assignment = AssignmentFactory.buildAssignment("test","test");
-    await assignment.getModelInstance().save();
-    res.send(assignment);
+  postFn = async(req : express.Request,res : express.Response) => {
+
+    var assignmentName = req.body.name;
+
+    if(assignmentName == undefined) {
+      res.status(400);
+      res.send({"response":"An assignment name was not provided"});
+    } else {
+      this.assignmentManager.createAssignment(req.body)
+      .then(assignment => {
+        res.send(assignment.asJSON());
+      }).catch((err) => {
+        res.status(400);  
+        res.send({"response":err.message});
+      });
+    }
   }
 
   //PUT /assignments : Update an assignment
-  putFn = async function(req : Express.Request,res : any){
-    res.status(400);
-    res.send({"response":"Updating assignments is not yet supported"});
+  putFn = async(req : express.Request,res : express.Response) => {
+
+    var assignmentId = req.params.id;
+    
+    if(assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"An assignment id was not provided"});
+    } else {
+      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
+        this.assignmentManager.updateAssignment(assignment,req.body)
+        .then(assignment => {
+          res.send(assignment.asJSON());
+        }).catch((err) => {
+          res.status(400);  
+          res.send({"response":err.message});
+        });
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
+    }
   }
 
   //DELETE /assignments/{id} : Delete assignment with {id}
-  deleteFn = async function(req : Express.Request,res : any){
-    //TODO: Implement
-    res.status(400);
-    res.send({"response":"Deleting assignments is not yet supported"});
-  }
+  deleteFn = async(req : express.Request,res : express.Response) => {
 
-  //GET /assignments/{id} : Get assignment with {id}
-  getSingleFn = async function(req : Express.Request,res : any){
-    //TODO: Implement
-    res.status(400);
-    res.send({"response":"Accessing single assignments is not yet supported"});
-  }
-
-  //Hello World function (for testing)
-  getHelloWorldFn = async function(req : Express.Request,res : any){
-    res.send({"response":"the world and the bpb-back assignment router say hi back!!"});
+    var assignmentId = req.params.id;
+    
+    if(assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"An assignment id was not provided"});
+    } else {
+      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
+        this.assignmentManager.deleteAssignment(assignment)
+        .then(() => {
+          res.send({"response":"Deleted assignment " + assignmentId});
+        }).catch((err) => {
+          res.status(400);  
+          res.send({"response":err.message});
+        });
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
+    }
   }
 }
 

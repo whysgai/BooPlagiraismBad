@@ -19,6 +19,7 @@ export interface IAssignment {
     addSubmission(submissionID : String) : void
     removeSubmission(submissionID : String) : void
     getModelInstance() : Document;
+    asJSON() : Object;
 }
     
 export class Assignment implements IAssignment {
@@ -37,6 +38,9 @@ export class Assignment implements IAssignment {
         this.id = id;
         this.name = name
         this.submissionIds = [];
+    }
+    static getStaticModel() : mongoose.Model<IAssignmentModel> {
+        return this.assignmentModel;
     }
     getID(): String {
         return this.id;
@@ -61,7 +65,8 @@ export class Assignment implements IAssignment {
     getModelInstance() : Document {
         return new Assignment.assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
     }
-    static getStaticModel() : mongoose.Model<IAssignmentModel> {
-        return this.assignmentModel;
+    asJSON() : Object {
+        return {_id:this.id, name:this.name, submissionIds:this.submissionIds};
     }
+
 }
