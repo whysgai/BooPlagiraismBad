@@ -2,13 +2,13 @@ import { expect } from "chai";
 import {Assignment,IAssignment} from "../src/model/Assignment"
 import {IAssignmentFactory,AssignmentFactory} from "../src/model/AssignmentFactory"
 
-describe.skip("Assignment.ts",() => {
+describe("Assignment.ts",() => {
 
     var assignment : IAssignment;
     var assignmentName : String;
     var assignmentId : String;
 
-    before(() => {
+    beforeEach(() => {
         assignment = AssignmentFactory.buildAssignment(assignmentId,assignmentName);
     });
 
@@ -26,20 +26,20 @@ describe.skip("Assignment.ts",() => {
 
     describe("getSubmissionIds()",() => {
         it("Should return an empty collection if assignment has no submissions ",() => {
-            expect(assignment.getSubmissionIDs).to.be.empty;
+            expect(assignment.getSubmissionIDs()).to.be.empty;
         });
         
         it("Should return the assignment’s submission’s {id}s if there are some",() => {
             assignment.addSubmission("some_submission_id");
-            expect(assignment.getSubmissionIDs).to.contain("some_submission_id");
+            expect(assignment.getSubmissionIDs()).to.contain("some_submission_id");
         });
     });
 
     describe("addSubmission()",() => {
         it("Should add a submission to the assignment",() => {
-            expect(assignment.getSubmissionIDs).to.be.empty;
+            expect(assignment.getSubmissionIDs()).to.be.empty;
             assignment.addSubmission("some_submission_id");
-            expect(assignment.getSubmissionIDs).to.contain("some_submission_id");
+            expect(assignment.getSubmissionIDs()).to.contain("some_submission_id");
         });
     });
 
