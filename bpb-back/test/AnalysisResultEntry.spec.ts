@@ -17,6 +17,13 @@ describe.skip("AnalysisResultEntry",() => {
         });
     });
 
+    describe("getSubmissionID", () => {
+        it("Should return a string with the expected value.", () => {
+            expect(testARE.getSubmissionID()).to.be.an.instanceof(String);
+            expect(testARE.getSubmissionID()).to.equal("subid1");
+        });
+    });
+
     describe("getLineNumberStart", () => {  
         it("Should return a number with the expected value.", () => {
             expect(testARE.getLineNumberStart()).to.be.an.instanceOf(Number);
