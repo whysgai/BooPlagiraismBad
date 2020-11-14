@@ -51,7 +51,6 @@ describe('AssignmentRouter.ts',()=> {
 
     it("Should be able to interpret a request to POST /assignments to create an assignment");
 
-    //TODO: Spy on AssignmentManager(?)
     it("Should be able to interpret a request to GET /assignments to get all assignments", () => {
         
         const firstMockAssignment = new Assignment('007', 'BondJamesBond');
