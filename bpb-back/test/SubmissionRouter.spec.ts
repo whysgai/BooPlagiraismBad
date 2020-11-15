@@ -83,8 +83,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(
             testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission])}
         );
-
-        chai.request(testServer).get("/submissions")
+        chai.request(testServer).get("/submissions/")
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res.body).to.deep.equal(expectedSubs)
