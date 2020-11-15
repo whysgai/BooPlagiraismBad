@@ -1,46 +1,59 @@
 import { expect } from "chai";
+import { ISubmission } from "../src/model/Submission";
 import { SubmissionFactory } from "../src/model/SubmissionFactory";
 
-describe.skip("Submission.ts",() => {
+describe("Submission.ts",() => {
 
-    var id : String;
-    var name : String;
+    var testSubmissionA : ISubmission;
+    var testSubmissionB : ISubmission;
 
-    before(()=>{
-        id = "TestID";
-        name = "TestName";
+    beforeEach(()=>{
+        testSubmissionA = SubmissionFactory.buildSubmission("id_a","name_a");
+        testSubmissionB = SubmissionFactory.buildSubmission("id_b","name_b");
     });
 
     describe("getId()",() => {
         it("Should return the submission’s id",() => {
-            var submission = SubmissionFactory.buildSubmission(id,name);
-            expect(submission.getId()).to.equal(id);
+            expect(testSubmissionA.getId()).to.equal("id_a");
         });
     });
-
     describe("getName()",() => {
         it("Should return the submission’s name",() => {
-            var submission = SubmissionFactory.buildSubmission(id,name);
-            expect(submission.getName()).to.equal(name);
+            expect(testSubmissionA.getName()).to.equal("name_a");
         });
     });
 
     describe("compare()",() => {
-        it("Should return a valid AnalysisResult if comparator submission is valid",() => {
-            var submissionA = SubmissionFactory.buildSubmission(id,name);
-            var submissionB = SubmissionFactory.buildSubmission("id_b","name_b");
-            var resultA = submissionA.compare(submissionB);
+        it("Should return a valid AnalysisResult if comparator submission is valid (left direction)",() => {
+            //testSubmissionA.addFile(); //TODO: Add AREs
+            //testSubmissionB.addFile(); //TODO: Add AREs
+            var resultA = testSubmissionA.compare(testSubmissionB);
             expect(resultA).to.not.be.undefined;
             expect(resultA.asJSON).to.not.be.be.undefined;
-            var resultB = submissionB.compare(submissionA);
+        });
+        
+        it("Should return a valid AnalysisResult if comparator submission is valid (right direction)",() => {
+            //testSubmissionA.addFile(): //TODO: Add AREs
+            //testSubmissionB.addfile(): //TODO: Add AREs
+            var resultB = testSubmissionB.compare(testSubmissionA);
             expect(resultB).to.not.be.undefined;
             expect(resultB.asJSON()).to.not.be.undefined;
         });
        
-        //TODO: Determine if check required for submission with no ASTS (will this exist?)
-        it("Should throw an appropriate error if comparator submission is invalid (null)",() =>{
-            var submission = SubmissionFactory.buildSubmission(id,name);
-            expect(submission.compare(undefined)).to.throw();
+        it("Should throw an appropriate error if comparator submission is invalid (no AREs)",() =>{
+            expect(testSubmissionA.compare(testSubmissionB)).to.throw();
         });
+
+        it("Should throw an appropriate error if comparator submission is invalid (left has no ARE)",() => {
+            //testSubmissionB.addFile(); //TODO: Add AREs to B only
+            expect(testSubmissionA.compare(testSubmissionB)).to.throw();
+            var resultA = testSubmissionA.compare(testSubmissionB);
+        });
+        
+        it("Should throw and appropriate error if comparator submission is invalid (right has no ARE)",() => {
+            //testSubmissionA.addFile(): //TODO: Add AREs to A only
+            expect(testSubmissionB.compare(testSubmissionA)).to.throw();
+        });
+
     });
 });
