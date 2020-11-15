@@ -28,5 +28,6 @@ export class AnalysisResult implements IAnalysisResult {
         return this.analysisMatches.map((match) => {
             return [match[0].asJSON(), match[1].asJSON()];
         });
+        
     }
 }
