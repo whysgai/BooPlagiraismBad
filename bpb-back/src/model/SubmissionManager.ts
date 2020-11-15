@@ -9,9 +9,9 @@ export interface ISubmissionManager {
     getSubmissions(assignmentId : String) : Promise<ISubmission[]>;
     getSubmission(submissionId : String) : Promise<ISubmission>;
     createSubmission(data : Object) : Promise<ISubmission>;
-    updateSubmission(submission : ISubmission, data : Object) : Promise<ISubmission>;
-    processSubmissionFile(submission : ISubmission, filePath : String) : Promise<void>; 
-    deleteSubmission(submission : ISubmission) : void;
+    updateSubmission(submissionId : String, data : Object) : Promise<ISubmission>;
+    processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
+    deleteSubmission(submissionId : String) : void;
     compareSubmissions(submissionA : ISubmission, submissionB : ISubmission) : Promise<AnalysisResult>
 }
 
@@ -34,17 +34,17 @@ export class SubmissionManager implements ISubmissionManager {
         //Create and persist a submission in DB / cache
         throw new Error('Method not implemented.');
     }
-    updateSubmission = async(submission : ISubmission, data : Object): Promise<ISubmission> => {
+    updateSubmission = async(submissionId : String, data : Object): Promise<ISubmission> => {
         //Update the submission in cache and db
         throw new Error('Method not implemented.');
     }
-    processSubmissionFile = async(submission : ISubmission, filePath : String): Promise<void> => {
+    processSubmissionFile = async(submissionId : String, filePath : String): Promise<void> => {
         //Get file content from disk
         //Call submission.addfile on the submission
         //Save the submission with the new entries into the database (including pointer to filePath as metadata)
         throw new Error('Method not implemented.');
     }
-    deleteSubmission = async(submission : ISubmission): Promise<void> => {
+    deleteSubmission = async(submissionId : String): Promise<void> => {
         //Delete the submission from cache and db
         throw new Error('Method not implemented.');
     }
