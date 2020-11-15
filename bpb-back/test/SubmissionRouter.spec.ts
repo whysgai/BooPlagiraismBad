@@ -275,15 +275,13 @@ describe('SubmissionRouter.ts',()=> {
         chai.request(testServer).delete("/submissions/" + testSubmission.getId())
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body.response).to.equal("Deleted submission "+testSubmission.getId());
+                expect(res.body).to.have.property("response").which.equals("Deleted submission "+testSubmission.getId());
             });
     });
     it("Should be able to interpret a failed request to DELETE /submissions/{id} where {id} is invalid", () => { 
         const nonexistentId = "drphilbertmd"
         chai.spy.on(
-            testSubmissionManager, 'deleteSubmission', () => {
-                Promise.reject(new Error("Submission ID not found: " + nonexistentId))
-            }
+            testSubmissionManager, 'deleteSubmission', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
         );
         chai.request(testServer).delete("/submissions/" + nonexistentId)
             .then(res => {
