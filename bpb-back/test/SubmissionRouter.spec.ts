@@ -104,18 +104,68 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(
             testSubmissionManager, 'getSubmission', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
         );
-
         chai.request(testServer).get("/submissions/" + nonexistentId)
             .then(res => {
                 expect(res).to.have.status(400);
                 expect(res.body).to.have.property("response").which.equals("Submission ID not found: " + nonexistentId);
             });
     });
-    it("Should be able to interpret a request to PUT /submissions/{id} where {id} is valid");
-    it("Should be able to interpret a failed request to PUT /submissions/{id} where {id} is invalid");
-    it("Should be able to interpret a request to DELETE /submissions/{id} where {id} is valid");
-    it("Should be able to interpret a failed request to DELETE /submissions/{id} where {id} is invalid");
-    it("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}");
+    it("Should be able to interpret a request to PUT /submissions/{id} where {id} is valid", () => { 
+        const postBody = testSubmission;
+        chai.spy.on(testSubmissionManager, 'updateSubmission', () => {return Promise.resolve(testSubmission)});
+        chai.request(testServer).put("/submissions/" + testSubmission.getId())
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.deep.equals(testSubmission.asJSON());
+            });
+    });
+    it("Should be able to interpret a failed request to PUT /submissions/{id} where {id} is invalid", () => { 
+        const nonexistentId = "drphilbertmd"
+        const postBody = testSubmission;
+        chai.spy.on(
+            testSubmissionManager, 'updateSubmission', () => {
+                Promise.reject(new Error("Submission ID not found: " + nonexistentId))
+            }
+        );
+        chai.request(testServer).put("/submissions/" + nonexistentId)
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("Submission ID not found: " + nonexistentId);
+            });
+    });
+    it("Should be able to interpret a request to DELETE /submissions/{id} where {id} is valid", () => { 
+        chai.spy.on(testSubmissionManager, 'deleteSubmission', () => {return Promise.resolve(testSubmission)});
+        chai.request(testServer).delete("/submissions/" + testSubmission.getId())
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body.response).to.equal("Deleted submission "+testSubmission.getId());
+            });
+    });
+    it("Should be able to interpret a failed request to DELETE /submissions/{id} where {id} is invalid", () => { 
+        const nonexistentId = "drphilbertmd"
+        chai.spy.on(
+            testSubmissionManager, 'deleteSubmission', () => {
+                Promise.reject(new Error("Submission ID not found: " + nonexistentId))
+            }
+        );
+        chai.request(testServer).delete("/submissions/" + nonexistentId)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("Submission ID not found: " + nonexistentId);
+            });
+    });
+    it.skip("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}", () => {
+        //TODO
+        const postBody = testSubmission;
+        chai.spy.on(testSubmissionManager, 'deleteSubmission', () => {return Promise.resolve(testSubmission)});
+        chai.request(testServer).delete("/submissions/" + testSubmission.getId())
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body.response).to.equal("Deleted submission "+testSubmission.getId());
+            });
+    });
     it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (1 does not exist)");
     it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (2 does not exist)");
 });
