@@ -1,5 +1,5 @@
 import { IAnalysisResult } from "../AnalysisResult";
-import { IAnalysisResultEntry } from "../AnalysisResultEntry";
+import { AnalysisResultEntry } from "../AnalysisResultEntry";
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
@@ -12,10 +12,11 @@ import { Tlsh } from '../lib/tlsh';
 export interface ISubmission {
     getId() : String;
     getName() : String;
-    addFile(content : String, filePath : String) : void
-    compare(otherSubmission : ISubmission) : IAnalysisResult
-    hasAnalysisResultEntries() : boolean
-    addAnalysisResultEntry(analysisResult : IAnalysisResultEntry) : void
+    getFiles() : String[];
+    addFile(content : String, filePath : String) : void;
+    addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry) : void;
+    hasAnalysResultEntries() : boolean;
+    compare(otherSubmission : ISubmission) : IAnalysisResult;
     asJSON() : Object;
 }
 
@@ -23,18 +24,26 @@ export interface ISubmission {
 
     private id : String;
     private name : String;
-    private analysisResultEntries : IAnalysisResultEntry[]
+    private files : String[];
+    private analysisResultEntries : AnalysisResultEntry[]
 
     constructor(id : String, name : String){
-        //TODO
+        this.id = id;
+        this.name = name
+        this.analysisResultEntries = [];
+        this.files = [];
     }
 
      getId(): String {
-         throw new Error("Method not implemented.");
+         return this.id;
      }
 
      getName(): String {
-         throw new Error("Method not implemented.");
+         return this.name;
+     }
+
+     getFiles() : String[] {
+         return this.files;
      }
 
      addFile(content : String, filePath : String) : void {
@@ -44,14 +53,11 @@ export interface ISubmission {
         //Run AnalysisResultCollectorVisitor on the submission file's ParseTree
         //Gets list of entries from AnalysisResultCollectorVisitor.getEntries
         //Add AnalysisResultEntries to the submission
-        throw new Error("Method not implemented")
-     }
-     
-     hasAnalysisResultEntries(): boolean {
-        throw new Error("Method not implemented.");
+        //Add filePath to the submission's files
+        this.files.push(filePath); //TODO: Remove temporary implementation (required to test SubmissionRouter)
      }
 
-     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
+     addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
          this.analysisResultEntries.push(analysisResultEntry);
      }
 
@@ -64,8 +70,16 @@ export interface ISubmission {
         return {assignment_id:this.id, name:this.name, analysisResultEntries:this.analysisResultEntries};
     }
 
+    hasAnalysResultEntries() : boolean {
+        if(this.analysisResultEntries.length > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     //Actually perform comparison of entries to entries here
-    protected compareResultEntries(otherSubmissionEntries : IAnalysisResultEntry[]) : IAnalysisResult {
+    protected compareResultEntries(otherSubmissionEntries : AnalysisResultEntry[]) : IAnalysisResult {
         throw new Error("Not implemented")
     }
 }
