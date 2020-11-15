@@ -35,23 +35,97 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     });
 
     describe("getAnalysisResultEntries", () => {
-        it("Should throw an error if no ParseTree has been visited.", () => {
-            let newVisitor = new AnalysisResultEntryCollectorVisitor("someFilePath");
-            expect(newVisitor.getAnalysisResultEntries()).to.throw(Error, "AnalysisResultEntryCollectorVisitor \
-            has not visited a ParseTree");
+        var newVisitor : AnalysisResultEntryCollectorVisitor;
+
+        beforeEach(() => {
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
+        });
+
+        it("Should throw an error if no ParseTree has been visited.", () => { 
+            expect(newVisitor.getAnalysisResultEntries()).to.throw(Error, "AnalysisResultEntryCollectorVisitor" +
+            "has not visited a ParseTree");
         });
 
         it("Should NOT throw an error if a ParseTree has been visited.", () => {
-            let newVisitor = new AnalysisResultEntryCollectorVisitor("someFilePath");
             newVisitor.visit(exampleTree);
             expect(newVisitor.getAnalysisResultEntries()).to.not.throw(Error);                      
+        });
+
+        it("Should return an AnalysisResultEntry[] of expected length.", () => {
+            newVisitor.visit(exampleTree);
+            expect(newVisitor.getAnalysisResultEntries().length).to.equal("placeholderText");
         });
     });
 
     describe("getFilePath", () => {
         it("Should return a string with the expected value.", () => {
             let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
-            expect(newVisitor.getFilePath()).is.equal('./res/javaExample.java');
+            expect(newVisitor.getFilePath()).is.equal(exampleFilePath);
         });
-    })
+    });
+
+    describe("visit", () => {
+        var newVisitor : AnalysisResultEntryCollectorVisitor;
+        before(() => {
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
+            newVisitor.visit(exampleTree);
+        })
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.contextType Should match as expected.", () => {
+            newVisitor.visit(exampleTree);
+            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            let firstEntry = analysisResultEntries[0];
+            expect(firstEntry.getContextType()).to.equal("placeholderText");
+        });
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.hashValue Should match as expected.", () => {
+            newVisitor.visit(exampleTree);
+            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            let firstEntry = analysisResultEntries[0];
+            expect(firstEntry.getHashValue()).to.equal("placeholderText");
+        });
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.lineNumberStart Should match as expected.", () => {
+            newVisitor.visit(exampleTree);
+            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            let firstEntry = analysisResultEntries[0];
+            expect(firstEntry.getLineNumberStart()).to.equal("placeholderText");
+        });
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.lineNumberEnd Should match as expected.", () => {
+            newVisitor.visit(exampleTree);
+            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            let firstEntry = analysisResultEntries[0];
+            expect(firstEntry.getLineNumberEnd()).to.equal("placeholderText");
+        });
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.submissionId Should match as expected.", () => {
+            newVisitor.visit(exampleTree);
+            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            let firstEntry = analysisResultEntries[0];
+            expect(firstEntry.getSubmissionID()).to.equal("FAIL IF ID IS NOT YET IMPLEMENTED IN CLASS");
+        });
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.filePath Should match as expected.", () => {
+            newVisitor.visit(exampleTree);
+            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            let firstEntry = analysisResultEntries[0];
+            expect(firstEntry.getFilePath()).to.equal(exampleFilePath);
+        });
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.text Should match as expected.", () => {
+            newVisitor.visit(exampleTree);
+            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            let firstEntry = analysisResultEntries[0];
+            expect(firstEntry.getText()).to.equal("placeholderText");
+        });
+        
+    });
 });
