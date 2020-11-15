@@ -176,10 +176,15 @@ describe('SubmissionRouter.ts',()=> {
     it.skip("Should be able to interpret a failedd request to POST /submissions/{id}/files with no file attached");
     it.skip("Should be able to interpret a failed request to POST /submissions/{id}/files with the incorrect file key");
 
-    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is valid", () => {
+    it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if {id} is valid", () => {
         const expectedSubs = {submissions: [testSubmission.asJSON()]};
 
+    
         testAssignment.addSubmission(testSubmission.getId());
+
+        chai.spy.on(
+            testAssignmentManager,'getAssignment',() => {return Promise.resolve(testAssignment);}
+        )
 
         var mockGetSubmissions = chai.spy.on(
             testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
@@ -192,31 +197,21 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.deep.equal(expectedSubs);
             });
     });
-    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is invalid", () => {
+    it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if {id} is invalid", () => {
         chai.spy.on(
             testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("The requested assignment does not exist"));}
         )
-        chai.request(testServer).get("/submissions/ofAssignment?id=test")
+        chai.request(testServer).get("/submissions/ofAssignment/test")
             .then(res => {
                 expect(res).to.have.status(400);
                 expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
             });
     });
-    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is not provided", () => {
-        chai.spy.on(
-            testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("assignment_id query parameter was not provided"));}
-        )
-        chai.request(testServer).get("/submissions/ofAssignment?id=")
-            .then(res => {
-                expect(res).to.have.status(400);
-                expect(res.body).to.have.property("response").which.equals("assignment_id query parameter was not provided");
-            });
-    });
-    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if the assignment has no submissions", () => {
+    it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if the assignment has no submissions", () => {
         chai.spy.on(
             testAssignmentManager,'getAssignment',() => {return Promise.resolve([]);}
         )
-        chai.request(testServer).get("/submissions/ofAssignment?id=test")
+        chai.request(testServer).get("/submissions/ofAssignment/test")
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(res.body).to.have.length(0); //TODO: ?
