@@ -289,26 +289,28 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("response").which.equals("Submission ID not found: " + nonexistentId);
             });
     });
-    it("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}", () => {
+    it("Should be able to interpret a request to GET /submissions/compare/{submission_id_1}/{submission_id_2}", () => {
         const mockAnalysisResult = new AnalysisResult();
         mockAnalysisResult.addMatch(testAre1, testAre2);
+
         chai.spy.on(testSubmissionManager, 'compareSubmissions', () => {return Promise.resolve(mockAnalysisResult)});
-        chai.request(testServer).get("/submissions/compare?a=" + testAre1.getSubmissionID() + "&b=" + testAre2.getSubmissionID())
+
+        chai.request(testServer).get("/submissions/compare/" + testAre1.getSubmissionID() + "/" + testAre2.getSubmissionID())
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body.response).to.deep.equal(mockAnalysisResult);
+                expect(res.body).to.deep.equals(mockAnalysisResult.asJSON());
             });
     });
-    it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (1 does not exist)", () => {
+    it("Should be able to interpret a failed request to GET /submissions/compare/{submission_id_1}/{submission_id_2} (1 does not exist)", () => {
         const nonexistentId = "BADID"
-        chai.spy.on(testSubmissionManager, 'getSubmission', (submissionId: String) => {
+        chai.spy.on(testSubmissionManager, 'compareSubmissions', (submissionId: String) => {
             if (submissionId === nonexistentId) {
-                return Promise.reject(new Error("Submission ID not found: " + nonexistentId));
+                return Promise.reject(new Error("Submission ID not found: " + nonexistentId))
             } else {
-                return Promise.resolve(testSubmission)
+                return Promise.resolve(testSubmission);
             }            
         });
-        chai.request(testServer).get("/submissions/compare?a=" + nonexistentId + "&b=" + testAre2.getSubmissionID())
+        chai.request(testServer).get("/submissions/compare/" + nonexistentId + "/" + testAre2.getSubmissionID())
             .then(res => {
                 expect(res).to.have.status(400);
                 expect(res.body.response).to.equal("Submission ID not found: " + nonexistentId);
@@ -316,14 +318,10 @@ describe('SubmissionRouter.ts',()=> {
     });
     it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (2 does not exist)", () => {
         const nonexistentId = "WORSEID"
-        chai.spy.on(testSubmissionManager, 'getSubmission', (submissionId: String) => {
-            if (submissionId === nonexistentId) {
-                return Promise.reject(new Error("Submission ID not found: " + nonexistentId));
-            } else {
-                return Promise.resolve(testSubmission)
-            }            
-        });
-        chai.request(testServer).get("/submissions/compare?a=" + testAre1.getSubmissionID() + "&b=" + nonexistentId)
+        chai.spy.on(
+            testSubmissionManager, 'compareSubmissions', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
+        );
+        chai.request(testServer).get("/submissions/compare/" + testAre1.getSubmissionID() + "/" + nonexistentId)
             .then(res => {
                 expect(res).to.have.status(400);
                 expect(res.body.response).to.equal("Submission ID not found: " + nonexistentId);
