@@ -119,7 +119,9 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     var submissionId = req.params.id; //NOTE: Lack of defensive coding/tests intentional (see above)
     this.submissionManager.deleteSubmission(submissionId)
       .then(() => {
-        res.sendStatus(200); 
+        res.status(200);
+        res.send("Deleted submission " + submissionId);
+
       }).catch((err) => {
         res.status(400);
         res.send({"response":err.message});
