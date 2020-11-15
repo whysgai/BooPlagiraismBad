@@ -63,14 +63,44 @@ describe("Submission.ts",() => {
 
     });
 
+    describe("hasAnalysisResultEntries()", () => {
+        it("Should return false if the submission has no AREs",() => {
+            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
+        })
+
+        it("Should return true if the submission has any AREs",() => {
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
+        })
+    });
+
     describe("addFile()",() => {
-        it("Should successfully add a new file to the submission if input is valid");
-        it("Should throw an appropriate error if the specified file was already added to the submission");
+        it("Should successfully add new file contents to the submission if input is valid",() => {
+            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
+            testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath());
+            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
+        });
+
+        it("Should throw an appropriate error if the specified file was already added to the submission",() => {
+            testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath());
+            expect(testSubmissionA.addFile("some other file content",testEntryA.getFilePath())).to.throw(new Error("File at " + testEntryA.getFilePath() + " was already added to the submission"));
+        });
     });
+
     describe("addAnalysisResultEntry()",() => {
-        it("Should add an AnalysisResultEntry to the submission");
+        it("Should add an AnalysisResultEntry to the submission",() => {
+            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
+        });;
     });
+
     describe("asJSON()",() => {
-        it("Should return an object with the expected properties");
+        it("Should return an object with the expected properties",() => {
+            var expectedJSON = {}; //TODO
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
+            expect(testSubmissionA.asJSON()).to.deep.equal(expectedJSON);
+        });
     });
 });

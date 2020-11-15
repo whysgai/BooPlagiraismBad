@@ -14,6 +14,7 @@ export interface ISubmission {
     getName() : String;
     addFile(content : String, filePath : String) : void
     compare(otherSubmission : ISubmission) : IAnalysisResult
+    hasAnalysisResultEntries() : boolean
     addAnalysisResultEntry(analysisResult : IAnalysisResultEntry) : void
     asJSON() : Object;
 }
@@ -44,6 +45,10 @@ export interface ISubmission {
         //Gets list of entries from AnalysisResultCollectorVisitor.getEntries
         //Add AnalysisResultEntries to the submission
         throw new Error("Method not implemented")
+     }
+     
+     hasAnalysisResultEntries(): boolean {
+        throw new Error("Method not implemented.");
      }
 
      addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {

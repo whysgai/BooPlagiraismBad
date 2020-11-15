@@ -1,5 +1,5 @@
 export interface IAnalysisResultEntry {
-    asJSON() : JSON
+    asJSON() : Object 
     getHashValue(): String
     getFilePath(): String
     getContextType(): String
@@ -46,7 +46,7 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         return this.contextType;
     }
 
-    asJSON(): JSON {
+    asJSON(): Object {
        return JSON.parse(JSON.stringify(this)); 
     }
 
