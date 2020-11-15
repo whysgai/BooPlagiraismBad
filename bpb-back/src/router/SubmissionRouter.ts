@@ -6,6 +6,9 @@ import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmission } from '../model/Submission'
 
+/**
+ * Router for requests related to Submissions
+ */
 class SubmissionRouter extends AbstractRouter implements IRouter {
   
   private assignmentManager : IAssignmentManager;
@@ -34,8 +37,9 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.get("/ofAssignment?id=:id", this.getSubmissionsOfAssignmentFn);
     this.router.get("/:id", this.getSubmissionFn);
     this.router.get("/compare/?a=:ida&b=:idb",this.compareSubmissionsFn);
-    
   }
+
+  //POST / : Create a submission with the provided name and assignment_id
   createSubmissionFn = async(req : express.Request,res : express.Response) => {
     var submissionName = req.body.name;
     var assignmentId = req.body.assignment_id;
@@ -66,7 +70,9 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       })
   }
 
+  //GET /ofAssignment?id:{id} : Get all submissions for the specified assignment
   getSubmissionsOfAssignmentFn = async(req : express.Request,res : express.Response) => {
+    
     var assignmentId = req.params.id;
     this.submissionManager.getSubmissions(assignmentId)
     .then((submissions: ISubmission[]) => {
@@ -78,62 +84,45 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       res.send({"response":err.message});
     });
   }
+
+  //GET /{id} : Get a submission by ID
   getSubmissionFn = async(req : express.Request,res : express.Response) => {
+    
     var submissionId = req.params.id;
-    if (submissionId == undefined) {
-      res.status(400);
-      res.send({"response":"A submission id was not provided"});
-    } else {
-      this.submissionManager.getSubmission(submissionId)
-        .then((submission) => {
-          res.send(submission.asJSON());  
-        }).catch((err) => {
-          res.status(400);
-          res.send({"response":err.message});
-        });
-    }
+    this.submissionManager.getSubmission(submissionId)
+      .then((submission) => {
+        res.send(submission.asJSON());  
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
   }
+
+  //PUT /{id} : Update a given submission
   updateSubmissionFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }
+
+  //DELETE /{id} : Delete a given submission
   deleteSubmissionFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }
+
+  //GET /compare/?a={id_a}&b={id_b} : Compare two submissions
   compareSubmissionsFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }
 
- //TODO: Replace
-  //Hardcoded endpoints for front-end development purposes
-  mockGetSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
-    res.send({"sub_id":"sub1","files":[{"name":"testy.java","id":"AXHFD"},{"name":"son_of_testy.java","id":"NONEXISITO"}]});
-  }
-
-  //TODO: Replace
-  //Hardcoded endpoints for front-end development purposes
-  mockGetComparisonResultFn = async (req : express.Request,res : express.Response) => {
-    res.send({
-        "matches":[
-          [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
-          [{"sub_id":"subid1","file_path":"/test/file33.java","context":"method","start":5,"end":7,"hash":"jldf","text":"void simultaneous() { }"},{"sub_id":"subid2","file_path":"/test/filere.java","context":"method","start":8,"end":10,"hash":"423wqq1","text":"void simulate() { }"}]
-        ] 
-      });
-  }
-
-  //TODO: Replace
-  //Hardcoded endpoint for front-end development purposes
-  mockGetSubmissionFileFn = async (req : express.Request,res : express.Response) => {
-    res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
-  }
- 
+  //GET /{id}/files : Get all files in a given submission
   getSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }
   
+  //POST /{id}/files : Upload a file to a given submission
   createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
     var submissionId = req.params.id;
@@ -180,7 +169,31 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
           res.send(err);
       }
     }
-  }   
+  }
+
+ //TODO: Replace
+  //Hardcoded endpoints for front-end development purposes
+  mockGetSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
+    res.send({"sub_id":"sub1","files":[{"name":"testy.java","id":"AXHFD"},{"name":"son_of_testy.java","id":"NONEXISITO"}]});
+  }
+
+  //TODO: Replace
+  //Hardcoded endpoints for front-end development purposes
+  mockGetComparisonResultFn = async (req : express.Request,res : express.Response) => {
+    res.send({
+        "matches":[
+          [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
+          [{"sub_id":"subid1","file_path":"/test/file33.java","context":"method","start":5,"end":7,"hash":"jldf","text":"void simultaneous() { }"},{"sub_id":"subid2","file_path":"/test/filere.java","context":"method","start":8,"end":10,"hash":"423wqq1","text":"void simulate() { }"}]
+        ] 
+      });
+  }
+
+  //TODO: Replace
+  //Hardcoded endpoint for front-end development purposes
+  mockGetSubmissionFileFn = async (req : express.Request,res : express.Response) => {
+    res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
+  }
+ 
 }
 
 export default SubmissionRouter;

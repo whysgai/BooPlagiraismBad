@@ -193,6 +193,16 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
             });
     });
+    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is not provided", () => {
+        chai.spy.on(
+            testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("assignment_id query parameter was not provided"));}
+        )
+        chai.request(testServer).get("/submissions/ofAssignment?id=")
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("assignment_id query parameter was not provided");
+            });
+    });
     it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if the assignment has no submissions", () => {
         chai.spy.on(
             testAssignmentManager,'getAssignment',() => {return Promise.resolve([]);}
