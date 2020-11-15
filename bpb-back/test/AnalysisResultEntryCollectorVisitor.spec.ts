@@ -16,13 +16,21 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     });
 
     describe("Constructor Tests", () => {
-        it('Should create visitor when provided a filepath string.', () => {
+        it('Should create visitor when provided a non-empty string for filePath parameter.', () => {
             try {
                 let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
                 assert(true == true);
-            } catch {
-                assert.fail()
-            }
+            } catch { assert.fail() }
+        });
+
+        it("Should throw an error if undefined is passed as the filePath parameter.", () => {
+            let badConstructor = function() {new AnalysisResultEntryCollectorVisitor(undefined)};
+            expect(badConstructor).to.throw(Error, "filePath must be non-empty and may not be undefined.");
+        });
+
+        it("Should throw an error if an empty string is passed as the filePath parameter.", () => {
+            let badConstructor = function() {new AnalysisResultEntryCollectorVisitor("")};
+            expect(badConstructor).to.throw(Error, "filePath must be non-empty and may not be undefined.");
         });
     });
 
@@ -40,5 +48,10 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
     });
 
-    // describe("")
+    describe("getFilePath", () => {
+        it("Should return a string with the expected value.", () => {
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
+            expect(newVisitor.getFilePath()).is.equal('./res/javaExample.java');
+        });
+    })
 });
