@@ -121,17 +121,24 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       .then(() => {
         res.status(200);
         res.send({"response":"Deleted submission " + submissionId});
-
       }).catch((err) => {
         res.status(400);
         res.send({"response":err.message});
       });
   }
 
-  //GET /compare/?a={id_a}&b={id_b} : Compare two submissions
+  //GET /compare/?a={ida}&b={idb} : Compare two submissions
   compareSubmissionsFn = async(req : express.Request,res : express.Response) => {
-    res.status(400);
-    res.send({"response":"Not implemented"});
+    const submissionIdA = req.params.ida;
+    const submissionIdB = req.params.idb;
+    this.submissionManager.compareSubmissions(submissionIdA, submissionIdB)
+      .then((analysisResult) => {
+        res.status(200);
+        res.send(analysisResult.asJSON());
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
   }
   
   //POST /{id}/files : Upload a file to a given submission
