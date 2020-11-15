@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/AnalysisResultEntry";
 import { ISubmission } from "../src/model/Submission";
 import { SubmissionFactory } from "../src/model/SubmissionFactory";
 
@@ -6,10 +7,14 @@ describe("Submission.ts",() => {
 
     var testSubmissionA : ISubmission;
     var testSubmissionB : ISubmission;
+    var testEntryA : IAnalysisResultEntry;
+    var testEntryB : IAnalysisResultEntry;
 
     beforeEach(()=>{
         testSubmissionA = SubmissionFactory.buildSubmission("id_a","name_a");
         testSubmissionB = SubmissionFactory.buildSubmission("id_b","name_b");
+        testEntryA = new AnalysisResultEntry("id_a","/home/file.java","class",1,100,"haxrtwe","void() {}");
+        testEntryB = new AnalysisResultEntry("id_b","/home/filey.java","class",2,30,"reerwer","void() {}");
     });
 
     describe("getId()",() => {
@@ -23,18 +28,19 @@ describe("Submission.ts",() => {
         });
     });
 
+    //TODO: Add more tests when comparison is more mature
     describe("compare()",() => {
         it("Should return a valid AnalysisResult if comparator submission is valid (left direction)",() => {
-            //testSubmissionA.addFile(); //TODO: Add AREs
-            //testSubmissionB.addFile(); //TODO: Add AREs
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultA = testSubmissionA.compare(testSubmissionB);
             expect(resultA).to.not.be.undefined;
             expect(resultA.asJSON).to.not.be.be.undefined;
         });
         
         it("Should return a valid AnalysisResult if comparator submission is valid (right direction)",() => {
-            //testSubmissionA.addFile(): //TODO: Add AREs
-            //testSubmissionB.addfile(): //TODO: Add AREs
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultB = testSubmissionB.compare(testSubmissionA);
             expect(resultB).to.not.be.undefined;
             expect(resultB.asJSON()).to.not.be.undefined;
@@ -45,13 +51,13 @@ describe("Submission.ts",() => {
         });
 
         it("Should throw an appropriate error if comparator submission is invalid (left has no ARE)",() => {
-            //testSubmissionB.addFile(); //TODO: Add AREs to B only
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
             expect(testSubmissionA.compare(testSubmissionB)).to.throw();
             var resultA = testSubmissionA.compare(testSubmissionB);
         });
         
         it("Should throw and appropriate error if comparator submission is invalid (right has no ARE)",() => {
-            //testSubmissionA.addFile(): //TODO: Add AREs to A only
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
             expect(testSubmissionB.compare(testSubmissionA)).to.throw();
         });
 

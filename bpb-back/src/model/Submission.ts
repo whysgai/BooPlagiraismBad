@@ -1,5 +1,5 @@
 import { IAnalysisResult } from "../AnalysisResult";
-import { AnalysisResultEntry } from "../AnalysisResultEntry";
+import { IAnalysisResultEntry } from "../AnalysisResultEntry";
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
@@ -14,6 +14,7 @@ export interface ISubmission {
     getName() : String;
     addFile(content : String, filePath : String) : void
     compare(otherSubmission : ISubmission) : IAnalysisResult
+    addAnalysisResultEntry(analysisResult : IAnalysisResultEntry) : void
     asJSON() : Object;
 }
 
@@ -21,7 +22,7 @@ export interface ISubmission {
 
     private id : String;
     private name : String;
-    private analysisResultEntries : AnalysisResultEntry[]
+    private analysisResultEntries : IAnalysisResultEntry[]
 
     constructor(id : String, name : String){
         //TODO
@@ -45,7 +46,7 @@ export interface ISubmission {
         throw new Error("Method not implemented")
      }
 
-     addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
+     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
          this.analysisResultEntries.push(analysisResultEntry);
      }
 
@@ -59,7 +60,7 @@ export interface ISubmission {
     }
 
     //Actually perform comparison of entries to entries here
-    protected compareResultEntries(otherSubmissionEntries : AnalysisResultEntry[]) : IAnalysisResult {
+    protected compareResultEntries(otherSubmissionEntries : IAnalysisResultEntry[]) : IAnalysisResult {
         throw new Error("Not implemented")
     }
 }
