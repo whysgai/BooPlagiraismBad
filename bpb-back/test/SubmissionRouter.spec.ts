@@ -159,7 +159,7 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("response").which.equals("Submission ID not found: " + nonexistentId);
             });
     });
-    it.skip("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}", () => {
+    it("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}", () => {
         const mockAnalysisResult = new AnalysisResult();
         mockAnalysisResult.addMatch(testAre1, testAre2);
         chai.spy.on(testSubmissionManager, 'compareSubmissions', () => {return Promise.resolve(mockAnalysisResult)});
