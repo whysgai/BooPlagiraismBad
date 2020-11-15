@@ -33,7 +33,6 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.put("/:id",this.updateSubmissionFn);
     this.router.delete("/:id",this.deleteSubmissionFn);
     this.router.post("/:id/files",this.createSubmissionFileFn);
-    this.router.get("/:id/files",this.getSubmissionFilesFn);
     this.router.get("/ofAssignment?id=:id", this.getSubmissionsOfAssignmentFn);
     this.router.get("/:id", this.getSubmissionFn);
     this.router.get("/compare/?a=:ida&b=:idb",this.compareSubmissionsFn);
@@ -112,12 +111,6 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //GET /compare/?a={id_a}&b={id_b} : Compare two submissions
   compareSubmissionsFn = async(req : express.Request,res : express.Response) => {
-    res.status(400);
-    res.send({"response":"Not implemented"});
-  }
-
-  //GET /{id}/files : Get all files in a given submission
-  getSubmissionFilesFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }

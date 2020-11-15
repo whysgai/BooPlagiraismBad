@@ -155,15 +155,27 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be present in the request body");
             });
     });
-    it.skip("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
-        // //NOTE: This is technically only passing against the live app (note port is not 8081)
-        // superagent.post('http://localhost:8080/submissions/sub1/files').attach('submissionfile',fs.readFileSync("./test/App.spec.ts"))
-        // //chai.request(testServer).post("/submissions/upload").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
-        // .then((res) => {
-        //     expect(res).to.have.status(200);
-        //     expect(res.body).to.have.property("response","File uploaded successfully.");
-        // });
+
+    //TODO: Fix. Technically only passing on the live app, has hardcoded hostname
+    it.skip("Should be able to interpret a request to POST /submissions/files to submit a file",() => {
+        
+        var mockGetSubmission = chai.spy.on(
+            testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission)}
+        );
+        
+        //chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
+        superagent.post("http://localhost:8080/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
+         .then((res) => {
+             expect(res).to.have.status(200);
+             expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+             expect(res.body).to.have.property("response","File uploaded to submission successfully.");
+         });
     });    
+
+    //TODO: Add
+    it.skip("Should be able to interpret a failedd request to POST /submissions/{id}/files with no file attached");
+    it.skip("Should be able to interpret a failed request to POST /submissions/{id}/files with the incorrect file key");
+
     it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is valid", () => {
         const expectedSubs = [testSubmission.asJSON()];
 ;
