@@ -261,9 +261,7 @@ describe('SubmissionRouter.ts',()=> {
         const nonexistentId = "drphilbertmd"
         const postBody = testSubmission;
         chai.spy.on(
-            testSubmissionManager, 'updateSubmission', () => {
-                Promise.reject(new Error("Submission ID not found: " + nonexistentId))
-            }
+            testSubmissionManager, 'updateSubmission', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
         );
         chai.request(testServer).put("/submissions/" + nonexistentId)
             .send(postBody)
