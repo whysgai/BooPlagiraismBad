@@ -177,22 +177,18 @@ describe('SubmissionRouter.ts',()=> {
     it.skip("Should be able to interpret a failed request to POST /submissions/{id}/files with the incorrect file key");
 
     it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is valid", () => {
-        const expectedSubs = [testSubmission.asJSON()];
-;
+        const expectedSubs = {submissions: [testSubmission.asJSON()]};
+
         testAssignment.addSubmission(testSubmission.getId());
 
-        var mockGetAssignment = chai.spy.on(
-            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);}
-        )
         var mockGetSubmissions = chai.spy.on(
             testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
         );
 
-        chai.request(testServer).get("/submissions/ofAssignment?id="+testAssignment.getID())
+        chai.request(testServer).get("/submissions/ofAssignment/"+testAssignment.getID())
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getID());
-                expect(mockGetSubmissions).to.have.been.called.with(testSubmission.getId());
+                expect(mockGetSubmissions).to.have.been.called.with(testAssignment.getID());
                 expect(res.body).to.deep.equal(expectedSubs);
             });
     });
