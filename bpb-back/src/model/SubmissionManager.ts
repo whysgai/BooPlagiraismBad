@@ -48,7 +48,7 @@ export class SubmissionManager implements ISubmissionManager {
         //Delete the submission from cache and db
         throw new Error('Method not implemented.');
     }
-    compareSubmissions = async(submissionA : ISubmission, submissionB : ISubmission): Promise<AnalysisResult> => {
+    compareSubmissions = async(submissionIdA : String, submissionIdB : String): Promise<AnalysisResult> => {
         //TODO: Actually actively perform comparison of all hashes saved for each submission
         //Delegate comparison to one of the two submissions' compare methods and return the result
         //Later, could read from database to get comparisons that already occurred (i.e. create AnalysisResult some other way)
