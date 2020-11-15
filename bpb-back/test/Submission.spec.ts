@@ -63,7 +63,14 @@ describe("Submission.ts",() => {
 
     });
 
-    describe("addFile()");
-    describe("addAnalysisResultEntry()");
-    describe("asJSON()");
+    describe("addFile()",() => {
+        it("Should successfully add a new file to the submission if input is valid");
+        it("Should throw an appropriate error if the specified file was already added to the submission");
+    });
+    describe("addAnalysisResultEntry()",() => {
+        it("Should add an AnalysisResultEntry to the submission");
+    });
+    describe("asJSON()",() => {
+        it("Should return an object with the expected properties");
+    });
 });
