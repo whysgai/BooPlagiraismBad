@@ -62,4 +62,8 @@ describe("Submission.ts",() => {
         });
 
     });
+
+    describe("addFile()");
+    describe("addAnalysisResultEntry()");
+    describe("asJSON()");
 });
