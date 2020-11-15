@@ -10,6 +10,8 @@ import chaiHttp = require("chai-http");
 import superagent from "superagent";
 import { SubmissionManager } from "../src/model/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
+import { AssignmentDAO } from "../src/model/AssignmentDAO";
+import { AssignmentManager } from "../src/model/AssignmentManager";
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -22,13 +24,12 @@ describe('SubmissionRouter.ts',()=> {
         app.use(express.json());
         app.use(bodyParser.json());            
         chai.use(chaiHttp);
-
-        var submissionDAO = new SubmissionDAO()l
+        var assignmentDAO = new AssignmentDAO();
+        var assignmentManager = new AssignmentManager(assignmentDAO);
+        var submissionDAO = new SubmissionDAO();
         var submissionManager = new SubmissionManager(submissionDAO); 
-        testRouter = new SubmissionRouter(app,"/submissions",submissionManager); 
-        
+        testRouter = new SubmissionRouter(app,"/submissions",submissionManager,assignmentManager); 
         testServer = app.listen(8081);
-
     });
 
     it('should say hi back when GET /helloworld is queried',() => {

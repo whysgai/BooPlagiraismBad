@@ -43,8 +43,8 @@ class App {
 
             // Set up routers
             let routers = []
-            routers.push(new SubmissionRouter(app,'/submissions',submissionManager));
-            routers.push(new AssignmentRouter(app,'/assignments',assignmentManager));
+            routers.push(new SubmissionRouter(app,'/submissions',submissionManager,assignmentManager));
+            routers.push(new AssignmentRouter(app,'/assignments',submissionManager,assignmentManager));
 
             // Start listening for traffic
             app.listen(AppConfig.port(),() => {

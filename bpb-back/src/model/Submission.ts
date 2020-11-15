@@ -1,5 +1,5 @@
 import { IAnalysisResult } from "../AnalysisResult";
-import { AnalysisResultEntry } from "../AnalysisResultEntry";
+import { IAnalysisResultEntry, AnalysisResultEntry } from "../AnalysisResultEntry";
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
@@ -14,8 +14,8 @@ export interface ISubmission {
     getName() : String;
     getFiles() : String[];
     addFile(content : String, filePath : String) : void;
-    addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry) : void;
-    hasAnalysResultEntries() : boolean;
+    addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
+    hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
     asJSON() : Object;
 }
@@ -25,7 +25,7 @@ export interface ISubmission {
     private id : String;
     private name : String;
     private files : String[];
-    private analysisResultEntries : AnalysisResultEntry[]
+    private analysisResultEntries : IAnalysisResultEntry[]
 
     constructor(id : String, name : String){
         this.id = id;
@@ -70,7 +70,7 @@ export interface ISubmission {
         return {assignment_id:this.id, name:this.name, analysisResultEntries:this.analysisResultEntries};
     }
 
-    hasAnalysResultEntries() : boolean {
+    hasAnalysisResultEntries() : boolean {
         if(this.analysisResultEntries.length > 0) {
             return true;
         }

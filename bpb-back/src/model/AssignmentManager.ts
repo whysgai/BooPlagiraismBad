@@ -7,9 +7,9 @@ import { IAssignmentDAO } from "./AssignmentDAO";
 export interface IAssignmentManager {
     getAssignments() : Promise<IAssignment[]>;
     getAssignment(assignmentId : String) : Promise<IAssignment>;
-    createAssignment(data : JSON) : Promise<IAssignment>;
-    updateAssignment(assignment : IAssignment, data : JSON) : Promise<IAssignment>;
-    deleteAssignment(assignment : IAssignment) : Promise<void>;
+    createAssignment(data : Object) : Promise<IAssignment>;
+    updateAssignment(assignmentId : String, data : Object) : Promise<IAssignment>;
+    deleteAssignment(assignmentId : String) : Promise<void>;
 }
 
 export class AssignmentManager implements IAssignmentManager {
@@ -18,23 +18,24 @@ export class AssignmentManager implements IAssignmentManager {
 
     constructor(assignmentDAO: IAssignmentDAO) {
         this.assignmentDAO = assignmentDAO;
-    }    
-    getAssignment(assignmentId: String): Promise<IAssignment> {
-        throw new Error("Method not implemented.");
-        //should reject promise with "The requested assignment does not exist" if assignment doesn't exist with the given id
-    }
+    }   
     
     async getAssignments(): Promise<IAssignment[]> {
         throw new Error("Method not implemented")
     }
 
-    async createAssignment(data : JSON): Promise<IAssignment> {
+    async getAssignment(assignmentId: String): Promise<IAssignment> {
+        throw new Error("Method not implemented.");
+        //should reject promise with "The requested assignment does not exist" if assignment doesn't exist with the given id
+    }
+
+    async createAssignment(data : Object): Promise<IAssignment> {
         throw new Error("Method not implemented.");
     }
-    async updateAssignment(assignment: IAssignment, data : JSON) : Promise<IAssignment> {
+    async updateAssignment(assignmentId : String, data : Object) : Promise<IAssignment> {
         throw new Error("Method not implemented.");
     }
-    async deleteAssignment(assignment : IAssignment) : Promise<void> {
+    async deleteAssignment(assignment : String) : Promise<void> {
         throw new Error("Method not implemented.");
     }
 }

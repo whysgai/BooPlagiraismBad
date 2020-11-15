@@ -3,16 +3,19 @@ import AbstractRouter from './AbstractRouter';
 import express, { Router } from 'express';
 import {IAssignment } from '../model/Assignment'
 import { IAssignmentManager } from '../model/AssignmentManager';
+import { ISubmissionManager } from '../model/SubmissionManager';
 
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
   protected router : Router;
   assignmentManager : IAssignmentManager;
+  submissionManager : ISubmissionManager;
 
-  constructor(app : express.Application, route : string, assignmentManager : IAssignmentManager){
+  constructor(app : express.Application, route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager){
     super(app,route);
     this.setupRoutes();
     this.assignmentManager = assignmentManager;
+    this.submissionManager = submissionManager;
   }
 
   setupRoutes() {
@@ -85,7 +88,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.send({"response":"An assignment id was not provided"});
     } else {
       this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-        this.assignmentManager.updateAssignment(assignment,req.body)
+        this.assignmentManager.updateAssignment(assignment.getID(),req.body)
         .then(assignment => {
           res.send(assignment.asJSON());
         }).catch((err) => {
@@ -109,7 +112,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.send({"response":"An assignment id was not provided"});
     } else {
       this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-        this.assignmentManager.deleteAssignment(assignment)
+        this.assignmentManager.deleteAssignment(assignment.getID())
         .then(() => {
           res.send({"response":"Deleted assignment " + assignmentId});
         }).catch((err) => {
