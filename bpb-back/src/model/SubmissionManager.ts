@@ -12,7 +12,7 @@ export interface ISubmissionManager {
     updateSubmission(submissionId : String, data : Object) : Promise<ISubmission>;
     processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
     deleteSubmission(submissionId : String) : Promise<void>;
-    compareSubmissions(submissionA : ISubmission, submissionB : ISubmission) : Promise<AnalysisResult>
+    compareSubmissions(submissionIdA : String, submissionIdB : String) : Promise<AnalysisResult>
 }
 
 export class SubmissionManager implements ISubmissionManager {
