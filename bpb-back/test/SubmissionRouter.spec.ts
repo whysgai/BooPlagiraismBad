@@ -57,6 +57,7 @@ describe('SubmissionRouter.ts',()=> {
 
         testAssignment = new Assignment("ID998","Test Assignment")
         testSubmission = new Submission(testAssignment.getID(),"Test");
+        testAssignment.addSubmission(testSubmission.getId());
         testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
         testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",1,2,"245rr1","void test() { }");
         testSubmission.addAnalysisResultEntry(testAre1);
@@ -208,13 +209,19 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if the assignment has no submissions", () => {
+        
+        const mockAssignment = new Assignment("QQ29", "PewPew");
+        
         chai.spy.on(
-            testAssignmentManager,'getAssignment',() => {return Promise.resolve([]);}
+            testAssignmentManager,'getAssignment',() => {return Promise.resolve(mockAssignment);}
         )
+        var mockGetSubmissions = chai.spy.on(
+            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([]);}
+        );
         chai.request(testServer).get("/submissions/ofAssignment/test")
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.have.length(0); //TODO: ?
+                expect(res.body).to.have.property("submissions").with.lengthOf(0); //TODO: ?
             });
     });
     it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid", () => {
