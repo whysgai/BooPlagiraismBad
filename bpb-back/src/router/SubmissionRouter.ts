@@ -116,8 +116,14 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //DELETE /{id} : Delete a given submission
   deleteSubmissionFn = async(req : express.Request,res : express.Response) => {
-    res.status(400);
-    res.send({"response":"Not implemented"});
+    var submissionId = req.params.id; //NOTE: Lack of defensive coding/tests intentional (see above)
+    this.submissionManager.deleteSubmission(submissionId)
+      .then(() => {
+        res.sendStatus(200); 
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
   }
 
   //GET /compare/?a={id_a}&b={id_b} : Compare two submissions
