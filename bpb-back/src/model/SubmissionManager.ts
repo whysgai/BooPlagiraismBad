@@ -8,8 +8,8 @@ import { ISubmissionDAO } from '../model/SubmissionDAO';
 export interface ISubmissionManager {
     getSubmissions(assignmentId : String) : Promise<ISubmission[]>;
     getSubmission(submissionId : String) : Promise<ISubmission>;
-    createSubmission(data : JSON) : Promise<ISubmission>;
-    updateSubmission(submission : ISubmission, data : JSON) : Promise<ISubmission>;
+    createSubmission(data : Object) : Promise<ISubmission>;
+    updateSubmission(submission : ISubmission, data : Object) : Promise<ISubmission>;
     processSubmissionFile(submission : ISubmission, filePath : String) : Promise<void>; 
     deleteSubmission(submission : ISubmission) : void;
     compareSubmissions(submissionA : ISubmission, submissionB : ISubmission) : Promise<AnalysisResult>
@@ -30,11 +30,11 @@ export class SubmissionManager implements ISubmissionManager {
         //Load a submission and all of its AnalysisResultEntries from the DB
         throw new Error('Method not implemented.');
     }
-    createSubmission = async(data : JSON): Promise<ISubmission> => {
+    createSubmission = async(data : Object): Promise<ISubmission> => {
         //Create and persist a submission in DB / cache
         throw new Error('Method not implemented.');
     }
-    updateSubmission = async(submission : ISubmission, data : JSON): Promise<ISubmission> => {
+    updateSubmission = async(submission : ISubmission, data : Object): Promise<ISubmission> => {
         //Update the submission in cache and db
         throw new Error('Method not implemented.');
     }
