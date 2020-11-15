@@ -90,8 +90,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
 
   //GET /{id} : Get a submission by ID
-  getSubmissionFn = async(req : express.Request,res : express.Response) => {
-    
+  getSubmissionFn = async(req : express.Request,res : express.Response) => {    
     var submissionId = req.params.id; //NOTE: Lack of defensive coding/tests intentional (see above)
     this.submissionManager.getSubmission(submissionId)
       .then((submission) => {
@@ -104,8 +103,15 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //PUT /{id} : Update a given submission's name or associated assignment
   updateSubmissionFn = async(req : express.Request,res : express.Response) => {
-    res.status(400);
-    res.send({"response":"Not implemented"});
+    var submissionId = req.params.id; //NOTE: Lack of defensive coding/tests intentional (see above)
+    var submissionData = req.body;
+    this.submissionManager.updateSubmission(submissionId, submissionData)
+      .then((submission) => {
+        res.send(submission.asJSON());  
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
   }
 
   //DELETE /{id} : Delete a given submission
