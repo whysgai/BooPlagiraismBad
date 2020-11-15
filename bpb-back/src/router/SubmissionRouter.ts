@@ -42,7 +42,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
     if(submissionName == undefined || assignmentId == undefined) {
       res.status(400);
-      res.send({"response":"name and assignment_id properties must both be present in the request body."});
+      res.send({"response":"name and assignment_id properties must both be present in the request body"});
       return;
     }
 

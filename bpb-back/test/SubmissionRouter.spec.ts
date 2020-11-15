@@ -64,8 +64,6 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
 
-        const expectedJSON = testSubmission.asJSON();
-
         const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
         
         var mockGetAssignment = chai.spy.on(
@@ -78,10 +76,84 @@ describe('SubmissionRouter.ts',()=> {
             .then(res => {
                 expect(res).to.have.status(200);
                 expect(mockGetAssignment).to.have.been.called.with(testAssignment.getID());
-                expect(res.body).to.deep.equals(expectedJSON);
+                expect(res.body).to.deep.equals(testSubmission.asJSON());
+            });
+    });
+    it("Should be able to interpret a failed request to POST /submissions to create a submission (invalid assignment id)", () => {
+
+        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
+        
+        var mockGetAssignment = chai.spy.on(
+            testAssignmentManager, 'getAssignment', () => {return Promise.reject(new Error("The requested assignment does not exist"));}
+        )
+        var mockCreateSubmission = chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission)});
+
+        chai.request(testServer).post("/submissions")
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getID());
+                expect(mockCreateSubmission).to.have.not.been.called();
+                expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
             });
     });
 
+    it("Should be able to interpret a failed request to POST /submissions to create a submission (missing property name)", () => {
+
+        const postBody = {"assignment_id": testAssignment.getID()};
+        
+        var mockGetAssignment = chai.spy.on(
+            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
+
+        var mockCreateSubmission = chai.spy.on(
+            testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission);});
+
+        chai.request(testServer).post("/submissions")
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(mockCreateSubmission).to.have.not.been.called();
+                expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be present in the request body");
+            });
+    });
+
+    it("Should be able to interpret a failed request to POST /submissions to create a submission (missing property assignment_id)", () => {
+
+        const postBody = {"name": testSubmission.getName()};
+        
+        var mockGetAssignment = chai.spy.on(
+            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
+
+        var mockCreateSubmission = chai.spy.on(
+            testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission);});
+
+        chai.request(testServer).post("/submissions")
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(mockCreateSubmission).to.have.not.been.called();
+                expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be present in the request body");
+            });
+    });
+
+    it("Should be able to interpret a failed request to POST /submissions to create a submission (empty body)", () => {
+
+        const postBody = {};
+        
+        var mockGetAssignment = chai.spy.on(
+            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
+
+        var mockCreateSubmission = chai.spy.on(
+            testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission);});
+
+        chai.request(testServer).post("/submissions")
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(mockCreateSubmission).to.have.not.been.called();
+                expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be present in the request body");
+            });
+    });
     it.skip("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
         // //NOTE: This is technically only passing against the live app (note port is not 8081)
         // superagent.post('http://localhost:8080/submissions/sub1/files').attach('submissionfile',fs.readFileSync("./test/App.spec.ts"))
