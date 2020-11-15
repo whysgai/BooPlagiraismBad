@@ -22,7 +22,9 @@ describe('SubmissionRouter.ts',()=> {
     var testServer : any;
     var testRouter : IRouter;
     var testSubmissionManager : SubmissionManager;
-    var testSubmissionDAO: SubmissionDAO;
+    var testSubmissionDAO : SubmissionDAO;
+    var testSubmission : Submission;
+    var testARE : AnalysisResultEntry;
 
     before(() => {
         chai.use(chaiHttp);
@@ -38,6 +40,10 @@ describe('SubmissionRouter.ts',()=> {
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager); 
         testServer = app.listen(8081);
+
+        testARE = new AnalysisResultEntry("ID117","subid1","/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
+        testSubmission = new Submission("TestID","TestName");
+        testSubmission.addAnalysisResultEntry(testARE);
     });
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
@@ -70,11 +76,9 @@ describe('SubmissionRouter.ts',()=> {
         // });
     });    
     it("Should be able to interpret a request to GET /submissions to get all submissions", () => {
-        const mockARE = new AnalysisResultEntry("ID117","subid1","/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
-        const mockSubmission = new Submission("TestID","TestName");
-        const expectedSubs = [mockSubmission.asJSON()];
+        const expectedSubs = [testSubmission.asJSON()];
         chai.spy.on(
-            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([mockSubmission])}
+            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission])}
         );
 
         chai.request(testServer).get("/submissions")
@@ -83,8 +87,30 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.deep.equal(expectedSubs)
             });
     });
-    it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid");
-    it("Should be able to interpret a failed request to GET /submission/{id} where {id} is invalid");
+    it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid", () => {
+        const expectedSubs = testSubmission.asJSON();
+        chai.spy.on(
+            testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission)}
+        );
+
+        chai.request(testServer).get("/submissions/ID117")
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.deep.equal(expectedSubs)
+            });
+    });
+    it("Should be able to interpret a failed request to GET /submission/{id} where {id} is invalid", () => {
+        const nonexistentId = "Ricoooooo";
+        chai.spy.on(
+            testSubmissionManager, 'getSubmission', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
+        );
+
+        chai.request(testServer).get("/submissions/" + nonexistentId)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("Submission ID not found: " + nonexistentId);
+            });
+    });
     it("Should be able to interpret a request to PUT /submissions/{id} where {id} is valid");
     it("Should be able to interpret a failed request to PUT /submissions/{id} where {id} is invalid");
     it("Should be able to interpret a request to DELETE /submissions/{id} where {id} is valid");
