@@ -120,7 +120,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.submissionManager.deleteSubmission(submissionId)
       .then(() => {
         res.status(200);
-        res.send("Deleted submission " + submissionId);
+        res.send({"response":"Deleted submission " + submissionId});
 
       }).catch((err) => {
         res.status(400);
