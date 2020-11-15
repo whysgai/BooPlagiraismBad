@@ -18,33 +18,40 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         private filePath : String, 
         private contextType : String, 
         private lineNumberStart : number, 
-        private privatelineNumberEnd : number,
+        private lineNumberEnd : number,
         private hashValue : String, 
         private text : String) {
             
-        //TODO
+        if (lineNumberStart > lineNumberEnd) {
+            throw new Error('lineNumberStart can not be > lineNumberEnd');
+        }
+    }
+
+    getSubmissionID(): String {
+        return this.submissionId;
     }
     getLineNumberStart(): number {
-        throw new Error("Method not implemented.");
+        return this.lineNumberStart;
     }
     getLineNumberEnd(): number {
-        throw new Error("Method not implemented.");
+        return this.lineNumberEnd;
     }
     getText(): String {
-        throw new Error("Method not implemented.");
+        return this.text;
     }
     getFilePath(): String {
-        throw new Error("Method not implemented.");
+        return this.filePath;
     }
     getContextType(): String {
-        throw new Error("Method not implemented.");
+        return this.contextType;
     }
 
     asJSON(): JSON {
-        throw new Error("Method not implemented.");
+       return JSON.parse(JSON.stringify(this)); 
     }
 
     getHashValue(): String {
-        throw new Error("Method not implemented.");
+        return this.hashValue;
     }
 }
+
