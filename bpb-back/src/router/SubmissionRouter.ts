@@ -72,15 +72,21 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //GET /ofAssignment?id:{id} : Get all submissions for the specified assignment
   getSubmissionsOfAssignmentFn = async(req : express.Request,res : express.Response) => {
     var assignmentId = req.params.id; //NOTE: Lack of defensive coding/tests due to assumption that router won't match this route if id is nonexistent
-    this.submissionManager.getSubmissions(assignmentId)
-    .then((submissions: ISubmission[]) => {
-      var submissionEntries = submissions.map((submission) => { return submission.asJSON(); });
-      var responseBody = { submissions:submissionEntries }
-      res.send(responseBody);
-    }).catch((err) => {
-      res.status(400)
-      res.send({"response":err.message});
-    });
+    this.assignmentManager.getAssignment(assignmentId)
+      .then((assignment) => {
+        this.submissionManager.getSubmissions(assignmentId)
+          .then((submissions: ISubmission[]) => {
+            var submissionEntries = submissions.map((submission) => { return submission.asJSON(); });
+            var responseBody = { submissions:submissionEntries }
+            res.send(responseBody);
+          }).catch((err) => {
+            res.status(400)
+            res.send({"response":err.message});
+          });
+      }).catch((err) => {
+        res.status(400)
+        res.send({"response":err.message});
+      });
   }
 
   //GET /{id} : Get a submission by ID
