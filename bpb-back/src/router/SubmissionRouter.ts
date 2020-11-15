@@ -34,19 +34,30 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.get("/compare/?a=:ida&b=:idb",this.compareSubmissionsFn);
     
   }
- createSubmissionFn = async(req : express.Request,res : express.Response) => {
+  createSubmissionFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }
- getSubmissionFn = async(req : express.Request,res : express.Response) => {
+  getSubmissionFn = async(req : express.Request,res : express.Response) => {
+    var submissionId = req.params.id;
+    if (submissionId == undefined) {
+      res.status(400);
+      res.send({"response":"A submission id was not provided"});
+    } else {
+      this.submissionManager.getSubmission(submissionId)
+        .then((submission) => {
+          res.send(submission.asJSON());  
+        }).catch((err) => {
+          res.status(400);
+          res.send({"response":err.message});
+        });
+    }
+  }
+  updateSubmissionFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }
- updateSubmissionFn = async(req : express.Request,res : express.Response) => {
-    res.status(400);
-    res.send({"response":"Not implemented"});
-  }
- deleteSubmissionFn = async(req : express.Request,res : express.Response) => {
+  deleteSubmissionFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
   }
