@@ -15,6 +15,7 @@ import { AssignmentDAO } from "../src/model/AssignmentDAO";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { Submission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
+import { AnalysisResult } from "../src/AnalysisResult";
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -24,7 +25,8 @@ describe('SubmissionRouter.ts',()=> {
     var testSubmissionManager : SubmissionManager;
     var testSubmissionDAO : SubmissionDAO;
     var testSubmission : Submission;
-    var testARE : AnalysisResultEntry;
+    var testAre1 : AnalysisResultEntry;
+    var testAre2 : AnalysisResultEntry;
 
     before(() => {
         chai.use(chaiHttp);
@@ -41,9 +43,10 @@ describe('SubmissionRouter.ts',()=> {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager); 
         testServer = app.listen(8081);
 
-        testARE = new AnalysisResultEntry("ID117","subid1","/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
+        testAre1 = new AnalysisResultEntry("ID117","subid1","/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
+        testAre2 = new AnalysisResultEntry("ID666","subid2","/vagrant/bpb-back/uploads/testing.java","method",1,2,"245rr1","void test() { }");
         testSubmission = new Submission("TestID","TestName");
-        testSubmission.addAnalysisResultEntry(testARE);
+        testSubmission.addAnalysisResultEntry(testAre1);
     });
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
@@ -88,7 +91,7 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid", () => {
-        const expectedSubs = testSubmission.asJSON();
+        const expectedSub = testSubmission.asJSON();
         chai.spy.on(
             testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission)}
         );
@@ -96,7 +99,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.request(testServer).get("/submissions/ID117")
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.deep.equal(expectedSubs)
+                expect(res.body).to.deep.equal(expectedSub)
             });
     });
     it("Should be able to interpret a failed request to GET /submission/{id} where {id} is invalid", () => {
@@ -157,15 +160,43 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it.skip("Should be able to interpret a request to GET /submission/compare?a={submission_id_1}&b={submission_id_2}", () => {
-        //TODO
-        const postBody = testSubmission;
-        chai.spy.on(testSubmissionManager, 'deleteSubmission', () => {return Promise.resolve(testSubmission)});
-        chai.request(testServer).delete("/submissions/" + testSubmission.getId())
+        const mockAnalysisResult = new AnalysisResult();
+        mockAnalysisResult.addMatch(testAre1, testAre2);
+        chai.spy.on(testSubmissionManager, 'compareSubmissions', () => {return Promise.resolve(mockAnalysisResult)});
+        chai.request(testServer).get("/submissions/compare?a=" + testAre1.getSubmissionID() + "&b=" + testAre2.getSubmissionID())
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body.response).to.equal("Deleted submission "+testSubmission.getId());
+                expect(res.body.response).to.deep.equal(mockAnalysisResult);
             });
     });
-    it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (1 does not exist)");
-    it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (2 does not exist)");
+    it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (1 does not exist)", () => {
+        const nonexistentId = "BADID"
+        chai.spy.on(testSubmissionManager, 'getSubmission', (submissionId: String) => {
+            if (submissionId === nonexistentId) {
+                return Promise.reject(new Error("Submission ID not found: " + nonexistentId));
+            } else {
+                return Promise.resolve(testSubmission)
+            }            
+        });
+        chai.request(testServer).get("/submissions/compare?a=" + nonexistentId + "&b=" + testAre2.getSubmissionID())
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body.response).to.equal("Submission ID not found: " + nonexistentId);
+            });
+    });
+    it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (2 does not exist)", () => {
+        const nonexistentId = "WORSEID"
+        chai.spy.on(testSubmissionManager, 'getSubmission', (submissionId: String) => {
+            if (submissionId === nonexistentId) {
+                return Promise.reject(new Error("Submission ID not found: " + nonexistentId));
+            } else {
+                return Promise.resolve(testSubmission)
+            }            
+        });
+        chai.request(testServer).get("/submissions/compare?a=" + testAre1.getSubmissionID() + "&b=" + nonexistentId)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body.response).to.equal("Submission ID not found: " + nonexistentId);
+            });
+    });
 });
