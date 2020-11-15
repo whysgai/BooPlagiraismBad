@@ -154,7 +154,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
               
               this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
 
-                this.submissionManager.processSubmissionFile(submission,filePath).then(() => {
+                this.submissionManager.processSubmissionFile(submission.getId(),filePath).then(() => {
               
                   res.send({
                     "response": 'File uploaded successfully.',
