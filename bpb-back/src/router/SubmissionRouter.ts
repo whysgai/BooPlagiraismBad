@@ -33,7 +33,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.put("/:id",this.updateSubmissionFn);
     this.router.delete("/:id",this.deleteSubmissionFn);
     this.router.post("/:id/files",this.createSubmissionFileFn);
-    this.router.get("/ofAssignment?id=:id", this.getSubmissionsOfAssignmentFn);
+    this.router.get("/ofAssignment/:id", this.getSubmissionsOfAssignmentFn);
     this.router.get("/:id", this.getSubmissionFn);
     this.router.get("/compare/?a=:ida&b=:idb",this.compareSubmissionsFn);
   }
@@ -71,7 +71,6 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //GET /ofAssignment?id:{id} : Get all submissions for the specified assignment
   getSubmissionsOfAssignmentFn = async(req : express.Request,res : express.Response) => {
-    
     var assignmentId = req.params.id; //NOTE: Lack of defensive coding/tests due to assumption that router won't match this route if id is nonexistent
     this.submissionManager.getSubmissions(assignmentId)
     .then((submissions: ISubmission[]) => {
