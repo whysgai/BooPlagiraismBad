@@ -14,6 +14,7 @@ export interface ISubmission {
     getName() : String;
     addFile(content : String, filePath : String) : void
     compare(otherSubmission : ISubmission) : IAnalysisResult
+    asJSON() : Object;
 }
 
  export class Submission implements ISubmission {
@@ -44,10 +45,17 @@ export interface ISubmission {
         throw new Error("Method not implemented")
      }
 
+     addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
+         this.analysisResultEntries.push(analysisResultEntry);
+     }
+
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         //Calls compareResultEntries on otherSubmission, passing in our submission entries from this submission
         //Returns the result provided by compareResultEntries
         throw new Error("Method not implemented.");
+    }
+    asJSON() : Object {
+        return {assignment_id:this.id, name:this.name, analysisResultEntries:this.analysisResultEntries};
     }
 
     //Actually perform comparison of entries to entries here

@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
 import { AssignmentDAO } from './model/AssignmentDAO';
 import { AssignmentManager } from './model/AssignmentManager';
+import { SubmissionDAO } from './model/SubmissionDAO';
+import { SubmissionManager } from './model/SubmissionManager';
 import AssignmentRouter from './router/AssignmentRouter'
 import SubmissionRouter from './router/SubmissionRouter'
 
@@ -24,9 +26,13 @@ class App {
 
             mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
 
-            // Set up Assignment DAO and Manager
+            // Set up AssignmentDAO and Manager
             let assignmentDAO = new AssignmentDAO();
             let assignmentManager = new AssignmentManager(assignmentDAO);
+
+            // Set up SubmissionDAO and Manager
+            let submissionDAO = new SubmissionDAO();
+            let submissionManager = new SubmissionManager(submissionDAO);
             
             // Set up express app
             let app = express();
@@ -37,7 +43,7 @@ class App {
 
             // Set up routers
             let routers = []
-            routers.push(new SubmissionRouter(app,'/submissions'));
+            routers.push(new SubmissionRouter(app,'/submissions',submissionManager));
             routers.push(new AssignmentRouter(app,'/assignments',assignmentManager));
 
             // Start listening for traffic

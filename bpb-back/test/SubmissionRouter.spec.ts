@@ -8,6 +8,8 @@ import fs from 'fs';
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import superagent from "superagent";
+import { SubmissionManager } from "../src/model/SubmissionManager";
+import { SubmissionDAO } from "../src/model/SubmissionDAO";
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -21,7 +23,9 @@ describe('SubmissionRouter.ts',()=> {
         app.use(bodyParser.json());            
         chai.use(chaiHttp);
 
-        testRouter = new SubmissionRouter(app,"/submissions"); 
+        var submissionDAO = new SubmissionDAO()l
+        var submissionManager = new SubmissionManager(submissionDAO); 
+        testRouter = new SubmissionRouter(app,"/submissions",submissionManager); 
         
         testServer = app.listen(8081);
 
