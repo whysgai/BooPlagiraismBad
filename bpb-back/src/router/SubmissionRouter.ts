@@ -31,7 +31,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.delete("/:id",this.deleteSubmissionFn);
     this.router.post("/:id/files",this.createSubmissionFileFn);
     this.router.get("/:id/files",this.getSubmissionFilesFn);
-    this.router.get("/ofAssignment?id=:id", this.getSubmissionsFromAssignmentFn);
+    this.router.get("/ofAssignment?id=:id", this.getSubmissionsOfAssignmentFn);
     this.router.get("/:id", this.getSubmissionFn);
     this.router.get("/compare/?a=:ida&b=:idb",this.compareSubmissionsFn);
     
@@ -66,7 +66,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       })
   }
 
-  getSubmissionsFromAssignmentFn = async(req : express.Request,res : express.Response) => {
+  getSubmissionsOfAssignmentFn = async(req : express.Request,res : express.Response) => {
     var assignmentId = req.params.id;
     this.submissionManager.getSubmissions(assignmentId)
     .then((submissions: ISubmission[]) => {

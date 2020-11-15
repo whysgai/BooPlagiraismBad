@@ -77,6 +77,7 @@ describe('SubmissionRouter.ts',()=> {
             .send(postBody)
             .then(res => {
                 expect(res).to.have.status(200);
+                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getID());
                 expect(res.body).to.deep.equals(expectedJSON);
             });
     });
