@@ -39,18 +39,24 @@ describe("SubmissionManager.ts",() => {
             })
         });
 
-        it("Should return no submissions if there is no submission with the provided ID",() =>{
-            expect(testSubmissionManager.getSubmission("some_nonexistent_id")).to.be.an("array").that.is.empty;
+        it("Should throw an error if there is no submission with the provided ID",() =>{
+            testSubmissionManager.getSubmission("some_nonexistent_id").then((res) => {
+                expect(true,"getSubmission is succeeding where it should fail (id should not exist)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("No submission exists with id");
+            });
         });
 
     });
     describe("getSubmissions()",() => {
         
         it("Should return submissions of the given assignment if there are some",()=> {
-            chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [testSubmission]});
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [testSubmission]});
 
             testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
                 expect(submissions[0]).to.deep.equal(testSubmission);
+                expect(mockReadSubmission).to.have.been.called.with(testSubmissionAssignmentId);
             })
         });
 
@@ -90,18 +96,32 @@ describe("SubmissionManager.ts",() => {
 
     describe("deleteSubmission({id})",() =>{
 
-        //TODO: This is not a very good test.
-        it.skip("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
-           
-            var deleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
+        it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
             
-            testSubmissionManager.deleteSubmission(new Submission("test","test").getId());
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+
+            var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
-            expect(deleteSubmission).to.have.been.called();
+            testSubmissionManager.deleteSubmission(testSubmissionId).then(() => {
+                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
+                expect(mockDeleteSubmission).to.have.been.called.with(testSubmission);
+            });
         });
         
-        it("Should throw an appropriate error if {id} is invalid");
-    
+        it("Should throw an appropriate error if {id} is invalid",() => {
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{throw new Error("No submission found with id")});
+
+            var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
+            
+            testSubmissionManager.deleteSubmission(testSubmissionId).then(res => {
+                expect(true,"deleteSubmission is succeeding where it should fail (ID should not exist)").to.be.false;
+            }).catch((err) => {
+                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
+                expect(mockDeleteSubmission).to.not.have.been.called;
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("No submission exists with id");
+            });
+        });
     });
 
     describe("compareSubmission({id_a},{id_b})",()=> {

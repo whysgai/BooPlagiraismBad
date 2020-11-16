@@ -11,7 +11,7 @@ export interface ISubmissionManager {
     createSubmission(data : Object) : Promise<ISubmission>;
     updateSubmission(submissionId : String, data : Object) : Promise<ISubmission>;
     processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
-    deleteSubmission(submissionId : String) : void;
+    deleteSubmission(submissionId : String) : Promise<void>;
     compareSubmissions(submissionIdA : String, submissionIdB : String) : Promise<IAnalysisResult>
 }
 
