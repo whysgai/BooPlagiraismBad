@@ -1,35 +1,44 @@
 import { parse } from 'java-ast';
 import { ParseTree } from 'antlr4ts/tree';
 import { readFileSync } from 'fs';
+import { expect, assert } from 'chai';
+var chai = require('chai')
+import Sinon from 'sinon';
 import { IAnalysisResultEntryCollectorVisitor, AnalysisResultEntryCollectorVisitor } from 
     '../src/model/AnalysisResultEntryCollectorVisitor';
-import { expect, assert } from 'chai';
+var spies = require('chai-spies');
+import { ISubmission, Submission } from '../src/model/Submission';
 
 describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     var exampleTree : ParseTree;
     var exampleFilePath : string;
+    var exampleSubmissionId = '8675309';
+    var mockSubmission : ISubmission;
 
     before(() => {
-        exampleFilePath = './res/javaExample.java';
-        // let javaStr = readFileSync(exampleFilePath).toString();
-        // exampleTree = parse(javaStr);
+        mockSubmission = Sinon.createStubInstance(Submission);
+        chai.use(spies);
+        chai.spy.on(mockSubmission, 'getId', () => exampleSubmissionId);
+        exampleFilePath = '/vagrant/bpb-back/test/res/javaExample.java';
+        let javaStr = readFileSync(exampleFilePath).toString();
+        exampleTree = parse(javaStr);
     });
 
     describe("Constructor Tests", () => {
         it('Should create visitor when provided a non-empty string for filePath parameter.', () => {
             try {
-                let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
+                let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
                 assert(true == true);
             } catch { assert.fail() }
         });
 
         it("Should throw an error if undefined is passed as the filePath parameter.", () => {
-            let badConstructor = function() {new AnalysisResultEntryCollectorVisitor(undefined)};
+            let badConstructor = function() {new AnalysisResultEntryCollectorVisitor(undefined, mockSubmission)};
             expect(badConstructor).to.throw(Error, "filePath must be non-empty and may not be undefined.");
         });
 
         it("Should throw an error if an empty string is passed as the filePath parameter.", () => {
-            let badConstructor = function() {new AnalysisResultEntryCollectorVisitor("")};
+            let badConstructor = function() {new AnalysisResultEntryCollectorVisitor("", mockSubmission)};
             expect(badConstructor).to.throw(Error, "filePath must be non-empty and may not be undefined.");
         });
     });
@@ -38,7 +47,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
 
         beforeEach(() => {
-            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
         });
 
         it("Should throw an error if no ParseTree has been visited.", () => { 
@@ -48,18 +57,19 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
         it("Should NOT throw an error if a ParseTree has been visited.", () => {
             newVisitor.visit(exampleTree);
-            expect(newVisitor.getAnalysisResultEntries()).to.not.throw(Error);                      
+            let functionCall = function() { newVisitor.getAnalysisResultEntries(); };
+            expect(functionCall).to.not.throw(Error);                      
         });
 
         it("Should return an AnalysisResultEntry[] of expected length.", () => {
             newVisitor.visit(exampleTree);
-            expect(newVisitor.getAnalysisResultEntries().length).to.equal("placeholderText");
+            expect(newVisitor.getAnalysisResultEntries().length).to.equal(233);
         });
     });
 
     describe("getFilePath", () => {
         it("Should return a string with the expected value.", () => {
-            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
             expect(newVisitor.getFilePath()).is.equal(exampleFilePath);
         });
     });
@@ -67,13 +77,8 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     describe("visit", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
         before(() => {
-            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
             newVisitor.visit(exampleTree);
-        });
-        
-        it("Should throw an Error if visitor tries to visit after it already has.", () => {
-            let visitCall = function() { newVisitor.visit(exampleTree); };
-            expect(visitCall).to.throw(Error, "Visitor has already visited a ParseTree.");
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
@@ -97,7 +102,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
             newVisitor.visit(exampleTree);
             let analysisResultEntries = newVisitor.getAnalysisResultEntries();
             let firstEntry = analysisResultEntries[0];
-            expect(firstEntry.getLineNumberStart()).to.equal("placeholderText");
+            expect(firstEntry.getLineNumberStart()).to.equal(1);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
@@ -105,7 +110,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
             newVisitor.visit(exampleTree);
             let analysisResultEntries = newVisitor.getAnalysisResultEntries();
             let firstEntry = analysisResultEntries[0];
-            expect(firstEntry.getLineNumberEnd()).to.equal("placeholderText");
+            expect(firstEntry.getLineNumberEnd()).to.equal(22);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
@@ -113,7 +118,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
             newVisitor.visit(exampleTree);
             let analysisResultEntries = newVisitor.getAnalysisResultEntries();
             let firstEntry = analysisResultEntries[0];
-            expect(firstEntry.getSubmissionID()).to.equal("FAIL IF ID IS NOT YET IMPLEMENTED IN CLASS");
+            expect(firstEntry.getSubmissionID()).to.equal(exampleSubmissionId);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
@@ -129,7 +134,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
             newVisitor.visit(exampleTree);
             let analysisResultEntries = newVisitor.getAnalysisResultEntries();
             let firstEntry = analysisResultEntries[0];
-            expect(firstEntry.getText()).to.equal("placeholderText");
+            expect(firstEntry.getText()).to.equal(readFileSync('/vagrant/bpb-back/test/res/AnalysisResultEntryCollector_VisitorVisitTestText.txt').toString());
         });
         
     });
