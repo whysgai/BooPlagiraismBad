@@ -97,7 +97,14 @@ describe("Submission.ts",() => {
 
     describe("asJSON()",() => {
         it("Should return an object with the expected properties",() => {
-            var expectedJSON = {}; //TODO
+
+            var expectedJSON = {
+                "assignment_id": "id_a",
+                "entries": [testEntryA.asJSON(),testEntryB.asJSON()],
+                "files": [testEntryA.getFilePath(),testEntryB.getFilePath()],
+                "name": "name_a"
+            }
+
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             expect(testSubmissionA.asJSON()).to.deep.equal(expectedJSON);
