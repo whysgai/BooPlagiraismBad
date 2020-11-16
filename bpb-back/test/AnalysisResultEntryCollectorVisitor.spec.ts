@@ -8,6 +8,7 @@ import { IAnalysisResultEntryCollectorVisitor, AnalysisResultEntryCollectorVisit
     '../src/model/AnalysisResultEntryCollectorVisitor';
 var spies = require('chai-spies');
 import { ISubmission, Submission } from '../src/model/Submission';
+import { AnalysisResultEntry } from '../src/AnalysisResultEntry';
 
 describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     var exampleTree : ParseTree;
@@ -100,65 +101,48 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
     describe("visit (checks resultant array and contents for validity)", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
+        var analysisResultEntries : AnalysisResultEntry[];
+        var firstEntry = analysisResultEntries[0];
+        
         before(() => {
             newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
             newVisitor.visit(exampleTree);
+            analysisResultEntries = newVisitor.getAnalysisResultEntries();
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.contextType Should match as expected.", () => {
-            newVisitor.visit(exampleTree);
-            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
-            let firstEntry = analysisResultEntries[0];
             expect(firstEntry.getContextType()).to.equal("placeholderText");
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.hashValue Should match as expected.", () => {
             let expectedHash = "9EB16BE3F7DA712B429867B30547B100DE94FF20827829F8C5DEAF49554819086B7F9D";
-            newVisitor.visit(exampleTree);
-            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
-            let firstEntry = analysisResultEntries[0];
             expect(firstEntry.getHashValue()).to.equal(expectedHash);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.lineNumberStart Should match as expected.", () => {
-            newVisitor.visit(exampleTree);
-            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
-            let firstEntry = analysisResultEntries[0];
             expect(firstEntry.getLineNumberStart()).to.equal(1);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.lineNumberEnd Should match as expected.", () => {
-            newVisitor.visit(exampleTree);
-            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
-            let firstEntry = analysisResultEntries[0];
             expect(firstEntry.getLineNumberEnd()).to.equal(22);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.submissionId Should match as expected.", () => {
-            newVisitor.visit(exampleTree);
-            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
-            let firstEntry = analysisResultEntries[0];
             expect(firstEntry.getSubmissionID()).to.equal(exampleSubmissionId);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.filePath Should match as expected.", () => {
-            newVisitor.visit(exampleTree);
-            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
-            let firstEntry = analysisResultEntries[0];
             expect(firstEntry.getFilePath()).to.equal(exampleFilePath);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.text Should match as expected.", () => {
-            newVisitor.visit(exampleTree);
-            let analysisResultEntries = newVisitor.getAnalysisResultEntries();
-            let firstEntry = analysisResultEntries[0];
             expect(firstEntry.getText()).to.equal(readFileSync('/vagrant/bpb-back/test/res/AnalysisResultEntryCollector_VisitorVisitTestText.txt').toString());
         });
         
