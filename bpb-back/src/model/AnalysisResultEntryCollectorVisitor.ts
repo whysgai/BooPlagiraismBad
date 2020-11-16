@@ -11,7 +11,6 @@ export interface IAnalysisResultEntryCollectorVisitor {
     getFilePath() : string;    
 }
 
-//TODO: Add extension of AbstractParseTreeVisitor (including actual visit methods, etc)
 export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisitor<any> implements IAnalysisResultEntryCollectorVisitor  {
     private analysisResultEntries : AnalysisResultEntry[];
     private visited : boolean;
