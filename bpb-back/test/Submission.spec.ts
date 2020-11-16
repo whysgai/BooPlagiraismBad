@@ -106,7 +106,9 @@ describe("Submission.ts",() => {
             }
 
             testSubmissionA.addAnalysisResultEntry(testEntryA);
-            testSubmissionB.addAnalysisResultEntry(testEntryB);
+            testSubmissionA.addAnalysisResultEntry(testEntryB);
+            testSubmissionA.addFilePath(testEntryA.getFilePath());
+            testSubmissionA.addFilePath(testEntryB.getFilePath())
             expect(testSubmissionA.asJSON()).to.deep.equal(expectedJSON);
         });
     });
