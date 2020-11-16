@@ -27,10 +27,8 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
     describe("Constructor Tests", () => {
         it('Should create visitor when provided a non-empty string for filePath parameter.', () => {
-            try {
-                let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
-                assert(true == true);
-            } catch { assert.fail() }
+            let goodConstructor = function() { new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission)};
+            expect(goodConstructor).to.not.throw(Error); 
         });
 
         it("Should throw an error if undefined is passed as the filePath parameter.", () => {
