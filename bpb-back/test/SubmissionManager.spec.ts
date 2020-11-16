@@ -4,6 +4,8 @@ import chaiSpies = require("chai-spies");
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
 import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 import { ISubmission, Submission } from "../src/model/Submission";
+import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
+import fs from 'fs';
 
 describe("SubmissionManager.ts",() => {
 
@@ -13,6 +15,7 @@ describe("SubmissionManager.ts",() => {
     var testSubmissionId : String;
     var testSubmissionName : String;
     var testSubmissionAssignmentId : String;
+    var testFilePath : string;
 
     before(()=>{
         chai.use(chaiSpies); 
@@ -25,6 +28,7 @@ describe("SubmissionManager.ts",() => {
         testSubmissionName = "testname";
         testSubmissionAssignmentId = "test_aid";
         testSubmission = new Submission(testSubmissionId,testSubmissionName);
+        testFilePath = "/vagrant/bpb-back/package.json";
     });
 
     describe("getSubmission()",() => {
@@ -85,7 +89,38 @@ describe("SubmissionManager.ts",() => {
 
     describe("processSubmissionFile()",() =>{
 
-        it("Should save and add a file into the submission specified by the client");
+        it("Should save and add a file into the submission specified by the client",() => {
+
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            
+            var mockAddFile = chai.spy.on(testSubmission,'addFile');
+            
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            
+            fs.readFile(testFilePath,(err,content) => {
+
+                var expectedContent = content.toString();
+                
+                testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                    expect(mockAddFile).to.have.been.called.with(expectedContent,testFilePath);
+                });
+            });
+        });
+
+        it("Should return an appropriate error if file was already added to the submission",() => {
+                
+                testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("test",testFilePath,"test",1,2,"3","4")); //Adds a filePath to the submission
+                
+                chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+                chai.spy.on(testSubmission,'addFile');
+    
+                testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                    expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
+                }).catch((err) => {
+                    expect(err).to.not.be.undefined;
+                    expect(err).to.have.property("message").which.contains("was already added to the submission");
+                });
+        })
 
         it("Should return an appropriate error if submission ID is invalid");
 
