@@ -34,7 +34,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmission()",() => {
         
         it("Should return submission if the provided ID is valid",()=> {
-            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
             testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
                 expect(submission).to.deep.equal(testSubmission);
@@ -53,7 +53,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmissions()",() => {
         
         it("Should return submissions of the given assignment if there are some",()=> {
-            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [testSubmission]});
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
 
             testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
                 expect(submissions[0]).to.deep.equal(testSubmission);
@@ -232,7 +232,7 @@ describe("SubmissionManager.ts",() => {
                 
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("test",testFilePath,"test",1,2,"3","4")); //Adds a filePath to the submission
             
-            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
             testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
@@ -260,7 +260,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if submission file doesn't exist at the specified location",() => {
 
-            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
@@ -280,7 +280,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
             
-            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
             var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
