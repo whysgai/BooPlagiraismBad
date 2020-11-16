@@ -1,7 +1,7 @@
 /**
  * File source: https://github.com/trendmicro/tlsh/blob/master/js_ext/tlsh.js
  * 
- * Necessary changes to source file can be found at: https://github.com/turecarlson/tlsh/commits/master
+ * Necessary changes to source file can be found at: https://github.com/turecarlson/tlsh/commits/master/js_ext/tlsh.js
  */
 
 /*
@@ -379,7 +379,7 @@ export class Tlsh {
         for (var i = 0; i < length; i++) {
             var code = str.charCodeAt(i);
             if (code > 255) {
-                alert("Unexpected " + str[i] + " has value " + code + " which is too large");
+                throw new Error("Unexpected " + str[i] + " has value " + code + " which is too large");
                 return;
             }
             // Since charCodeAt returns between 0~65536, simply save every character as 2-bytes
@@ -388,7 +388,7 @@ export class Tlsh {
         }
 
         if (length != data.length) {
-            alert("Unexpected string length:" + length + " is not equal to value unsigned char length: " + data.length);
+            throw new Error("Unexpected string length:" + length + " is not equal to value unsigned char length: " + data.length);
             return;
         }
 
@@ -446,7 +446,7 @@ export class Tlsh {
 
         // incoming data must more than or equal to 512 bytes
         if (this.data_len < 50) {
-            alert("ERROR: length too small - " + this.data_len); //  + ")");
+            throw new Error("ERROR: length too small - " + this.data_len); //  + ")");
         }
 
         var quartiles = new Object();
@@ -465,7 +465,7 @@ export class Tlsh {
             }
         }
         if (nonzero <= 4 * CODE_SIZE / 2) {
-            alert("ERROR: not enought variation in input - " + nonzero + " < " + 4 * CODE_SIZE / 2);
+            throw new Error("ERROR: not enought variation in input - " + nonzero + " < " + 4 * CODE_SIZE / 2);
         }
 
         for (var i = 0; i < CODE_SIZE; i++) {
@@ -513,7 +513,7 @@ export class Tlsh {
 
         this.lsh_code = to_hex(tmp.checksum, TLSH_CHECKSUM_LEN);
 
-        tmpArray = new Uint8Array(1);
+        var tmpArray = new Uint8Array(1);
         tmpArray[0] = tmp.Lvalue;
         this.lsh_code = this.lsh_code.concat(to_hex(tmpArray, 1));
 
@@ -580,7 +580,7 @@ export class Tlsh {
     }
     fromTlshStr(str) {
         if (str.length != TLSH_STRING_LEN) {
-            alert("Tlsh.fromTlshStr() - string has wrong length (" + str.length + " != " + TLSH_STRING_LEN + ")");
+            throw new Error("Tlsh.fromTlshStr() - string has wrong length (" + str.length + " != " + TLSH_STRING_LEN + ")");
             return;
         }
         for (var i = 0; i < TLSH_STRING_LEN; i++) {
@@ -588,7 +588,7 @@ export class Tlsh {
                 (str[i] >= '0' && str[i] <= '9') ||
                 (str[i] >= 'A' && str[i] <= 'F') ||
                 (str[i] >= 'a' && str[i] <= 'f'))) {
-                alert("Tlsh.fromTlshStr() - string has invalid (non-hex) characters");
+                throw new Error("Tlsh.fromTlshStr() - string has invalid (non-hex) characters");
                 return;
             }
         }
