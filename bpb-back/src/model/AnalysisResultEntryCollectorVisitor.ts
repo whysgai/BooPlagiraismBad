@@ -13,6 +13,7 @@ export interface IAnalysisResultEntryCollectorVisitor extends ParseTreeVisitor<a
     hasVisited() : boolean;
 }
 
+//TODO: change <any> to appropriate type
 export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisitor<any> implements IAnalysisResultEntryCollectorVisitor  {
     private analysisResultEntries : AnalysisResultEntry[];
     private visited : boolean;
