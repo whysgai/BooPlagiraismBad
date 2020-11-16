@@ -7,7 +7,6 @@ import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollec
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
 import { parse } from "java-ast";
-import { stringifyConfiguration } from "tslint/lib/configuration";
 
 /**
  * Represents an Submission database model object
@@ -105,6 +104,9 @@ export interface ISubmission {
      }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
+        if(this.entries.length <= 0 ) {
+            throw new Error("Cannot compare: A comparator submission has no entries");
+        }
         return otherSubmission.compareAnalysisResultEntries(this.entries);
     }
     asJSON() : Object {
@@ -124,6 +126,25 @@ export interface ISubmission {
     }
 
     compareAnalysisResultEntries(entries : IAnalysisResultEntry[]) : IAnalysisResult {
-        return undefined;
+        
+        if(this.entries.length <= 0) {
+            throw new Error("Cannot compare: A comparator submission has no entries");
+        }
+
+        var analysisResult = new AnalysisResult();
+
+        this.entries.forEach((entry) => {
+            entries.forEach((otherEntry) => {
+
+                var hashA = entry.getHashValue();
+                var hashB = otherEntry.getHashValue();
+
+                if(true) { //TODO: Replace hardcoded result
+                    analysisResult.addMatch(entry,otherEntry);
+                }
+            });
+        });
+
+        return analysisResult;
     }
 }

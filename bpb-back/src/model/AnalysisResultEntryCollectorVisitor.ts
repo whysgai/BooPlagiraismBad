@@ -10,7 +10,7 @@ export interface IAnalysisResultEntryCollectorVisitor {
 export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisitor<any> implements IAnalysisResultEntryCollectorVisitor  {
     
     protected defaultResult() {
-        throw new Error("Method not implemented.");
+        return; //TODO
     }
     
     private filePath : String;

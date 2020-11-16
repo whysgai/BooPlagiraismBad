@@ -1,8 +1,8 @@
-import { AnalysisResultEntry } from "./AnalysisResultEntry";
+import { AnalysisResultEntry, IAnalysisResultEntry } from "./AnalysisResultEntry";
 
 export interface IAnalysisResult {
-    asJSON() : JSON
-    addMatch(analysisResultEntryA : AnalysisResultEntry, analysisResultEntryB : AnalysisResultEntry) : void
+    asJSON() : Object
+    addMatch(analysisResultEntryA : IAnalysisResultEntry, analysisResultEntryB : IAnalysisResultEntry) : void
 }
 
 /**
@@ -10,15 +10,17 @@ export interface IAnalysisResult {
  */
 export class AnalysisResult implements IAnalysisResult {
     
+    private matches : Array<IAnalysisResultEntry>[];
+
     constructor() {
-        //TODO
+        this.matches = [];
     }
 
-    addMatch(analysisResultEntryA : AnalysisResultEntry, analysisResultEntryB : AnalysisResultEntry) {
-        //TODO
+    addMatch(analysisResultEntryA : IAnalysisResultEntry, analysisResultEntryB : IAnalysisResultEntry) {
+        this.matches.push([analysisResultEntryA,analysisResultEntryB]);
     }
 
-    asJSON(): JSON {
-        throw new Error("Method not implemented.");
+    asJSON(): Object {
+        return this.matches.map((match) => { return [match[0].asJSON() , match[1].asJSON()] });
     }
 }
