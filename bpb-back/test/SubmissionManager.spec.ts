@@ -83,14 +83,14 @@ describe("SubmissionManager.ts",() => {
 
     });
 
-    describe("addFile()",() =>{
+    describe("processSubmissionFile()",() =>{
 
         it("Should save and add a file into the submission specified by the client");
 
-        it("Should return an appropriate error if body parameters are incorrect (submission specified does not exist or is invalid)");
+        it("Should return an appropriate error if submission ID is invalid");
 
-        it("Should return an appropriate error if body parameters are incorrect (submission specified exists, but one or more other parameters is invalid)");
-    
+        it("Should return an appropriate error if submission file doesn't exist at the specified location");
+
     });
 
     describe("deleteSubmission({id})",() =>{
@@ -125,13 +125,13 @@ describe("SubmissionManager.ts",() => {
 
     describe("compareSubmission({id_a},{id_b})",()=> {
 
-        it("Should return a valid AnalysisResult if both {id}s are valid");
+        it("Should return a valid AnalysisResult if both submissions are valid");
 
-        it("Should return an appropriate error if {id_a} is valid and {id_b} is not valid");
+        it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist");
         
-        it("Should return an appropriate error if {id_a} is not valid and {id_b} is valid");
+        it("Should return an appropriate error if {id_a} does not exist and {id_b} is valid");
         
-        it("Should return an appropriate error if neither ids is valid");
+        it("Should return an appropriate error if neither submission exists");
 
     });
 });
