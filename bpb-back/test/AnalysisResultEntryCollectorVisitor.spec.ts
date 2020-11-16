@@ -42,8 +42,8 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("Should throw an error if no ParseTree has been visited.", () => { 
-            expect(newVisitor.getAnalysisResultEntries()).to.throw(Error, "AnalysisResultEntryCollectorVisitor" +
-            "has not visited a ParseTree");
+            let functionCall = function() { newVisitor.getAnalysisResultEntries(); };
+            expect(functionCall).to.throw(Error, "Visitor has not visited a ParseTree");
         });
 
         it("Should NOT throw an error if a ParseTree has been visited.", () => {
@@ -69,7 +69,12 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         before(() => {
             newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath);
             newVisitor.visit(exampleTree);
-        })
+        });
+        
+        it("Should throw an Error if visitor tries to visit after it already has.", () => {
+            let visitCall = function() { newVisitor.visit(exampleTree); };
+            expect(visitCall).to.throw(Error, "Visitor has already visited a ParseTree.");
+        });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.contextType Should match as expected.", () => {
