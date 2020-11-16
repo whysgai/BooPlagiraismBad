@@ -82,7 +82,7 @@ export interface ISubmission {
          return this.files;
      }
 
-     addFile(content : String, filePath : String) : void {
+     addFile(content : string, filePath : string) : void {
       
         if(this.files.includes(filePath)) {
             throw new Error("File at " + filePath + " was already added to the submission");
@@ -91,7 +91,7 @@ export interface ISubmission {
         this.files.push(filePath);
 
         var parseTree = parse(content.toString()); //TODO: better way to primitive-ize?
-        var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
+        var visitor = new AnalysisResultEntryCollectorVisitor(filePath, this);
 
         visitor.visit(parseTree);
 
