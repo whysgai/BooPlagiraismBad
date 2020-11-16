@@ -149,6 +149,42 @@ describe('AssignmentRouter.ts',()=> {
         })
     });
 
+    it("Should be able to interpret a request to PUT /assignments/{id} where {id} is valid (name property only)",() => {
+       
+        const expectedId = '01'
+        const expectedName = "Traveling Salesmen"
+        const mockAssignment = new Assignment(expectedId,expectedName);
+        const putBody = {"name":expectedName}
+
+        chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
+ 
+        chai.request(testServer).put("/assignments/"+expectedId)
+        .send(putBody)
+        .then(res => {
+            expect(res).to.have.status(200);
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment.getID(),putBody);
+        })
+    });
+
+    it("Should be able to interpret a request to PUT /assignments/{id} where {id} is valid (submissions property only)",() => {
+       
+        const expectedId = '0009'
+        const expectedName = "Example!"
+        const mockAssignment = new Assignment(expectedId,expectedName);
+        const putBody = {"submissions":["test1","test2"]}
+
+        chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
+ 
+        chai.request(testServer).put("/assignments/"+expectedId)
+        .send(putBody)
+        .then(res => {
+            expect(res).to.have.status(200);
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment.getID(),putBody);
+        })
+    });
+    
     it("Should be able to interpret a failed request to PUT /assignments/{id} where {id} is invalid",() => {
         const expectedId = '0011'
         const expectedName = "Jims Bonde"
@@ -166,9 +202,6 @@ describe('AssignmentRouter.ts',()=> {
             expect(mockUpdateMethod).not.to.have.been.called;
         })
     });
-
-    //TODO: Add later
-    it('Should be able to interpret a failed request to PUT /assignments/{id} if any properties are missing');
 
     it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid",() => {
        
