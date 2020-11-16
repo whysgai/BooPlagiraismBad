@@ -64,7 +64,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
         it("Should return an AnalysisResultEntry[] of expected length.", () => {
             newVisitor.visit(exampleTree);
-            expect(newVisitor.getAnalysisResultEntries().length).to.equal(233);
+            expect(newVisitor.getAnalysisResultEntries().length).to.equal(58);
         });
     });
 
@@ -103,7 +103,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
         var analysisResultEntries : AnalysisResultEntry[];
         var firstEntry = analysisResultEntries[0];
-        
+
         before(() => {
             newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
             newVisitor.visit(exampleTree);
