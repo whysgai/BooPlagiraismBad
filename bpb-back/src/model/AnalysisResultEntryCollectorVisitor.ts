@@ -8,7 +8,9 @@ import { ISubmission } from "./Submission";
 
 export interface IAnalysisResultEntryCollectorVisitor {
     getAnalysisResultEntries(): AnalysisResultEntry[];
-    getFilePath() : string;    
+    getFilePath() : string;
+    getSubmission() : ISubmission;
+    hasVisited() : boolean;
 }
 
 export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisitor<any> implements IAnalysisResultEntryCollectorVisitor  {
