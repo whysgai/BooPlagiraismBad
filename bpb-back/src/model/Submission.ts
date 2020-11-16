@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
 import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
+import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
@@ -40,7 +41,7 @@ export interface ISubmission {
         _id:  String,
         assignment_id: String,
         name: String,
-        files: [String],
+        files: [],
         entries: [Object]
       });
 
@@ -95,9 +96,7 @@ export interface ISubmission {
      }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
-        //Calls compareResultEntries on otherSubmission, passing in our submission entries from this submission
-        //Returns the result provided by compareResultEntries
-        throw new Error("Method not implemented.");
+        var collectorVisitor = new AnalysisResultEntryCollectorVisitor("")
     }
     asJSON() : Object {
         return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
