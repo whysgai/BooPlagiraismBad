@@ -99,6 +99,9 @@ export interface ISubmission {
 
      addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
          this.entries.push(analysisResultEntry);
+         if(!this.files.includes(analysisResultEntry.getFilePath())) {
+             this.files.push(analysisResultEntry.getFilePath());
+         }
      }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
