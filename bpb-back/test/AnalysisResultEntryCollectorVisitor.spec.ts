@@ -74,6 +74,13 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
     });
 
+    describe("getSubmission", () => {
+        it("Should return the expected Submission object.", () => {
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
+            expect(newVisitor.getSubmission()).is.equal(mockSubmission);
+        });
+    });
+
     describe("visit", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
         before(() => {
