@@ -3,7 +3,7 @@ import {ISubmission, Submission} from '../model/Submission';
 import { ISubmissionDAO, SubmissionDAO } from '../model/SubmissionDAO';
 import fs from 'fs';
 import util from 'util';
-import SubmissionData from "../SubmissionData"
+import SubmissionData from "../types/SubmissionData"
 //Promisfy readFile
 const readFileContent = util.promisify(fs.readFile);
 
