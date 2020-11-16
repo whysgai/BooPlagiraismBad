@@ -311,11 +311,65 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return a valid AnalysisResult if both submissions are valid");
 
-        it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist");
-        
-        it("Should return an appropriate error if {id_a} does not exist and {id_b} is valid");
-        
-        it("Should return an appropriate error if neither submission exists");
 
+        it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
+
+            var testSubmission2 = new Submission("someinvalid","id");
+
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',(submissionId) =>{
+                if(submissionId === testSubmission2.getId()) {
+                    return Promise.reject("");
+                } else {
+                    return Promise.resolve(testSubmission);
+                }
+            });
+
+            testSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (one id does not exist)").to.be.false;
+            }).catch((err) => {
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("No submission exists with id");
+            });
+        });
+        
+        it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
+
+            var testSubmission2 = new Submission("someinvalid","id");
+
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',(submissionId) =>{
+                if(submissionId === testSubmission2.getId()) {
+                    return Promise.reject("");
+                } else {
+                    return Promise.resolve(testSubmission);
+                }
+            });
+
+            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (one id does not exist)").to.be.false;
+            }).catch((err) => {
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("No submission exists with id");
+            });
+        });
+
+        it("Should return an appropriate error if neither submission exists",() => {
+            
+            var testSubmission2 = new Submission("someinvalid","id");
+
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ return Promise.reject("No submission exists with id")});
+
+            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (one id does not exist)").to.be.false;
+            }).catch((err) => {
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("No submission exists with id");
+            });
+        });
     });
 });
