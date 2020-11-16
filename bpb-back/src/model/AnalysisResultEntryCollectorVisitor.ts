@@ -5,6 +5,7 @@ import { Tlsh } from '../lib/tlsh';
 import { ParserRuleContext } from "antlr4ts/ParserRuleContext";
 import { ParseTreeVisitor, RuleNode } from "antlr4ts/tree";
 import { ISubmission } from "./Submission";
+import { JavaParser } from 'java-ast/dist/parser/JavaParser'
 
 export interface IAnalysisResultEntryCollectorVisitor extends ParseTreeVisitor<any> {
     getAnalysisResultEntries(): AnalysisResultEntry[];
@@ -52,16 +53,17 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
     
     protected createAnalysisResultEntry(parseTree : ParseTree) : AnalysisResultEntry {
         
-        let textContent = parseTree.toStringTree();
-        let hashValue = this.getLSHValue(textContent);
+        let hashValue = this.getLSHValue(parseTree.toStringTree());
         let submissionId = this.submission.getId();
-        //TODO: figure out how to get contextType
-        let contextType = parseTree.text;
+        let contextType;
+        let textContent;
         let lineStart;
         let lineStop;
         if(parseTree instanceof ParserRuleContext) {
         //Cast ParseTree to ParserRuleContext to access _start and _stop tokens
-            var asParserRuleContext = parseTree as ParserRuleContext;
+            let asParserRuleContext = parseTree as ParserRuleContext;
+            textContent = asParserRuleContext.text;
+            contextType = JavaParser.ruleNames[asParserRuleContext.ruleContext.ruleIndex];
             lineStart = asParserRuleContext._start.line;
             lineStop = asParserRuleContext._stop.line;
         }
