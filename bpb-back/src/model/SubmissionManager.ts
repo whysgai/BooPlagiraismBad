@@ -40,6 +40,7 @@ export class SubmissionManager implements ISubmissionManager {
     }
     processSubmissionFile = async(submissionId : String, filePath : String): Promise<void> => {
         //Get file content from disk
+        // Unzips POSTed file
         //Call submission.addfile on the submission
         //Save the submission with the new entries into the database (including pointer to filePath as metadata)
         throw new Error('Method not implemented.');
