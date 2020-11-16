@@ -3,7 +3,7 @@ import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
 import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
-//import {parse} from 'java-ast'; //Commented out because not working
+import {parse} from 'java-ast'; //Commented out because not working
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
 
@@ -90,9 +90,7 @@ export interface ISubmission {
         this.files.push(filePath);
 
         //TODO: Remove commented out parse tree creation
-        var parseTree = undefined;
-        //var parseTree = parse(content.toString()); //TODO: better way to primitive-ize? Also, uncomment this
-
+        var parseTree = parse(content.toString());
         var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
 
         visitor.visit(parseTree);
