@@ -3,12 +3,17 @@ import chai = require("chai");
 import chaiSpies = require("chai-spies");
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
 import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
-import { Submission } from "../src/model/Submission";
+import { ISubmission, Submission } from "../src/model/Submission";
+import { IAssignmentDAO } from "../src/model/AssignmentDAO";
 
 describe("SubmissionManager.ts",() => {
 
     var testSubmissionDAO : ISubmissionDAO;
     var testSubmissionManager : ISubmissionManager;
+    var testSubmission : ISubmission;
+    var testSubmissionId : String;
+    var testSubmissionName : String;
+    var testSubmissionAssignmentId : String;
 
     before(()=>{
         chai.use(chaiSpies); 
@@ -17,31 +22,40 @@ describe("SubmissionManager.ts",() => {
     beforeEach(()=>{
         testSubmissionDAO = new SubmissionDAO();
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
+        testSubmissionId = "test_sid";
+        testSubmissionName = "testname";
+        testSubmissionAssignmentId = "test_aid";
+        testSubmission = new Submission(testSubmissionId,testSubmissionName);
     });
 
     describe("getSubmission()",() => {
         
         it("Should return submission if the provided ID is valid",()=> {
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
 
+            testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
+                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
+                expect(submission).to.deep.equal(testSubmission);
+            })
         });
 
         it("Should return no submissions if there is no submission with the provided ID",() =>{
-        
+            expect(testSubmissionManager.getSubmission("some_nonexistent_id")).to.be.an("array").that.is.empty;
         });
 
     });
     describe("getSubmissions()",() => {
         
-        it("Should return submissions if there are some",()=> {
+        it("Should return submissions of the given assignment if there are some",()=> {
+            chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [testSubmission]});
 
-                const mockSubmission = new Submission("test","test");
-                chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [mockSubmission]});
-
-                expect(testSubmissionManager.getSubmissions("test")).to.be.an('array').that.is.not.empty;
+            testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
+                expect(submissions[0]).to.deep.equal(testSubmission);
+            })
         });
 
         it("Should return no submissions if there are none",() =>{
-            expect(testSubmissionManager.getSubmissions("test")).to.be.an('array').that.is.empty;
+            expect(testSubmissionManager.getSubmissions(testSubmissionAssignmentId)).to.be.an("array").that.is.empty;
         });        
 
     });
