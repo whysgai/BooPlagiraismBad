@@ -3,10 +3,10 @@ import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
 import { ParserRuleContext } from "antlr4ts/ParserRuleContext";
-import { RuleNode } from "antlr4ts/tree";
+import { ParseTreeVisitor, RuleNode } from "antlr4ts/tree";
 import { ISubmission } from "./Submission";
 
-export interface IAnalysisResultEntryCollectorVisitor {
+export interface IAnalysisResultEntryCollectorVisitor extends ParseTreeVisitor<any> {
     getAnalysisResultEntries(): AnalysisResultEntry[];
     getFilePath() : string;
     getSubmission() : ISubmission;
@@ -29,7 +29,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         }
         this.analysisResultEntries = new Array<AnalysisResultEntry>();
     }
-    
+
     getSubmission(): ISubmission {
         return this.submission;
     }
