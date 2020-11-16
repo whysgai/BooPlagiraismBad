@@ -44,21 +44,19 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
     }
 
     protected getLSHValue(textContent : string) : string {
-        // let tlsh = new Tlsh();
-        // tlsh.update(textContent, textContent.length+1);
-        // tlsh.finale();
-        // return tlsh.hash().toString();
-        return "hash"
+        let tlsh = new Tlsh();
+        tlsh.update(textContent, textContent.length+1);
+        tlsh.finale();
+        return tlsh.hash().toString();
     }
     
     protected createAnalysisResultEntry(parseTree : ParseTree) : AnalysisResultEntry {
         
+        let textContent = parseTree.toStringTree();
+        let hashValue = this.getLSHValue(textContent);
         let submissionId = this.submission.getId();
         //TODO: figure out how to get contextType
         let contextType = parseTree.text;
-        let textContent = parseTree.toStringTree();
-        //TODO: figure out whats wrong with the hash() function [hard coded 'hash' for now for execution]
-        let hashValue = this.getLSHValue(textContent);
         let lineStart;
         let lineStop;
         if(parseTree instanceof ParserRuleContext) {
@@ -71,7 +69,22 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
     }
 
     visit(parseTree : ParseTree) {
-        this.analysisResultEntries.push(this.createAnalysisResultEntry(parseTree)); //Collect our AnalysisResultEntry for the root node
+        try {
+            this.analysisResultEntries.push(this.createAnalysisResultEntry(parseTree)); //Collect our AnalysisResultEntry for the root node
+        } catch (err) {
+        /**If the length of node.text is < 50 chars, or if node.text is lacking a certain ammount 
+             * of variation, then tlsh.hash() will throw an error. If one of these errors are thrown, 
+             * we will skip this node, as its content is not viable for us to perform a 
+             * LocalitySensitiveHash upon, using the trendmicro/tlsh library.
+            */
+            if (err.message.includes("ERROR: length too small -") || 
+            err.message.includes("ERROR: not enought variation in input - ")) {
+                throw new Error("Cannot perform a LocalitySensitiveHash upon the" +
+                "root node of the subtree. The following error was thrown: " + err.message);
+            } else {
+                throw err;
+            }
+        }
         let returnVal : any = parseTree.accept(this); 
         this.visited = true; //Confirms that this visitor has performed a visit. See getAnalysisResultEntries()
         return returnVal;
@@ -86,11 +99,24 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
             }
             let c = node.getChild(i);
             
-            //Collect our AnalysisResultEntry for the child node
-            this.analysisResultEntries.push(this.createAnalysisResultEntry(c)); 
-            
-            let childResult = c.accept(this);
-            result = this.aggregateResult(result, childResult);
+            try {
+                //Collect our AnalysisResultEntry for the child node
+                this.analysisResultEntries.push(this.createAnalysisResultEntry(c)); 
+                let childResult = c.accept(this); //If an error is caught, no further nodes in this subtree will be visited.
+                result = this.aggregateResult(result, childResult);
+            } catch (err) {
+                /**If the length of node.text is < 50 chars, or if node.text is lacking a certain ammount 
+                 * of variation, then tlsh.hash() will throw an error. If one of these errors are thrown, 
+                 * we will skip this node, as its content is not viable for us to perform a 
+                 * LocalitySensitiveHash upon, using the trendmicro/tlsh library.
+                */
+                if (err.message.includes("ERROR: length too small -") || 
+                err.message.includes("ERROR: not enought variation in input - ")) {
+                    //Skip this node
+                } else {
+                    throw err;
+                }
+            }
         }
         return result;
     }
