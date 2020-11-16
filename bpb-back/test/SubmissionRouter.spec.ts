@@ -158,13 +158,13 @@ describe('SubmissionRouter.ts',()=> {
     });
 
     //TODO: Fix. Technically only passing on the live app, has hardcoded hostname
-    it.skip("Should be able to interpret a request to POST /submissions/files to submit a file",() => {
+    it("Should be able to interpret a request to POST /submissions/files to submit a file",() => {
         
         var mockGetSubmission = chai.spy.on(
             testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission)}
-        );
-        
-        //chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
+        );    
+
+        //chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("test/App.spec.ts"))
         superagent.post("http://localhost:8080/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
          .then((res) => {
              expect(res).to.have.status(200);
