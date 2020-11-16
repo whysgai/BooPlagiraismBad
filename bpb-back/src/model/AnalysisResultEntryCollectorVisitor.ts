@@ -3,7 +3,7 @@
  * Contains {@link IAnalysisResultEntryCollectorVisitor } and {@link @AnalysisResultEntryCollectorVisitor}
  * @packageDocumentation
  */
-import {AnalysisResultEntry} from "../AnalysisResultEntry";
+import {AnalysisResultEntry} from "./AnalysisResultEntry";
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
