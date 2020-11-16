@@ -50,7 +50,6 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.contains("No submission exists with id");
             });
         });
-
     });
     describe("getSubmissions()",() => {
         
@@ -66,17 +65,47 @@ describe("SubmissionManager.ts",() => {
         it("Should return no submissions if there are none",() =>{
             expect(testSubmissionManager.getSubmissions(testSubmissionAssignmentId)).to.be.an("array").that.is.empty;
         });        
-
     });
 
     describe("createSubmission()",() => {
         
-        it("Should properly create a submission if body parameters are correct (includes name, assignment_id)");
+        it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
+            
+            chai.spy.on(testSubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
 
-        it("Should return an appropriate error if body parameters are incorrect (missing name)");
+            var createBody = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
+
+            testSubmissionManager.createSubmission(createBody).then((submission) => {
+                expect(submission.getName()).to.equal(testSubmission.getName());
+                expect(submission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
+            });
+        });
+
+        it("Should return an appropriate error if body parameters are incorrect (missing name)",() => {
+
+            var createBody = {assignment_id:testSubmissionAssignmentId};
+
+            testSubmissionManager.createSubmission(createBody).then((submission) => {
+                expect(true,"createSubmission is succeeding where it should fail (id should not exist)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("Missing submission body element");
+            });
+        });
         
-        it("Should return an appropriate error if body parameters are incorrect (missing assignment_id)");
+        it("Should return an appropriate error if body parameters are incorrect (missing assignment_id)",() => {
+            
+            var createBody = {name:testSubmission.getName()};
+
+            testSubmissionManager.createSubmission(createBody).then((submission) => {
+                expect(true,"createSubmission is succeeding where it should fail (id should not exist)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("Missing submission body element");
+            });
+        });
         
+        //TODO: Logical issue with checking for assignment existence in SubmissionManager due to manager scope
         it("Should return an appropriate error if body parameters are incorrect (assignment_id doesn't exist)");
 
     });
