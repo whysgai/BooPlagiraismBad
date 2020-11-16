@@ -98,7 +98,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         })
     })
 
-    describe("visit", () => {
+    describe("visit (checks resultant array and contents for validity)", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
         before(() => {
             newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
@@ -115,10 +115,11 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.hashValue Should match as expected.", () => {
+            let expectedHash = "9EB16BE3F7DA712B429867B30547B100DE94FF20827829F8C5DEAF49554819086B7F9D";
             newVisitor.visit(exampleTree);
             let analysisResultEntries = newVisitor.getAnalysisResultEntries();
             let firstEntry = analysisResultEntries[0];
-            expect(firstEntry.getHashValue()).to.equal("placeholderText");
+            expect(firstEntry.getHashValue()).to.equal(expectedHash);
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
