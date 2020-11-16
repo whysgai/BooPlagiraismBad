@@ -3,10 +3,9 @@ import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
 import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
-//import { parse } from 'java-ast';
-//import { ParseTree } from 'antlr4ts/tree/ParseTree';
+//import {parse} from 'java-ast'; //Commented out because not working
+import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
-import { parse } from "java-ast";
 
 /**
  * Represents an Submission database model object
@@ -90,8 +89,11 @@ export interface ISubmission {
 
         this.files.push(filePath);
 
-        var parseTree = parse(content.toString()); //TODO: better way to primitive-ize?
-        var visitor = new AnalysisResultEntryCollectorVisitor(filePath, this);
+        //TODO: Remove commented out parse tree creation
+        var parseTree = undefined;
+        //var parseTree = parse(content.toString()); //TODO: better way to primitive-ize? Also, uncomment this
+
+        var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
 
         visitor.visit(parseTree);
 
