@@ -112,16 +112,31 @@ describe("SubmissionManager.ts",() => {
 
     describe("updateSubmission()",() => {
         
-        it("Should properly update a submission if body parameters include name and {id} exists");
+        it("Should properly update a submission if body parameters are included and submission exists with id",() => {
+                        
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
 
-        it("Should return an appropriate error if body parameters include assignment_id but {id} exists");
+            var expectedNewName = "test";
+            var expectedNewAssnId = "test2";
+
+            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+
+            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(submission.getName()).to.equal(expectedNewName);
+                expect(submission.getAssignmentId()).to.equal(expectedNewAssnId);
+            });
+        });
+
+        it("Should properly update a submission if submission exists and only one body parameter is provided");
+
+        it("Should properly update a submission if submission exists and only one body parameter is provided");
         
-        it("Should return an appropriate error if {id} does not exist");
+        it("Should return an appropriate error if submission doesn't exist with the provided id");
+        
+        it("Should return an appropriate error if name property is not a string");
 
-        it("Should return an appropriate error if name is incorrectly formatted");
-
-        it("Should return an appropriate error if assignment_id is inappropriately formatted");
-
+        it("Should return an appropriate error if assignment id property is not a string");
     });
 
     describe("processSubmissionFile()",() =>{
