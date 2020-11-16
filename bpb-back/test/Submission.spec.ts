@@ -35,7 +35,7 @@ describe("Submission.ts",() => {
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultA = testSubmissionA.compare(testSubmissionB);
             expect(resultA).to.not.be.undefined;
-            expect(resultA.asJSON).to.not.be.be.undefined;
+            expect(resultA.asJSON()).to.not.be.be.undefined;
         });
         
         it("Should return a valid AnalysisResult if comparator submission is valid (right direction)",() => {
