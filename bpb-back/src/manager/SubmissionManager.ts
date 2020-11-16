@@ -18,9 +18,11 @@ export interface ISubmissionManager {
 export class SubmissionManager implements ISubmissionManager {
 
     private submissionDAO : ISubmissionDAO;
+    private submissionCache : Map<String,ISubmission>;
 
     constructor(submissionDAO : ISubmissionDAO) {
         this.submissionDAO = submissionDAO;
+        this.submissionCache = new Map<String,ISubmission>();
     }
 
     getSubmission = async(submissionId : String) : Promise<ISubmission> => {
@@ -49,9 +51,20 @@ export class SubmissionManager implements ISubmissionManager {
         throw new Error('Method not implemented.');
     }
     compareSubmissions = async(submissionIdA : String, submissionIdB : String): Promise<IAnalysisResult> => {
-        //TODO: Actually actively perform comparison of all hashes saved for each submission
-        //Delegate comparison to one of the two submissions' compare methods and return the result
-        //Later, could read from database to get comparisons that already occurred (i.e. create AnalysisResult some other way)
-        throw new Error('Method not implemented.');
+        this.getSubmission(submissionIdA)
+            .then(submissionA => {
+                this.getSubmission(submissionIdB)
+                    .then(submissionB => {
+                        return Promise.resolve(submissionA.compare(submissionB));
+                    }
+                ).catch((err) => {
+                    return Promise.reject(err);
+                });
+            }
+        ).catch((err) => {
+            return Promise.reject(err);
+        });
+
+        return Promise.reject("Did not return earlier");
     }
 }
