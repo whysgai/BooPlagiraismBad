@@ -11,10 +11,10 @@ const readFileContent = util.promisify(fs.readFile);
  * Represents a controller for Submission objects.
  */
 export interface ISubmissionManager {
-    createSubmission(data : Object) : Promise<ISubmission>;
+    createSubmission(data : SubmissionData) : Promise<ISubmission>;
     getSubmissions(assignmentId : String) : Promise<ISubmission[]>;
     getSubmission(submissionId : String) : Promise<ISubmission>;
-    updateSubmission(submissionId : String, data : Object) : Promise<ISubmission>;
+    updateSubmission(submissionId : String, data : SubmissionData) : Promise<ISubmission>;
     processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
     deleteSubmission(submissionId : String) : Promise<void>;
     compareSubmissions(submissionIdA : String, submissionIdB : String) : Promise<IAnalysisResult>
@@ -38,7 +38,7 @@ export class SubmissionManager implements ISubmissionManager {
         
         //TODO: pull out details from data object and validate
         var name = data.name;
-        var assignmentId = "testy";
+        var assignmentId = data.assignmentId;
 
         this.submissionDAO.createSubmission(name,assignmentId)
             .then((submission) => {
@@ -88,11 +88,11 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionId 
      * @param data 
      */
-    updateSubmission = async(submissionId : String, data : Object): Promise<ISubmission> => {
+    updateSubmission = async(submissionId : String, data : SubmissionData): Promise<ISubmission> => {
         //Update the submission in cache and db
         //TODO: pull out details from data object
-        var name = "test2"
-        var assignmentId = "testy2"
+        var name = data.name;
+        var assignmentId = data.assignmentId;
 
         this.getSubmission(submissionId).then((submission) => {
             submission.setName(name);
