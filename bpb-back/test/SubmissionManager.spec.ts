@@ -71,19 +71,27 @@ describe("SubmissionManager.ts",() => {
 
     describe("createSubmission()",() => {
         
-        it("Should properly create a submission if body parameters are correct");
+        it("Should properly create a submission if body parameters are correct (includes name, assignment_id)");
 
-        it("Should return an appropriate error if body parameters are incorrect");
+        it("Should return an appropriate error if body parameters are incorrect (missing name)");
+        
+        it("Should return an appropriate error if body parameters are incorrect (missing assignment_id)");
+        
+        it("Should return an appropriate error if body parameters are incorrect (assignment_id doesn't exist)");
 
     });
 
     describe("updateSubmission()",() => {
         
-        it("Should properly update a submission if body parameters are correct and {id} exists");
+        it("Should properly update a submission if body parameters include name and {id} exists");
 
+        it("Should return an appropriate error if body parameters include assignment_id but {id} exists");
+        
         it("Should return an appropriate error if {id} does not exist");
 
-        it("Should return an appropriate error if body parameters are incorrect but {id} exists");
+        it("Should return an appropriate error if name is incorrectly formatted");
+
+        it("Should return an appropriate error if assignment_id is inappropriately formatted");
 
     });
 
