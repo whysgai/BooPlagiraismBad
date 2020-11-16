@@ -89,7 +89,6 @@ export interface ISubmission {
 
         this.files.push(filePath);
 
-        //TODO: Remove commented out parse tree creation
         var parseTree = parse(content.toString());
         var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
 
