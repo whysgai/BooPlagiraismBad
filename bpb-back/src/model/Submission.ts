@@ -7,6 +7,7 @@ import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollec
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
 import { parse } from "java-ast";
+import { stringifyConfiguration } from "tslint/lib/configuration";
 
 /**
  * Represents an Submission database model object
@@ -28,10 +29,11 @@ export interface ISubmission {
     getAssignmentId() : String;
     getName() : String;
     getFiles() : String[];
-    addFile(content : string, filePath : String) : void;
+    addFile(content : String, filePath : String) : void;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
+    compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult;
     getModelInstance() : Document;
     asJSON() : Object;
 }
@@ -81,9 +83,9 @@ export interface ISubmission {
          return this.files;
      }
 
-     addFile(content : string, filePath : String) : void {
-        
-        var parseTree = parse(content);
+     addFile(content : String, filePath : String) : void {
+       
+        var parseTree = parse(content.toString()); //TODO: better way to primitive-ize?
         var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
 
         visitor.visit(parseTree);
@@ -95,12 +97,12 @@ export interface ISubmission {
          this.files.push(filePath);
      }
 
-     addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
+     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
          this.entries.push(analysisResultEntry);
      }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
-       return undefined; //TODO
+        return otherSubmission.compareAnalysisResultEntries(this.entries);
     }
     asJSON() : Object {
         return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
@@ -116,5 +118,9 @@ export interface ISubmission {
         }
 
         return false;
+    }
+
+    compareAnalysisResultEntries(entries : IAnalysisResultEntry[]) : IAnalysisResult {
+        return undefined;
     }
 }
