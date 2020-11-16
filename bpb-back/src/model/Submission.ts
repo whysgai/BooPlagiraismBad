@@ -25,7 +25,9 @@ export interface ISubmissionModel extends Document {
 export interface ISubmission {
     getId() : String;
     getAssignmentId() : String;
+    setAssignmentId(newId : String) : void;
     getName() : String;
+    setName(newName : String) : void;
     getFiles() : String[];
     addFile(content : String, filePath : String) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
@@ -38,8 +40,8 @@ export interface ISubmission {
 
  export class Submission implements ISubmission {
     
+    //Note: removed _id from schema in order to generate it on creation (should still exist in the model)
     private static submissionSchema = new Schema({
-        _id:  String,
         assignment_id: String,
         name: String,
         files: [],
@@ -54,7 +56,7 @@ export interface ISubmission {
     private files : String[];
     private entries : IAnalysisResultEntry[];
 
-    constructor(id : String, name : String){
+    constructor(id: String, name : String){
         this.id = id;
         this.name = name
         this.entries = [];
@@ -65,17 +67,26 @@ export interface ISubmission {
         return this.submissionModel;
     }
 
-     getId(): String {
-         return this.id;
+    getId() : String {
+        return this.id;
+    }
+     
+    getAssignmentId(): String {
+         return this.assignment_id;
      }
 
-     getAssignmentId(): String {
-         return this.assignment_id;
+     setAssignmentId(newId : String): void {
+         this.assignment_id = newId;
      }
 
      getName(): String {
          return this.name;
      }
+
+     setName(newName : String): void {
+         this.name = newName;
+     }
+
 
      getFiles() : String[] {
          return this.files;

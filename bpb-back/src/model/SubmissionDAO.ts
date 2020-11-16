@@ -2,11 +2,11 @@ import {ISubmission, Submission} from './Submission'
 //import submissionModel from './SubmissionModel';
 
 export interface ISubmissionDAO {
-    createSubmission(submission : ISubmission) : Promise<void>; 
-    readSubmissions(submissionIds : String[]) : Promise<ISubmission[]>;
+    createSubmission(name : String, assignment_id : String) : Promise<ISubmission>; 
+    readSubmissions(assignmentId : String) : Promise<ISubmission[]>;
     readSubmission(submissionId : String) : Promise<ISubmission>;
-    updateSubmission(submission : ISubmission) : Promise<void>;
-    deleteSubmission(submission : ISubmission) : Promise<void>;
+    updateSubmission(submission : ISubmission) : Promise<ISubmission>;
+    deleteSubmission(submissionId : String) : Promise<ISubmission>;
 }
 /**
  * Singleton Data Access Object for manipulating Assignment database objects.
@@ -17,30 +17,28 @@ export class SubmissionDAO implements ISubmissionDAO {
         //TODO: Singletonness
     }
     
-    async createSubmission(submission : ISubmission): Promise<void> {
+    async createSubmission(name : String, assignmentId : String): Promise<ISubmission> {
         //Create the submission in DB
         //var sub = new submissionModel({_id : submission.getId()});
         //return sub.save().then((res) => { return; });
         return undefined;
     }
     
-    async readSubmissions(): Promise<ISubmission[]> {
-        //Return the specified submissions from db
-        //Return a list of all submissionIDs? This probably needs some kind of filter (i.e. assignments?)
-        //TODO: Add parameter for assignmentId to use as filter
+    async readSubmissions(assignmentId : String): Promise<ISubmission[]> {
+        //Return all submissions of assignment
         return undefined;
     }
 
-    async readSubmission(submissionID: String): Promise<ISubmission> {
+    async readSubmission(submissionId: String): Promise<ISubmission> {
         //Return submission and all of its AnalysisResultEntries
         return undefined;
     }
 
-    async updateSubmission(submission: ISubmission) : Promise<void> {
+    async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
         //Add any new not-persisted AnalysisResultEntries into the database
         return undefined;
     }
-    async deleteSubmission(submission: ISubmission): Promise<void> {
+    async deleteSubmission(submissionId : String): Promise<ISubmission> {
         //Delete the specified submission from the db
         return undefined;
     }
