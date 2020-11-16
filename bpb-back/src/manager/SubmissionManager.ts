@@ -6,9 +6,9 @@ import { ISubmissionDAO } from '../model/SubmissionDAO';
  * Represents a controller for Submission objects.
  */
 export interface ISubmissionManager {
+    createSubmission(data : Object) : Promise<ISubmission>;
     getSubmissions(assignmentId : String) : Promise<ISubmission[]>;
     getSubmission(submissionId : String) : Promise<ISubmission>;
-    createSubmission(data : Object) : Promise<ISubmission>;
     updateSubmission(submissionId : String, data : Object) : Promise<ISubmission>;
     processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
     deleteSubmission(submissionId : String) : Promise<void>;
@@ -24,16 +24,15 @@ export class SubmissionManager implements ISubmissionManager {
         this.submissionDAO = submissionDAO;
         this.submissionCache = new Map<String,ISubmission>();
     }
-
+    createSubmission = async(data : Object): Promise<ISubmission> => {
+        //Create and persist a submission in DB / cache
+        throw new Error('Method not implemented.');
+    }
     getSubmission = async(submissionId : String) : Promise<ISubmission> => {
         throw new Error('Method not implemented')
     }
     getSubmissions = async(assignmentId : String): Promise<ISubmission[]> => {
         //Load a submission and all of its AnalysisResultEntries from the DB
-        throw new Error('Method not implemented.');
-    }
-    createSubmission = async(data : Object): Promise<ISubmission> => {
-        //Create and persist a submission in DB / cache
         throw new Error('Method not implemented.');
     }
     updateSubmission = async(submissionId : String, data : Object): Promise<ISubmission> => {
