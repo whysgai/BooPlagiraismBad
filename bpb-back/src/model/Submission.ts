@@ -143,7 +143,11 @@ export interface ISubmission {
                 var hashA = entry.getHashValue();
                 var hashB = otherEntry.getHashValue();
 
-                if(true) { //TODO: Replace hardcoded result
+                //TODO: Replace
+                var comparison = 1;
+                var threshold = 0;
+
+                if(comparison > threshold) {  
                     analysisResult.addMatch(entry,otherEntry);
                 }
             });
