@@ -114,7 +114,7 @@ describe("SubmissionManager.ts",() => {
         
         it("Should properly update a submission if body parameters are included and submission exists with id",() => {
                         
-            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'getSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
 
             var expectedNewName = "test";
@@ -130,7 +130,7 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should properly update a submission if submission exists and only one body parameter is provided (name)",() => {
-            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'getSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
 
             var expectedNewName = "test";
@@ -145,7 +145,7 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should properly update a submission if submission exists and only one body parameter is provided (assignment_id)",() => {
-            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'getSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
 
             var expectedNewAssnId = "test2";
@@ -160,7 +160,7 @@ describe("SubmissionManager.ts",() => {
         });
         
         it("Should return an appropriate error if submission doesn't exist with the provided id",() => {
-            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.reject(new Error("No submission exists with the specified id"))});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.reject(new Error("Submission does not exist"))});
             chai.spy.on(testSubmissionDAO,'updateSubmission');
 
             var expectedNewName = "test";
@@ -172,12 +172,12 @@ describe("SubmissionManager.ts",() => {
                 expect(true,"updateSubmission is succeeding where it should fail (no submission exists with submission id)").to.equal(false);
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.contains("No submission exists with the specified id");
+                expect(err).to.have.property("message").which.contains("Submission does not exist");
             });
         });
         
         it("Should return an appropriate error if name property is not a string",() => {
-            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(testSubmissionDAO,'updateSubmission');
 
             var expectedNewName = {"definitely":"not a name"};
@@ -194,7 +194,7 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should return an appropriate error if assignment id property is not a string",() => {
-            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(testSubmissionDAO,'updateSubmission');
 
             var expectedNewName = "validname";
@@ -219,8 +219,6 @@ describe("SubmissionManager.ts",() => {
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
-            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
-            
             fs.readFile(testFilePath,(err,content) => {
 
                 var expectedContent = content.toString();
@@ -233,23 +231,50 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if file was already added to the submission",() => {
                 
-                testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("test",testFilePath,"test",1,2,"3","4")); //Adds a filePath to the submission
-                
-                chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
-                chai.spy.on(testSubmission,'addFile');
-    
-                testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
-                    expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
-                }).catch((err) => {
-                    expect(err).to.not.be.undefined;
-                    expect(err).to.have.property("message").which.contains("was already added to the submission");
-                });
-        })
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("test",testFilePath,"test",1,2,"3","4")); //Adds a filePath to the submission
+            
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            var mockAddFile = chai.spy.on(testSubmission,'addFile');
+            
+            testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
+            }).catch((err) => {
+                expect(mockAddFile).to.not.have.been.called();
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("was already added to the submission");
+            });
+        });
 
-        it("Should return an appropriate error if submission ID is invalid");
+        it("Should return an appropriate error if submission ID is invalid",() => {
+            
+            chai.spy.on(testSubmissionDAO,'readSubmission',() => { return Promise.reject(new Error("Submission does not exist")); })
+            var mockAddFile = chai.spy.on(testSubmission,'addFile');
 
-        it("Should return an appropriate error if submission file doesn't exist at the specified location");
+            testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                expect(true,"processSubmissionFile is succeeding where it should fail (submission doesn't exist with id)").to.equal(false);
+            }).catch((err) => {
+                expect(mockAddFile).to.not.have.been.called;
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("Submission does not exist");
+            });
+        });
 
+        it("Should return an appropriate error if submission file doesn't exist at the specified location",() => {
+
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            
+            var mockAddFile = chai.spy.on(testSubmission,'addFile');
+            
+            var nonexistentFilePath = "/test/non/existent/file";
+            
+            testSubmissionManager.processSubmissionFile(testSubmission.getId(),nonexistentFilePath).then(() => {
+                expect(true,"processSubmissionFile is succeeding where it should fail (file doesn't exist at specified location)").to.equal(false);
+            }).catch((err) => {
+                expect(mockAddFile).to.not.have.been.called;
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("A file does not exist at the specified location");
+            });
+        });
     });
 
     describe("deleteSubmission({id})",() =>{
