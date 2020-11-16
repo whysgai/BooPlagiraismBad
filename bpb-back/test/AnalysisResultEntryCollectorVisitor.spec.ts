@@ -81,6 +81,23 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
     });
 
+    describe("hasVisited", () => {
+        var newVisitor : IAnalysisResultEntryCollectorVisitor;
+
+        beforeEach(() => {
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
+        });
+
+        it("Should return FALSE when the visitor has NOT visited a parseTree.", () => {
+            expect(newVisitor.hasVisited()).to.be.false;
+        });
+
+        it("Should return TRUE when the visitor has visited a parseTree.", () => {
+            newVisitor.visit(exampleTree);
+            expect(newVisitor.hasVisited()).to.be.true;
+        })
+    })
+
     describe("visit", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
         before(() => {
