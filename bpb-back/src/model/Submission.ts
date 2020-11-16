@@ -13,7 +13,7 @@ export interface ISubmissionModel extends Document {
     _id : String
     name : String
     files : String[]
-    entry_ids : String[]
+    entries : IAnalysisResultEntry[]
 }
 
 /**
@@ -41,7 +41,7 @@ export interface ISubmission {
         assignment_id: String,
         name: String,
         files: [String],
-        entries: [String]
+        entries: [Object]
       });
 
     private static submissionModel = mongoose.model<ISubmissionModel>('Submission',Submission.submissionSchema);
