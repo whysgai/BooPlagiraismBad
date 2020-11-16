@@ -1,11 +1,18 @@
 import IRouter from './IRouter'
 import AbstractRouter from './AbstractRouter'
 import { AppConfig } from '../AppConfig';
+import { ISubmissionManager } from '../manager/SubmissionManager';
+import { IAssignmentManager } from '../manager/AssignmentManager';
 
 class SubmissionRouter extends AbstractRouter implements IRouter {
   
-  constructor(app : any,route : string) {
+  private assignmentManager : IAssignmentManager;
+  private submissionManager : ISubmissionManager;
+  
+  constructor(app : any,route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager) {
     super(app,route);
+    this.submissionManager = submissionManager;
+    this.assignmentManager = assignmentManager;
     this.setupRoutes();
   }
 
