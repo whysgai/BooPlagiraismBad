@@ -44,7 +44,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
             testSubmissionManager.getSubmission("some_nonexistent_id").then((res) => {
-                expect(true,"getSubmission is succeeding where it should fail (id should not exist)").to.equal(false);
+                expect(true,"getSubmission is succeeding where it should fail (no submission exists with id)").to.equal(false);
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("No submission exists with id");
@@ -86,7 +86,7 @@ describe("SubmissionManager.ts",() => {
             var createBody = {assignment_id:testSubmissionAssignmentId};
 
             testSubmissionManager.createSubmission(createBody).then((submission) => {
-                expect(true,"createSubmission is succeeding where it should fail (id should not exist)").to.equal(false);
+                expect(true,"createSubmission is succeeding where it should fail (missing name in body)").to.equal(false);
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("Missing submission body element");
@@ -98,7 +98,7 @@ describe("SubmissionManager.ts",() => {
             var createBody = {name:testSubmission.getName()};
 
             testSubmissionManager.createSubmission(createBody).then((submission) => {
-                expect(true,"createSubmission is succeeding where it should fail (id should not exist)").to.equal(false);
+                expect(true,"createSubmission is succeeding where it should fail (missing assignment id in body)").to.equal(false);
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("Missing submission body element");
@@ -125,18 +125,90 @@ describe("SubmissionManager.ts",() => {
             testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(expectedNewName);
                 expect(submission.getAssignmentId()).to.equal(expectedNewAssnId);
+                expect(submission.getId()).to.equal(testSubmission.getId);
             });
         });
 
-        it("Should properly update a submission if submission exists and only one body parameter is provided");
+        it("Should properly update a submission if submission exists and only one body parameter is provided (name)",() => {
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
 
-        it("Should properly update a submission if submission exists and only one body parameter is provided");
-        
-        it("Should return an appropriate error if submission doesn't exist with the provided id");
-        
-        it("Should return an appropriate error if name property is not a string");
+            var expectedNewName = "test";
 
-        it("Should return an appropriate error if assignment id property is not a string");
+            var updateBody = {name:expectedNewName};
+
+            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(submission.getName()).to.equal(expectedNewName);
+                expect(submission.getAssignmentId()).to.equal(testSubmissionAssignmentId);
+                expect(submission.getId()).to.equal(testSubmission.getId);
+            });
+        });
+
+        it("Should properly update a submission if submission exists and only one body parameter is provided (assignment_id)",() => {
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
+
+            var expectedNewAssnId = "test2";
+
+            var updateBody = {assignment_id:expectedNewAssnId};
+
+            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(submission.getName()).to.equal(testSubmissionName);
+                expect(submission.getAssignmentId()).to.equal(expectedNewAssnId);
+                expect(submission.getId()).to.equal(testSubmission.getId);
+            });
+        });
+        
+        it("Should return an appropriate error if submission doesn't exist with the provided id",() => {
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.reject(new Error("No submission exists with the specified id"))});
+            chai.spy.on(testSubmissionDAO,'updateSubmission');
+
+            var expectedNewName = "test";
+            var expectedNewAssnId = "test2";
+
+            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+
+            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(true,"updateSubmission is succeeding where it should fail (no submission exists with submission id)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("No submission exists with the specified id");
+            });
+        });
+        
+        it("Should return an appropriate error if name property is not a string",() => {
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission');
+
+            var expectedNewName = {"definitely":"not a name"};
+            var expectedAssignmentId = "test23";
+
+            var updateBody = {name:expectedNewName,assignment_id:expectedAssignmentId};
+
+            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(true,"updateSubmission is succeeding where it should fail (improperly formatted body)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("Improperly formatted body element included in request. Both name and assignment_id must be string properties.");
+            })
+        });
+
+        it("Should return an appropriate error if assignment id property is not a string",() => {
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission');
+
+            var expectedNewName = "validname";
+            var expectedAssignmentId = {some:"kind of other","object":["with","other","properties"]};
+
+            var updateBody = {name:expectedNewName,assignment_id:expectedAssignmentId};
+
+            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(true,"updateSubmission is succeeding where it should fail (impoperly formatted body)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("Improperly formatted body element included in request. Both name and assignment_id must be string properties.");
+            })
+        });
     });
 
     describe("processSubmissionFile()",() =>{
