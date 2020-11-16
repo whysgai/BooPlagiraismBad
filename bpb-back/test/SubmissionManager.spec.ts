@@ -309,8 +309,24 @@ describe("SubmissionManager.ts",() => {
 
     describe("compareSubmission({id_a},{id_b})",()=> {
 
-        it("Should return a valid AnalysisResult if both submissions are valid");
+        it("Should return a valid AnalysisResult if both submissions are valid",() => {
+            
+            var testSubmission2 = new Submission("somevalid","id");
 
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',(submissionId) =>{
+                if(submissionId === testSubmission.getId()) {
+                    return Promise.resolve(testSubmission);
+                } else {
+                    return Promise.resolve(testSubmission2);
+                }
+            });
+
+            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
+                expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockReadSubmission).to.have.been.called.with(testSubmission2.getId());
+            });
+        });
 
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
