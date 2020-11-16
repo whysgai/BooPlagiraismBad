@@ -37,7 +37,6 @@ describe("SubmissionManager.ts",() => {
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
 
             testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
-                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
                 expect(submission).to.deep.equal(testSubmission);
             })
         });

@@ -1,5 +1,4 @@
 import {ISubmission, Submission} from './Submission'
-//import submissionModel from './SubmissionModel';
 
 export interface ISubmissionDAO {
     createSubmission(name : String, assignment_id : String) : Promise<ISubmission>; 

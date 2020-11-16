@@ -3,10 +3,8 @@ import {ISubmission, Submission} from '../model/Submission';
 import { ISubmissionDAO, SubmissionDAO } from '../model/SubmissionDAO';
 import fs from 'fs';
 import util from 'util';
-import { isThrowStatement } from 'typescript';
 //Promisfy readFile
 const readFileContent = util.promisify(fs.readFile);
-
 
 /**
  * Represents a controller for Submission objects.
