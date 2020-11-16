@@ -15,13 +15,24 @@ describe("SubmissionManager.ts",() => {
     });
 
     beforeEach(()=>{
-        testSubmissionDAO = new SubmissionDAO(); //TODO: may need to replace null with actual connection (?)
+        testSubmissionDAO = new SubmissionDAO();
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
     });
 
+    describe("getSubmission()",() => {
+        
+        it("Should return submission if the provided ID is valid",()=> {
+
+        });
+
+        it("Should return no submissions if there is no submission with the provided ID",() =>{
+        
+        });
+
+    });
     describe("getSubmissions()",() => {
         
-        it.skip("Should return submissions if there are some",()=> {
+        it("Should return submissions if there are some",()=> {
 
                 const mockSubmission = new Submission("test","test");
                 chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return [mockSubmission]});
@@ -29,7 +40,7 @@ describe("SubmissionManager.ts",() => {
                 expect(testSubmissionManager.getSubmissions("test")).to.be.an('array').that.is.not.empty;
         });
 
-        it.skip("Should return no submissions if there are none",() =>{
+        it("Should return no submissions if there are none",() =>{
             expect(testSubmissionManager.getSubmissions("test")).to.be.an('array').that.is.empty;
         });        
 
@@ -55,7 +66,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("addFile()",() =>{
 
-        it("Should save and add a frontend-”encoded” file into the submission specified by the client");
+        it("Should save and add a file into the submission specified by the client");
 
         it("Should return an appropriate error if body parameters are incorrect (submission specified does not exist or is invalid)");
 
