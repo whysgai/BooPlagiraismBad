@@ -29,6 +29,10 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         }
         this.analysisResultEntries = new Array<AnalysisResultEntry>();
     }
+    
+    getSubmission(): ISubmission {
+        return this.submission;
+    }
 
     hasVisited(): boolean {
         return this.visited;
