@@ -1,7 +1,6 @@
 import chai from 'chai';
 const expect = require('chai').expect;
-import { isIterationStatement } from "typescript";
-import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
+import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 
 describe("AnalysisResultEntry",() => {
     var testARE : AnalysisResultEntry;

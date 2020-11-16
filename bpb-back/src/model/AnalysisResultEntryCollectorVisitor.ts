@@ -193,6 +193,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
     /**
      * Returns this.analysisResultEntries. Throws an error if no visit has been executed.
      */
+
     getAnalysisResultEntries() : AnalysisResultEntry[] {
         if (this.hasVisited()) {
             return this.analysisResultEntries;

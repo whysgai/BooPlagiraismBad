@@ -3,7 +3,9 @@ import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
 import { AssignmentDAO } from './model/AssignmentDAO';
-import { AssignmentManager } from './model/AssignmentManager';
+import { AssignmentManager } from './manager/AssignmentManager';
+import { SubmissionDAO } from './model/SubmissionDAO';
+import { SubmissionManager } from './manager/SubmissionManager';
 import AssignmentRouter from './router/AssignmentRouter'
 import SubmissionRouter from './router/SubmissionRouter'
 
@@ -24,9 +26,13 @@ class App {
 
             mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
 
-            // Set up Assignment DAO and Manager
+            // Set up AssignmentDAO and Manager
             let assignmentDAO = new AssignmentDAO();
             let assignmentManager = new AssignmentManager(assignmentDAO);
+
+            // Set up SubmissionDAO and Manager
+            let submissionDAO = new SubmissionDAO();
+            let submissionManager = new SubmissionManager(submissionDAO);
             
             // Set up express app
             let app = express();
@@ -37,8 +43,8 @@ class App {
 
             // Set up routers
             let routers = []
-            routers.push(new SubmissionRouter(app,'/submissions'));
-            routers.push(new AssignmentRouter(app,'/assignments',assignmentManager));
+            routers.push(new SubmissionRouter(app,'/submissions',submissionManager,assignmentManager));
+            routers.push(new AssignmentRouter(app,'/assignments',submissionManager,assignmentManager));
 
             // Start listening for traffic
             app.listen(AppConfig.port(),() => {

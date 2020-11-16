@@ -1,8 +1,22 @@
-import { IAnalysisResult } from "../AnalysisResult";
-import { AnalysisResultEntry } from "../AnalysisResultEntry";
+import mongoose, { Document, Schema } from "mongoose";
+import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
+import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
+import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
+
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
+import { parse } from "java-ast";
+
+/**
+ * Represents an Submission database model object
+ */
+export interface ISubmissionModel extends Document {
+    _id : String
+    name : String
+    files : String[]
+    entries : IAnalysisResultEntry[]
+}
 
 /**
  * Represents a single submission 
@@ -11,47 +25,134 @@ import { Tlsh } from '../lib/tlsh';
  */
 export interface ISubmission {
     getId() : String;
+    getAssignmentId() : String;
     getName() : String;
-    addFile(content : String, filePath : String) : void
-    compare(otherSubmission : ISubmission) : IAnalysisResult
+    getFiles() : String[];
+    addFile(content : String, filePath : String) : void;
+    addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
+    hasAnalysisResultEntries() : boolean;
+    compare(otherSubmission : ISubmission) : IAnalysisResult;
+    compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult;
+    getModelInstance() : Document;
+    asJSON() : Object;
 }
 
  export class Submission implements ISubmission {
+    
+    private static submissionSchema = new Schema({
+        _id:  String,
+        assignment_id: String,
+        name: String,
+        files: [],
+        entries: [Object]
+      });
 
+    private static submissionModel = mongoose.model<ISubmissionModel>('Submission',Submission.submissionSchema);
+    
     private id : String;
+    private assignment_id : String;
     private name : String;
-    private analysisResultEntries : AnalysisResultEntry[]
+    private files : String[];
+    private entries : IAnalysisResultEntry[];
 
     constructor(id : String, name : String){
-        //TODO
+        this.id = id;
+        this.name = name
+        this.entries = [];
+        this.files = [];
+    }
+
+    static getStaticModel() :  mongoose.Model<ISubmissionModel> {
+        return this.submissionModel;
     }
 
      getId(): String {
-         throw new Error("Method not implemented.");
+         return this.id;
+     }
+
+     getAssignmentId(): String {
+         return this.assignment_id;
      }
 
      getName(): String {
-         throw new Error("Method not implemented.");
+         return this.name;
+     }
+
+     getFiles() : String[] {
+         return this.files;
      }
 
      addFile(content : String, filePath : String) : void {
-        //Use library to parse provided content into a ParseTree
-            //NOTE: Content is already loaded. filePath is included so that adding metadata to the AnalysisResultEntries is easier
-        //Instantiates an AnalysisResultCollectorVisitor (passing filePath into constructor)
-        //Run AnalysisResultCollectorVisitor on the submission file's ParseTree
-        //Gets list of entries from AnalysisResultCollectorVisitor.getEntries
-        //Add AnalysisResultEntries to the submission
-        throw new Error("Method not implemented")
+      
+        if(this.files.includes(filePath)) {
+            throw new Error("File at " + filePath + " was already added to the submission");
+        }
+
+        this.files.push(filePath);
+
+        var parseTree = parse(content.toString()); //TODO: better way to primitive-ize?
+        var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
+
+        visitor.visit(parseTree);
+
+        visitor.getAnalysisResultEntries().forEach((entry) => { 
+            this.addAnalysisResultEntry(entry);
+         });
+     }
+
+     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
+         this.entries.push(analysisResultEntry);
+         if(!this.files.includes(analysisResultEntry.getFilePath())) {
+             this.files.push(analysisResultEntry.getFilePath());
+         }
      }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
-        //Calls compareResultEntries on otherSubmission, passing in our submission entries from this submission
-        //Returns the result provided by compareResultEntries
-        throw new Error("Method not implemented.");
+        if(this.entries.length <= 0 ) {
+            throw new Error("Cannot compare: A comparator submission has no entries");
+        }
+        return otherSubmission.compareAnalysisResultEntries(this.entries);
+    }
+    asJSON() : Object {
+        return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
     }
 
-    //Actually perform comparison of entries to entries here
-    protected compareResultEntries(otherSubmissionEntries : AnalysisResultEntry[]) : IAnalysisResult {
-        throw new Error("Not implemented")
+    getModelInstance() : Document {
+        return new Submission.submissionModel({"_id":this.id,"name":this.name,"files":this.files,"entries":this.entries});
+    }
+
+    hasAnalysisResultEntries() : boolean {
+        if(this.entries.length > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    compareAnalysisResultEntries(entries : IAnalysisResultEntry[]) : IAnalysisResult {
+        
+        if(this.entries.length <= 0) {
+            throw new Error("Cannot compare: A comparator submission has no entries");
+        }
+
+        var analysisResult = new AnalysisResult();
+
+        this.entries.forEach((entry) => {
+            entries.forEach((otherEntry) => {
+
+                var hashA = entry.getHashValue();
+                var hashB = otherEntry.getHashValue();
+
+                //TODO: Replace
+                var comparison = 1;
+                var threshold = 0;
+
+                if(comparison > threshold) {  
+                    analysisResult.addMatch(entry,otherEntry);
+                }
+            });
+        });
+
+        return analysisResult;
     }
 }

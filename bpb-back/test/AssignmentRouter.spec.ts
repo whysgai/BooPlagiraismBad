@@ -6,9 +6,11 @@ import IRouter from "../src/router/IRouter";
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
-import { IAssignmentManager, AssignmentManager } from "../src/model/AssignmentManager";
-import { AssignmentDAO, IAssignmentDAO } from "../src/model/AssignmentDAO";
+import { IAssignmentManager, AssignmentManager } from "../src/manager/AssignmentManager";
+import { IAssignmentDAO, AssignmentDAO } from "../src/model/AssignmentDAO";
 import { Assignment } from "../src/model/Assignment";
+import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
+import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 
 describe('AssignmentRouter.ts',()=> {
     
@@ -16,7 +18,9 @@ describe('AssignmentRouter.ts',()=> {
     var testServer : any;
     var testRouter : IRouter;
     var testAssignmentMgr : IAssignmentManager;
-    var testAssignmentDAO: IAssignmentDAO;
+    var testAssignmentDAO : IAssignmentDAO;
+    var testSubmissionMgr : ISubmissionManager;
+    var testSubmissionDAO: ISubmissionDAO;
 
     before(() => {
         chai.use(chaiHttp);
@@ -29,7 +33,9 @@ describe('AssignmentRouter.ts',()=> {
         app.use(bodyParser.json());      
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
-        testRouter = new AssignmentRouter(app,"/assignments",testAssignmentMgr); 
+        testSubmissionDAO = new SubmissionDAO();
+        testSubmissionMgr = new SubmissionManager(testSubmissionDAO);
+        testRouter = new AssignmentRouter(app,"/assignments",testSubmissionMgr,testAssignmentMgr); 
         testServer = app.listen(8081);
     });
     
@@ -139,7 +145,7 @@ describe('AssignmentRouter.ts',()=> {
         .send(putBody)
         .then(res => {
             expect(res).to.have.status(200);
-            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment,putBody);
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment.getID(),putBody);
         })
     });
 
@@ -177,7 +183,7 @@ describe('AssignmentRouter.ts',()=> {
         .then(res => {
             expect(res).to.have.status(200);
             expect(mockGetMethod).to.have.been.called.with(expectedId);
-            expect(mockDeleteMethod).to.have.been.called.with(mockAssignment);
+            expect(mockDeleteMethod).to.have.been.called.with(mockAssignment.getID());
             expect(res.body.response).to.equal("Deleted assignment "+expectedId);
         })
     });

@@ -7,7 +7,6 @@ import {Submission} from "../src/model/Submission";
 var mongoose = require('mongoose');
 
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
-import submissionModel from "../src/model/SubmissionModel";
 
 describe.skip("SubmissionDAO.ts",() => {
 
@@ -36,7 +35,7 @@ describe.skip("SubmissionDAO.ts",() => {
            
             var submission = new Submission("testid","testid");
             return testSubmissionDAO.createSubmission(submission).then((res) => {
-                submissionModel.findOne({_id:"testid"}).then((res) => {
+                Submission.getStaticModel().findOne({_id:"testid"}).then((res) => {
                     expect(res).to.not.be.undefined;
                 });
             });
@@ -117,12 +116,12 @@ describe.skip("SubmissionDAO.ts",() => {
             var submission = new Submission("test","test");
             return expect(testSubmissionDAO.createSubmission(submission)).to.eventually.be.fulfilled.then((createRes) => {
 
-                submissionModel.findOne({_id:submission.getId()}).then((firstFindRes) =>{
+                Submission.getStaticModel().findOne({_id:submission.getId()}).then((firstFindRes) =>{
 
                     expect(firstFindRes).to.not.be.undefined;
                      
                     return expect(testSubmissionDAO.deleteSubmission(submission)).to.eventually.be.fulfilled.then((deleteRes) => {
-                        submissionModel.findOne({_id:submission.getId()}).then((secondFindRes) =>{
+                        Submission.getStaticModel().findOne({_id:submission.getId()}).then((secondFindRes) =>{
                             expect(secondFindRes).to.be.undefined;               
                         });
                     });

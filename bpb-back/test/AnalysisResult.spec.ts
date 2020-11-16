@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { AnalysisResult } from "../src/AnalysisResult";
-import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
+import { AnalysisResult } from "../src/model/AnalysisResult";
+import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 
 describe.skip("AnalysisResult.ts",() => {
     describe("asJSON / addMatch",() => {

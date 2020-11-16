@@ -1,5 +1,5 @@
 *node_modules*
 .vagrant
 */dist/*
-
+*vscode*
 bpb-front/src/test/__snapshots__
