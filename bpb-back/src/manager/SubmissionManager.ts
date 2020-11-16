@@ -56,7 +56,7 @@ export class SubmissionManager implements ISubmissionManager {
      */
     getSubmission = async(submissionId : String) : Promise<ISubmission> => {
         
-        if(this.submissionCache.get(submissionId)) {
+        if(this.submissionCache.get(submissionId) != undefined) {
             return Promise.resolve(this.submissionCache.get(submissionId));
         }
         this.submissionDAO.readSubmission(submissionId).then((submission) => {
