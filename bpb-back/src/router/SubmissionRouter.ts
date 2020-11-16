@@ -1,8 +1,8 @@
 import IRouter from './IRouter'
 import AbstractRouter from './AbstractRouter'
 import { AppConfig } from '../AppConfig';
-import { ISubmissionManager } from '../model/SubmissionManager';
-import { IAssignmentManager } from '../model/AssignmentManager';
+import { ISubmissionManager } from '../manager/SubmissionManager';
+import { IAssignmentManager } from '../manager/AssignmentManager';
 
 class SubmissionRouter extends AbstractRouter implements IRouter {
   
