@@ -60,7 +60,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         let lineStart;
         let lineStop;
         if(parseTree instanceof ParserRuleContext) {
-        //Cast ParseTree to ParserRuleContext to access _start and _stop tokens
+        //Cast ParseTree to ParserRuleContext to access certain tokens and properties
             let asParserRuleContext = parseTree as ParserRuleContext;
             textContent = asParserRuleContext.text;
             contextType = JavaParser.ruleNames[asParserRuleContext.ruleContext.ruleIndex];
