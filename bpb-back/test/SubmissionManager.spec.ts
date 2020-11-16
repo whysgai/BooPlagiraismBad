@@ -38,6 +38,7 @@ describe("SubmissionManager.ts",() => {
 
             testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
                 expect(submission).to.deep.equal(testSubmission);
+                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
             })
         });
 
