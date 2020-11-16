@@ -6,6 +6,7 @@ import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollec
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
+import { parse } from "java-ast";
 
 /**
  * Represents an Submission database model object
@@ -27,7 +28,7 @@ export interface ISubmission {
     getAssignmentId() : String;
     getName() : String;
     getFiles() : String[];
-    addFile(content : String, filePath : String) : void;
+    addFile(content : string, filePath : String) : void;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
@@ -80,15 +81,18 @@ export interface ISubmission {
          return this.files;
      }
 
-     addFile(content : String, filePath : String) : void {
-        //Use library to parse provided content into a ParseTree
-            //NOTE: Content is already loaded. filePath is included so that adding metadata to the AnalysisResultEntries is easier
-        //Instantiates an AnalysisResultCollectorVisitor (passing filePath into constructor)
-        //Run AnalysisResultCollectorVisitor on the submission file's ParseTree
-        //Gets list of entries from AnalysisResultCollectorVisitor.getEntries
-        //Add AnalysisResultEntries to the submission
-        //Add filePath to the submission's files
-        this.files.push(filePath); //TODO: Remove temporary implementation (required to test SubmissionRouter)
+     addFile(content : string, filePath : String) : void {
+        
+        var parseTree = parse(content);
+        var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
+
+        visitor.visit(parseTree);
+
+        visitor.getAnalysisResultEntries().forEach((entry) => { 
+            this.addAnalysisResultEntry(entry);
+         });
+        
+         this.files.push(filePath);
      }
 
      addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
@@ -96,7 +100,7 @@ export interface ISubmission {
      }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
-        var collectorVisitor = new AnalysisResultEntryCollectorVisitor("")
+       return undefined; //TODO
     }
     asJSON() : Object {
         return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
