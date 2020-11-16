@@ -3,6 +3,7 @@ import {ISubmission, Submission} from '../model/Submission';
 import { ISubmissionDAO, SubmissionDAO } from '../model/SubmissionDAO';
 import fs from 'fs';
 import util from 'util';
+import SubmissionData from "../SubmissionData"
 //Promisfy readFile
 const readFileContent = util.promisify(fs.readFile);
 
@@ -33,10 +34,10 @@ export class SubmissionManager implements ISubmissionManager {
      * Creates a submission with the given data
      * @param data 
      */
-    createSubmission = async(data : Object): Promise<ISubmission> => {
+    createSubmission = async(data : SubmissionData): Promise<ISubmission> => {
         
         //TODO: pull out details from data object and validate
-        var name = "test";
+        var name = data.name;
         var assignmentId = "testy";
 
         this.submissionDAO.createSubmission(name,assignmentId)
