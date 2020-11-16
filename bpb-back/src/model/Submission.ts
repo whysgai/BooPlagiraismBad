@@ -27,7 +27,7 @@ export interface ISubmission {
     getAssignmentId() : String;
     getName() : String;
     getFiles() : String[];
-    addFile(content : String, filePath : String) : void;
+    addFile(content : String, filePath : String) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
@@ -81,10 +81,10 @@ export interface ISubmission {
          return this.files;
      }
 
-     addFile(content : string, filePath : string) : void {
+     async addFile(content : String, filePath : String) : Promise<void> {
       
         if(this.files.includes(filePath)) {
-            throw new Error("File at " + filePath + " was already added to the submission");
+            return Promise.reject(new Error("File at " + filePath + " was already added to the submission"));
         }
 
         this.files.push(filePath);
@@ -97,6 +97,8 @@ export interface ISubmission {
         visitor.getAnalysisResultEntries().forEach((entry) => { 
             this.addAnalysisResultEntry(entry);
          });
+
+         return Promise.resolve();
      }
 
      addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
