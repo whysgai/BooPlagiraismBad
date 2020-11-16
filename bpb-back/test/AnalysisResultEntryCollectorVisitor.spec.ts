@@ -113,7 +113,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.contextType Should match as expected.", () => {
-            expect(firstEntry.getContextType()).to.equal("placeholderText");
+            expect(firstEntry.getContextType()).to.equal("compilationUnit");
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
