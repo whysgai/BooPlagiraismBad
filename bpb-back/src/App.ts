@@ -3,9 +3,9 @@ import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
 import { AppConfig } from './AppConfig';
 import { AssignmentDAO } from './model/AssignmentDAO';
-import { AssignmentManager } from './model/AssignmentManager';
+import { AssignmentManager } from './manager/AssignmentManager';
 import { SubmissionDAO } from './model/SubmissionDAO';
-import { SubmissionManager } from './model/SubmissionManager';
+import { SubmissionManager } from './manager/SubmissionManager';
 import AssignmentRouter from './router/AssignmentRouter'
 import SubmissionRouter from './router/SubmissionRouter'
 

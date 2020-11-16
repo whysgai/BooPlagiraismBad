@@ -2,7 +2,7 @@ import { expect } from "chai";
 import chai = require("chai");
 import chaiSpies = require("chai-spies");
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
-import { ISubmissionManager, SubmissionManager } from "../src/model/SubmissionManager";
+import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 import { Submission } from "../src/model/Submission";
 
 describe("SubmissionManager.ts",() => {
@@ -70,7 +70,7 @@ describe("SubmissionManager.ts",() => {
            
             var deleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
-            testSubmissionManager.deleteSubmission(new Submission("test","test"));
+            testSubmissionManager.deleteSubmission(new Submission("test","test").getId());
             
             expect(deleteSubmission).to.have.been.called();
         });

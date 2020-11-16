@@ -8,10 +8,10 @@ import fs from 'fs';
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import superagent from "superagent";
-import { SubmissionManager } from "../src/model/SubmissionManager";
+import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
 import { AssignmentDAO } from "../src/model/AssignmentDAO";
-import { AssignmentManager } from "../src/model/AssignmentManager";
+import { AssignmentManager } from "../src/manager/AssignmentManager";
 
 describe('SubmissionRouter.ts',()=> {
     

@@ -6,11 +6,11 @@ import IRouter from "../src/router/IRouter";
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
-import { IAssignmentManager, AssignmentManager } from "../src/model/AssignmentManager";
+import { IAssignmentManager, AssignmentManager } from "../src/manager/AssignmentManager";
 import { IAssignmentDAO, AssignmentDAO } from "../src/model/AssignmentDAO";
 import { Assignment } from "../src/model/Assignment";
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
-import { ISubmissionManager, SubmissionManager } from "../src/model/SubmissionManager";
+import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 
 describe('AssignmentRouter.ts',()=> {
     

@@ -1,5 +1,5 @@
-import { AnalysisResult } from '../AnalysisResult';
-import {ISubmission} from './Submission';
+import { IAnalysisResult } from '../model/AnalysisResult';
+import {ISubmission} from '../model/Submission';
 import { ISubmissionDAO } from '../model/SubmissionDAO';
 
 /**
@@ -12,7 +12,7 @@ export interface ISubmissionManager {
     updateSubmission(submissionId : String, data : Object) : Promise<ISubmission>;
     processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
     deleteSubmission(submissionId : String) : void;
-    compareSubmissions(submissionIdA : String, submissionIdB : String) : Promise<AnalysisResult>
+    compareSubmissions(submissionIdA : String, submissionIdB : String) : Promise<IAnalysisResult>
 }
 
 export class SubmissionManager implements ISubmissionManager {
@@ -48,7 +48,7 @@ export class SubmissionManager implements ISubmissionManager {
         //Delete the submission from cache and db
         throw new Error('Method not implemented.');
     }
-    compareSubmissions = async(submissionIdA : String, submissionIdB : String): Promise<AnalysisResult> => {
+    compareSubmissions = async(submissionIdA : String, submissionIdB : String): Promise<IAnalysisResult> => {
         //TODO: Actually actively perform comparison of all hashes saved for each submission
         //Delegate comparison to one of the two submissions' compare methods and return the result
         //Later, could read from database to get comparisons that already occurred (i.e. create AnalysisResult some other way)

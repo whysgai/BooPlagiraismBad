@@ -1,5 +1,5 @@
-import { IAssignment } from "./Assignment";
-import { IAssignmentDAO } from "./AssignmentDAO";
+import { IAssignment } from "../model/Assignment";
+import { IAssignmentDAO } from "../model/AssignmentDAO";
 
 /**
  * Represents a controller for Assignment objects.

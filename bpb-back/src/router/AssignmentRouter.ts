@@ -2,8 +2,8 @@ import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
 import express, { Router } from 'express';
 import {IAssignment } from '../model/Assignment'
-import { IAssignmentManager } from '../model/AssignmentManager';
-import { ISubmissionManager } from '../model/SubmissionManager';
+import { IAssignmentManager } from '../manager/AssignmentManager';
+import { ISubmissionManager } from '../manager/SubmissionManager';
 
 class AssignmentRouter extends AbstractRouter implements IRouter {
   

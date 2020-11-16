@@ -1,5 +1,5 @@
-import { IAnalysisResult } from "../AnalysisResult";
-import { IAnalysisResultEntry, AnalysisResultEntry } from "../AnalysisResultEntry";
+import { IAnalysisResult } from "./AnalysisResult";
+import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';

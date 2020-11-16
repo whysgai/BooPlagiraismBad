@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/AnalysisResultEntry";
+import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission } from "../src/model/Submission";
 import { SubmissionFactory } from "../src/model/SubmissionFactory";
 
