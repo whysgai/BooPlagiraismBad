@@ -102,12 +102,13 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     describe("visit (checks resultant array and contents for validity)", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
         var analysisResultEntries : AnalysisResultEntry[];
-        var firstEntry = analysisResultEntries[0];
+        var firstEntry : AnalysisResultEntry;
 
         before(() => {
             newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
             newVisitor.visit(exampleTree);
             analysisResultEntries = newVisitor.getAnalysisResultEntries();
+            firstEntry = analysisResultEntries[0];
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
