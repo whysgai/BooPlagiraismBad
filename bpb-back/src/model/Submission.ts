@@ -1,8 +1,20 @@
-import { IAnalysisResult } from "./AnalysisResult";
+import mongoose, { Document, Schema } from "mongoose";
+import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
 import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
+
 //import { parse } from 'java-ast';
 //import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
+
+/**
+ * Represents an Submission database model object
+ */
+export interface ISubmissionModel extends Document {
+    _id : String
+    name : String
+    files : String[]
+    entry_ids : String[]
+}
 
 /**
  * Represents a single submission 
@@ -11,31 +23,52 @@ import { Tlsh } from '../lib/tlsh';
  */
 export interface ISubmission {
     getId() : String;
+    getAssignmentId() : String;
     getName() : String;
     getFiles() : String[];
     addFile(content : String, filePath : String) : void;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
+    getModelInstance() : Document;
     asJSON() : Object;
 }
 
  export class Submission implements ISubmission {
+    
+    private static submissionSchema = new Schema({
+        _id:  String,
+        assignment_id: String,
+        name: String,
+        files: [String],
+        entries: [String]
+      });
 
+    private static submissionModel = mongoose.model<ISubmissionModel>('Submission',Submission.submissionSchema);
+    
     private id : String;
+    private assignment_id : String;
     private name : String;
     private files : String[];
-    private analysisResultEntries : IAnalysisResultEntry[]
+    private entries : IAnalysisResultEntry[];
 
     constructor(id : String, name : String){
         this.id = id;
         this.name = name
-        this.analysisResultEntries = [];
+        this.entries = [];
         this.files = [];
+    }
+
+    static getStaticModel() :  mongoose.Model<ISubmissionModel> {
+        return this.submissionModel;
     }
 
      getId(): String {
          return this.id;
+     }
+
+     getAssignmentId(): String {
+         return this.assignment_id;
      }
 
      getName(): String {
@@ -58,7 +91,7 @@ export interface ISubmission {
      }
 
      addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
-         this.analysisResultEntries.push(analysisResultEntry);
+         this.entries.push(analysisResultEntry);
      }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
@@ -67,19 +100,18 @@ export interface ISubmission {
         throw new Error("Method not implemented.");
     }
     asJSON() : Object {
-        return {assignment_id:this.id, name:this.name, analysisResultEntries:this.analysisResultEntries};
+        return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
+    }
+
+    getModelInstance() : Document {
+        return new Submission.submissionModel({"_id":this.id,"name":this.name,"files":this.files,"entries":this.entries});
     }
 
     hasAnalysisResultEntries() : boolean {
-        if(this.analysisResultEntries.length > 0) {
+        if(this.entries.length > 0) {
             return true;
         }
 
         return false;
-    }
-
-    //Actually perform comparison of entries to entries here
-    protected compareResultEntries(otherSubmissionEntries : AnalysisResultEntry[]) : IAnalysisResult {
-        throw new Error("Not implemented")
     }
 }
