@@ -4,7 +4,6 @@ import chaiSpies = require("chai-spies");
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
 import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 import { ISubmission, Submission } from "../src/model/Submission";
-import { IAssignmentDAO } from "../src/model/AssignmentDAO";
 
 describe("SubmissionManager.ts",() => {
 
