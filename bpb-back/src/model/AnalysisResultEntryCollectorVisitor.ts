@@ -139,7 +139,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
              * LocalitySensitiveHash upon, using the trendmicro/tlsh library.
             */
             if (err.message.includes("ERROR: length too small -") || 
-            err.message.includes("ERROR: not enought variation in input - ")) {
+            err.message.includes("ERROR: not enough variation in input - ")) {
                 throw new Error("Cannot perform a LocalitySensitiveHash upon the" +
                 "root node of the subtree. The following error was thrown: " + err.message);
             } else {
@@ -180,7 +180,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
                  * LocalitySensitiveHash upon, using the trendmicro/tlsh library.
                 */
                 if (err.message.includes("ERROR: length too small -") || 
-                err.message.includes("ERROR: not enought variation in input - ")) {
+                err.message.includes("ERROR: not enough variation in input - ")) {
                     //Skip this node
                 } else {
                     throw err;
