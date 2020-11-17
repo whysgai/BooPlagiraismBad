@@ -35,7 +35,19 @@ describe("AnalysisResultEntry",() => {
             expect(testARE.getLineNumberEnd()).to.equal(2);
         });    
     });
+
+    describe("getCharPosStart", () => {
+        it("Should return a number with the expected value.", () => {
+            expect(testARE.getCharPosStart()).to.equal(3);
+        });
+    });
     
+    describe("getCharPosEnd", () => {
+        it("Should return a number with the expected value.", () => {
+            expect(testARE.getCharPosEnd()).to.equal(4);
+        });
+    });
+
     describe("getText", () => {
         it("Should return a string with the expected value.", () => {
             expect(testARE.getText()).to.equal("void test() { }");

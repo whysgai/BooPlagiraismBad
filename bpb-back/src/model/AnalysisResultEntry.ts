@@ -38,6 +38,12 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     getLineNumberEnd(): number {
         return this.lineNumberEnd;
     }
+    getCharPosStart(): number {
+        return this.charPosStart;
+    }
+    getCharPosEnd(): number {
+        return this.charPosEnd;
+    }
     getText(): String {
         return this.text;
     }
