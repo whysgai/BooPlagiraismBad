@@ -55,7 +55,7 @@ export class SubmissionManager implements ISubmissionManager {
      *  Gets a single submission by id
      * @param submissionId
      */
-    async getSubmission(submissionId : String) : Promise<ISubmission> {
+    getSubmission = async(submissionId : String) : Promise<ISubmission> => {
         return new Promise((resolve, reject) => {
             if(this.submissionCache.get(submissionId) != undefined) {
                 resolve(this.submissionCache.get(submissionId));

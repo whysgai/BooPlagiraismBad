@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiSpies = require("chai-spies");
+import chaiAsPromised = require("chai-as-promised");
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
 import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 import { ISubmission, Submission } from "../src/model/Submission";
 import SubmissionData from "../src/types/SubmissionData"
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import fs from 'fs';
-import { createJsxJsxClosingFragment } from "typescript";
 
 describe("SubmissionManager.ts",() => {
 
@@ -20,7 +20,8 @@ describe("SubmissionManager.ts",() => {
     var testFilePath : string;
 
     before(()=>{
-        chai.use(chaiSpies); 
+        chai.use(chaiSpies);
+        chai.use(chaiAsPromised);
     });
 
     beforeEach(()=>{
@@ -45,6 +46,9 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
+            
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
+            
             return testSubmissionManager.getSubmission("some_nonexistent_id").then((submission) => {
                 expect(true,"getSubmission is succeeding where it should fail (should not find submission with nonexistent id)").to.equal(false);
             }).catch((err) => {
@@ -58,14 +62,14 @@ describe("SubmissionManager.ts",() => {
         it("Should return submissions of the given assignment if there are some",()=> {
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
 
-            testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
+            return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
                 expect(submissions[0]).to.deep.equal(testSubmission);
                 expect(mockReadSubmission).to.have.been.called.with(testSubmissionAssignmentId);
             })
         });
 
         it("Should return no submissions if there are none",() =>{
-            expect(testSubmissionManager.getSubmissions(testSubmissionAssignmentId)).to.be.an("array").that.is.empty;
+            expect(testSubmissionManager.getSubmissions(testSubmissionAssignmentId)).to.eventually.be.fulfilled.with.an("array").that.is.empty;
         });        
     });
 
@@ -77,7 +81,7 @@ describe("SubmissionManager.ts",() => {
 
             var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
 
-            testSubmissionManager.createSubmission(createBody).then((submission) => {
+            return testSubmissionManager.createSubmission(createBody).then((submission) => {
                 expect(submission.getName()).to.equal(testSubmission.getName());
                 expect(submission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
             });
@@ -96,7 +100,7 @@ describe("SubmissionManager.ts",() => {
 
             var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
 
-            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+            return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(expectedNewName);
                 expect(submission.getAssignmentId()).to.equal(expectedNewAssnId);
                 expect(submission.getId()).to.equal(testSubmission.getId);
@@ -111,7 +115,7 @@ describe("SubmissionManager.ts",() => {
 
             var updateBody : SubmissionData = {name:expectedNewName, assignment_id: testSubmission.getAssignmentId()};
 
-            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+            return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(expectedNewName);
                 expect(submission.getAssignmentId()).to.equal(testSubmissionAssignmentId);
                 expect(submission.getId()).to.equal(testSubmission.getId);
@@ -126,7 +130,7 @@ describe("SubmissionManager.ts",() => {
 
             var updateBody : SubmissionData = {name:'', assignment_id:expectedNewAssnId};
 
-            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+            return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(testSubmissionName);
                 expect(submission.getAssignmentId()).to.equal(expectedNewAssnId);
                 expect(submission.getId()).to.equal(testSubmission.getId);
@@ -142,7 +146,7 @@ describe("SubmissionManager.ts",() => {
 
             var updateBody : SubmissionData = {name:expectedNewName,assignment_id:expectedNewAssnId};
 
-            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+            return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(true,"updateSubmission is succeeding where it should fail (no submission exists with submission id)").to.equal(false);
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
@@ -163,7 +167,7 @@ describe("SubmissionManager.ts",() => {
 
                 var expectedContent = content.toString();
                 
-                testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
                     expect(mockAddFile).to.have.been.called.with(expectedContent,testFilePath);
                 });
             });
@@ -176,7 +180,7 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
-            testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+            return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
                 expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
             }).catch((err) => {
                 expect(mockAddFile).to.not.have.been.called();
@@ -190,7 +194,7 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(testSubmissionDAO,'readSubmission',() => { return Promise.reject(new Error("Submission does not exist")); })
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
 
-            testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+            return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
                 expect(true,"processSubmissionFile is succeeding where it should fail (submission doesn't exist with id)").to.equal(false);
             }).catch((err) => {
                 expect(mockAddFile).to.not.have.been.called;
@@ -207,7 +211,7 @@ describe("SubmissionManager.ts",() => {
             
             var nonexistentFilePath = "/test/non/existent/file";
             
-            testSubmissionManager.processSubmissionFile(testSubmission.getId(),nonexistentFilePath).then(() => {
+            return testSubmissionManager.processSubmissionFile(testSubmission.getId(),nonexistentFilePath).then(() => {
                 expect(true,"processSubmissionFile is succeeding where it should fail (file doesn't exist at specified location)").to.equal(false);
             }).catch((err) => {
                 expect(mockAddFile).to.not.have.been.called;
@@ -225,7 +229,7 @@ describe("SubmissionManager.ts",() => {
 
             var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
-            testSubmissionManager.deleteSubmission(testSubmissionId).then(() => {
+            return testSubmissionManager.deleteSubmission(testSubmissionId).then(() => {
                 expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
                 expect(mockDeleteSubmission).to.have.been.called.with(testSubmission);
             });
@@ -236,7 +240,7 @@ describe("SubmissionManager.ts",() => {
 
             var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
-            testSubmissionManager.deleteSubmission(testSubmissionId).then(res => {
+            return testSubmissionManager.deleteSubmission(testSubmissionId).then(res => {
                 expect(true,"deleteSubmission is succeeding where it should fail (ID should not exist)").to.be.false;
             }).catch((err) => {
                 expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
@@ -261,7 +265,7 @@ describe("SubmissionManager.ts",() => {
                 }
             });
 
-            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
                 expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
                 expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockReadSubmission).to.have.been.called.with(testSubmission2.getId());
@@ -280,7 +284,7 @@ describe("SubmissionManager.ts",() => {
                 }
             });
 
-            testSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
+            return testSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
                 expect(true,"compareSubmission is succeeding where it should fail (one id does not exist)").to.be.false;
             }).catch((err) => {
                 expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
@@ -302,7 +306,7 @@ describe("SubmissionManager.ts",() => {
                 }
             });
 
-            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
                 expect(true,"compareSubmission is succeeding where it should fail (one id does not exist)").to.be.false;
             }).catch((err) => {
                 expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
@@ -318,7 +322,7 @@ describe("SubmissionManager.ts",() => {
 
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ return Promise.reject("No submission exists with id")});
 
-            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
                 expect(true,"compareSubmission is succeeding where it should fail (one id does not exist)").to.be.false;
             }).catch((err) => {
                 expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
