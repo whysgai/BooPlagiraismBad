@@ -12,19 +12,24 @@ import SubmissionListComponent from './SubmissionListComponent';
 import * as serviceWorker from './serviceWorker';
 import NavbarComponent from './NavbarComponent';
 import Assignment from './types/Assignment'
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+
 //import "../node_modules/bootstrap/dist/css/bootstrap.min";
 //require('bootstrap');
 
 ReactDOM.render(
-  <BrowserRouter>
-    <NavbarComponent />
-    <Route exact path="/"><AssignmentListComponent assignments={[{id:"001", title:"Bond", submissions:[]}]}/></Route>
-    <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
-    <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/>
-    <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
-    <Route path="/Help" component={HelpComponent}/>
-    <Route path="/CompareSubmissions" component={ComparisonComponent}/>
-  </BrowserRouter>,
+  //<Provider>
+    <BrowserRouter>
+      <NavbarComponent />
+      <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route>
+      <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
+      <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/>
+      <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
+      <Route path="/Help" component={HelpComponent}/>
+      <Route path="/CompareSubmissions" component={ComparisonComponent}/>
+    </BrowserRouter>,
+  //</Provider>,
   document.getElementById('root')
 );
 

@@ -1,0 +1,3 @@
+type Assignment = {
+    title: String
+}

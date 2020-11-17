@@ -1,9 +1,13 @@
 import React from 'react';
 
-function SubmissionListComponent() {
+function SubmissionListComponent({submissions}) {
   return (
-    <div className="App">
-      SubmissionListComponent
+    <div>
+      <ul>
+        {submissions.map((submission, index) => 
+          <li key={index}> {submission} </li>
+        )}
+      </ul>
     </div>
   );
 }
