@@ -69,7 +69,8 @@ describe("AnalysisResultEntry",() => {
     describe("asJSON",() => {
         it("Should return a valid JSON object with the expected properties",() => {
             var expected = '{"submissionId":"subid1","filePath":"/vagrant/bpb-back/uploads/test.java",\
-            "contextType":"method","lineNumberStart":1,"lineNumberEnd":2,"hashValue":"245rr1","text":"void test() { }"}'
+            "contextType":"method","lineNumberStart":1, "charPosStart":3, "lineNumberEnd":2, "charPosEnd":4,\
+            "hashValue":"245rr1","text":"void test() { }"}'
             var expectedJSON = JSON.parse(expected);
             expect(testARE.asJSON()).to.deep.equal(expectedJSON);
         });
