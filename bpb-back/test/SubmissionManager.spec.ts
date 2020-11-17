@@ -233,12 +233,12 @@ describe("SubmissionManager.ts",() => {
             
             return testSubmissionManager.deleteSubmission(testSubmissionId).then(() => {
                 expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
-                expect(mockDeleteSubmission).to.have.been.called.with(testSubmission);
+                expect(mockDeleteSubmission).to.have.been.called.with(testSubmissionId);
             });
         });
         
         it("Should throw an appropriate error if {id} is invalid",() => {
-            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ return Promise.reject(new Error("No submission found with id"))});
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ return Promise.reject(new Error("No submission exists with id"))});
 
             var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             

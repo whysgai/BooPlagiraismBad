@@ -4,6 +4,7 @@ import { ISubmissionDAO, SubmissionDAO } from '../model/SubmissionDAO';
 import fs from 'fs';
 import util from 'util';
 import SubmissionData from "../types/SubmissionData"
+import { isThrowStatement } from 'typescript';
 //Promisfy readFile
 const readFileContent = util.promisify(fs.readFile);
 
@@ -149,12 +150,20 @@ export class SubmissionManager implements ISubmissionManager {
     deleteSubmission = async(submissionId : String): Promise<void> => {
 
         return new Promise((resolve,reject) => {
-            if(this.submissionCache.get(submissionId)) {
-                this.submissionCache.delete(submissionId);
-            }
-    
-            this.submissionDAO.deleteSubmission(submissionId).then((submission) => {
-                resolve();
+
+            //Ensure submission exists before deletion
+            this.getSubmission(submissionId).then((submission) => {
+
+                
+                if(this.submissionCache.get(submissionId)) {
+                    this.submissionCache.delete(submissionId);
+                }
+        
+                this.submissionDAO.deleteSubmission(submissionId).then((submission) => {
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                })
             }).catch((err) => {
                 reject(err);
             })
