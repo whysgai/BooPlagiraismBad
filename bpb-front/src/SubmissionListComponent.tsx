@@ -1,5 +1,6 @@
 import React from 'react';
 import SubmissionListItemComponent from './SubmissionListItemComponent'
+import Submission from './types/SubmissionType'
 
 function SubmissionListComponent({submissions}: {submissions: Submission[]}) {
   return (
