@@ -7,6 +7,7 @@ import { ISubmission, Submission } from "../src/model/Submission";
 import SubmissionData from "../src/types/SubmissionData"
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import fs from 'fs';
+import { createJsxJsxClosingFragment } from "typescript";
 
 describe("SubmissionManager.ts",() => {
 
@@ -37,15 +38,16 @@ describe("SubmissionManager.ts",() => {
         it("Should return submission if the provided ID is valid",()=> {
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
-            testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
+            return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
+                console.log(submission);
                 expect(submission).to.deep.equal(testSubmission);
                 expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
             })
         });
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
-            testSubmissionManager.getSubmission("some_nonexistent_id").then((res) => {
-                expect(true,"getSubmission is succeeding where it should fail (no submission exists with id)").to.equal(false);
+            return testSubmissionManager.getSubmission("some_nonexistent_id").then((res) => {
+                //expect(true,"getSubmission is succeeding where it should fail (no submission exists with id)").to.equal(false);
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("No submission exists with id");
