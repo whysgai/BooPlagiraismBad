@@ -38,7 +38,7 @@ export class SubmissionManager implements ISubmissionManager {
         
         //TODO: pull out details from data object and validate
         var name = data.name;
-        var assignmentId = data.assignmentId;
+        var assignmentId = data.assignment_id;
 
         this.submissionDAO.createSubmission(name,assignmentId)
             .then((submission) => {
@@ -92,7 +92,7 @@ export class SubmissionManager implements ISubmissionManager {
         //Update the submission in cache and db
         //TODO: pull out details from data object
         var name = data.name;
-        var assignmentId = data.assignmentId;
+        var assignmentId = data.assignment_id;
 
         this.getSubmission(submissionId).then((submission) => {
             submission.setName(name);
