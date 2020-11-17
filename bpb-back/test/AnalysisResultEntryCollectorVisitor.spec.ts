@@ -8,7 +8,7 @@ import { IAnalysisResultEntryCollectorVisitor, AnalysisResultEntryCollectorVisit
     '../src/model/AnalysisResultEntryCollectorVisitor';
 var spies = require('chai-spies');
 import { ISubmission, Submission } from '../src/model/Submission';
-import { AnalysisResultEntry } from '../src/AnalysisResultEntry';
+import { AnalysisResultEntry } from '../src/model/AnalysisResultEntry';
 
 describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     var exampleTree : ParseTree;
