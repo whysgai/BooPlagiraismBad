@@ -161,7 +161,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should save and add a file into the submission specified by the client",() => {
 
-            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return testSubmission});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
@@ -238,7 +238,7 @@ describe("SubmissionManager.ts",() => {
         });
         
         it("Should throw an appropriate error if {id} is invalid",() => {
-            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{throw new Error("No submission found with id")});
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ return Promise.reject(new Error("No submission found with id"))});
 
             var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
@@ -259,6 +259,9 @@ describe("SubmissionManager.ts",() => {
             
             var testSubmission2 = new Submission("somevalid","id");
 
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry(testSubmission.getId(),"test","test",1,2,"e","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry(testSubmission.getId(),"test","test",1,2,"e","e"));
+            
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',(submissionId) =>{
                 if(submissionId === testSubmission.getId()) {
                     return Promise.resolve(testSubmission);
@@ -280,7 +283,7 @@ describe("SubmissionManager.ts",() => {
 
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',(submissionId) =>{
                 if(submissionId === testSubmission2.getId()) {
-                    return Promise.reject("");
+                    return Promise.reject(new Error("No submission exists with id"));
                 } else {
                     return Promise.resolve(testSubmission);
                 }
@@ -296,15 +299,15 @@ describe("SubmissionManager.ts",() => {
             });
         });
         
-        it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
+        it("Should return an appropriate error if {id_b} is valid and {id_a} does not exist",() => {
 
             var testSubmission2 = new Submission("someinvalid","id");
 
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',(submissionId) =>{
-                if(submissionId === testSubmission2.getId()) {
-                    return Promise.reject("");
+                if(submissionId === testSubmission.getId()) {
+                    return Promise.reject(new Error("No submission exists with id"));
                 } else {
-                    return Promise.resolve(testSubmission);
+                    return Promise.resolve(testSubmission2);
                 }
             });
 
@@ -322,13 +325,13 @@ describe("SubmissionManager.ts",() => {
             
             var testSubmission2 = new Submission("someinvalid","id");
 
-            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ return Promise.reject("No submission exists with id")});
+            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ return Promise.reject(new Error("No submission exists with id"))});
 
             return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
                 expect(true,"compareSubmission is succeeding where it should fail (one id does not exist)").to.be.false;
             }).catch((err) => {
                 expect(mockReadSubmission).to.have.been.called.with(testSubmission.getId());
-                expect(mockReadSubmission).to.have.been.called.with(testSubmission2.getId());
+                //Note: removed second expectation, since will fail on first missing submission
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("No submission exists with id");
             });
