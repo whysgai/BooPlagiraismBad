@@ -17,8 +17,10 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     constructor(private submissionId : String, 
         private filePath : String, 
         private contextType : String, 
-        private lineNumberStart : number, 
+        private lineNumberStart : number,
+        private charPosStart : number, 
         private lineNumberEnd : number,
+        private charPosEnd : number,
         private hashValue : String, 
         private text : String) {
             
