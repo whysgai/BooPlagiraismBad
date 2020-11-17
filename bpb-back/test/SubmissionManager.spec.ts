@@ -69,6 +69,7 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should return no submissions if there are none",() =>{
+            chai.spy.on(testSubmissionDAO,'readSubmissions',() =>{return Promise.resolve([])});
             expect(testSubmissionManager.getSubmissions(testSubmissionAssignmentId)).to.eventually.be.fulfilled.with.an("array").that.is.empty;
         });        
     });

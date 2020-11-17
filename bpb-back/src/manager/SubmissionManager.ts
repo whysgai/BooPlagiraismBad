@@ -73,15 +73,14 @@ export class SubmissionManager implements ISubmissionManager {
      * @param assignmentId
      */
     getSubmissions = async(assignmentId : String): Promise<ISubmission[]> => {
-        
-        //TODO: Update this to use cache
-        this.submissionDAO.readSubmissions(assignmentId).then((submissions) => {
-            return Promise.resolve(submissions);
-        }).catch((err) => {
-            return Promise.reject(err);
+        //TODO: Update to use cache
+        return new Promise((resolve, reject) => {
+            this.submissionDAO.readSubmissions(assignmentId).then((submissions) => {
+                resolve(submissions);
+            }).catch((err) => {
+                reject(err);
+            });
         });
-
-        return Promise.reject(); //TODO?
     }
     
     /**
