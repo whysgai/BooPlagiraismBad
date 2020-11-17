@@ -177,13 +177,13 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
-        it("Should return an appropriate error if file was already added to the submission",() => {
+        it.skip("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,2,"test","Test"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
 
-            chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("File at " + testFilePath + " was already added to the submission"))});
+            //chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("File at " + testFilePath + " was already added to the submission"))});
             
             var mockUpdate = chai.spy.on(testSubmissionDAO,'updateSubmission');
 
