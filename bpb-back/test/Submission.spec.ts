@@ -90,7 +90,7 @@ describe("Submission.ts",() => {
                 testSubmissionA.addFile("the same file ",testEntryA.getFilePath()).then(() => {
                     expect(true,"addFile should be failing (specified file already added)").to.equal(false);
                 }).catch((err) => {
-                    expect(err).to.have.property("message").which.equals(expectedErrorMsg);
+                    expect(err).to.equal(expectedErrorMsg);
                 });
             });
         });

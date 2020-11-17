@@ -93,23 +93,25 @@ export interface ISubmission {
      }
 
      async addFile(content : String, filePath : String) : Promise<void> {
-      
-        if(this.files.includes(filePath)) {
-            return Promise.reject(new Error("File at " + filePath + " was already added to the submission"));
-        }
+     
+        return new Promise((resolve,reject) => {
+            if(this.files.includes(filePath)) {
+                reject("File at " + filePath + " was already added to the submission");
+            }
+    
+            this.files.push(filePath);
+    
+            var parseTree = parse(content.toString());
+            var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
+    
+            visitor.visit(parseTree);
+    
+            visitor.getAnalysisResultEntries().forEach((entry) => { 
+                this.addAnalysisResultEntry(entry);
+             });
 
-        this.files.push(filePath);
-
-        var parseTree = parse(content.toString());
-        var visitor = new AnalysisResultEntryCollectorVisitor(filePath);
-
-        visitor.visit(parseTree);
-
-        visitor.getAnalysisResultEntries().forEach((entry) => { 
-            this.addAnalysisResultEntry(entry);
-         });
-
-         return Promise.resolve();
+             resolve();
+        });
      }
 
      addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {

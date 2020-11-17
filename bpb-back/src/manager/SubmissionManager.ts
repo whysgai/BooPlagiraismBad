@@ -153,7 +153,6 @@ export class SubmissionManager implements ISubmissionManager {
 
             //Ensure submission exists before deletion
             this.getSubmission(submissionId).then((submission) => {
-
                 
                 if(this.submissionCache.get(submissionId)) {
                     this.submissionCache.delete(submissionId);
