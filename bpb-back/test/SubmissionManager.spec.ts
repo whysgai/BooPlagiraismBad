@@ -81,34 +81,6 @@ describe("SubmissionManager.ts",() => {
                 expect(submission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
             });
         });
-
-        it("Should return an appropriate error if body parameters are incorrect (missing name)",() => {
-
-            var createBody : SubmissionData = {name: '', assignment_id:testSubmissionAssignmentId};
-
-            testSubmissionManager.createSubmission(createBody).then((submission) => {
-                expect(true,"createSubmission is succeeding where it should fail (missing name in body)").to.equal(false);
-            }).catch((err) => {
-                expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.contains("Missing submission body element");
-            });
-        });
-        
-        it("Should return an appropriate error if body parameters are incorrect (missing assignment_id)",() => {
-            
-            var createBody : SubmissionData = {name:testSubmission.getName(), assignment_id: ''};
-
-            testSubmissionManager.createSubmission(createBody).then((submission) => {
-                expect(true,"createSubmission is succeeding where it should fail (missing assignment id in body)").to.equal(false);
-            }).catch((err) => {
-                expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.contains("Missing submission body element");
-            });
-        });
-        
-        //TODO: Logical issue with checking for assignment existence in SubmissionManager due to manager scope
-        it("Should return an appropriate error if body parameters are incorrect (assignment_id doesn't exist)");
-
     });
 
     describe("updateSubmission()",() => {
