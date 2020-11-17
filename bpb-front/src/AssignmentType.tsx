@@ -1,3 +1,0 @@
-type Assignment = {
-    title: String
-}
