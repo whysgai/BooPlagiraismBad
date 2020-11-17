@@ -73,22 +73,22 @@ describe.skip("SubmissionDAO.ts",() => {
 
     describe("readSubmissions()",() => {
 
-        it("should throw an appropriate error if at least one of the provided submission ids is invalid",() => {
+        it("should throw an appropriate error if the provided assignment id is invalid",() => {
 
             var submission = new Submission("id1","1");
             return testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId()).then((res) => {
-                expect(testSubmissionDAO.readSubmissions([submission.getId(),"some_fake_id"])).to.eventually.be.rejectedWith("Error: Cannot find: A submission with one of the given IDs does not exist in the database");
+                expect(testSubmissionDAO.readSubmissions("invalidId")).to.eventually.be.rejectedWith("Error: Cannot find: A submission with one of the given IDs does not exist in the database");
             });
         });
 
         it("should return all submissions that exist in the database", () => {
-
-            var submission = new Submission("id1","1");
-            var submission2 = new Submission("id2","2");
+            var assignmentId = "2";
+            var submission = new Submission("id1",assignmentId);
+            var submission2 = new Submission("id2",assignmentId);
             return testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId()).then((res) => {
                 return testSubmissionDAO.createSubmission(submission2.getName(), submission2.getAssignmentId()).then((res2) => {
 
-                    expect(testSubmissionDAO.readSubmissions([submission.getId(),submission2.getId()])).to.eventually.be.fulfilled.then((res) => {
+                    expect(testSubmissionDAO.readSubmissions(assignmentId)).to.eventually.be.fulfilled.then((res) => {
                         expect(res).to.not.be.undefined;
                         expect(res.length).to.equal(2);
                         expect(res[0].getId()).to.equal("id1"); //May break due to order
