@@ -293,7 +293,7 @@ describe("SubmissionManager.ts",() => {
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
                     if(submissionId === testSubmission2.getId()) {
-                        reject("No submission exists with id");
+                        reject(new Error("No submission exists with id"));
                     } else {
                         resolve(testSubmission);
                     }
@@ -306,7 +306,7 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(err).to.not.be.undefined;
-                expect(err).to.equal("No submission exists with id");
+                expect(err).to.have.property("message").which.equals("No submission exists with id");
             });
         });
         
@@ -317,7 +317,7 @@ describe("SubmissionManager.ts",() => {
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
                     if(submissionId === testSubmission.getId()) {
-                    reject("No submission exists with id");
+                    reject(new Error("No submission exists with id"));
                 } else {
                     resolve(testSubmission2);
                 }
@@ -330,7 +330,7 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(err).to.not.be.undefined;
-                expect(err).to.equal("No submission exists with id");
+                expect(err).to.have.property("message").which.equals("No submission exists with id");
             });
         });
     });
