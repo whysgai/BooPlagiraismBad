@@ -8,6 +8,8 @@ import { ISubmission, Submission } from "../src/model/Submission";
 import SubmissionData from "../src/types/SubmissionData"
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import fs from 'fs';
+import util from 'util';
+const readFileContent = util.promisify(fs.readFile);
 
 describe("SubmissionManager.ts",() => {
 
@@ -159,23 +161,23 @@ describe("SubmissionManager.ts",() => {
 
     describe("processSubmissionFile()",() =>{
 
+        //Currently not working
         it.skip("Should save and add a file into the submission specified by the client",() => {
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
-            fs.readFile(testFilePath,(err,content) => {
-
-                var expectedContent = content.toString();
+            return readFileContent(testFilePath).then((buffer) => {
+                var expectedContent = buffer.toString();
                 
-                return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
                     expect(mockAddFile).to.have.been.called.with(expectedContent,testFilePath);
                 });
             });
         });
 
-        it.skip("Should return an appropriate error if file was already added to the submission",() => {
+        it("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,2,"test","Test"));
 
