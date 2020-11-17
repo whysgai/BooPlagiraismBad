@@ -175,12 +175,14 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
-        it("Should return an appropriate error if file was already added to the submission",() => {
+        it.skip("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,2,"test","Test"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
 
+            chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("File at " + testFilePath + " was already added to the submission"))});
+            
             var mockUpdate = chai.spy.on(testSubmissionDAO,'updateSubmission');
 
             return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
@@ -240,18 +242,14 @@ describe("SubmissionManager.ts",() => {
         
         it("Should throw an appropriate error if {id} is invalid",() => {
             
-            
-            var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{ 
-                return Promise.reject(new Error("No submission exists with id"))
-            });
-            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject("No submission exists with id")});
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             
             var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
             
             return testSubmissionManager.deleteSubmission(testSubmissionId).then(res => {
                 expect(true,"deleteSubmission is succeeding where it should fail (ID should not exist)").to.be.false;
             }).catch((err) => {
-                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
+                expect(mockGetSubmission).to.have.been.called.with(testSubmissionId);
                 expect(mockDeleteSubmission).to.not.have.been.called;
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");

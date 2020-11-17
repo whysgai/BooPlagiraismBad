@@ -77,8 +77,7 @@ describe("Submission.ts",() => {
         //TODO: Un-skip once Visitor is implemented
         //Can't mock because visitors are created in Submission
         it.skip("Should successfully add new file contents to the submission if input is valid",() => {
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
-            testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
+            return testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
                 expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
             });
         });
@@ -86,11 +85,11 @@ describe("Submission.ts",() => {
         it("Should throw an appropriate error if the specified file was already added to the submission",() => {
             var expectedErrorMsg = "File at " + testEntryA.getFilePath() + " was already added to the submission";
 
-            testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
+            return testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
                 testSubmissionA.addFile("the same file ",testEntryA.getFilePath()).then(() => {
                     expect(true,"addFile should be failing (specified file already added)").to.equal(false);
                 }).catch((err) => {
-                    expect(err).to.equal(expectedErrorMsg);
+                    expect(err).to.have.property("message").which.equals(expectedErrorMsg);
                 });
             });
         });

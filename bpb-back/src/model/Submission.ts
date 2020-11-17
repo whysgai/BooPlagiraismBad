@@ -96,7 +96,7 @@ export interface ISubmission {
      
         return new Promise((resolve,reject) => {
             if(this.files.includes(filePath)) {
-                reject("File at " + filePath + " was already added to the submission");
+                reject(new Error("File at " + filePath + " was already added to the submission"));
             }
     
             this.files.push(filePath);
