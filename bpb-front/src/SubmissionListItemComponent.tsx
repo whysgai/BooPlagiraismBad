@@ -1,9 +1,9 @@
 import React from 'react';
 
-function SubmissionListItemComponent({submission}) {
+function SubmissionListItemComponent({submission, createSubmission}:{submission : Submission, createSubmission: (arg: String) => void }) {
   return (
     <div>
-        {submission}
+        {submission.name}
     </div>
   );
 }
