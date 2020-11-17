@@ -10,8 +10,8 @@ describe.skip("AnalysisResult.ts",() => {
             var expectedJSON = JSON.parse(expected);
             var analysisResult = new AnalysisResult();
             analysisResult.addMatch(
-                new AnalysisResultEntry("subid1","/test/file.java","method",1,2,"245rr1","void test() { }"),
-                new AnalysisResultEntry("subid2","test/file2.java","method",5,6,"423qq1","void similar() { }")
+                new AnalysisResultEntry("subid1","/test/file.java","method",1, 3, 2, 4,"245rr1","void test() { }"),
+                new AnalysisResultEntry("subid2","test/file2.java","method",5, 7, 6, 8,"423qq1","void similar() { }")
             );
             expect(analysisResult.asJSON).to.equal(expectedJSON);
         });
