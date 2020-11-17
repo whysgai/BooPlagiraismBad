@@ -148,23 +148,6 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.contains("Submission does not exist");
             });
         });
-        
-        it("Should return an appropriate error if assignment id property is not a string",() => {
-            chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
-            chai.spy.on(testSubmissionDAO,'updateSubmission');
-
-            var expectedNewName = "validname";
-            var expectedAssignmentId = {some:"kind of other","object":["with","other","properties"]};
-
-            var updateBody = {name:expectedNewName,assignment_id:expectedAssignmentId};
-
-            testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
-                expect(true,"updateSubmission is succeeding where it should fail (impoperly formatted body)").to.equal(false);
-            }).catch((err) => {
-                expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.contains("Improperly formatted body element included in request. Both name and assignment_id must be string properties.");
-            })
-        });
     });
 
     describe("processSubmissionFile()",() =>{
