@@ -157,11 +157,11 @@ describe("SubmissionManager.ts",() => {
         });
     });
 
-    describe.skip("processSubmissionFile()",() =>{
+    describe("processSubmissionFile()",() =>{
 
-        it("Should save and add a file into the submission specified by the client",() => {
+        it.skip("Should save and add a file into the submission specified by the client",() => {
 
-            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
@@ -175,7 +175,7 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
-        it("Should return an appropriate error if file was already added to the submission",() => {
+        it.skip("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,2,"test","Test"));
 
@@ -196,7 +196,8 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if submission ID is invalid",() => {
             
-            chai.spy.on(testSubmissionDAO,'readSubmission',() => { return Promise.reject(new Error("Submission does not exist")); })
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("Submission does not exist"))});
+            
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
 
             return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
@@ -210,7 +211,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if submission file doesn't exist at the specified location",() => {
 
-            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
