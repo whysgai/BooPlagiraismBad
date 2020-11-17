@@ -161,7 +161,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("processSubmissionFile()",() =>{
 
-        //Currently not working
+        //TODO: Currently not working
         it.skip("Should save and add a file into the submission specified by the client",() => {
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
@@ -177,6 +177,7 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
+        //TODO: this test leaks error from submission.addFile()
         it.skip("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,2,"test","Test"));
