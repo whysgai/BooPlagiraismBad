@@ -4,3 +4,5 @@ type Submission = {
     assignment : string
     files : string[]
 }
+
+export default Submission
