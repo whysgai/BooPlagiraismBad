@@ -29,7 +29,7 @@ describe("SubmissionManager.ts",() => {
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
         testSubmissionId = "test_sid";
         testSubmissionName = "testname";
-        testSubmissionAssignmentId = "test_aid";
+        testSubmissionAssignmentId = "test_aid"; //Note: this is not assigned here (assigned in tests)
         testSubmission = new Submission(testSubmissionId,testSubmissionName);
         testFilePath = "/vagrant/bpb-back/package.json";
     });
@@ -93,8 +93,8 @@ describe("SubmissionManager.ts",() => {
         
         it("Should properly update a submission if body parameters are included and submission exists with id",() => {
                         
-            chai.spy.on(testSubmissionDAO,'getSubmission',() => {return Promise.resolve(testSubmission)});
-            chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass through
 
             var expectedNewName = "test";
             var expectedNewAssnId = "test2";
@@ -104,13 +104,14 @@ describe("SubmissionManager.ts",() => {
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(expectedNewName);
                 expect(submission.getAssignmentId()).to.equal(expectedNewAssnId);
-                expect(submission.getId()).to.equal(testSubmission.getId);
+                expect(submission.getId()).to.equal(testSubmission.getId());
             });
         });
 
-        it("Should properly update a submission if submission exists and only one body parameter is provided (name)",() => {
-            chai.spy.on(testSubmissionDAO,'getSubmission',() => {return Promise.resolve(testSubmission)});
-            chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
+        it("Should properly update a submission if submission exists and only one new body parameter is provided (name)",() => {
+            testSubmission.setAssignmentId(testSubmissionAssignmentId);
+            chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass through
 
             var expectedNewName = "test";
 
@@ -119,22 +120,22 @@ describe("SubmissionManager.ts",() => {
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(expectedNewName);
                 expect(submission.getAssignmentId()).to.equal(testSubmissionAssignmentId);
-                expect(submission.getId()).to.equal(testSubmission.getId);
+                expect(submission.getId()).to.equal(testSubmission.getId());
             });
         });
 
-        it("Should properly update a submission if submission exists and only one body parameter is provided (assignment_id)",() => {
-            chai.spy.on(testSubmissionDAO,'getSubmission',() => {return Promise.resolve(testSubmission)});
-            chai.spy.on(testSubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)});
+        it("Should properly update a submission if submission exists and only one new body parameter is provided (assignment_id)",() => {
+            chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass-through updated submission
 
             var expectedNewAssnId = "test2";
 
-            var updateBody : SubmissionData = {name:'', assignment_id:expectedNewAssnId};
+            var updateBody : SubmissionData = {name: testSubmission.getName(), assignment_id:expectedNewAssnId};
 
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(testSubmissionName);
                 expect(submission.getAssignmentId()).to.equal(expectedNewAssnId);
-                expect(submission.getId()).to.equal(testSubmission.getId);
+                expect(submission.getId()).to.equal(testSubmission.getId());
             });
         });
         
@@ -217,7 +218,7 @@ describe("SubmissionManager.ts",() => {
             }).catch((err) => {
                 expect(mockAddFile).to.not.have.been.called;
                 expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.contains("A file does not exist at the specified location");
+                expect(err).to.have.property("message").which.contains("no such file or directory");
             });
         });
     });

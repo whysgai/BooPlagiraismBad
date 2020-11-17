@@ -36,19 +36,18 @@ export class SubmissionManager implements ISubmissionManager {
      */
     createSubmission = async(data : SubmissionData): Promise<ISubmission> => {
         
-        //TODO: pull out details from data object and validate
-        var name = data.name;
-        var assignmentId = data.assignment_id;
-
-        this.submissionDAO.createSubmission(name,assignmentId)
-            .then((submission) => {
-                this.submissionCache.set(submission.getId(),submission);
-                return Promise.resolve(submission);
-        }).catch((err) => {
-            return Promise.reject(err);
+        return new Promise((resolve,reject) => {
+            var name = data.name;
+            var assignmentId = data.assignment_id;
+    
+            this.submissionDAO.createSubmission(name,assignmentId)
+                .then((submission) => {
+                    this.submissionCache.set(submission.getId(),submission);
+                    resolve(submission);
+            }).catch((err) => {
+                reject(err);
+            });
         });
-
-        return Promise.reject(); //TODO?
     }
 
     /**
@@ -89,26 +88,25 @@ export class SubmissionManager implements ISubmissionManager {
      * @param data 
      */
     updateSubmission = async(submissionId : String, data : SubmissionData): Promise<ISubmission> => {
-        //Update the submission in cache and db
-        //TODO: pull out details from data object
-        var name = data.name;
-        var assignmentId = data.assignment_id;
-
-        this.getSubmission(submissionId).then((submission) => {
-            submission.setName(name);
-            submission.setAssignmentId(assignmentId);
-            this.submissionDAO.updateSubmission(submission).then((submission) => {
-                this.submissionCache.set(submission.getId(),submission);
-                return Promise.resolve(submission);
-            }).catch((err) => {
-                return Promise.reject(err);
-            }) 
         
-        }).catch((err) => {
-            return Promise.reject(err);
+        return new Promise((resolve,reject) => {
+            var name = data.name;
+            var assignmentId = data.assignment_id;
+    
+            this.getSubmission(submissionId).then((submission) => {
+                submission.setName(name);
+                submission.setAssignmentId(assignmentId);
+                this.submissionDAO.updateSubmission(submission).then((submission) => {
+                    this.submissionCache.set(submission.getId(),submission);
+                    resolve(submission);
+                }).catch((err) => {
+                   reject(err);
+                }) 
+            
+            }).catch((err) => {
+                reject(err);
+            });
         });
-
-        return Promise.reject(); //TODO?
     }
 
     /**
@@ -118,26 +116,29 @@ export class SubmissionManager implements ISubmissionManager {
      */
     processSubmissionFile = async(submissionId : String, filePath : String): Promise<void> => {
 
-        var path = filePath.toString(); //TODO: use a classier way to primitivize
+        return new Promise((resolve,reject) => {
+
+            var path = filePath.toString(); //TODO: use a classier way to primitivize
         
-        this.getSubmission(submissionId).then((submission) => {
-            readFileContent(path).then((buffer) => {
-                var content = buffer.toString();
-                submission.addFile(content,filePath).then(() => {
-                    this.submissionDAO.updateSubmission(submission).then((updatedSubmission) => {
-                        this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
-                        return Promise.resolve();
+            this.getSubmission(submissionId).then((submission) => {
+                readFileContent(path).then((buffer) => {
+                    var content = buffer.toString();
+                    submission.addFile(content,filePath).then(() => {
+                        this.submissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                            this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
+                            resolve();
+                        }).catch((err) => {
+                            reject(err);
+                        });
                     }).catch((err) => {
-                        return Promise.reject(err);
+                        reject(err);
                     });
                 }).catch((err) => {
-                    return Promise.reject(err);
+                    reject(err);
                 });
             }).catch((err) => {
-                return Promise.reject(err);
+                reject(err);
             });
-        }).catch((err) => {
-            return Promise.reject(err);
         });
     }
 
@@ -146,15 +147,18 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionId Submission to delete
      */
     deleteSubmission = async(submissionId : String): Promise<void> => {
-        if(this.submissionCache.get(submissionId)) {
-            this.submissionCache.delete(submissionId);
-        }
 
-        this.submissionDAO.deleteSubmission(submissionId).then((submission) => {
-            return Promise.resolve(submission);
-        }).catch((err) => {
-            return Promise.reject(err);
-        })
+        return new Promise((resolve,reject) => {
+            if(this.submissionCache.get(submissionId)) {
+                this.submissionCache.delete(submissionId);
+            }
+    
+            this.submissionDAO.deleteSubmission(submissionId).then((submission) => {
+                resolve();
+            }).catch((err) => {
+                reject(err);
+            })
+        });
     }
     
     /**
@@ -163,20 +167,20 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionIdB 
      */
     compareSubmissions = async(submissionIdA : String, submissionIdB : String): Promise<IAnalysisResult> => {
-        this.getSubmission(submissionIdA)
+
+        return new Promise((resolve,reject) => {
+            this.getSubmission(submissionIdA)
             .then(submissionA => {
                 this.getSubmission(submissionIdB)
                     .then(submissionB => {
-                        return Promise.resolve(submissionA.compare(submissionB)); //TODO: This is sync
+                        resolve(submissionA.compare(submissionB)); //TODO: This is synchronous
                     }
                 ).catch((err) => {
-                    return Promise.reject(err);
+                    reject(err);
                 });
-            }
-        ).catch((err) => {
-            return Promise.reject(err);
+            }).catch((err) => {
+                reject(err);
+            });
         });
-
-        return Promise.reject(); //TODO?
     }
 }
