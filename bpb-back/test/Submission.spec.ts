@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission } from "../src/model/Submission";
 import { SubmissionFactory } from "../src/model/SubmissionFactory";
-
+import { readFileSync } from 'fs';
 describe("Submission.ts",() => {
 
     var testSubmissionA : ISubmission;
@@ -83,8 +83,9 @@ describe("Submission.ts",() => {
         });
 
         it("Should throw an appropriate error if the specified file was already added to the submission",() => {
-            testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath());
-            expect(function() { testSubmissionA.addFile("some other file content",testEntryA.getFilePath()); })
+            let exampleFilecontent = readFileSync('/vagrant/bpb-back/test/res/AnalysisResultEntryCollector_VisitorVisitTestText.txt').toString();
+            testSubmissionA.addFile(exampleFilecontent, testEntryA.getFilePath());
+            expect(function() { testSubmissionA.addFile(exampleFilecontent, testEntryA.getFilePath()); })
             .to.throw("File at " + testEntryA.getFilePath() + " was already added to the submission");
         });
     });
