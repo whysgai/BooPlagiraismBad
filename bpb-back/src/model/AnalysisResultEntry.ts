@@ -17,8 +17,10 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     constructor(private submissionId : String, 
         private filePath : String, 
         private contextType : String, 
-        private lineNumberStart : number, 
+        private lineNumberStart : number,
+        private charPosStart : number, 
         private lineNumberEnd : number,
+        private charPosEnd : number,
         private hashValue : String, 
         private text : String) {
             
@@ -35,6 +37,12 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     }
     getLineNumberEnd(): number {
         return this.lineNumberEnd;
+    }
+    getCharPosStart(): number {
+        return this.charPosStart;
+    }
+    getCharPosEnd(): number {
+        return this.charPosEnd;
     }
     getText(): String {
         return this.text;

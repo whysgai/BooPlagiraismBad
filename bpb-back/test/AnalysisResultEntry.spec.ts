@@ -7,13 +7,13 @@ describe("AnalysisResultEntry",() => {
 
     before(() => {
         testARE = new AnalysisResultEntry("subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
-        1, 2, "245rr1", "void test() { }" );
+        1, 3, 2, 4, "245rr1", "void test() { }" );
     });
     
     describe("constructor", () => {
         it("Should throw an Error when lineNumberEnd < lineNumberStart", () => {
             let badConstructor = function(){new AnalysisResultEntry("subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
-            5, 2, "hash", "void test() { }")};
+            5, 1, 2, 3, "hash", "void test() { }")};
             expect(badConstructor).to.throw(Error, 'lineNumberStart can not be > lineNumberEnd')
         });
     });
@@ -35,7 +35,19 @@ describe("AnalysisResultEntry",() => {
             expect(testARE.getLineNumberEnd()).to.equal(2);
         });    
     });
+
+    describe("getCharPosStart", () => {
+        it("Should return a number with the expected value.", () => {
+            expect(testARE.getCharPosStart()).to.equal(3);
+        });
+    });
     
+    describe("getCharPosEnd", () => {
+        it("Should return a number with the expected value.", () => {
+            expect(testARE.getCharPosEnd()).to.equal(4);
+        });
+    });
+
     describe("getText", () => {
         it("Should return a string with the expected value.", () => {
             expect(testARE.getText()).to.equal("void test() { }");
@@ -57,7 +69,8 @@ describe("AnalysisResultEntry",() => {
     describe("asJSON",() => {
         it("Should return a valid JSON object with the expected properties",() => {
             var expected = '{"submissionId":"subid1","filePath":"/vagrant/bpb-back/uploads/test.java",\
-            "contextType":"method","lineNumberStart":1,"lineNumberEnd":2,"hashValue":"245rr1","text":"void test() { }"}'
+            "contextType":"method","lineNumberStart":1, "charPosStart":3, "lineNumberEnd":2, "charPosEnd":4,\
+            "hashValue":"245rr1","text":"void test() { }"}'
             var expectedJSON = JSON.parse(expected);
             expect(testARE.asJSON()).to.deep.equal(expectedJSON);
         });

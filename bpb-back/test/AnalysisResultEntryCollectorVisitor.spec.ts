@@ -131,6 +131,16 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.charPosStart Should match as expected.", () => {
+            expect(firstEntry.getCharPosStart()).to.equal(0);
+        });
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
+        "and firstEntry.charPosEnd Should match as expected.", () => {
+            expect(firstEntry.getCharPosEnd()).to.equal(1);
+        });    
+
+        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
         "and firstEntry.submissionId Should match as expected.", () => {
             expect(firstEntry.getSubmissionID()).to.equal(exampleSubmissionId);
         });
