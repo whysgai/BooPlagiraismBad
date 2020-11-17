@@ -175,7 +175,7 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
-        it.skip("Should return an appropriate error if file was already added to the submission",() => {
+        it("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,2,"test","Test"));
 
@@ -233,28 +233,27 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
 
-            var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
+            var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission',() => {}); 
             
             return testSubmissionManager.deleteSubmission(testSubmissionId).then(() => {
                 expect(mockDeleteSubmission).to.have.been.called.with(testSubmissionId);
             });
         });
-        
-        it("Should throw an appropriate error if {id} is invalid",() => {
+
+        it("Should throw an error if there is no submission with the provided ID",() =>{
             
-            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
+            chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
+            var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission',() => {}); 
             
-            var mockDeleteSubmission = chai.spy.on(testSubmissionDAO,'deleteSubmission'); 
-            
-            return testSubmissionManager.deleteSubmission(testSubmissionId).then(res => {
-                expect(true,"deleteSubmission is succeeding where it should fail (ID should not exist)").to.be.false;
+            return testSubmissionManager.deleteSubmission("some_nonexistent_id").then((submission) => {
+                expect(true,"deleteSubmission is succeeding where it should fail (should not find submission with nonexistent id)").to.equal(false);
             }).catch((err) => {
-                expect(mockGetSubmission).to.have.been.called.with(testSubmissionId);
                 expect(mockDeleteSubmission).to.not.have.been.called;
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
             });
-        });
+        })
     });
 
     describe("compareSubmission({id_a},{id_b})",()=> {
