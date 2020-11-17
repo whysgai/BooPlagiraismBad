@@ -55,15 +55,16 @@ export class SubmissionManager implements ISubmissionManager {
      *  Gets a single submission by id
      * @param submissionId
      */
-    getSubmission = async(submissionId : String) : Promise<ISubmission> => {
-        
-        if(this.submissionCache.get(submissionId) != undefined) {
-            return Promise.resolve(this.submissionCache.get(submissionId));
-        }
-        this.submissionDAO.readSubmission(submissionId).then((submission) => {
-            return Promise.resolve(submission);
-        }).catch((err) => {
-            return Promise.reject(err);
+    async getSubmission(submissionId : String) : Promise<ISubmission> {
+        return new Promise((resolve, reject) => {
+            if(this.submissionCache.get(submissionId) != undefined) {
+                resolve(this.submissionCache.get(submissionId));
+            }
+            this.submissionDAO.readSubmission(submissionId).then((submission) => {
+                resolve(submission);
+            }).catch((err) => {
+                reject(err);
+            });    
         });
     }
 
