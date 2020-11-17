@@ -13,8 +13,8 @@ describe("Submission.ts",() => {
     beforeEach(()=>{
         testSubmissionA = SubmissionFactory.buildSubmission("id_a","name_a");
         testSubmissionB = SubmissionFactory.buildSubmission("id_b","name_b");
-        testEntryA = new AnalysisResultEntry("id_a","/home/file.java","method",1,100,"haxrtwe","void() {}");
-        testEntryB = new AnalysisResultEntry("id_b","/home/filey.java","method",2,30,"reerwer","void() {}");
+        testEntryA = new AnalysisResultEntry("id_a","/home/file.java","method",1, 0, 100, 1,"haxrtwe","void() {}");
+        testEntryB = new AnalysisResultEntry("id_b","/home/filey.java","method",2, 3, 30, 4, "reerwer","void() {}");
     });
 
     describe("getId()",() => {
