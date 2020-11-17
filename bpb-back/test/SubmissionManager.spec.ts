@@ -39,15 +39,14 @@ describe("SubmissionManager.ts",() => {
             var mockReadSubmission = chai.spy.on(testSubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
             return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
-                console.log(submission);
                 expect(submission).to.deep.equal(testSubmission);
                 expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
             })
         });
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
-            return testSubmissionManager.getSubmission("some_nonexistent_id").then((res) => {
-                //expect(true,"getSubmission is succeeding where it should fail (no submission exists with id)").to.equal(false);
+            return testSubmissionManager.getSubmission("some_nonexistent_id").then((submission) => {
+                expect(true,"getSubmission is succeeding where it should fail (should not find submission with nonexistent id)").to.equal(false);
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("No submission exists with id");
