@@ -162,11 +162,12 @@ describe("SubmissionManager.ts",() => {
     describe("processSubmissionFile()",() =>{
 
         //TODO: Currently not working
-        it.skip("Should save and add a file into the submission specified by the client",() => {
+        it("Should save and add a file into the submission specified by the client",() => {
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
-            
-            var mockAddFile = chai.spy.on(testSubmission,'addFile');
+            chai.spy.on(testSubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
+
+            var mockAddFile = chai.spy.on(testSubmission,'addFile',() => { return Promise.resolve() });
             
             return readFileContent(testFilePath).then((buffer) => {
                 var expectedContent = buffer.toString();
@@ -178,16 +179,15 @@ describe("SubmissionManager.ts",() => {
         });
 
         //TODO: this test leaks error from submission.addFile()
-        it.skip("Should return an appropriate error if file was already added to the submission",() => {
+        it("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,2,"test","Test"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
-
-            //chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("File at " + testFilePath + " was already added to the submission"))});
+            var mockUpdate = chai.spy.on(testSubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
             
-            var mockUpdate = chai.spy.on(testSubmissionDAO,'updateSubmission');
-
+            chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("File at " + testFilePath + " was already added to the submission"))});
+            
             return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
                 expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
             }).catch((err) => {
@@ -200,6 +200,7 @@ describe("SubmissionManager.ts",() => {
         it("Should return an appropriate error if submission ID is invalid",() => {
             
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("Submission does not exist"))});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
 
@@ -215,6 +216,7 @@ describe("SubmissionManager.ts",() => {
         it("Should return an appropriate error if submission file doesn't exist at the specified location",() => {
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
+            chai.spy.on(testSubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
             
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
