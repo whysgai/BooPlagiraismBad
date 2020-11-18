@@ -37,9 +37,35 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     
   }
   createSubmissionFn = async(req : express.Request,res : express.Response) => {
-    res.status(400);
-    res.send({"response":"Not implemented"});
+    var submissionName = req.body.name;
+    var assignmentId = req.body.assignment_id;
+
+    if(submissionName == undefined || assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"name and assignment_id properties must both be present in the request body."});
+      return;
+    }
+
+    this.assignmentManager.getAssignment(assignmentId)
+      .then((assignment) => {
+        
+        var createBody = {name:submissionName,assignment_id:assignment.getID()};
+        
+        this.submissionManager.createSubmission(createBody)
+        .then((submission) =>{
+          res.status(200);
+          res.send(submission.asJSON);
+        }).catch((err) => {
+          res.status(400);
+          res.send({"response":err.message});
+        })
+      })
+      .catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      })
   }
+
   getSubmissionsFromAssignmentFn = async(req : express.Request,res : express.Response) => {
     var assignmentId = req.params.id;
     this.submissionManager.getSubmissions(assignmentId)
