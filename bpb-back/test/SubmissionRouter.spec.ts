@@ -32,6 +32,10 @@ describe('SubmissionRouter.ts',()=> {
         testServer = app.listen(8081);
     });
 
+    after(() => {
+        testServer.close();
+    });
+
     it.skip('should say hi back when GET /helloworld is queried',() => {
         return chai.request(testServer).get("/submissions/helloworld").then(res  => {
             expect(res).to.have.status(200);
