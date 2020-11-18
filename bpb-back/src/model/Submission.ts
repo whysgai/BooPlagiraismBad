@@ -130,7 +130,6 @@ export interface ISubmission {
     asJSON() : Object {
         return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
     }
-
     getModelInstance() : Document {
         return new Submission.submissionModel({"_id":this.id,"name":this.name,"files":this.files,"entries":this.entries});
     }
