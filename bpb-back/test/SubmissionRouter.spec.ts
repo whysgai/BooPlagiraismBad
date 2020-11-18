@@ -60,6 +60,7 @@ describe('SubmissionRouter.ts',()=> {
         testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
         testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",1,2,"245rr1","void test() { }");
         testSubmission.addAnalysisResultEntry(testAre1);
+        testSubmission.addFile("test",testAre1.getFilePath());
     });
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
