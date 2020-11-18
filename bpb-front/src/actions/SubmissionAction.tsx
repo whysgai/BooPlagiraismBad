@@ -1,8 +1,8 @@
 import Submission from '../types/Submission'
 
-export default function compareSubmissions(compareSubmissions : Submission[]) {
+export default function submissionAction(submission : Submission) {
     return {
-        type: 'COMPARE',
-        compareSubmissions: compareSubmissions,
+        type: 'ADD_COMPARE',
+        submission: submission,
     }
 };
