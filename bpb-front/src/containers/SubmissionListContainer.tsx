@@ -6,3 +6,9 @@ const stateToPropertyMapper=(state) => {
         tempAssignment: state.SubmissionReducer.tempAssignment
     }
 }
+
+const dispatchToPropertyMapper=(dispatch) => {
+    return {
+        
+    }
+}
