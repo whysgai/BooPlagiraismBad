@@ -4,6 +4,7 @@ import AbstractRouter from './AbstractRouter'
 import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
+import { ISubmission } from '../model/Submission'
 
 class SubmissionRouter extends AbstractRouter implements IRouter {
   
@@ -54,43 +55,49 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
   }
 
-  //TODO: Replace
-  //Hardcoded test endpoint for front-end development purposes
   postFileUploadFn = async function (req : express.Request,res : express.Response){
 
-    try {
-      if(!req.files) {
-          res.status(400);
-          res.send({response:"No file was included in this request. Please ensure a file is provided."})
-      } else {
-        let submissionFile = req.files.submissionfile;
-        
-        if(!submissionFile) {
-          res.status(400);
-          res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
+    var submissionId = req.params.id;
+    
+    if(submissionId == undefined) {
+      res.status(400);
+      res.send({"response":"A submission id was not provided"});
+    } else {
+     
+      try {
+        if(!req.files) {
+            res.status(400);
+            res.send({"response":"No file was included in this request. Please ensure a file is provided."})
         } else {
-          submissionFile.mv(AppConfig.submissionFileUploadDirectory() + submissionFile.name);
-          this.submissionManager.getSubmission().then(=> {
-              
-            this.submissionManager.processSubmissionFile(submission,"fi").then(() => {
+          let submissionFile = req.files.submissionfile;
           
-            res.send({
-              "response": 'File uploaded successfully.',
-              "data": {
-                  "name": submissionFile.name,
-                  "size": submissionFile.size
-              }
-            }
-          );
+          if(!submissionFile) {
+            res.status(400);
+            res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
+          } else {
+            submissionFile.mv(AppConfig.submissionFileUploadDirectory() + submissionFile.name).then(() => {
+              this.submissionManager.getSubmission("someid").then((submission : ISubmission) => {
 
-          });
-       }
-      } 
-   } catch (err) {
-        res.status(500);
-        res.send(err);
+                this.submissionManager.processSubmissionFile(submission).then(() => {
+              
+                  res.send({
+                    "response": 'File uploaded successfully.',
+                    "data": {
+                        "name": submissionFile.name,
+                        "size": submissionFile.size
+                    }
+                  });
+                });
+              });
+            });
+          }
+        } 
+      } catch (err) {
+          res.status(500);
+          res.send(err);
+      }
     }
-  }
+  }   
 }
 
 export default SubmissionRouter;
