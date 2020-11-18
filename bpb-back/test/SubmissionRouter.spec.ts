@@ -65,7 +65,7 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
         
-        //testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
         const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
         
@@ -86,6 +86,8 @@ describe('SubmissionRouter.ts',()=> {
     });
     it("Should be able to interpret a failed request to POST /submissions to create a submission (invalid assignment id)", () => {
 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
         
         var mockGetAssignment = chai.spy.on(
@@ -104,6 +106,8 @@ describe('SubmissionRouter.ts',()=> {
     });
 
     it("Should be able to interpret a failed request to POST /submissions to create a submission (missing property name)", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
         const postBody = {"assignment_id": testAssignment.getID()};
         
@@ -124,6 +128,8 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a failed request to POST /submissions to create a submission (missing property assignment_id)", () => {
 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const postBody = {"name": testSubmission.getName()};
         
         var mockGetAssignment = chai.spy.on(
@@ -143,6 +149,8 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a failed request to POST /submissions to create a submission (empty body)", () => {
 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const postBody = {};
         
         var mockGetAssignment = chai.spy.on(
@@ -161,7 +169,7 @@ describe('SubmissionRouter.ts',()=> {
     });
 
     //TODO: Fix. Technically only passing on the live app, has hardcoded hostname
-    it("Should be able to interpret a request to POST /submissions/files to submit a file",() => {
+    it.skip("Should be able to interpret a request to POST /submissions/files to submit a file",() => {
         
         var mockGetSubmission = chai.spy.on(
             testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission)}
@@ -181,6 +189,9 @@ describe('SubmissionRouter.ts',()=> {
     it.skip("Should be able to interpret a failed request to POST /submissions/{id}/files with the incorrect file key");
 
     it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if {id} is valid", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const expectedSubs = {submissions: [testSubmission.asJSON()]};
 
     
@@ -202,6 +213,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if {id} is invalid", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         chai.spy.on(
             testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("The requested assignment does not exist"));}
         )
@@ -213,6 +227,8 @@ describe('SubmissionRouter.ts',()=> {
     });
     it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if the assignment has no submissions", () => {
         
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const mockAssignment = new Assignment("QQ29", "PewPew");
         
         chai.spy.on(
@@ -228,6 +244,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const expectedSub = testSubmission.asJSON();
         chai.spy.on(
             testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission)}
@@ -240,6 +259,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a failed request to GET /submission/{id} where {id} is invalid", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const nonexistentId = "Ricoooooo";
         chai.spy.on(
             testSubmissionManager, 'getSubmission', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
@@ -251,6 +273,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a request to PUT /submissions/{id} where {id} is valid", () => { 
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const postBody = testSubmission;
         chai.spy.on(testSubmissionManager, 'updateSubmission', () => {return Promise.resolve(testSubmission)});
         chai.request(testServer).put("/submissions/" + testSubmission.getId())
@@ -261,6 +286,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a failed request to PUT /submissions/{id} where {id} is invalid", () => { 
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const nonexistentId = "drphilbertmd"
         const postBody = testSubmission;
         chai.spy.on(
@@ -274,6 +302,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a request to DELETE /submissions/{id} where {id} is valid", () => { 
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         chai.spy.on(testSubmissionManager, 'deleteSubmission', () => {return Promise.resolve(testSubmission)});
         chai.request(testServer).delete("/submissions/" + testSubmission.getId())
             .then(res => {
@@ -282,6 +313,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a failed request to DELETE /submissions/{id} where {id} is invalid", () => { 
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const nonexistentId = "drphilbertmd"
         chai.spy.on(
             testSubmissionManager, 'deleteSubmission', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
@@ -293,6 +327,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a request to GET /submissions/compare/{submission_id_1}/{submission_id_2}", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const mockAnalysisResult = new AnalysisResult();
         mockAnalysisResult.addMatch(testAre1, testAre2);
 
@@ -305,6 +342,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a failed request to GET /submissions/compare/{submission_id_1}/{submission_id_2} (1 does not exist)", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const nonexistentId = "BADID"
         chai.spy.on(testSubmissionManager, 'compareSubmissions', (submissionId: String) => {
             if (submissionId === nonexistentId) {
@@ -320,6 +360,9 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
     it("Should be able to interpret a failed request to GET /submissions/compare?a={submission_id_1}&b={submission_id_2} (2 does not exist)", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
         const nonexistentId = "WORSEID"
         chai.spy.on(
             testSubmissionManager, 'compareSubmissions', () => {return Promise.reject(new Error("Submission ID not found: " + nonexistentId))}
