@@ -7,7 +7,7 @@ function SubmissionListComponent({submissions}: {submissions: Submission[]}) {
   return (
     <div>
       <h3>Assignment</h3>
-      <Link to='#'>Upload Submission</Link>
+      <Link to='./CreateSubmissionComponent'>Upload Submission</Link>
       <ul>
         {submissions.map((submission, index) => 
           <li key={index}><SubmissionListItemComponent submission={submission} createSubmission={null}/></li>
