@@ -73,10 +73,10 @@ describe("Submission.ts",() => {
         })
     });
 
-    describe("addFile()",() => {
+    describe.skip("addFile()",() => {
         //TODO: Un-skip once Visitor is implemented
         //Can't mock because visitors are created in Submission
-        it.skip("Should successfully add new file contents to the submission if input is valid",() => {
+        it("Should successfully add new file contents to the submission if input is valid",() => {
             return testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
                 expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
             });
