@@ -4,7 +4,6 @@ import { ISubmissionDAO, SubmissionDAO } from '../model/SubmissionDAO';
 import fs from 'fs';
 import util from 'util';
 import SubmissionData from "../types/SubmissionData"
-import { isThrowStatement } from 'typescript';
 //Promisfy readFile
 const readFileContent = util.promisify(fs.readFile);
 
