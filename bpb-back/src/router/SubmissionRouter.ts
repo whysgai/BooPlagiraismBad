@@ -1,3 +1,4 @@
+import express from 'express';
 import IRouter from './IRouter'
 import AbstractRouter from './AbstractRouter'
 import { AppConfig } from '../AppConfig';
@@ -17,26 +18,28 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
 
   setupRoutes() {
-    this.router.get("/helloworld",this.getHelloWorldFn);
+    
+    this.router.put("/:id");
+    this.router.post("/");
+    this.router.delete("/:id");
+    this.router.post("/:id/files",this.postFileUploadFn);
+    this.router.post("/compare/?a=:ida&b=:idb");
+
+    //Development endpoints
     this.router.get("/compare?a=subid1&b=subid2",this.getComparisonResultFn); //TODO: un-hardcode
-    this.router.post("/sub1/files",this.postFileUploadFn);
     this.router.get("/sub1/files",this.getSubmissionFilesFn);
     this.router.get("/sub1/files/AXHFD",this.getFileContentFn);
-  }
-
-  getHelloWorldFn = async function(req : Express.Request,res : any){
-    res.send({"response":"the world and the bpb-back submission router say hi back!!"});
   }
   
   //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getSubmissionFilesFn = async function(req : Express.Request,res : any){
+  getSubmissionFilesFn = async function(req : express.Request,res : express.Response){
     res.send({"sub_id":"sub1","files":[{"name":"testy.java","id":"AXHFD"},{"name":"son_of_testy.java","id":"NONEXISITO"}]});
   }
 
   //TODO: Replace
   //Hardcoded endpoints for front-end development purposes
-  getComparisonResultFn = async function(req : Express.Request,res : any){
+  getComparisonResultFn = async function(req : express.Request,res : express.Response){
     res.send({
         "matches":[
           [{"sub_id":"subid1","file_path":"/test/file.java","context":"method","start":1,"end":2,"hash":"245rr1","text":"void test() { }"},{"sub_id":"subid2","file_path":"/test/file2.java","context":"method","start":5,"end":6,"hash":"423qq1","text":"void rest() { }"}],
@@ -47,13 +50,13 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
 
   //TODO: Replace
   //Hardcoded endpoint for front-end development purposes
-  getFileContentFn = async function (req : Express.Request,res : any){
+  getFileContentFn = async function (req : express.Request,res : express.Response){
     res.send({id : "AXHFD", name : "testy.java", data :"void this() { \n      is \n      an \n      examples! \n } "});
   }
 
   //TODO: Replace
   //Hardcoded test endpoint for front-end development purposes
-  postFileUploadFn = async function (req : Express.Request,res : any){
+  postFileUploadFn = async function (req : express.Request,res : express.Response){
 
     try {
       if(!req.files) {
