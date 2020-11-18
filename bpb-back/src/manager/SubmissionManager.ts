@@ -1,57 +1,193 @@
 import { IAnalysisResult } from '../model/AnalysisResult';
-import {ISubmission} from '../model/Submission';
-import { ISubmissionDAO } from '../model/SubmissionDAO';
+import {ISubmission, Submission} from '../model/Submission';
+import { ISubmissionDAO, SubmissionDAO } from '../model/SubmissionDAO';
+import fs from 'fs';
+import util from 'util';
+import SubmissionData from "../types/SubmissionData"
+//Promisfy readFile
+const readFileContent = util.promisify(fs.readFile);
 
 /**
  * Represents a controller for Submission objects.
  */
 export interface ISubmissionManager {
+    createSubmission(data : SubmissionData) : Promise<ISubmission>;
     getSubmissions(assignmentId : String) : Promise<ISubmission[]>;
     getSubmission(submissionId : String) : Promise<ISubmission>;
-    createSubmission(data : Object) : Promise<ISubmission>;
-    updateSubmission(submissionId : String, data : Object) : Promise<ISubmission>;
+    updateSubmission(submissionId : String, data : SubmissionData) : Promise<ISubmission>;
     processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
-    deleteSubmission(submissionId : String) : void;
+    deleteSubmission(submissionId : String) : Promise<void>;
     compareSubmissions(submissionIdA : String, submissionIdB : String) : Promise<IAnalysisResult>
 }
 
 export class SubmissionManager implements ISubmissionManager {
 
     private submissionDAO : ISubmissionDAO;
-
+    private submissionCache : Map<String,ISubmission>;
+    
     constructor(submissionDAO : ISubmissionDAO) {
         this.submissionDAO = submissionDAO;
+        this.submissionCache = new Map<String,ISubmission>();
     }
 
+    /**
+     * Creates a submission with the given data
+     * @param data 
+     */
+    createSubmission = async(data : SubmissionData): Promise<ISubmission> => {
+        
+        return new Promise((resolve,reject) => {
+            var name = data.name;
+            var assignmentId = data.assignment_id;
+    
+            this.submissionDAO.createSubmission(name,assignmentId)
+                .then((submission) => {
+                    this.submissionCache.set(submission.getId(),submission);
+                    resolve(submission);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    }
+
+    /**
+     *  Gets a single submission by id
+     * @param submissionId
+     */
     getSubmission = async(submissionId : String) : Promise<ISubmission> => {
-        throw new Error('Method not implemented')
+        return new Promise((resolve, reject) => {
+            if(this.submissionCache.get(submissionId) != undefined) {
+                resolve(this.submissionCache.get(submissionId));
+            }
+            this.submissionDAO.readSubmission(submissionId).then((submission) => {
+                resolve(submission);
+            }).catch((err) => {
+                reject(err);
+            });    
+        });
     }
+
+    /**
+     *  Gets all submissions of the specified assignment
+     * @param assignmentId
+     */
     getSubmissions = async(assignmentId : String): Promise<ISubmission[]> => {
-        //Load a submission and all of its AnalysisResultEntries from the DB
-        throw new Error('Method not implemented.');
+        //TODO: Update to use cache
+        return new Promise((resolve, reject) => {
+            this.submissionDAO.readSubmissions(assignmentId).then((submissions) => {
+                resolve(submissions);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
-    createSubmission = async(data : Object): Promise<ISubmission> => {
-        //Create and persist a submission in DB / cache
-        throw new Error('Method not implemented.');
+    
+    /**
+     * Updates the specified submission with the provided data
+     * @param submissionId 
+     * @param data 
+     */
+    updateSubmission = async(submissionId : String, data : SubmissionData): Promise<ISubmission> => {
+        
+        return new Promise((resolve,reject) => {
+            var name = data.name;
+            var assignmentId = data.assignment_id;
+    
+            this.getSubmission(submissionId).then((submission) => {
+                submission.setName(name);
+                submission.setAssignmentId(assignmentId);
+                this.submissionDAO.updateSubmission(submission).then((submission) => {
+                    this.submissionCache.set(submission.getId(),submission);
+                    resolve(submission);
+                }).catch((err) => {
+                   reject(err);
+                }) 
+            
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
-    updateSubmission = async(submissionId : String, data : Object): Promise<ISubmission> => {
-        //Update the submission in cache and db
-        throw new Error('Method not implemented.');
-    }
+
+    /**
+     * Processes a submission file and adds entries to the specified submission
+     * @param submissionId
+     * @param filePath 
+     */
     processSubmissionFile = async(submissionId : String, filePath : String): Promise<void> => {
-        //Get file content from disk
-        //Call submission.addfile on the submission
-        //Save the submission with the new entries into the database (including pointer to filePath as metadata)
-        throw new Error('Method not implemented.');
+
+        return new Promise((resolve,reject) => {
+
+            var path = filePath.toString(); //TODO: use a classier way to primitivize
+        
+            this.getSubmission(submissionId).then((submission) => {
+                readFileContent(path).then((buffer) => {
+                    var content = buffer.toString();
+                    submission.addFile(content,filePath).then(() => {
+                        this.submissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                            this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
+                            resolve();
+                        }).catch((err) => {
+                            reject(err);
+                        });
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                }).catch((err) => {
+                    reject(err);
+                });
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
+
+    /**
+     * Delete a submission from the cache and database
+     * @param submissionId Submission to delete
+     */
     deleteSubmission = async(submissionId : String): Promise<void> => {
-        //Delete the submission from cache and db
-        throw new Error('Method not implemented.');
+
+        return new Promise((resolve,reject) => {
+
+            //Ensure submission exists before deletion
+            this.getSubmission(submissionId).then((submission) => {
+                
+                if(this.submissionCache.get(submissionId) != undefined) {
+                    this.submissionCache.delete(submissionId);
+                }
+        
+                this.submissionDAO.deleteSubmission(submissionId).then((submission) => {
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                })
+            }).catch((err) => {
+                reject(err);
+            })
+        });
     }
+    
+    /**
+     * Compares two submissions and returns an AnalysisResult of matchings
+     * @param submissionIdA 
+     * @param submissionIdB 
+     */
     compareSubmissions = async(submissionIdA : String, submissionIdB : String): Promise<IAnalysisResult> => {
-        //TODO: Actually actively perform comparison of all hashes saved for each submission
-        //Delegate comparison to one of the two submissions' compare methods and return the result
-        //Later, could read from database to get comparisons that already occurred (i.e. create AnalysisResult some other way)
-        throw new Error('Method not implemented.');
+
+        return new Promise((resolve,reject) => {
+            this.getSubmission(submissionIdA)
+            .then(submissionA => {
+                this.getSubmission(submissionIdB)
+                    .then(submissionB => {
+                        resolve(submissionA.compare(submissionB)); //TODO: This is synchronous
+                    }
+                ).catch((err) => {
+                    reject(err);
+                });
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 }

@@ -3,10 +3,9 @@ import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
 import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
-//import { parse } from 'java-ast';
-//import { ParseTree } from 'antlr4ts/tree/ParseTree';
+import {parse} from 'java-ast'; 
+import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
-import { parse } from "java-ast";
 
 /**
  * Represents an Submission database model object
@@ -26,9 +25,11 @@ export interface ISubmissionModel extends Document {
 export interface ISubmission {
     getId() : String;
     getAssignmentId() : String;
+    setAssignmentId(newId : String) : void;
     getName() : String;
+    setName(newName : String) : void;
     getFiles() : String[];
-    addFile(content : String, filePath : String) : void;
+    addFile(content : String, filePath : String) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
@@ -39,8 +40,8 @@ export interface ISubmission {
 
  export class Submission implements ISubmission {
     
+    //Note: removed _id from schema in order to generate it on creation (should still exist in the model)
     private static submissionSchema = new Schema({
-        _id:  String,
         assignment_id: String,
         name: String,
         files: [],
@@ -55,7 +56,7 @@ export interface ISubmission {
     private files : String[];
     private entries : IAnalysisResultEntry[];
 
-    constructor(id : String, name : String){
+    constructor(id: String, name : String){
         this.id = id;
         this.name = name
         this.entries = [];
@@ -66,38 +67,51 @@ export interface ISubmission {
         return this.submissionModel;
     }
 
-     getId(): String {
-         return this.id;
+    getId() : String {
+        return this.id;
+    }
+     
+    getAssignmentId(): String {
+         return this.assignment_id;
      }
 
-     getAssignmentId(): String {
-         return this.assignment_id;
+     setAssignmentId(newId : String): void {
+         this.assignment_id = newId;
      }
 
      getName(): String {
          return this.name;
      }
 
+     setName(newName : String): void {
+         this.name = newName;
+     }
+
+
      getFiles() : String[] {
          return this.files;
      }
 
-     addFile(content : string, filePath : string) : void {
-      
-        if(this.files.includes(filePath)) {
-            throw new Error("File at " + filePath + " was already added to the submission");
-        }
+     async addFile(content : String, filePath : String) : Promise<void> {
+     
+        return new Promise((resolve,reject) => {
+            if(this.files.includes(filePath)) {
+                reject(new Error("File at " + filePath + " was already added to the submission"));
+            }
+    
+            this.files.push(filePath);
+    
+            var parseTree = parse(content.toString());
+            var visitor = new AnalysisResultEntryCollectorVisitor(filePath.toString(),this); //TODO: Make this primitivization better
+    
+            visitor.visit(parseTree);
+    
+            visitor.getAnalysisResultEntries().forEach((entry) => { 
+                this.addAnalysisResultEntry(entry);
+             });
 
-        this.files.push(filePath);
-
-        var parseTree = parse(content.toString()); //TODO: better way to primitive-ize?
-        var visitor = new AnalysisResultEntryCollectorVisitor(filePath, this);
-
-        visitor.visit(parseTree);
-
-        visitor.getAnalysisResultEntries().forEach((entry) => { 
-            this.addAnalysisResultEntry(entry);
-         });
+             resolve();
+        });
      }
 
      addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
