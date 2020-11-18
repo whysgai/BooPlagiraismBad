@@ -3,7 +3,7 @@ import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
 import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
-import {parse} from 'java-ast'; //Commented out because not working
+import {parse} from 'java-ast'; 
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
 
