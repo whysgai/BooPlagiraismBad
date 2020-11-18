@@ -7,60 +7,23 @@ import { ISubmissionManager } from '../manager/SubmissionManager';
 
 class AssignmentRouter extends AbstractRouter implements IRouter {
   
-  protected router : Router;
-  assignmentManager : IAssignmentManager;
-  submissionManager : ISubmissionManager;
-
   constructor(app : express.Application, route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager){
     super(app,route,submissionManager,assignmentManager);
     this.setupRoutes();
   }
 
   setupRoutes() {
-    this.router.post("/",this.postFn);
-    this.router.get("/",this.getFn);
-    this.router.get("/:id",this.getSingleFn);
-    this.router.put("/:id",this.putFn);
-    this.router.delete("/:id",this.deleteFn)
-  }
-
-  //GET /assignments: Get all assignments
-  getFn = async(req : express.Request,res : express.Response) => {
-      
-    this.assignmentManager.getAssignments()
-        .then((assignments: IAssignment[]) => {
-          var assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
-          var responseBody = { assignments:assignmentEntries }
-          res.send(responseBody);
-        }).catch((err) => {
-          res.status(400)
-          res.send({"response":err.message});
-        });
-  };
-  
-  //GET /assignments/{id} : Get assignment with {id}
-  getSingleFn = async(req : express.Request,res : express.Response) => {
-    
-    var assignmentId = req.params.id;
-    
-    if(assignmentId == undefined) {
-      res.status(400);
-      res.send({"response":"An assignment id was not provided"});
-    } else {
-      this.assignmentManager.getAssignment(assignmentId)
-      .then(assignment => {
-        res.send(assignment.asJSON());
-      }).catch((err) => {
-        res.status(400);
-        res.send({"response":err.message});
-      });
-    }
+    this.router.post("/",this.createAssignmentFn);
+    this.router.get("/",this.getAssignmentsFn);
+    this.router.get("/:id",this.getAssignmentFn);
+    this.router.put("/:id",this.updateAssignmentFn);
+    this.router.delete("/:id",this.deleteAssignmentFn);
   }
 
   //POST /assignments: Create a new assignment
-  //TODO: Add checks to esnure submission ids exist before update
-  postFn = async(req : express.Request,res : express.Response) => {
+  createAssignmentFn = async(req : express.Request,res : express.Response) => {
 
+  //TODO: Add checks to esnure submission ids exist before update
     var assignmentName = req.body.name;
 
     if(assignmentName == undefined) {
@@ -77,9 +40,41 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     }
   }
 
+  //GET /assignments: Get all assignments
+  getAssignmentsFn = async(req : express.Request,res : express.Response) => {
+      
+    this.assignmentManager.getAssignments()
+        .then((assignments: IAssignment[]) => {
+          var assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
+          var responseBody = { assignments:assignmentEntries }
+          res.send(responseBody);
+        }).catch((err) => {
+          res.status(400)
+          res.send({"response":err.message});
+        });
+  };
+  
+  //GET /assignments/{id} : Get assignment with {id}
+  getAssignmentFn = async(req : express.Request,res : express.Response) => {
+    
+    var assignmentId = req.params.id;
+    
+    if(assignmentId == undefined) {
+      res.status(400);
+      res.send({"response":"An assignment id was not provided"});
+    } else {
+      this.assignmentManager.getAssignment(assignmentId)
+      .then(assignment => {
+        res.send(assignment.asJSON());
+      }).catch((err) => {
+        res.status(400);
+        res.send({"response":err.message});
+      });
+    }
+  }
   //PUT /assignments : Update an assignment
   //TODO: Add checks to ensure submission ids exist before update
-  putFn = async(req : express.Request,res : express.Response) => {
+  updateAssignmentFn = async(req : express.Request,res : express.Response) => {
 
     var assignmentId = req.params.id;
     
@@ -103,7 +98,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   }
 
   //DELETE /assignments/{id} : Delete assignment with {id}
-  deleteFn = async(req : express.Request,res : express.Response) => {
+  deleteAssignmentFn = async(req : express.Request,res : express.Response) => {
 
     var assignmentId = req.params.id;
     
@@ -121,7 +116,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
         });
       }).catch((err) => {
         res.status(400);
-        res.send({"response":err.message});
+        res.send({"response":err.message});;
       });
     }
   }
