@@ -121,9 +121,6 @@ export interface ISubmission {
          }
      }
 
-     addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
-         this.analysisResultEntries.push(analysisResultEntry);
-     }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         if(this.entries.length <= 0 ) {

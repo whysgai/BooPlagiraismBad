@@ -73,7 +73,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //GET /ofAssignment?id:{id} : Get all submissions for the specified assignment
   getSubmissionsOfAssignmentFn = async(req : express.Request,res : express.Response) => {
     
-    var assignmentId = req.params.id;
+    var assignmentId = req.params.id; //NOTE: Lack of defensive coding/tests due to assumption that router won't match this route if id is nonexistent
     this.submissionManager.getSubmissions(assignmentId)
     .then((submissions: ISubmission[]) => {
       var submissionEntries = submissions.map((submission) => { return submission.asJSON(); });
@@ -88,7 +88,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //GET /{id} : Get a submission by ID
   getSubmissionFn = async(req : express.Request,res : express.Response) => {
     
-    var submissionId = req.params.id;
+    var submissionId = req.params.id; //NOTE: Lack of defensive coding/tests intentional (see above)
     this.submissionManager.getSubmission(submissionId)
       .then((submission) => {
         res.send(submission.asJSON());  
@@ -98,7 +98,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       });
   }
 
-  //PUT /{id} : Update a given submission
+  //PUT /{id} : Update a given submission's name or associated assignment
   updateSubmissionFn = async(req : express.Request,res : express.Response) => {
     res.status(400);
     res.send({"response":"Not implemented"});
