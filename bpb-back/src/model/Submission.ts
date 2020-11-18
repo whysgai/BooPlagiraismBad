@@ -121,6 +121,10 @@ export interface ISubmission {
          }
      }
 
+     addAnalysisResultEntry(analysisResultEntry : AnalysisResultEntry): void {
+         this.analysisResultEntries.push(analysisResultEntry);
+     }
+
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         if(this.entries.length <= 0 ) {
             throw new Error("Cannot compare: A comparator submission has no entries");
