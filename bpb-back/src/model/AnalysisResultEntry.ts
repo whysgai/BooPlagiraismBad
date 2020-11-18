@@ -102,7 +102,10 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     }
     asJSON(): Object {
         // throw new Error("Method not implemented.");
-        return {filePath:this.filePath,
+        return {
+            id:this.id,
+            submissionId:this.submissionId,
+            filePath:this.filePath,
             contextType:this.contextType,
             lineNumberStart:this.lineNumberStart,
             lineNumberEnd:this.lineNumberEnd,
