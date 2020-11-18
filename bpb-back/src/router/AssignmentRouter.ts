@@ -12,10 +12,8 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   submissionManager : ISubmissionManager;
 
   constructor(app : express.Application, route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager){
-    super(app,route);
+    super(app,route,submissionManager,assignmentManager);
     this.setupRoutes();
-    this.assignmentManager = assignmentManager;
-    this.submissionManager = submissionManager;
   }
 
   setupRoutes() {
@@ -60,6 +58,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   }
 
   //POST /assignments: Create a new assignment
+  //TODO: Add checks to esnure submission ids exist before update
   postFn = async(req : express.Request,res : express.Response) => {
 
     var assignmentName = req.body.name;
@@ -79,6 +78,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
   }
 
   //PUT /assignments : Update an assignment
+  //TODO: Add checks to ensure submission ids exist before update
   putFn = async(req : express.Request,res : express.Response) => {
 
     var assignmentId = req.params.id;

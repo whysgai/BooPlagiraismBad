@@ -1,4 +1,6 @@
 import express, { Router } from "express"
+import { IAssignmentManager } from "../model/AssignmentManager";
+import { ISubmissionManager } from "../model/SubmissionManager";
 
 /**
  * Used to consolidate use of Express (all routers will register via express)
@@ -6,11 +8,15 @@ import express, { Router } from "express"
 abstract class AbstractRouter {
     
     protected router : Router;
-    route : string;
+    protected submissionManager : ISubmissionManager;
+    protected assignmentManager : IAssignmentManager;
+    protected route : string;
 
-    constructor(app : express.Application, route : string) {
+    constructor(app : express.Application, route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager) {
         this.router = express.Router();
         this.route = route;
+        this.submissionManager = submissionManager;
+        this.assignmentManager = assignmentManager;
         app.use(route,this.router);
     }
 }

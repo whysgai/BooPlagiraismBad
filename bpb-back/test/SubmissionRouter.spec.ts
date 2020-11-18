@@ -16,6 +16,9 @@ import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { Submission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
 import { AnalysisResult } from "../src/AnalysisResult";
+import { Assignment } from "../src/model/Assignment";
+import { AssignmentManager } from "../src/model/AssignmentManager";
+import { AssignmentDAO } from "../src/model/AssignmentDAO";
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -24,6 +27,8 @@ describe('SubmissionRouter.ts',()=> {
     var testRouter : IRouter;
     var testSubmissionManager : SubmissionManager;
     var testSubmissionDAO : SubmissionDAO;
+    var testAssignmentManager : AssignmentManager;
+    var testAssignmentDAO : AssignmentDAO;
     var testSubmission : Submission;
     var testAre1 : AnalysisResultEntry;
     var testAre2 : AnalysisResultEntry;
@@ -40,7 +45,10 @@ describe('SubmissionRouter.ts',()=> {
         
         testSubmissionDAO = new SubmissionDAO();
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
-        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager); 
+        testAssignmentDAO = new AssignmentDAO();
+        testAssignmentManager = new AssignmentManager(testAssignmentDAO);
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         testServer = app.listen(8081);
 
         testAre1 = new AnalysisResultEntry("ID117","subid1","/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
@@ -78,15 +86,45 @@ describe('SubmissionRouter.ts',()=> {
         //     expect(res.body).to.have.property("response","File uploaded successfully.");
         // });
     });    
-    it("Should be able to interpret a request to GET /submissions to get all submissions", () => {
+    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is valid", () => {
         const expectedSubs = [testSubmission.asJSON()];
-        chai.spy.on(
-            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission])}
+        const expectedAssignmentId = "test"
+        const mockAssignment = new Assignment(expectedAssignmentId,"test");
+        mockAssignment.addSubmission(testSubmission.getId());
+
+        var mockGetAssignment = chai.spy.on(
+            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(mockAssignment);}
+        )
+        var mockGetSubmissions = chai.spy.on(
+            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
         );
-        chai.request(testServer).get("/submissions/")
+
+        chai.request(testServer).get("/submissions/ofAssignment?id="+expectedAssignmentId)
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.deep.equal(expectedSubs)
+                expect(mockGetAssignment).to.have.been.called.with(expectedAssignmentId);
+                expect(mockGetSubmissions).to.have.been.called.with(testSubmission.getId());
+                expect(res.body).to.deep.equal(expectedSubs);
+            });
+    });
+    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is invalid", () => {
+        chai.spy.on(
+            testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("The requested assignment does not exist"));}
+        )
+        chai.request(testServer).get("/submissions/ofAssignment?id=test")
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
+            });
+    });
+    it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if the assignment has no submissions", () => {
+        chai.spy.on(
+            testAssignmentManager,'getAssignment',() => {return Promise.resolve([]);}
+        )
+        chai.request(testServer).get("/submissions/ofAssignment?id=test")
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.have.length(0); //TODO: ?
             });
     });
     it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid", () => {
