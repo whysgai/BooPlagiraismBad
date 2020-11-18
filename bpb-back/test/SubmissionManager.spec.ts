@@ -161,7 +161,6 @@ describe("SubmissionManager.ts",() => {
 
     describe("processSubmissionFile()",() =>{
 
-        //TODO: Currently not working
         it("Should save and add a file into the submission specified by the client",() => {
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
