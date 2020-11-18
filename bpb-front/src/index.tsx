@@ -12,14 +12,23 @@ import SubmissionListComponent from './SubmissionListComponent';
 import * as serviceWorker from './serviceWorker';
 import NavbarComponent from './NavbarComponent';
 import Assignment from './types/Assignment'
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
+import ComparisonReducer from './reducers/ComparisonReducer';
+import SubmissionReducer from './reducers/SubmissionReducer';
 
 //import "../node_modules/bootstrap/dist/css/bootstrap.min";
 //require('bootstrap');
 
+const reducers = combineReducers({
+  ComparisonReducer: ComparisonReducer,
+  SubmissionReducer: SubmissionReducer
+})
+
+const store = createStore(reducers);
+
 ReactDOM.render(
-  //<Provider>
+  <Provider store={store}>
     <BrowserRouter>
       <NavbarComponent />
       <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route>
@@ -29,7 +38,7 @@ ReactDOM.render(
       <Route path="/Help" component={HelpComponent}/>
       <Route path="/CompareSubmissions" component={ComparisonComponent}/>
     </BrowserRouter>,
-  //</Provider>,
+  </Provider>,
   document.getElementById('root')
 );
 
