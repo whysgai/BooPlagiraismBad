@@ -139,6 +139,9 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //POST /{id}/files : Upload a file to a given submission
   createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
+    console.log("Req: " + req);
+    console.log("Received files: " + req.files);
+    
     var submissionId = req.params.id;
     
     if(submissionId == undefined) {

@@ -4,6 +4,8 @@ import SubmissionRouter from "../src/router/SubmissionRouter"
 import express from "express";
 import IRouter from "../src/router/IRouter";
 import fs from 'fs';
+import util from 'util';
+const readFileContent = util.promisify(fs.readFile);
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
@@ -18,6 +20,7 @@ import { Assignment, IAssignment } from "../src/model/Assignment";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { AssignmentDAO } from "../src/model/AssignmentDAO";
 import { AnalysisResultEntryCollectorVisitor } from "../src/model/AnalysisResultEntryCollectorVisitor";
+
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -169,19 +172,31 @@ describe('SubmissionRouter.ts',()=> {
     });
 
     //TODO: Fix. Technically only passing on the live app, has hardcoded hostname
-    it.skip("Should be able to interpret a request to POST /submissions/files to submit a file",() => {
-        
+    it("Should be able to interpret a request to POST /submissions/files to submit a file",() => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
+
         var mockGetSubmission = chai.spy.on(
             testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission)}
         );    
 
-        //chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("test/App.spec.ts"))
-        superagent.post("http://localhost:8080/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
-         .then((res) => {
-             expect(res).to.have.status(200);
-             expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
-             expect(res.body).to.have.property("response","File uploaded to submission successfully.");
-         });
+        return readFileContent("test/App.spec.ts").then((content) => {
+            console.log(content.toString());
+            chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",content)
+             .then((res) => {   
+                 expect(res.body).to.have.property("response","File uploaded to submission successfully.");
+                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+                 expect(res).to.have.status(200);
+             });
+        });
+
+        // chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("test/App.spec.ts"))
+        // //superagent.post("http://localhost:8080/submissions/" + testSubmission.getId() + "/files").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
+        // //chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files").send("submissionfile", fileBody)
+        //  .then((res) => {
+        //      expect(res).to.have.status(200);
+        //      expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+        //      expect(res.body).to.have.property("response","File uploaded to submission successfully.");
+        //  });
     });    
 
     //TODO: Add
