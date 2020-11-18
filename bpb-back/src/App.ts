@@ -30,7 +30,11 @@ class App {
             let assignmentDAO = new AssignmentDAO();
             let assignmentManager = new AssignmentManager(assignmentDAO);
 
+<<<<<<< HEAD
             // Set up SubmissionDAO and Manager
+=======
+            // Set up Assignment DAO and Manager
+>>>>>>> 773ec5f (BPB-30 feat: Implement submissionManager as param)
             let submissionDAO = new SubmissionDAO();
             let submissionManager = new SubmissionManager(submissionDAO);
             
@@ -43,8 +47,13 @@ class App {
 
             // Set up routers
             let routers = []
+<<<<<<< HEAD
             routers.push(new SubmissionRouter(app,'/submissions',submissionManager,assignmentManager));
             routers.push(new AssignmentRouter(app,'/assignments',submissionManager,assignmentManager));
+=======
+            routers.push(new SubmissionRouter(app,'/submissions', submissionManager));
+            routers.push(new AssignmentRouter(app,'/assignments',assignmentManager));
+>>>>>>> 773ec5f (BPB-30 feat: Implement submissionManager as param)
 
             // Start listening for traffic
             app.listen(AppConfig.port(),() => {
