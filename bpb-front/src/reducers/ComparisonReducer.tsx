@@ -1,7 +1,7 @@
 const ComparisonReducer = (state = [], action) => {
     switch (action.type) {
         case 'COMPARE':
-            return ;
+            return //TODO;
         default:
             return state;
     }
