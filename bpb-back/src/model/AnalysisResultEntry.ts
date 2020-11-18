@@ -108,8 +108,11 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
             filePath:this.filePath,
             contextType:this.contextType,
             lineNumberStart:this.lineNumberStart,
+            charPosStart:this.charPosStart,
+            charPosEnd:this.charPosEnd,
             lineNumberEnd:this.lineNumberEnd,
-            hashValue:this.hashValue
+            hashValue:this.hashValue,
+            text:this.text
          }
     }
     static getStaticModel() : mongoose.Model<IAnalysisResultEntryModel> {
