@@ -94,8 +94,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
      */
     protected getLSHValue(textContent : string) : string {
         let tlsh = new Tlsh();
-        tlsh.update(textContent, textContent.length+1);
-        tlsh.finale();
+        tlsh.finale(textContent, textContent.length+1);
         return tlsh.hash().toString();
     }
     
