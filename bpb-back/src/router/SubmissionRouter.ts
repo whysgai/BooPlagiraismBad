@@ -54,7 +54,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
         this.submissionManager.createSubmission(createBody)
         .then((submission) =>{
           res.status(200);
-          res.send(submission.asJSON);
+          res.send(submission.asJSON());
         }).catch((err) => {
           res.status(400);
           res.send({"response":err.message});

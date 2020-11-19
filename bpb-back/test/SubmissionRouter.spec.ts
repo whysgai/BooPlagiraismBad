@@ -11,12 +11,16 @@ import chaiSpies = require("chai-spies");
 import superagent from "superagent";
 import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
+<<<<<<< HEAD
 import { AssignmentDAO } from "../src/model/AssignmentDAO";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { Submission } from "../src/model/Submission";
+=======
+import { Submission, ISubmission } from "../src/model/Submission";
+>>>>>>> ef7a83a (BPB-30 fix: Resolve merge conflict)
 import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
 import { AnalysisResult } from "../src/AnalysisResult";
-import { Assignment } from "../src/model/Assignment";
+import { Assignment, IAssignment } from "../src/model/Assignment";
 import { AssignmentManager } from "../src/model/AssignmentManager";
 import { AssignmentDAO } from "../src/model/AssignmentDAO";
 
@@ -29,7 +33,8 @@ describe('SubmissionRouter.ts',()=> {
     var testSubmissionDAO : SubmissionDAO;
     var testAssignmentManager : AssignmentManager;
     var testAssignmentDAO : AssignmentDAO;
-    var testSubmission : Submission;
+    var testSubmission : ISubmission;
+    var testAssignment : IAssignment;
     var testAre1 : AnalysisResultEntry;
     var testAre2 : AnalysisResultEntry;
 
@@ -47,27 +52,26 @@ describe('SubmissionRouter.ts',()=> {
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentManager = new AssignmentManager(testAssignmentDAO);
-
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         testServer = app.listen(8081);
 
-        testAre1 = new AnalysisResultEntry("ID117","subid1","/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
-        testAre2 = new AnalysisResultEntry("ID666","subid2","/vagrant/bpb-back/uploads/testing.java","method",1,2,"245rr1","void test() { }");
-        testSubmission = new Submission("TestID","TestName");
+        testAssignment = new Assignment("ID998","Test Assignment")
+        testSubmission = new Submission(testAssignment.getID(),"Test");
+        testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
+        testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",1,2,"245rr1","void test() { }");
         testSubmission.addAnalysisResultEntry(testAre1);
     });
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
-        const expectedId = "TestID";
-        const expectedName = "TestName";
-        const expectedAssnId = "TestAssign01";        
-        const mockSubmission = new Submission("TestID", "TestName");
 
-        const expectedJSON = mockSubmission.asJSON();
+        const expectedJSON = testSubmission.asJSON();
 
-        const postBody = {"name": expectedName, "assignment_id": expectedAssnId};
-
-        chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.resolve(mockSubmission)});
+        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
+        
+        var mockGetAssignment = chai.spy.on(
+            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);}
+        )
+        chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission)});
 
         chai.request(testServer).post("/submissions")
             .send(postBody)
@@ -88,21 +92,20 @@ describe('SubmissionRouter.ts',()=> {
     });    
     it("Should be able to interpret a request to GET /submissions/ofAssignment?id={id} to get all submissions for the specified assignment if {id} is valid", () => {
         const expectedSubs = [testSubmission.asJSON()];
-        const expectedAssignmentId = "test"
-        const mockAssignment = new Assignment(expectedAssignmentId,"test");
-        mockAssignment.addSubmission(testSubmission.getId());
+;
+        testAssignment.addSubmission(testSubmission.getId());
 
         var mockGetAssignment = chai.spy.on(
-            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(mockAssignment);}
+            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);}
         )
         var mockGetSubmissions = chai.spy.on(
             testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
         );
 
-        chai.request(testServer).get("/submissions/ofAssignment?id="+expectedAssignmentId)
+        chai.request(testServer).get("/submissions/ofAssignment?id="+testAssignment.getID())
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(mockGetAssignment).to.have.been.called.with(expectedAssignmentId);
+                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getID());
                 expect(mockGetSubmissions).to.have.been.called.with(testSubmission.getId());
                 expect(res.body).to.deep.equal(expectedSubs);
             });
