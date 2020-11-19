@@ -196,10 +196,37 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res).to.have.status(200);
         });
     });    
+    it("Should be able to interpret a failedd request to POST /submissions/{id}/files with no file attached", async () => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
+        const sampleFilePath = "test/App.spec.ts";
+        const sampleFileContent = await readFileContent(sampleFilePath);
+        const sampleFileName = 'testFile.ts';
 
-    //TODO: Add
-    it.skip("Should be able to interpret a failedd request to POST /submissions/{id}/files with no file attached");
-    it.skip("Should be able to interpret a failed request to POST /submissions/{id}/files with the incorrect file key");
+        chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
+
+        await chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+            .then((res) => {
+                expect(res.body).to.have.property("response", "No file was included in this request. Please ensure a file is provided.");
+                expect(res).to.have.status(400);
+        });
+    });
+    it("Should be able to interpret a failed request to POST /submissions/{id}/files with the incorrect file key", async () => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
+        const sampleFilePath = "test/App.spec.ts";
+        const sampleFileContent = await readFileContent(sampleFilePath);
+        const sampleFileName = 'testFile.ts';
+
+        chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
+
+        await chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+            .attach("badKeyName", sampleFileContent, sampleFileName)
+            .then((res) => {
+                expect(res.body).to.have.property("response", "File was not submitted using the key name submissionfile. Please resend the file using that key.");
+                expect(res).to.have.status(400);
+        });
+    });
 
     it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if {id} is valid", () => {
 
