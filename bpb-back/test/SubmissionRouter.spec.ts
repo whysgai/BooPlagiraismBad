@@ -13,6 +13,8 @@ import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
 import { AssignmentDAO } from "../src/model/AssignmentDAO";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
+import { Submission } from "../src/model/Submission";
+import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -38,19 +40,49 @@ describe('SubmissionRouter.ts',()=> {
         testServer = app.listen(8081);
     });
 
-    it.skip("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
-        
-        //NOTE: This is technically only passing against the live app (note port is not 8081)
-        superagent.post('http://localhost:8080/submissions/sub1/files').attach('submissionfile',fs.readFileSync("./test/App.spec.ts"))
-        //chai.request(testServer).post("/submissions/upload").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
-        .then((res) => {
-            expect(res).to.have.status(200);
-            expect(res.body).to.have.property("response","File uploaded successfully.");
-        });
+    it("Should be able to interpret a request to POST /submissions to create a submission", () => {
+        const expectedId = "TestID";
+        const expectedName = "TestName";
+        const expectedAssnId = "TestAssign01";        
+        const mockSubmission = new Submission("TestID", "TestName");
+
+        const expectedJSON = mockSubmission.asJSON();
+
+        const postBody = {"name": expectedName, "assignment_id": expectedAssnId};
+
+        chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.resolve(mockSubmission)});
+
+        chai.request(testServer).post("/submissions")
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.deep.equals(expectedJSON);
+            });
     });
-    
-    it("Should be able to interpret a request to POST /submissions to create a submission");
-    it("Should be able to interpret a request to GET /submissions to get all submissions");
+
+    it.skip("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
+        // //NOTE: This is technically only passing against the live app (note port is not 8081)
+        // superagent.post('http://localhost:8080/submissions/sub1/files').attach('submissionfile',fs.readFileSync("./test/App.spec.ts"))
+        // //chai.request(testServer).post("/submissions/upload").attach("submissionfile",fs.readFileSync("./test/App.spec.ts"))
+        // .then((res) => {
+        //     expect(res).to.have.status(200);
+        //     expect(res.body).to.have.property("response","File uploaded successfully.");
+        // });
+    });    
+    it("Should be able to interpret a request to GET /submissions to get all submissions", () => {
+        const mockARE = new AnalysisResultEntry("ID117","subid1","/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
+        const mockSubmission = new Submission("TestID","TestName");
+        const expectedSubs = [mockSubmission.asJSON()];
+        chai.spy.on(
+            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([mockSubmission])}
+        );
+
+        chai.request(testServer).get("/submissions")
+            .then(res => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.deep.equal(expectedSubs)
+            });
+    });
     it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid");
     it("Should be able to interpret a failed request to GET /submission/{id} where {id} is invalid");
     it("Should be able to interpret a request to PUT /submissions/{id} where {id} is valid");
