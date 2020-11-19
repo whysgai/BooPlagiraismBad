@@ -139,11 +139,8 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   //POST /{id}/files : Upload a file to a given submission
   createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
-    console.log("Req: " + req);
-    console.log("Received files: " + req.files);
-    
     var submissionId = req.params.id;
-    
+
     if(submissionId == undefined) {
       res.status(400);
       res.send({"response":"A submission id was not provided"});
@@ -154,8 +151,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
             res.status(400);
             res.send({"response":"No file was included in this request. Please ensure a file is provided."})
         } else {
-          let submissionFile = req.files.submissionfile;
-          
+          let submissionFile = req.files.submissionFile;
           if(!submissionFile) {
             res.status(400);
             res.send({"response":"File was not submitted using the key name submissionfile. Please resend the file using that key."});
@@ -170,7 +166,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
                 this.submissionManager.processSubmissionFile(submission.getId(),filePath).then(() => {
               
                   res.send({
-                    "response": 'File uploaded successfully.',
+                    "response": 'File uploaded to submission successfully.',
                     "data": {
                         "name": submissionFile.name,
                         "size": submissionFile.size
