@@ -1,5 +1,4 @@
 import { expect } from "chai";
-
 import bodyParser from "body-parser";
 import SubmissionRouter from "../src/router/SubmissionRouter"
 import express from "express";
@@ -11,22 +10,14 @@ import chaiSpies = require("chai-spies");
 import superagent from "superagent";
 import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
-<<<<<<< HEAD
 import { AssignmentDAO } from "../src/model/AssignmentDAO";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
-import { Submission } from "../src/model/Submission";
-=======
 import { Submission, ISubmission } from "../src/model/Submission";
-<<<<<<< HEAD
->>>>>>> ef7a83a (BPB-30 fix: Resolve merge conflict)
-import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
-=======
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
->>>>>>> 988495b (BPB-30 fix: Mismatch between ARE constructor ID arg and implementation expectations)
+import { SubmissionFactory } from "../src/model/SubmissionFactory";
 import { AnalysisResult } from "../src/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
-import { AssignmentManager } from "../src/manager/AssignmentManager";
-import { AssignmentDAO } from "../src/model/AssignmentDAO";
+
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -41,10 +32,12 @@ describe('SubmissionRouter.ts',()=> {
     var testAssignment : IAssignment;
     var testAre1 : AnalysisResultEntry;
     var testAre2 : AnalysisResultEntry;
+    var count : number;
 
     before(() => {
         chai.use(chaiHttp);
         chai.use(chaiSpies);
+        count = 0;
     });
 
     beforeEach(() => {
@@ -57,18 +50,21 @@ describe('SubmissionRouter.ts',()=> {
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentManager = new AssignmentManager(testAssignmentDAO);
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
-        testServer = app.listen(8081);
 
         testAssignment = new Assignment("ID998","Test Assignment")
         testSubmission = new Submission(testAssignment.getID(),"Test");
+        //testSubmission = SubmissionFactory.buildSubmission(testAssignment.getID(),"Test");
         testAssignment.addSubmission(testSubmission.getId());
-        testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,3,7,9,"245rr1","void test() { }");
-        testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",2,4,6,8,"245rr1","void test() { }");
-        testSubmission.addAnalysisResultEntry(testAre1);
+        testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,3,7,9,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
+        testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",2,4,6,8,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
+        // testSubmission.addAnalysisResultEntry(testAre1);
         testSubmission.addFile("test",testAre1.getFilePath());
+        
+        testServer = app.listen(8081);       
     });
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
+        console.log("First test");
 
         const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
         
