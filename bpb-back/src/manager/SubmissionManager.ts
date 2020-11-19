@@ -118,10 +118,8 @@ export class SubmissionManager implements ISubmissionManager {
 
         return new Promise((resolve,reject) => {
 
-            var path = filePath.toString(); //TODO: use a classier way to primitivize
-        
             this.getSubmission(submissionId).then((submission) => {
-                readFileContent(path).then((buffer) => {
+                readFileContent(filePath).then((buffer) => {
                     var content = buffer.toString();
                     submission.addFile(content,filePath).then(() => {
                         this.submissionDAO.updateSubmission(submission).then((updatedSubmission) => {

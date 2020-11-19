@@ -102,7 +102,7 @@ export interface ISubmission {
             this.files.push(filePath);
     
             var parseTree = parse(content.toString());
-            var visitor = new AnalysisResultEntryCollectorVisitor(filePath.toString(),this); //TODO: Make this primitivization better
+            var visitor = new AnalysisResultEntryCollectorVisitor(filePath,this); 
     
             visitor.visit(parseTree);
     
