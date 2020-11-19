@@ -7,6 +7,7 @@ import IRouter from "../src/router/IRouter";
 import fs from 'fs';
 import chai = require("chai");
 import chaiHttp = require("chai-http");
+import chaiSpies = require("chai-spies");
 import superagent from "superagent";
 import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
@@ -15,23 +16,18 @@ import { AssignmentManager } from "../src/manager/AssignmentManager";
 
 describe('SubmissionRouter.ts',()=> {
     
+    var app : express.Application;
     var testServer : any;
     var testRouter : IRouter;
+    var testSubmissionManager : SubmissionManager;
+    var testSubmissionDAO: SubmissionDAO;
 
-    before(function() {
-
-        let app = express();
-        app.use(express.json());
-        app.use(bodyParser.json());            
+    before(() => {
         chai.use(chaiHttp);
-        var assignmentDAO = new AssignmentDAO();
-        var assignmentManager = new AssignmentManager(assignmentDAO);
-        var submissionDAO = new SubmissionDAO();
-        var submissionManager = new SubmissionManager(submissionDAO); 
-        testRouter = new SubmissionRouter(app,"/submissions",submissionManager,assignmentManager); 
-        testServer = app.listen(8081);
+        chai.use(chaiSpies);
     });
 
+<<<<<<< HEAD
     after(() => {
         testServer.close();
     });
@@ -41,6 +37,17 @@ describe('SubmissionRouter.ts',()=> {
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("response","the world and the bpb-back submission router say hi back!!");
         });
+=======
+    beforeEach(() => {
+        app = express();
+        app.use(express.json());
+        app.use(bodyParser.json());      
+        
+        testSubmissionDAO = new SubmissionDAO();
+        testSubmissionManager = new SubmissionManager(testSubmissionDAO);
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager); 
+        testServer = app.listen(8081);
+>>>>>>> 1efb470 (BPB-30 fix: Resolve merge commit)
     });
 
     it.skip("Should be able to interpret a request to POST /submissions/upload to submit a file",() => {
