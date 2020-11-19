@@ -11,7 +11,7 @@ import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
 describe.skip("SubmissionDAO.ts",() => {
 
     var testSubmissionDAO : ISubmissionDAO;
-    var sampleAssignmentId : String;
+    var sampleAssignmentId : string;
 
     before((done) => {
         chai.use(chaiAsPromised);

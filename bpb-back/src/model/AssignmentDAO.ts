@@ -4,8 +4,8 @@ import { AssignmentFactory } from './AssignmentFactory';
 
 export interface IAssignmentDAO {
     createAssignment(assignment : IAssignment) : Promise<void>; 
-    readAssignments(assignmentIds : String[]) : Promise<IAssignment[]>;
-    readAssignment(assignmentId : String) : Promise<IAssignment>;
+    readAssignments(assignmentIds : string[]) : Promise<IAssignment[]>;
+    readAssignment(assignmentId : string) : Promise<IAssignment>;
     updateAssignment(assignment : IAssignment) : Promise<void>;
     deleteAssignment(assignment : IAssignment) : Promise<void>;
 }
@@ -32,7 +32,7 @@ export class AssignmentDAO implements IAssignmentDAO {
         return undefined;
     }
 
-    async readAssignment(AssignmentID: String): Promise<IAssignment> {
+    async readAssignment(AssignmentID: string): Promise<IAssignment> {
         return undefined;
     }
 

@@ -4,20 +4,20 @@ import mongoose, { Document, Schema } from "mongoose";
  * Represents an Assignment database model object
  */
 export interface IAssignmentModel extends Document {
-    _id : String
-    name : String
-    submissionIds : String[]
+    _id : string
+    name : string
+    submissionIds : string[]
 }
 
 /**
  * Represents an Assignment to which Submissions may be made.
  */
 export interface IAssignment {
-    getID() : String
-    getName() : String
-    getSubmissionIDs() : String[]
-    addSubmission(submissionID : String) : void
-    removeSubmission(submissionID : String) : void
+    getID() : string
+    getName() : string
+    getSubmissionIDs() : string[]
+    addSubmission(submissionID : string) : void
+    removeSubmission(submissionID : string) : void
     getModelInstance() : Document;
     asJSON() : Object;
 }
@@ -32,9 +32,9 @@ export class Assignment implements IAssignment {
 
     private static assignmentModel = mongoose.model<IAssignmentModel>('Assignment',Assignment.assignmentSchema);
     
-    private submissionIds : String[];
+    private submissionIds : string[];
     
-    constructor(private id : String, private name :String) {
+    constructor(private id : string, private name :string) {
         this.id = id;
         this.name = name
         this.submissionIds = [];
@@ -42,21 +42,21 @@ export class Assignment implements IAssignment {
     static getStaticModel() : mongoose.Model<IAssignmentModel> {
         return this.assignmentModel;
     }
-    getID(): String {
+    getID(): string {
         return this.id;
     }
-    getName(): String {
+    getName(): string {
         return this.name;
     }
-    getSubmissionIDs(): String[] {
+    getSubmissionIDs(): string[] {
         return this.submissionIds;
     }
-    addSubmission(submissionId: String): void {
+    addSubmission(submissionId: string): void {
         if(!this.submissionIds.find( it => it == submissionId)) {
             this.submissionIds.push(submissionId);
         }
     }
-    removeSubmission(submissionId: String): void {
+    removeSubmission(submissionId: string): void {
         var foundValueIndex = this.submissionIds.findIndex( it => it == submissionId);
         if(foundValueIndex != -1) {
             this.submissionIds.splice(foundValueIndex,1);

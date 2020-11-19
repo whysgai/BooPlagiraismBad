@@ -5,7 +5,7 @@ export interface ISubmissionFactory {}
  * Builds Submission objects
  */
 export class SubmissionFactory implements ISubmissionFactory {
-    static buildSubmission(id : String, name : String) : ISubmission {
+    static buildSubmission(id : string, name : string) : ISubmission {
         return new Submission(id,name);
     }
 }

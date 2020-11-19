@@ -1,6 +1,6 @@
 type SubmissionData = {
-    name: String,
-    assignment_id: String
+    name: string,
+    assignment_id: string
 }
 
 export default SubmissionData

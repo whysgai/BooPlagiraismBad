@@ -12,22 +12,22 @@ const readFileContent = util.promisify(fs.readFile);
  */
 export interface ISubmissionManager {
     createSubmission(data : SubmissionData) : Promise<ISubmission>;
-    getSubmissions(assignmentId : String) : Promise<ISubmission[]>;
-    getSubmission(submissionId : String) : Promise<ISubmission>;
-    updateSubmission(submissionId : String, data : SubmissionData) : Promise<ISubmission>;
-    processSubmissionFile(submissionId : String, filePath : String) : Promise<void>; 
-    deleteSubmission(submissionId : String) : Promise<void>;
-    compareSubmissions(submissionIdA : String, submissionIdB : String) : Promise<IAnalysisResult>
+    getSubmissions(assignmentId : string) : Promise<ISubmission[]>;
+    getSubmission(submissionId : string) : Promise<ISubmission>;
+    updateSubmission(submissionId : string, data : SubmissionData) : Promise<ISubmission>;
+    processSubmissionFile(submissionId : string, filePath : string) : Promise<void>; 
+    deleteSubmission(submissionId : string) : Promise<void>;
+    compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult>
 }
 
 export class SubmissionManager implements ISubmissionManager {
 
     private submissionDAO : ISubmissionDAO;
-    private submissionCache : Map<String,ISubmission>;
+    private submissionCache : Map<string,ISubmission>;
     
     constructor(submissionDAO : ISubmissionDAO) {
         this.submissionDAO = submissionDAO;
-        this.submissionCache = new Map<String,ISubmission>();
+        this.submissionCache = new Map<string,ISubmission>();
     }
 
     /**
@@ -54,7 +54,7 @@ export class SubmissionManager implements ISubmissionManager {
      *  Gets a single submission by id
      * @param submissionId
      */
-    getSubmission = async(submissionId : String) : Promise<ISubmission> => {
+    getSubmission = async(submissionId : string) : Promise<ISubmission> => {
         return new Promise((resolve, reject) => {
             if(this.submissionCache.get(submissionId) != undefined) {
                 resolve(this.submissionCache.get(submissionId));
@@ -71,7 +71,7 @@ export class SubmissionManager implements ISubmissionManager {
      *  Gets all submissions of the specified assignment
      * @param assignmentId
      */
-    getSubmissions = async(assignmentId : String): Promise<ISubmission[]> => {
+    getSubmissions = async(assignmentId : string): Promise<ISubmission[]> => {
         //TODO: Update to use cache
         return new Promise((resolve, reject) => {
             this.submissionDAO.readSubmissions(assignmentId).then((submissions) => {
@@ -87,7 +87,7 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionId 
      * @param data 
      */
-    updateSubmission = async(submissionId : String, data : SubmissionData): Promise<ISubmission> => {
+    updateSubmission = async(submissionId : string, data : SubmissionData): Promise<ISubmission> => {
         
         return new Promise((resolve,reject) => {
             var name = data.name;
@@ -114,7 +114,7 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionId
      * @param filePath 
      */
-    processSubmissionFile = async(submissionId : String, filePath : String): Promise<void> => {
+    processSubmissionFile = async(submissionId : string, filePath : string): Promise<void> => {
 
         return new Promise((resolve,reject) => {
 
@@ -146,7 +146,7 @@ export class SubmissionManager implements ISubmissionManager {
      * Delete a submission from the cache and database
      * @param submissionId Submission to delete
      */
-    deleteSubmission = async(submissionId : String): Promise<void> => {
+    deleteSubmission = async(submissionId : string): Promise<void> => {
 
         return new Promise((resolve,reject) => {
 
@@ -173,7 +173,7 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionIdA 
      * @param submissionIdB 
      */
-    compareSubmissions = async(submissionIdA : String, submissionIdB : String): Promise<IAnalysisResult> => {
+    compareSubmissions = async(submissionIdA : string, submissionIdB : string): Promise<IAnalysisResult> => {
 
         return new Promise((resolve,reject) => {
             this.getSubmission(submissionIdA)

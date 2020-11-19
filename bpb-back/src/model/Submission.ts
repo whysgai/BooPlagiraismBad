@@ -11,9 +11,9 @@ import { Tlsh } from '../lib/tlsh';
  * Represents an Submission database model object
  */
 export interface ISubmissionModel extends Document {
-    _id : String
-    name : String
-    files : String[]
+    _id : string
+    name : string
+    files : string[]
     entries : IAnalysisResultEntry[]
 }
 
@@ -23,13 +23,13 @@ export interface ISubmissionModel extends Document {
  * Has 0 ... n files, represented indirectly as analysisResultEntries (hashed subtrees of files)
  */
 export interface ISubmission {
-    getId() : String;
-    getAssignmentId() : String;
-    setAssignmentId(newId : String) : void;
-    getName() : String;
-    setName(newName : String) : void;
-    getFiles() : String[];
-    addFile(content : String, filePath : String) : Promise<void>;
+    getId() : string;
+    getAssignmentId() : string;
+    setAssignmentId(newId : string) : void;
+    getName() : string;
+    setName(newName : string) : void;
+    getFiles() : string[];
+    addFile(content : string, filePath : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
@@ -50,13 +50,13 @@ export interface ISubmission {
 
     private static submissionModel = mongoose.model<ISubmissionModel>('Submission',Submission.submissionSchema);
     
-    private id : String;
-    private assignment_id : String;
-    private name : String;
-    private files : String[];
+    private id : string;
+    private assignment_id : string;
+    private name : string;
+    private files : string[];
     private entries : IAnalysisResultEntry[];
 
-    constructor(id: String, name : String){
+    constructor(id: string, name : string){
         this.id = id;
         this.name = name
         this.entries = [];
@@ -67,32 +67,32 @@ export interface ISubmission {
         return this.submissionModel;
     }
 
-    getId() : String {
+    getId() : string {
         return this.id;
     }
      
-    getAssignmentId(): String {
+    getAssignmentId(): string {
          return this.assignment_id;
      }
 
-     setAssignmentId(newId : String): void {
+     setAssignmentId(newId : string): void {
          this.assignment_id = newId;
      }
 
-     getName(): String {
+     getName(): string {
          return this.name;
      }
 
-     setName(newName : String): void {
+     setName(newName : string): void {
          this.name = newName;
      }
 
 
-     getFiles() : String[] {
+     getFiles() : string[] {
          return this.files;
      }
 
-     async addFile(content : String, filePath : String) : Promise<void> {
+     async addFile(content : string, filePath : string) : Promise<void> {
      
         return new Promise((resolve,reject) => {
             if(this.files.includes(filePath)) {

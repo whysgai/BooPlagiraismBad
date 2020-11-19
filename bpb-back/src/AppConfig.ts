@@ -18,6 +18,6 @@ export class AppConfig {
     public static printEnv() : void {
         console.log("PORT: " + this.port());
         console.log("UPLOAD DIR: " + this.submissionFileUploadDirectory());
-        console.log("DB Connection String: " + this.dbConnectionString());
+        console.log("DB Connection string: " + this.dbConnectionString());
     }
 }

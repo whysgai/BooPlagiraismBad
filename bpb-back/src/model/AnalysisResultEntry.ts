@@ -1,11 +1,11 @@
 export interface IAnalysisResultEntry {
     asJSON() : Object 
-    getHashValue(): String
-    getFilePath(): String
-    getContextType(): String
+    getHashValue(): string
+    getFilePath(): string
+    getContextType(): string
     getLineNumberStart(): number
     getLineNumberEnd(): number
-    getText(): String
+    getText(): string
 }
 
 /**
@@ -14,22 +14,22 @@ export interface IAnalysisResultEntry {
  */
 export class AnalysisResultEntry implements IAnalysisResultEntry {
 
-    constructor(private submissionId : String, 
-        private filePath : String, 
-        private contextType : String, 
+    constructor(private submissionId : string, 
+        private filePath : string, 
+        private contextType : string, 
         private lineNumberStart : number,
         private charPosStart : number, 
         private lineNumberEnd : number,
         private charPosEnd : number,
-        private hashValue : String, 
-        private text : String) {
+        private hashValue : string, 
+        private text : string) {
             
         if (lineNumberStart > lineNumberEnd) {
             throw new Error('lineNumberStart can not be > lineNumberEnd');
         }
     }
 
-    getSubmissionID(): String {
+    getSubmissionID(): string {
         return this.submissionId;
     }
     getLineNumberStart(): number {
@@ -44,13 +44,13 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     getCharPosEnd(): number {
         return this.charPosEnd;
     }
-    getText(): String {
+    getText(): string {
         return this.text;
     }
-    getFilePath(): String {
+    getFilePath(): string {
         return this.filePath;
     }
-    getContextType(): String {
+    getContextType(): string {
         return this.contextType;
     }
 
@@ -58,7 +58,7 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
        return JSON.parse(JSON.stringify(this)); 
     }
 
-    getHashValue(): String {
+    getHashValue(): string {
         return this.hashValue;
     }
 }
