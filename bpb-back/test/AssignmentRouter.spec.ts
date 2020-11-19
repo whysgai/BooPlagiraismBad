@@ -20,7 +20,7 @@ describe('AssignmentRouter.ts',()=> {
     var testAssignmentMgr : IAssignmentManager;
     var testAssignmentDAO : IAssignmentDAO;
     var testSubmissionMgr : ISubmissionManager;
-    var testSubmissionDAO: ISubmissionDAO;
+    var testSubmissionDAO : ISubmissionDAO;
 
     before(() => {
         chai.use(chaiHttp);
@@ -82,6 +82,10 @@ describe('AssignmentRouter.ts',()=> {
             expect(res.body).to.have.property("response").which.equals("An assignment name was not provided");
         });
     });
+
+    //TODO: Add later
+    it('Should be able to interpret a failed request to POST /assignments/ if any specified submission IDs do not exist');
+    
     it("Should be able to interpret a request to GET /assignments to get all assignments", () => {
         
         const firstMockAssignment = new Assignment('007', 'BondJamesBond');
@@ -138,14 +142,15 @@ describe('AssignmentRouter.ts',()=> {
         const mockAssignment = new Assignment(expectedId,expectedName);
         const putBody = {"name":expectedName,"submissions":["test1","test2"]}
 
-        chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
         var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
  
-        chai.request(testServer).put("/assignments/"+expectedId)
+        chai.request(testServer).put("/assignments/" + expectedId)
         .send(putBody)
         .then(res => {
             expect(res).to.have.status(200);
-            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment.getID(),putBody);
+            expect(mockGetMethod).to.have.been.called.with(mockAssignment.getID());
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment, putBody);
         })
     });
 
@@ -156,14 +161,15 @@ describe('AssignmentRouter.ts',()=> {
         const mockAssignment = new Assignment(expectedId,expectedName);
         const putBody = {"name":expectedName}
 
-        chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
         var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
  
         chai.request(testServer).put("/assignments/"+expectedId)
         .send(putBody)
         .then(res => {
             expect(res).to.have.status(200);
-            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment.getID(),putBody);
+            expect(mockGetMethod).to.have.been.called.with(mockAssignment.getID());
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment,putBody);
         })
     });
 
@@ -174,19 +180,20 @@ describe('AssignmentRouter.ts',()=> {
         const mockAssignment = new Assignment(expectedId,expectedName);
         const putBody = {"submissions":["test1","test2"]}
 
-        chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
         var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
  
         chai.request(testServer).put("/assignments/"+expectedId)
         .send(putBody)
         .then(res => {
             expect(res).to.have.status(200);
-            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment.getID(),putBody);
+            expect(mockGetMethod).to.have.been.called.with(mockAssignment.getID());
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment,putBody);
         })
     });
     
     it("Should be able to interpret a failed request to PUT /assignments/{id} where {id} is invalid",() => {
-        const expectedId = '0011'
+        const expectedId = '0077'
         const expectedName = "Jims Bonde"
         const putBody = {"_id":expectedId,"name":expectedName,"submissions":["test21"]}
 
@@ -202,6 +209,11 @@ describe('AssignmentRouter.ts',()=> {
             expect(mockUpdateMethod).not.to.have.been.called;
         })
     });
+
+    //TODO: Add later
+    it('Should be able to interpret a failed request to PUT /assignments/{id} if any properties are missing');
+    
+    it('Should be able to interpret a failed request to PUT /assignments/{id} if any specified submission IDs do not exist');
 
     it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid",() => {
        

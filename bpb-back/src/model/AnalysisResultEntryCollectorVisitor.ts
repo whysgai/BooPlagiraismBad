@@ -122,7 +122,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
             charPosStart = asParserRuleContext._start.charPositionInLine;
             charPosStop = asParserRuleContext._stop.charPositionInLine;
         }
-        return new AnalysisResultEntry(submissionId, this.filePath, contextType, lineStart, charPosStart, lineStop, charPosStop, hashValue, textContent);
+        return new AnalysisResultEntry("",submissionId, this.filePath, contextType, lineStart, charPosStart, lineStop, charPosStop, hashValue, textContent);
     }
 
     /**

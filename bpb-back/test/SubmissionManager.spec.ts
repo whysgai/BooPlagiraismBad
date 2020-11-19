@@ -180,7 +180,7 @@ describe("SubmissionManager.ts",() => {
         //TODO: this test leaks error from submission.addFile()
         it("Should return an appropriate error if file was already added to the submission",() => {
             
-            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("tset",testFilePath,"test",1,1,2,2,"test","Test"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1","tset",testFilePath,"test",1,1,2,2,"test","Test"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
             var mockUpdate = chai.spy.on(testSubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
@@ -267,8 +267,8 @@ describe("SubmissionManager.ts",() => {
             
             var testSubmission2 = new Submission("somevalid","id");
 
-            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry(testSubmission.getId(),"test","test",1,2,1,2,"e","e"));
-            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry(testSubmission.getId(),"test","test",1,1,2,2,"e","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test","test",1,2,1,2,"e","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission.getId(),"test","test",1,1,2,2,"e","e"));
             
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {

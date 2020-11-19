@@ -121,6 +121,7 @@ export interface ISubmission {
          }
      }
 
+
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         if(this.entries.length <= 0 ) {
             throw new Error("Cannot compare: A comparator submission has no entries");
@@ -130,7 +131,6 @@ export interface ISubmission {
     asJSON() : Object {
         return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
     }
-
     getModelInstance() : Document {
         return new Submission.submissionModel({"_id":this.id,"name":this.name,"files":this.files,"entries":this.entries});
     }
