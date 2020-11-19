@@ -8,8 +8,8 @@ export interface IAssignmentManager {
     getAssignments() : Promise<IAssignment[]>;
     getAssignment(assignmentId : string) : Promise<IAssignment>;
     createAssignment(data : Object) : Promise<IAssignment>;
-    updateAssignment(assignmentId : string, data : Object) : Promise<IAssignment>;
-    deleteAssignment(assignmentId : string) : Promise<void>;
+    updateAssignment(assignment : IAssignment, data : Object) : Promise<IAssignment>;
+    deleteAssignment(assignment : IAssignment) : Promise<void>;
 }
 
 export class AssignmentManager implements IAssignmentManager {
@@ -24,15 +24,10 @@ export class AssignmentManager implements IAssignmentManager {
         throw new Error("Method not implemented")
     }
 
-    async getAssignment(assignmentId: string): Promise<IAssignment> {
-        throw new Error("Method not implemented.");
-        //should reject promise with "The requested assignment does not exist" if assignment doesn't exist with the given id
-    }
-
     async createAssignment(data : Object): Promise<IAssignment> {
         throw new Error("Method not implemented.");
     }
-    async updateAssignment(assignmentId : string, data : Object) : Promise<IAssignment> {
+    async updateAssignment(assignment: IAssignment, data : Object) : Promise<IAssignment> {
         throw new Error("Method not implemented.");
     }
     async deleteAssignment(assignment : string) : Promise<void> {
