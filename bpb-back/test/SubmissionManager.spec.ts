@@ -16,9 +16,9 @@ describe("SubmissionManager.ts",() => {
     var testSubmissionDAO : ISubmissionDAO;
     var testSubmissionManager : ISubmissionManager;
     var testSubmission : ISubmission;
-    var testSubmissionId : String;
-    var testSubmissionName : String;
-    var testSubmissionAssignmentId : String;
+    var testSubmissionId : string;
+    var testSubmissionName : string;
+    var testSubmissionAssignmentId : string;
     var testFilePath : string;
 
     before(()=>{

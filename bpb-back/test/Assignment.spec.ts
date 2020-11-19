@@ -6,8 +6,8 @@ import {AssignmentFactory} from "../src/model/AssignmentFactory"
 describe("Assignment.ts",() => {
 
     var assignment : IAssignment;
-    var assignmentName : String;
-    var assignmentId : String;
+    var assignmentName : string;
+    var assignmentId : string;
 
     beforeEach(() => {
         assignmentId = "test_id"
