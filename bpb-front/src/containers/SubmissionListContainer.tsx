@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import SubmissionListComponent from '../SubmissionListComponent'
 
 export const stateToPropertyMapper=(state) => {
     return {
@@ -13,3 +14,8 @@ export const dispatchToPropertyMapper=(dispatch) => {
         dispatch: dispatch
     }
 }
+
+// export default connect(
+//     stateToPropertyMapper,
+//     dispatchToPropertyMapper
+// )(SubmissionListComponent)
