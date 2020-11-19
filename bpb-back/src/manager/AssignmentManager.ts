@@ -9,7 +9,7 @@ export interface IAssignmentManager {
     getAssignment(assignmentId : string) : Promise<IAssignment>;
     createAssignment(data : Object) : Promise<IAssignment>;
     updateAssignment(assignment : IAssignment, data : Object) : Promise<IAssignment>;
-    deleteAssignment(assignmentId : String) : Promise<void>;
+    deleteAssignment(assignmentId : string) : Promise<void>;
 }
 
 export class AssignmentManager implements IAssignmentManager {
@@ -23,7 +23,7 @@ export class AssignmentManager implements IAssignmentManager {
     async getAssignments(): Promise<IAssignment[]> {
         throw new Error("Method not implemented")
     }
-    getAssignment(assignmentId : String) : Promise<IAssignment> {
+    getAssignment(assignmentId : string) : Promise<IAssignment> {
         throw new Error("Method not implemented")
     }
     async createAssignment(data : Object): Promise<IAssignment> {

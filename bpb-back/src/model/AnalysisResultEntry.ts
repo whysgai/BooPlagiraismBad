@@ -4,14 +4,14 @@ import mongoose, { Document, Schema } from "mongoose";
  * Represents an Analysis database model object
  */
 export interface IAnalysisResultEntryModel extends Document {
-    _id: String,
-    submissionId : String, 
-    filePath : String, 
-    contextType : String, 
+    _id: string,
+    submissionId : string, 
+    filePath : string, 
+    contextType : string, 
     lineNumberStart : Number, 
     lineNumberEnd : Number,
-    hashValue : String, 
-    text : String
+    hashValue : string, 
+    text : string
 }
 
 
@@ -48,10 +48,10 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
 
 
     constructor(
-        private id : String,
-        private submissionId : String, 
-        private filePath : String, 
-        private contextType : String, 
+        private id : string,
+        private submissionId : string, 
+        private filePath : string, 
+        private contextType : string, 
         private lineNumberStart : number,
         private charPosStart : number, 
         private lineNumberEnd : number,
@@ -97,7 +97,7 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     getContextType(): string {
         return this.contextType;
     }
-    getHashValue(): String {
+    getHashValue(): string {
         return this.hashValue;
     }
     asJSON(): Object {

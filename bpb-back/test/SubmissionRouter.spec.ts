@@ -183,9 +183,8 @@ describe('SubmissionRouter.ts',()=> {
         const sampleFileContent = await readFileContent(sampleFilePath);
         const sampleFileName = 'testFile.ts';
 
-        var mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);}
-        );
-        var mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();})    
+        var mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        var mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
 
         await chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
             .attach("submissionFile", sampleFileContent, sampleFileName)
@@ -360,7 +359,7 @@ describe('SubmissionRouter.ts',()=> {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
         const nonexistentId = "BADID"
-        chai.spy.on(testSubmissionManager, 'compareSubmissions', (submissionId: String) => {
+        chai.spy.on(testSubmissionManager, 'compareSubmissions', (submissionId: string) => {
             if (submissionId === nonexistentId) {
                 return Promise.reject(new Error("Submission ID not found: " + nonexistentId))
             } else {
