@@ -32,6 +32,8 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     getSubmissionID(): string {
         return this.submissionId;
     }
+
+
     getLineNumberStart(): number {
         return this.lineNumberStart;
     }
@@ -53,13 +55,16 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     getContextType(): string {
         return this.contextType;
     }
-
-    asJSON(): Object {
-       return JSON.parse(JSON.stringify(this)); 
-    }
-
-    getHashValue(): string {
+    getHashValue(): String {
         return this.hashValue;
     }
+    asJSON(): Object {
+        // throw new Error("Method not implemented.");
+        return {filePath:this.filePath,
+            contextType:this.contextType,
+            lineNumberStart:this.lineNumberStart,
+            lineNumberEnd:this.lineNumberEnd,
+            hashValue:this.hashValue
+         }
+    }
 }
-
