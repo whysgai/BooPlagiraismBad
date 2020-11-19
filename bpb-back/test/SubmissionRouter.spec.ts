@@ -10,14 +10,14 @@ import chaiSpies = require("chai-spies");
 import superagent from "superagent";
 import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
-import { AssignmentDAO } from "../src/model/AssignmentDAO";
-import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { Submission, ISubmission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { SubmissionFactory } from "../src/model/SubmissionFactory";
 import { AnalysisResult } from "../src/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
-
+import { AssignmentManager } from "../src/manager/AssignmentManager";
+import { AssignmentDAO } from "../src/model/AssignmentDAO";
+import { AnalysisResultEntryCollectorVisitor } from "../src/model/AnalysisResultEntryCollectorVisitor";
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -43,31 +43,34 @@ describe('SubmissionRouter.ts',()=> {
     beforeEach(() => {
         app = express();
         app.use(express.json());
-        app.use(bodyParser.json());      
+        app.use(bodyParser.json());     
+        
+
         
         testSubmissionDAO = new SubmissionDAO();
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentManager = new AssignmentManager(testAssignmentDAO);
-        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
-
+        
         testAssignment = new Assignment("ID998","Test Assignment")
         testSubmission = new Submission(testAssignment.getID(),"Test");
-        //testSubmission = SubmissionFactory.buildSubmission(testAssignment.getID(),"Test");
         testAssignment.addSubmission(testSubmission.getId());
         testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,3,7,9,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
         testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",2,4,6,8,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
-        // testSubmission.addAnalysisResultEntry(testAre1);
-        testSubmission.addFile("test",testAre1.getFilePath());
+        testSubmission.addAnalysisResultEntry(testAre1);
+        testSubmission.addAnalysisResultEntry(testAre2);
         
-        testServer = app.listen(8081);       
+        testServer = app.listen(8081);      
     });
 
     it("Should be able to interpret a request to POST /submissions to create a submission", () => {
-        console.log("First test");
+        
+        //testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
         const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
         
+        var mockARECollector = chai.spy.on(AnalysisResultEntryCollectorVisitor, 'getAnalysisResultEntries', () => { return [testAre1, testAre2]})
+
         var mockGetAssignment = chai.spy.on(
             testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);}
         )
