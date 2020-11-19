@@ -10,14 +10,9 @@ import { ISubmission } from '../model/Submission'
  * Router for requests related to Submissions
  */
 class SubmissionRouter extends AbstractRouter implements IRouter {
-  
-  private assignmentManager : IAssignmentManager;
-  private submissionManager : ISubmissionManager;
-  
+    
   constructor(app : any,route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager) {
-    super(app,route);
-    this.submissionManager = submissionManager;
-    this.assignmentManager = assignmentManager;
+    super(app,route, submissionManager, assignmentManager);
     this.setupRoutes();
   }
 

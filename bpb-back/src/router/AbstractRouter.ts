@@ -1,6 +1,6 @@
 import express, { Router } from "express"
-import { IAssignmentManager } from "../model/AssignmentManager";
-import { ISubmissionManager } from "../model/SubmissionManager";
+import { IAssignmentManager } from "../manager/AssignmentManager";
+import { ISubmissionManager } from "../manager/SubmissionManager";
 
 /**
  * Used to consolidate use of Express (all routers will register via express)

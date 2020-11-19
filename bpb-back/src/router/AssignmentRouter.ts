@@ -83,7 +83,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.send({"response":"An assignment id was not provided"});
     } else {
       this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-        this.assignmentManager.updateAssignment(assignment.getID(),req.body)
+        this.assignmentManager.updateAssignment(assignment,req.body)
         .then(assignment => {
           res.send(assignment.asJSON());
         }).catch((err) => {

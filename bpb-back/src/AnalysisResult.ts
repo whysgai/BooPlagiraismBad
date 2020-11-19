@@ -1,4 +1,4 @@
-import { AnalysisResultEntry } from "./AnalysisResultEntry";
+import { AnalysisResultEntry } from "./model/AnalysisResultEntry";
 
 export interface IAnalysisResult {
     asJSON() : Object

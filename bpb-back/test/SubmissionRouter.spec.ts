@@ -17,11 +17,15 @@ import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { Submission } from "../src/model/Submission";
 =======
 import { Submission, ISubmission } from "../src/model/Submission";
+<<<<<<< HEAD
 >>>>>>> ef7a83a (BPB-30 fix: Resolve merge conflict)
 import { AnalysisResultEntry } from "../src/AnalysisResultEntry";
+=======
+import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
+>>>>>>> 988495b (BPB-30 fix: Mismatch between ARE constructor ID arg and implementation expectations)
 import { AnalysisResult } from "../src/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
-import { AssignmentManager } from "../src/model/AssignmentManager";
+import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { AssignmentDAO } from "../src/model/AssignmentDAO";
 
 describe('SubmissionRouter.ts',()=> {
@@ -58,8 +62,8 @@ describe('SubmissionRouter.ts',()=> {
         testAssignment = new Assignment("ID998","Test Assignment")
         testSubmission = new Submission(testAssignment.getID(),"Test");
         testAssignment.addSubmission(testSubmission.getId());
-        testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,2,"245rr1","void test() { }");
-        testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",1,2,"245rr1","void test() { }");
+        testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,3,7,9,"245rr1","void test() { }");
+        testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",2,4,6,8,"245rr1","void test() { }");
         testSubmission.addAnalysisResultEntry(testAre1);
         testSubmission.addFile("test",testAre1.getFilePath());
     });

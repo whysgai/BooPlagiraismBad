@@ -6,13 +6,13 @@ describe("AnalysisResultEntry",() => {
     var testARE : AnalysisResultEntry;
 
     before(() => {
-        testARE = new AnalysisResultEntry("subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
+        testARE = new AnalysisResultEntry("are1","subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
         1, 3, 2, 4, "245rr1", "void test() { }" );
     });
     
     describe("constructor", () => {
         it("Should throw an Error when lineNumberEnd < lineNumberStart", () => {
-            let badConstructor = function(){new AnalysisResultEntry("subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
+            let badConstructor = function(){new AnalysisResultEntry("are1","subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
             5, 1, 2, 3, "hash", "void test() { }")};
             expect(badConstructor).to.throw(Error, 'lineNumberStart can not be > lineNumberEnd')
         });
