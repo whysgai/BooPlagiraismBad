@@ -2,23 +2,23 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
-import {Submission} from "../src/model/Submission";
+import {ISubmission, Submission} from "../src/model/Submission";
 
 var mongoose = require('mongoose');
 
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
 
-describe.skip("SubmissionDAO.ts",() => {
+describe("SubmissionDAO.ts",() => {
 
     var testSubmissionDAO : ISubmissionDAO;
-    var sampleAssignmentId : string;
+    var testSubmission : ISubmission;
 
     before((done) => {
         chai.use(chaiAsPromised);
 
         //TODO: Replace this (and beforeEach) with database mock (or something more elegant)
         //This is really fragile!
-        mongoose.connect("mongodb://127.0.0.1:27017/bpb", {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+        mongoose.connect("mongodb://127.0.0.1:27017/bpbtest", {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
             done();
         });
     });
@@ -26,27 +26,20 @@ describe.skip("SubmissionDAO.ts",() => {
     beforeEach((done)=>{
         mongoose.connection.collections.submissions.drop(() => {
             testSubmissionDAO = new SubmissionDAO();
+            testSubmission = new Submission("test","test");
+
             done();
-        })
+        });
     });
 
     describe("createSubmission()",() => {
 
-        it("Should create an submission database object if inputs are valid (ID doesn't exist)",()=> {
+        it("Should create an submission database object if inputs are valid",()=> {
            
-            var submission = new Submission("testid","testid");
-            return testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId()).then((res) => {
-                Submission.getStaticModel().findOne({_id:"testid"}).then((res) => {
-                    expect(res).to.not.be.undefined;
+            return expect(testSubmissionDAO.createSubmission(testSubmission.getName(),testSubmission.getAssignmentId())).to.eventually.be.fulfilled.with("Submission").then((res) => {
+                Submission.getStaticModel().findOne({"name":"testname"}).then((res) => {
+                    expect(res).to.be("Submission").with.property("name").which.equals(testSubmission.getName());
                 });
-            });
-        });
-    
-        it("Should throw an appropriate error if inputs are invalid (ID exists)",() => {
-            
-            var submission = new Submission("testid","testid");
-            return expect(testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId())).to.eventually.be.fulfilled.then((res) => {
-                expect(testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId())).to.eventually.be.rejectedWith("Error: A submission with the given ID exists in the database already.");
             });
         });
     });
@@ -55,11 +48,9 @@ describe.skip("SubmissionDAO.ts",() => {
 
         it("Should read an submission database object if {id} is valid",() => {
 
-            var submission = new Submission("testid","testid");
-            return testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId()).then((res) => {
+            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
                 expect(testSubmissionDAO.readSubmission(submission.getId())).to.eventually.be.fulfilled.then((res) => {
-                    expect(res).to.not.be.undefined;
-                    expect(res.getId).to.equal("testid");
+                    expect(res).to.be("Submission").with.property("name").which.equals(testSubmission.getName());
                 });
             });
         });
