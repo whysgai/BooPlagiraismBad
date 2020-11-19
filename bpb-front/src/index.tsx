@@ -31,7 +31,13 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <NavbarComponent />
-      <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route>
+      <Route exact path="/"><AssignmentListComponent assignments={
+        [
+          {_id:"01", name:"Mikayla", submissionIds:[]},
+          {_id:"02", name:"Ture", submissionIds:[]}
+        ]
+      }/></Route>
+      {/* <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route> */}
       <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
       <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/>
       <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
