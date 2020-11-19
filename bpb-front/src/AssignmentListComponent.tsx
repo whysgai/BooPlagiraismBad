@@ -11,7 +11,7 @@ function AssignmentListComponent({assignments}: {assignments: Assignment[]}) {
       <ul>
         {
           assignments.map((assignment,index) => 
-              <li key={index}><AssignmentListCard assignment={assignment} createAssignment={null}/></li>
+              <li key={index}><AssignmentListCard assignment={assignment} createAssignment={assignment}/></li>
            )
         }
       </ul>

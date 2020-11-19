@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const stateToPropertyMapper=(state) => {
+export const stateToPropertyMapper=(state) => {
     return {
-        tempAssignment: state.SubmissionReducer.tempAssignment
+        tempAssignment: state.SubmissionReducer.tempAssignment,
+        submissionComparison: state.ComparisonReducer.state
     }
 }
 
-const dispatchToPropertyMapper=(dispatch) => {
+export const dispatchToPropertyMapper=(dispatch) => {
     return {
-        
+        dispatch: dispatch
     }
 }
