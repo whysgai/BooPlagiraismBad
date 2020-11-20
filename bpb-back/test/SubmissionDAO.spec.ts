@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
+import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
 var mongoose = require('mongoose');
@@ -98,9 +99,47 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
-    describe.skip("updateSubmission()",() => {
+    describe("updateSubmission()",() => {
     
-        it("Should update an submission database object if {id} is valid"); //TODO
+        it("Should update an submission database object if {id} is valid",() => {
+            
+            //New values to assign after creation
+            var updatedName = "Newer Name";
+            var updatedAssignmentId = "Newer Assignment Id";
+            var updatedEntries = [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")];
+            var updatedFiles = ["some_new_file"];
+
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
+                
+                expect(createdSubmission.getId()).to.not.be.undefined;
+                expect(createdSubmission.getName()).to.equal(testSubmission.getName());
+                expect(createdSubmission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
+                expect(createdSubmission.getFiles()).to.be.empty;
+                expect(createdSubmission.getEntries()).to.be.empty
+                
+                //TODO: Perform updates to object here
+
+                SubmissionDAO.updateSubmission(createdSubmission).then((updatedSubmission) => {
+                    
+                    //Expect updates to be returned on pass-through
+                    expect(updatedSubmission.getId()).to.deep.equal(createdSubmission.getId())
+                    expect(updatedSubmission.getName()).to.deep.equal(updatedName);
+                    expect(updatedSubmission.getAssignmentId()).to.deep.equal(updatedAssignmentId)
+                    expect(updatedSubmission.getFiles()).to.deep.equal(updatedFiles);
+                    expect(updatedSubmission.getEntries()).to.deep.equal(updatedEntries);
+
+                    SubmissionDAO.readSubmission(createdSubmission.getId()).then((readUpdatedSubmission) => {
+                        
+                        //Expect updates to be returned on read
+                        expect(readUpdatedSubmission.getId()).to.deep.equal(createdSubmission.getId())
+                        expect(readUpdatedSubmission.getName()).to.deep.equal(updatedName);
+                        expect(readUpdatedSubmission.getAssignmentId()).to.deep.equal(updatedAssignmentId)
+                        expect(readUpdatedSubmission.getFiles()).to.deep.equal(updatedFiles);
+                        expect(readUpdatedSubmission.getEntries()).to.deep.equal(updatedEntries);
+                    })
+                });
+            });
+        });
         
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
             return expect(SubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Error: Cannot update: A submission with the given ID does not exist in the database");
