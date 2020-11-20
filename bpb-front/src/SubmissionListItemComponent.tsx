@@ -22,10 +22,11 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
 
   render() {
     return (
-      <div className='ListItem'>
-        <div className="form-check">
+      <div className='submission-list-item'>
+        <div>
           <input type="checkbox" className="form-check-input" id="exampleCheck1" 
-          onClick={() => dispatchToPropertyMapper(addSubmissionComparison(this.props.submission))}/> 
+          onClick={() => {dispatchToPropertyMapper(addSubmissionComparison(this.props.submission)); 
+          console.log('component disabled check')}}/> 
         </div>
         <span>
           {this.props.submission.name}
