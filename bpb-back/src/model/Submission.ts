@@ -24,7 +24,6 @@ export interface ISubmissionModel extends Document {
  */
 export interface ISubmission {
     getId() : string;
-    setId(newId : string) : void;
     getAssignmentId() : string;
     setAssignmentId(newId : string) : void;
     getName() : string;
@@ -35,13 +34,47 @@ export interface ISubmission {
     hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
     compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult;
-    getModelInstance() : Document;
     asJSON() : Object;
 }
 
  export class Submission implements ISubmission {
     
-    //Note: removed _id from schema in order to generate it on creation (should still exist in the model)
+    static builder = class SubmissionBuilder {
+    
+        private id : string;
+        private assignment_id : string;
+        private name : string;
+    
+        constructor() {
+            this.name = "Name Not Defined";
+            this.assignment_id = "id_not_defined"
+        }
+    
+        setId(id : string) : void {
+            this.id = id;
+        }
+    
+        setAssignmentId(id : string) : void {
+            this.assignment_id = id;        
+        }
+    
+        setName(name : string) : void {
+            this.name = name;
+        }
+    
+        build() : ISubmission {
+            var submission = new Submission(this.name);
+            submission.setAssignmentId(this.assignment_id);
+            
+            var submissionModel = Submission.getStaticModel();
+            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":[],"entries":[]});
+            submission.setId(modelInstance.id);
+            submission.setModelInstance(modelInstance);
+            
+            return submission;
+         }
+    }
+
     private static submissionSchema = new Schema({
         assignment_id: String,
         name: String,
@@ -56,11 +89,10 @@ export interface ISubmission {
     private name : string;
     private files : string[];
     private entries : IAnalysisResultEntry[];
+    private modelInstance : ISubmissionModel;
 
     constructor(name : string){
-        this.id = undefined; //Starts undefined, set by DB
-        this.assignment_id = undefined; //Starts undefined
-        this.name = name
+        this.name = name;
         this.entries = [];
         this.files = [];
     }
@@ -73,13 +105,21 @@ export interface ISubmission {
         return this.id;
     }
 
-    setId(newId : string) : void {
-       this.id = newId; //TODO: Make less public 
-    }
-     
     getAssignmentId(): string {
          return this.assignment_id;
      }
+
+    protected setId(newId : string) : void {
+        this.id = newId;
+    }
+
+    protected setModelInstance(modelInstance : ISubmissionModel) {
+        this.modelInstance = modelInstance;
+    }
+
+    getModelInstance() : ISubmissionModel {
+        return this.modelInstance;
+    }
 
     setAssignmentId(newId : string): void {
          this.assignment_id = newId;
@@ -135,9 +175,6 @@ export interface ISubmission {
     }
     asJSON() : Object {
         return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
-    }
-    getModelInstance() : Document {
-        return new Submission.submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
     }
 
     hasAnalysisResultEntries() : boolean {
