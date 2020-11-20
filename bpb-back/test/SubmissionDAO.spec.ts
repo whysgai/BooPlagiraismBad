@@ -37,6 +37,11 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
+    after((done) => {
+        mongoose.connection.close();
+        done();
+    });
+
     describe("createSubmission()",() => {
 
         it("Should create an submission database object if inputs are valid",()=> {
