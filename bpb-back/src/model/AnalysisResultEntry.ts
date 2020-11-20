@@ -17,6 +17,7 @@ export interface IAnalysisResultEntryModel extends Document {
 
 export interface IAnalysisResultEntry {
     asJSON() : Object 
+    getSubmissionID() : string;
     getHashValue(): string
     getFilePath(): string
     getContextType(): string
