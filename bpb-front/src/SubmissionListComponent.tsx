@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { stateToPropertyMapper } from './containers/SubmissionListContainer';
 import SubmissionReducer from './reducers/SubmissionReducer';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface PropsType {
   submissions: Submission[]
@@ -24,23 +25,28 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
   setDisabled() {
     if (stateToPropertyMapper(SubmissionReducer).submissionComparison.length === 2) {
       this.setState({
-        isDisabled: true
+        isDisabled: false
       })
     }
   }
 
   render() {
     return (
-      <div onClick={() => this.setDisabled()}>
+      <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>Assignment</h3>
-        <Link to='./CreateSubmissionComponent'>Upload Submission</Link>
+        <Link to='/CreateSubmissionComponent'>Upload Submission</Link>
         <ul>
           {this.props.submissions.map((submission, index) => 
             <li key={index}><SubmissionListItemComponent submission={submission} createSubmission={null}/></li>
           )}
         </ul>
-        <button disabled={this.props.isDisabled} onClick={() => 
-          this.setState({isDisabled: true })}>Compare Submissions</button>
+        { 
+          this.props.isDisabled
+          ? <Link to="/ComparisonComponent" className="enabledCompareButton">Compare Submissions 
+          {stateToPropertyMapper(SubmissionReducer).submissionComparison.length}/2</Link>
+          : <Link to="/ComparisonComponent" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
+          Compare Submissions {stateToPropertyMapper(SubmissionReducer).submissionComparison.length}/2</Link>
+        }
       </div>
     );
   }
