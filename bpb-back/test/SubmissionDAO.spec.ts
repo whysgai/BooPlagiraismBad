@@ -53,21 +53,21 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
-    describe.skip("readSubmission()",() => {
+    describe("readSubmission()",() => {
 
         it("Should read an submission database object if {id} is valid",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
                 SubmissionDAO.readSubmission(submission.getId()).then((readSubmission) => {
-                    expect(readSubmission.getName()).to.equal(testSubmission.getName());
-                    expect(readSubmission.getId()).to.equal(testSubmission.getId());
+                    expect(readSubmission.getName()).to.equal(submission.getName());
+                    expect(readSubmission.getId()).to.equal(submission.getId());
                 });
             });
         });
     
-        it("Should throw an appropriate error if {id} specified for update is invalid",() => {
+        it("Should throw an appropriate error if {id} of submission to be read is invalid",() => {
             var nonPersistedSubmission = new Submission.builder().build(); 
-            return expect(SubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Error: Cannot find: A submission with the given ID does not exist in the database");
+            return expect(SubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Cannot find: No submission with the given id exists in the database");
         });
     });
 

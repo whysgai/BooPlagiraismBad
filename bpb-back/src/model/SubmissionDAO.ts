@@ -53,9 +53,18 @@ export const SubmissionDAO : ISubmissionDAO = class {
     }
 
     static async readSubmission(submissionId: string): Promise<ISubmission> {
-        //Return submission and all of its AnalysisResultEntries
+        //Return a single submission with the given submissionId
         return new Promise((resolve,reject) => {
-            reject(new Error("Not implemented"));
+            Submission.getStaticModel().findOne({_id : submissionId}).then((model) => {
+
+                if(model == undefined) {
+                    reject(new Error("Cannot find: No submission with the given id exists in the database"));
+                } else {
+                    var builder = new Submission.builder();
+                    var submission = builder.buildFromExisting(model);
+                    resolve(submission);
+                }
+            })
         });
     }
 
