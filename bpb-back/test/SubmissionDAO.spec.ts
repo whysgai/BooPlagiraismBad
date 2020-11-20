@@ -119,6 +119,11 @@ describe("SubmissionDAO.ts",() => {
                 
                 //TODO: Perform updates to object here
 
+                createdSubmission.setName(updatedName);
+                createdSubmission.setAssignmentId(updatedAssignmentId);
+                createdSubmission.setFiles(updatedFiles)
+                createdSubmission.setEntries(updatedEntries);
+
                 SubmissionDAO.updateSubmission(createdSubmission).then((updatedSubmission) => {
                     
                     //Expect updates to be returned on pass-through
@@ -136,7 +141,7 @@ describe("SubmissionDAO.ts",() => {
                         expect(readUpdatedSubmission.getAssignmentId()).to.deep.equal(updatedAssignmentId)
                         expect(readUpdatedSubmission.getFiles()).to.deep.equal(updatedFiles);
                         expect(readUpdatedSubmission.getEntries()).to.deep.equal(updatedEntries);
-                    })
+                    });
                 });
             });
         });

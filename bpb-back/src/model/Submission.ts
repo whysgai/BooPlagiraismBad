@@ -30,8 +30,10 @@ export interface ISubmission {
     getName() : string;
     setName(newName : string) : void;
     getEntries() : IAnalysisResultEntry[];
+    setEntries(entries: IAnalysisResultEntry[]) :void;
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
+    setFiles(files : string[]) : void;
     addFile(content : string, filePath : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     hasAnalysisResultEntries() : boolean;
@@ -167,11 +169,11 @@ export interface ISubmission {
         this.modelInstance = modelInstance;
     }
 
-    protected setFiles(files : string[]) : void {
+    setFiles(files : string[]) : void {
         this.files = files;
     }
 
-    protected setEntries(entries : IAnalysisResultEntry[]) : void {
+    setEntries(entries : IAnalysisResultEntry[]) : void {
         this.entries = entries;
     }
 
