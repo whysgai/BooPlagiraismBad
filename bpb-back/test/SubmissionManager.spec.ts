@@ -23,9 +23,11 @@ describe("SubmissionManager.ts",() => {
     before(()=>{
         chai.use(chaiSpies);
         chai.use(chaiAsPromised);
+        testSubmissionName = "testname";
+        testSubmissionAssignmentId = "test_aid"; 
     });
 
-    beforeEach(()=>{
+    beforeEach((done)=>{
         chai.spy.restore(SubmissionDAO,'createSubmission');
         chai.spy.restore(SubmissionDAO,'readSubmission');
         chai.spy.restore(SubmissionDAO,'readSubmissions');
@@ -33,12 +35,14 @@ describe("SubmissionManager.ts",() => {
         chai.spy.restore(SubmissionDAO,'deleteSubmission');
 
         testSubmissionManager = new SubmissionManager();
-        testSubmissionName = "testname";
-        testSubmissionAssignmentId = "test_aid"; 
+        
         var testSubmissionBuilder = new Submission.builder();
         testSubmissionBuilder.setName(testSubmissionName);
         testSubmissionBuilder.setAssignmentId(testSubmissionAssignmentId);
+        
         testSubmission = testSubmissionBuilder.build();
+
+        done();
     });
 
     describe("getSubmission()",() => {
