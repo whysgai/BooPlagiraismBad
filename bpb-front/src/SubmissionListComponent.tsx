@@ -1,7 +1,10 @@
 import React from 'react';
 import SubmissionListItemComponent from './SubmissionListItemComponent'
 import Submission from './types/Submission'
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { stateToPropertyMapper } from './containers/SubmissionListContainer';
+import SubmissionReducer from './reducers/SubmissionReducer';
 
 interface PropsType {
   submissions: Submission[]
@@ -18,10 +21,17 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
     };
   }
 
+  setDisabled() {
+    if (stateToPropertyMapper(SubmissionReducer).submissionComparison.length === 2) {
+      this.setState({
+        isDisabled: true
+      })
+    }
+  }
 
   render() {
     return (
-      <div>
+      <div onClick={() => this.setDisabled()}>
         <h3>Assignment</h3>
         <Link to='./CreateSubmissionComponent'>Upload Submission</Link>
         <ul>
