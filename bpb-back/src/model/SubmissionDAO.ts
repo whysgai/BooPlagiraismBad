@@ -5,7 +5,7 @@ export interface ISubmissionDAO {
     readSubmissions(assignmentId : string) : Promise<ISubmission[]>;
     readSubmission(submissionId : string) : Promise<ISubmission>;
     updateSubmission(submission : ISubmission) : Promise<ISubmission>;
-    deleteSubmission(submissionId : string) : Promise<ISubmission>;
+    deleteSubmission(submissionId : string) : Promise<void>;
 }
 /**
  *  Data Access static class for manipulating Submission database objects.
@@ -101,10 +101,26 @@ export const SubmissionDAO : ISubmissionDAO = class {
         });
     }
     
-    static async deleteSubmission(submissionId : string): Promise<ISubmission> {
+    static async deleteSubmission(submissionId : string): Promise<void> {
         //Delete the specified submission from the db
         return new Promise((resolve,reject) => {
-            reject(new Error("Not implemented"));
+            return Submission.getStaticModel().findOne({_id : submissionId}).then((model) => {                
+                if(model == undefined) {
+                    reject(new Error("Cannot delete: No submission with the given id exists in the database"));
+                } else {
+                    return Submission.getStaticModel().findOneAndDelete(
+                        {
+                            _id : submissionId 
+                        }
+                    ).then((res) => {
+                        resolve();
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                }
+            }).catch((err) => {
+                reject(err);
+            });            
         });
     }
 }
