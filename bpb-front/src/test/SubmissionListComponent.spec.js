@@ -18,43 +18,43 @@ describe("SubmissionListComponent tests:", () => {
 
     })
 
-    //TODO
     it('Should display no submissions if none exist for the specified assignment', () =>{        
 
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);  
+            render(<StaticRouter location='/' context={{}}><SubmissionListComponent submissions={[]}/></StaticRouter>, container);  
         }); 
 
-        expect(container.getElementsByClassName('assignment-list').length).toBe(1);
-        expect(container.getElementsByClassName('assignment-list-card').length).toBe(0);
+        expect(container.getElementsByClassName('submission-list').length).toBe(1);
+        expect(container.getElementsByClassName('assignment-list-item').length).toBe(0);
     });
 
-    //TODO
     it('Should display all existing submissions for the specified assignment', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[1]}/></StaticRouter>, container);  
+            render(<StaticRouter location='/' context={{}}><SubmissionListComponent submissions={[1,2,3,4]}/></StaticRouter>, container);  
         });
 
-        expect(container.getElementsByClassName('assignment-list-card').length).toBe(1);
+        expect(container.getElementsByClassName('submission-list').length).toBe(1);
+        expect(container.getElementsByClassName('submission-list-item').length).toBe(4);
     });
 
-    //TODO
-    it('Should display an error page  if the specified assignment doesn’t exist', () => {
+    //TDOO: does this test make sense??
+    it.skip('Should display an error page  if the specified assignment doesn’t exist', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[1,2,3]}/></StaticRouter>, container);  
+            render(<StaticRouter location='/' context={{}}><SubmissionListComponent submissions={[1]}/></StaticRouter>, container);  
         });
 
-        expect(container.getElementsByClassName('assignment-list-card').length).toBe(3);
+        expect(container.getElementsByClassName('submission-list').length).toBe(1);
+        expect(container.getElementsByClassName('submission-list-item').length).toBe(1);
     });
 
-    //TODO
-    it('Should display a single submission if only one exists for the specified assignment', () => {
+    //TODO: does this test make sense??
+    it.skip('Should display a single submission if only one exists for the specified assignment', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
@@ -66,47 +66,46 @@ describe("SubmissionListComponent tests:", () => {
         expect(document.querySelector("a").getAttribute("href")).toBe("/")
     });
 
-    //TODO
     it('Should display all submissions if one or more submissions exist for the specified assignment', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);  
+            render(<StaticRouter location='/' context={{}}><SubmissionListComponent submissions={[1,2,3,4]}/></StaticRouter>, container);  
         });
         
-        //TODO
-        expect(document.querySelector("a").getAttribute("href")).toBe("/")
+        expect(container.getElementsByClassName('submission-list').length).toBe(1);
+        expect(container.getElementsByClassName('submission-list-item').length).toBe(4);
     });
 
-    //TODO
     it('Should display a link that directs the user to the submission upload page', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);  
+            render(<StaticRouter location='/' context={{}}><SubmissionListComponent submissions={[1,2,3,4]}/></StaticRouter>, container);  
         });
         
-        //TODO
-        expect(document.querySelector("a").getAttribute("href")).toBe("/")
+        expect(container.getElementsByClassName('submission-list').length).toBe(1);
+        expect(container.getElementsByClassName('submission-list-item').length).toBe(4);
+        expect(document.querySelector("a").getAttribute("href")).toBe("/CreateSubmissionComponent")
     });
 
-    //TODO
     it('Should display SubmissionCompareButton', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);  
+            render(<StaticRouter location='/' context={{}}><SubmissionListComponent submissions={[1,2,3,4]}/></StaticRouter>, container);  
         });
         
-        //TODO
-        expect(document.querySelector("a").getAttribute("href")).toBe("/")
+        expect(container.getElementsByClassName('submission-list').length).toBe(1);
+        expect(container.getElementsByClassName('submission-list-item').length).toBe(4);
+        expect(document.querySelector('.disabledCompareButton').getAttribute('href')).toBe('/ComparisonComponent')
     });
 
     //TODO
-    it('Should not be clickable and should show 0 when no submissions are selected', () => {
+    it.skip('Should not be clickable and should show 0 when no submissions are selected', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
@@ -119,7 +118,7 @@ describe("SubmissionListComponent tests:", () => {
     });
 
     //TODO
-    it('Should not be clickable and should show 1 when one submission is selected', () => {
+    it.skip('Should not be clickable and should show 1 when one submission is selected', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
@@ -132,7 +131,7 @@ describe("SubmissionListComponent tests:", () => {
     });
 
     //TODO
-    it('Should be clickable and should show 2 when two submissions are selected', () => {
+    it.skip('Should be clickable and should show 2 when two submissions are selected', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
@@ -145,7 +144,7 @@ describe("SubmissionListComponent tests:", () => {
     });
 
     //TODO
-    it('Should take user to ComparisonComponent when clicked', () => {
+    it.skip('Should take user to ComparisonComponent when clicked', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
@@ -158,7 +157,7 @@ describe("SubmissionListComponent tests:", () => {
     });
 
     //TODO
-    it('Should not be clickable and should show 0 when no submissions are selected', () => {
+    it.skip('Should not be clickable and should show 0 when no submissions are selected', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
 
