@@ -38,8 +38,17 @@ export interface ISubmission {
     asJSON() : Object;
 }
 
+/**
+ * Submission
+ * 
+ * Represents a single submission of an assignment.
+ * Contains 0 ... n files, each with 0 ... n entries
+ */
  export class Submission implements ISubmission {
     
+    /**
+     * Builder for Submissions
+     */
     static builder = class SubmissionBuilder {
     
         private assignment_id : string;
@@ -69,6 +78,9 @@ export interface ISubmission {
          }
     }
 
+    /**
+     * Mongoose Schema for Submissions
+     */
     private static submissionSchema = new Schema({
         assignment_id: String,
         name: String,
@@ -76,6 +88,9 @@ export interface ISubmission {
         entries: [Object]
       });
 
+    /**
+     * Static Model for Submissions
+     */
     private static submissionModel = mongoose.model<ISubmissionModel>('Submission',Submission.submissionSchema);
     
     private id : string;

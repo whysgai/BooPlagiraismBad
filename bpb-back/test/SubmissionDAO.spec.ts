@@ -63,7 +63,7 @@ describe("SubmissionDAO.ts",() => {
     
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
 
-            var nonPersistedSubmission = SubmissionFactory.buildSubmission("test","test");
+            var nonPersistedSubmission = new Submission.builder().build(); 
             nonPersistedSubmission.setId("testide"); 
             return expect(testSubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Error: Cannot find: A submission with the given ID does not exist in the database");
         });
@@ -80,7 +80,7 @@ describe("SubmissionDAO.ts",() => {
 
         it("should return all submissions that exist in the database", () => {
             var assignmentId = "2";
-            var submission2 = SubmissionFactory.buildSubmission("test2","test2"); 
+            var submission2 = new Submission.builder().build(); 
 
             return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
                 return testSubmissionDAO.createSubmission(submission2.getName(), submission2.getAssignmentId()).then((res2) => {
