@@ -71,7 +71,23 @@ export const SubmissionDAO : ISubmissionDAO = class {
     static async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
         //Update submission model and store all changed properties in the database
         return new Promise((resolve,reject) => {
-            reject(new Error("Not implemented"));
+
+                Submission.getStaticModel().updateOne(
+                    {
+                        _id : submission.getId() 
+                    },
+                    {
+                        _id : submission.getId(), 
+                        name: submission.getName(),
+                        assignment_id: submission.getAssignmentId(),
+                        files: submission.getFiles(),
+                        entries: submission.getEntries()
+                    }
+                ).then(() => {
+                    resolve(submission);
+                }).catch((err) => {
+                    reject(err);
+                });
         });
     }
     
