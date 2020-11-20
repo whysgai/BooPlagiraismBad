@@ -36,21 +36,29 @@ export const SubmissionDAO : ISubmissionDAO = class {
     
     static async readSubmissions(assignmentId : string): Promise<ISubmission[]> {
         //Return all submissions of assignment
-        return undefined;
+        return new Promise((resolve,reject) => {
+            reject(new Error("Not implemented"));
+        });
     }
 
     static async readSubmission(submissionId: string): Promise<ISubmission> {
         //Return submission and all of its AnalysisResultEntries
-        return undefined;
+        return new Promise((resolve,reject) => {
+            reject(new Error("Not implemented"));
+        });
     }
 
     static async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
         //Add any new not-persisted AnalysisResultEntries into the database
-        return undefined;
-        
+        return new Promise((resolve,reject) => {
+            reject(new Error("Not implemented"));
+        });
     }
+    
     static async deleteSubmission(submissionId : string): Promise<ISubmission> {
         //Delete the specified submission from the db
-        return undefined;
+        return new Promise((resolve,reject) => {
+            reject(new Error("Not implemented"));
+        });
     }
 }
