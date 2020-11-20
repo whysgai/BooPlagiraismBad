@@ -17,10 +17,23 @@ export class SubmissionDAO implements ISubmissionDAO {
     }
     
     async createSubmission(name : string, assignmentId : string): Promise<ISubmission> {
-        //Create the submission in DB
-        //var sub = new submissionModel({_id : submission.getId()});
-        //return sub.save().then((res) => { return; });
-        return undefined;
+       
+        return new Promise((resolve,reject) => {
+            
+            var submissionBuilder = new Submission.builder();
+            submissionBuilder.setName(name);
+            submissionBuilder.setAssignmentId(assignmentId);
+            
+            var submission = submissionBuilder.build();
+
+            var submissionModel = submission.getModelInstance();
+
+            submissionModel.save().then(() => {
+                resolve(submission);
+            }).catch((err) => {
+                reject(err);
+            });
+       });
     }
     
     async readSubmissions(assignmentId : string): Promise<ISubmission[]> {
