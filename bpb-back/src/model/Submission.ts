@@ -24,6 +24,7 @@ export interface ISubmissionModel extends Document {
  */
 export interface ISubmission {
     getId() : string;
+    setId(newId : string) : void;
     getAssignmentId() : string;
     setAssignmentId(newId : string) : void;
     getName() : string;
@@ -56,8 +57,9 @@ export interface ISubmission {
     private files : string[];
     private entries : IAnalysisResultEntry[];
 
-    constructor(id: string, name : string){
-        this.id = id;
+    constructor(name : string){
+        this.id = undefined; //Starts undefined, set by DB
+        this.assignment_id = undefined; //Starts undefined
         this.name = name
         this.entries = [];
         this.files = [];
@@ -70,29 +72,32 @@ export interface ISubmission {
     getId() : string {
         return this.id;
     }
+
+    setId(newId : string) : void {
+       this.id = newId; //TODO: Make less public 
+    }
      
     getAssignmentId(): string {
          return this.assignment_id;
      }
 
-     setAssignmentId(newId : string): void {
+    setAssignmentId(newId : string): void {
          this.assignment_id = newId;
      }
 
-     getName(): string {
+    getName(): string {
          return this.name;
      }
 
-     setName(newName : string): void {
+    setName(newName : string): void {
          this.name = newName;
      }
 
-
-     getFiles() : string[] {
+    getFiles() : string[] {
          return this.files;
      }
 
-     async addFile(content : string, filePath : string) : Promise<void> {
+    async addFile(content : string, filePath : string) : Promise<void> {
      
         return new Promise((resolve,reject) => {
             if(this.files.includes(filePath)) {
@@ -112,14 +117,14 @@ export interface ISubmission {
 
              resolve();
         });
-     }
+    }
 
-     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
+    addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
          this.entries.push(analysisResultEntry);
          if(!this.files.includes(analysisResultEntry.getFilePath())) {
              this.files.push(analysisResultEntry.getFilePath());
          }
-     }
+    }
 
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
@@ -132,7 +137,7 @@ export interface ISubmission {
         return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
     }
     getModelInstance() : Document {
-        return new Submission.submissionModel({"_id":this.id,"name":this.name,"files":this.files,"entries":this.entries});
+        return new Submission.submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
     }
 
     hasAnalysisResultEntries() : boolean {

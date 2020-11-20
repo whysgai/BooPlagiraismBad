@@ -5,12 +5,14 @@ describe.skip("SubmissionFactory.ts",() => {
     
     describe("buildSubmission()",() => {
         it("Should return a valid Submission with the expected properties",() => {
-            var id = "test";
             var name = "testname";
-            var submission = SubmissionFactory.buildSubmission(id,name);
+            var assignment_id = "testaid"
+
+            var submission = SubmissionFactory.buildSubmission(name,assignment_id);
+
             expect(submission).is.not.undefined;
-            expect(submission.getId()).to.equal(id);
-            expect(submission.getName()).to.equal(name);
+            expect(submission.getName()).to.equal(assignment_id);
+            expect(submission.getAssignmentId()).to.equal(assignment_id);
         });
     });
 });

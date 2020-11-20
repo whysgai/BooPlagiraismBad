@@ -29,10 +29,10 @@ describe("SubmissionManager.ts",() => {
     beforeEach(()=>{
         testSubmissionDAO = new SubmissionDAO();
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
-        testSubmissionId = "test_sid";
         testSubmissionName = "testname";
         testSubmissionAssignmentId = "test_aid"; //Note: this is not assigned here (assigned in tests)
-        testSubmission = new Submission(testSubmissionId,testSubmissionName);
+        testSubmission = new Submission(testSubmissionName);
+        testSubmission.setId("test");
         testFilePath = "/vagrant/bpb-back/package.json";
     });
 
@@ -265,7 +265,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
             
-            var testSubmission2 = new Submission("somevalid","id");
+            var testSubmission2 = new Submission("somevalid");
 
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test","test",1,2,1,2,"e","e"));
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission.getId(),"test","test",1,1,2,2,"e","e"));
@@ -289,7 +289,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
-            var testSubmission2 = new Submission("someinvalid","id");
+            var testSubmission2 = new Submission("someinvalid");
 
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
@@ -313,7 +313,7 @@ describe("SubmissionManager.ts",() => {
         
         it("Should return an appropriate error if {id_b} is valid and {id_a} does not exist",() => {
 
-            var testSubmission2 = new Submission("someinvalid","id");
+            var testSubmission2 = new Submission("someinvalid");
 
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {

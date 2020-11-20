@@ -7,14 +7,19 @@ import {ISubmission, Submission} from "../src/model/Submission";
 var mongoose = require('mongoose');
 
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
+import { SubmissionFactory } from "../src/model/SubmissionFactory";
 
 describe("SubmissionDAO.ts",() => {
 
     var testSubmissionDAO : ISubmissionDAO;
     var testSubmission : ISubmission;
+    var testSubmissionName : string;
+    var testAssignmentId : string;
 
     before((done) => {
         chai.use(chaiAsPromised);
+        testAssignmentId = "testassignmentid";
+        testSubmissionName = "testsubmissionname";
 
         //TODO: Replace this (and beforeEach) with database mock (or something more elegant)
         //This is really fragile!
@@ -26,8 +31,7 @@ describe("SubmissionDAO.ts",() => {
     beforeEach((done)=>{
         mongoose.connection.collections.submissions.drop(() => {
             testSubmissionDAO = new SubmissionDAO();
-            testSubmission = new Submission("test","test");
-
+            testSubmission = SubmissionFactory.buildSubmission(testAssignmentId,testSubmissionName);
             done();
         });
     });
@@ -57,7 +61,8 @@ describe("SubmissionDAO.ts",() => {
     
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
 
-            var nonPersistedSubmission = new Submission("test","test")
+            var nonPersistedSubmission = SubmissionFactory.buildSubmission("test","test");
+            nonPersistedSubmission.setId("testide"); 
             return expect(testSubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Error: Cannot find: A submission with the given ID does not exist in the database");
         });
     });
@@ -66,17 +71,16 @@ describe("SubmissionDAO.ts",() => {
 
         it("should throw an appropriate error if the provided assignment id is invalid",() => {
 
-            var submission = new Submission("id1","1");
-            return testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId()).then((res) => {
+            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
                 expect(testSubmissionDAO.readSubmissions("invalidId")).to.eventually.be.rejectedWith("Error: Cannot find: A submission with one of the given IDs does not exist in the database");
             });
         });
 
         it("should return all submissions that exist in the database", () => {
             var assignmentId = "2";
-            var submission = new Submission("id1",assignmentId);
-            var submission2 = new Submission("id2",assignmentId);
-            return testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId()).then((res) => {
+            var submission2 = SubmissionFactory.buildSubmission("test2","test2"); 
+
+            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
                 return testSubmissionDAO.createSubmission(submission2.getName(), submission2.getAssignmentId()).then((res2) => {
 
                     expect(testSubmissionDAO.readSubmissions(assignmentId)).to.eventually.be.fulfilled.then((res) => {
@@ -96,8 +100,7 @@ describe("SubmissionDAO.ts",() => {
         it("Should update an submission database object if {id} is valid");
         
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
-            var submission = new Submission("test","test");
-            return expect(testSubmissionDAO.updateSubmission(submission)).to.eventually.be.rejectedWith("Error: Cannot update: A submission with the given ID does not exist in the database");
+            return expect(testSubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Error: Cannot update: A submission with the given ID does not exist in the database");
         });
     });
 
@@ -105,15 +108,14 @@ describe("SubmissionDAO.ts",() => {
 
         it("Should be able to delete an submission database object",() => {
 
-            var submission = new Submission("test","test");
-            return expect(testSubmissionDAO.createSubmission(submission.getName(), submission.getAssignmentId())).to.eventually.be.fulfilled.then((createRes) => {
+            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createRes) => {
 
-                Submission.getStaticModel().findOne({_id:submission.getId()}).then((firstFindRes) =>{
+                Submission.getStaticModel().findOne({_id:createRes.getId()}).then((firstFindRes) =>{
 
                     expect(firstFindRes).to.not.be.undefined;
                      
-                    return expect(testSubmissionDAO.deleteSubmission(submission.getId())).to.eventually.be.fulfilled.then((deleteRes) => {
-                        Submission.getStaticModel().findOne({_id:submission.getId()}).then((secondFindRes) =>{
+                    return expect(testSubmissionDAO.deleteSubmission(testSubmission.getId())).to.eventually.be.fulfilled.then((deleteRes) => {
+                        Submission.getStaticModel().findOne({_id:createRes.getId()}).then((secondFindRes) =>{
                             expect(secondFindRes).to.be.undefined;               
                         });
                     });
@@ -122,8 +124,7 @@ describe("SubmissionDAO.ts",() => {
         });
     
         it("Should throw an appropriate error if {id} is invalid",() => {
-            var nonPersistedSubmission = new Submission("test","test")
-            return expect(testSubmissionDAO.deleteSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Error: Cannot delete: A submission with the given ID does not exist in the database");
+            return expect(testSubmissionDAO.deleteSubmission("nonexistent")).to.eventually.be.rejectedWith("Error: Cannot delete: A submission with the given ID does not exist in the database");
         });
     }); 
 });
