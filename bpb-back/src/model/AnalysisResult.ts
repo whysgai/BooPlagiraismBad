@@ -1,26 +1,36 @@
 import { AnalysisResultEntry, IAnalysisResultEntry } from "./AnalysisResultEntry";
-
 export interface IAnalysisResult {
-    asJSON() : Object
-    addMatch(analysisResultEntryA : IAnalysisResultEntry, analysisResultEntryB : IAnalysisResultEntry) : void
+    asJSON() : Object;
+    getSimilarityScore() : number;
+    getMatches() : Array<Array<IAnalysisResultEntry>>; 
 }
 
 /**
  * Represents a list of matches (i.e associations) between AnalysisResultEntries, representing matches between highlighted sections
  */
 export class AnalysisResult implements IAnalysisResult {
-    
-    private matches : Array<IAnalysisResultEntry>[];
 
-    constructor() {
-        this.matches = [];
+    constructor(private matches : Array<Array<IAnalysisResultEntry>>, private similarityScore : number) {
+        matches.forEach(match => {
+            if(match[0] == undefined || match[1] == undefined) {
+                throw new Error('Analy')
+            }
+            
+        });
+    };
+
+    getSimilarityScore(): number {
+        return this.similarityScore;
     }
 
-    addMatch(analysisResultEntryA : IAnalysisResultEntry, analysisResultEntryB : IAnalysisResultEntry) {
-        this.matches.push([analysisResultEntryA,analysisResultEntryB]);
+    getMatches() : Array<Array<IAnalysisResultEntry>> {
+        return this.matches;
     }
 
     asJSON(): Object {
-        return this.matches.map((match) => { return [match[0].asJSON() , match[1].asJSON()] });
+        return {'similarityScore': this.similarityScore,
+                'matches': this.matches.map((match) => { return [match[0].asJSON() , match[1].asJSON()] })};  
     }
+
+
 }
