@@ -134,6 +134,7 @@ export interface ISubmission {
     }
 
     setAssignmentId(newId : string): void {
+         //TODO: Determine how to refresh/update document when called
          this.assignment_id = newId; 
      }
 
@@ -142,6 +143,7 @@ export interface ISubmission {
      }
 
     setName(newName : string): void {
+        //TODO: Determine how to refresh/update document when called
          this.name = newName;
      }
 
