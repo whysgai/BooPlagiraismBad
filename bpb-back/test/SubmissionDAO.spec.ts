@@ -42,10 +42,12 @@ describe("SubmissionDAO.ts",() => {
            
             return SubmissionDAO.createSubmission(testSubmission.getName(),testSubmission.getAssignmentId()).then((submission) => {
                 
-                expect(submission).to.be.a("ISubmission").with.property("name").which.equals(testSubmission.getName());
+                expect(submission.getName()).to.equal(testSubmission.getName());
+                expect(submission.getId()).to.not.be.undefined;
 
                 Submission.getStaticModel().findOne({"name":testSubmission.getName()}).then((document) => {
-                    expect(document).to.be.an("ISubmission").with.property("name").which.equals(testSubmission.getName());
+                    expect(document).to.have.property("name").which.equals(testSubmission.getName());
+                    expect(document.id).to.equal(submission.getId());
                 });
             });
         });
@@ -57,7 +59,8 @@ describe("SubmissionDAO.ts",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
                 SubmissionDAO.readSubmission(submission.getId()).then((readSubmission) => {
-                    expect(readSubmission).to.be.an("ISubmission").with.property("name").which.equals(testSubmission.getName());
+                    expect(readSubmission.getName()).to.equal(testSubmission.getName());
+                    expect(readSubmission.getId()).to.equal(testSubmission.getId());
                 });
             });
         });
