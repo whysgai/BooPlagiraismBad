@@ -69,12 +69,12 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmission.getName()).to.equal(newName);
             expect(testSubmission.getAssignmentId()).to.equal(newAssignmentId);
             expect(testSubmission.getFiles()).to.be.empty;
-            expect(testSubmission.hasAnalysisResultEntries()).to.be.false;
+            expect(testSubmission.getEntries()).to.be.empty;
         });
     });
 
     describe("buildFromExisting()",() => {
-        it("Should correctly build a submission rom an existing model",() => {
+        it("Should correctly build a submission from an existing database model",() => {
             var newName = "some_other_name";
             var newAssignmentId = "some_other_id";
             testSubmissionBuilder.setName(newName);
@@ -86,11 +86,11 @@ describe("Submission.ts.SubmissionBuilder",() => {
 
             var testSubmissionBuilderExisting = new Submission.builder();
             var testSubmissionExisting = testSubmissionBuilderExisting.buildFromExisting(testExistingModel);
-            expect(testSubmissionExisting.getId()).to.equal(testSubmission.getId());
-            expect(testSubmissionExisting.getName()).to.equal(testSubmission.getName());
-            expect(testSubmissionExisting.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
-            expect(testSubmissionExisting.getFiles()).to.equal(testSubmission.getFiles());
-            expect(testSubmission.hasAnalysisResultEntries()).to.equal(testSubmission.hasAnalysisResultEntries());
+            expect(testSubmissionExisting.getId()).to.deep.equal(testSubmission.getId());
+            expect(testSubmissionExisting.getName()).to.deep.equal(testSubmission.getName());
+            expect(testSubmissionExisting.getAssignmentId()).to.deep.equal(testSubmission.getAssignmentId());
+            expect(testSubmissionExisting.getEntries()).to.deep.equal(testSubmission.getEntries());
+            expect(testSubmissionExisting.getFiles()).to.deep.equal(testSubmission.getFiles());
         });
     });
 });

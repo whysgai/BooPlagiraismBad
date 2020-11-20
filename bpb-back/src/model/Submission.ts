@@ -29,6 +29,7 @@ export interface ISubmission {
     setAssignmentId(newId : string) : void;
     getName() : string;
     setName(newName : string) : void;
+    getEntries() : IAnalysisResultEntry[];
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
     addFile(content : string, filePath : string) : Promise<void>;
@@ -80,11 +81,16 @@ export interface ISubmission {
         }
     
         build() : ISubmission {
-            var submission = new Submission(this.name,this.assignment_id);
+            var submission = new Submission();
             
             var submissionModel = Submission.getStaticModel();
             var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
+            
             submission.setId(modelInstance.id);
+            submission.setName(this.name);
+            submission.setAssignmentId(this.assignment_id);
+            submission.setFiles(this.files);
+            submission.setEntries(this.entries);
             submission.setModelInstance(modelInstance);
             
             return submission;
@@ -92,9 +98,10 @@ export interface ISubmission {
 
          //NOTE: Using buildFromExisting overrides all other builder methods
          buildFromExisting(model : ISubmissionModel) : ISubmission {
-             var submission = new Submission(this.name,this.assignment_id);
-             submission.setName(model.name);
+             var submission = new Submission();
+             
              submission.setId(model.id);
+             submission.setName(model.name);
              submission.setAssignmentId(model.assignment_id);
              submission.setEntries(model.entries);
              submission.setFiles(model.files);
@@ -126,12 +133,7 @@ export interface ISubmission {
     private entries : IAnalysisResultEntry[];
     private modelInstance : ISubmissionModel;
 
-    constructor(name : string, assignment_id : string){
-        this.name = name;
-        this.assignment_id = assignment_id;
-        this.entries = [];
-        this.files = [];
-    }
+    constructor(){}
 
     static getStaticModel() :  mongoose.Model<ISubmissionModel> {
         return this.submissionModel;
@@ -144,6 +146,18 @@ export interface ISubmission {
     getAssignmentId(): string {
          return this.assignment_id;
      }
+
+    getName(): string {
+        return this.name;
+    }
+    
+    getFiles() : string[] {
+        return this.files;
+    }
+
+    getEntries() : IAnalysisResultEntry[] {
+        return this.entries;
+    }
 
     protected setId(newId : string) : void {
         this.id = newId;
@@ -171,17 +185,10 @@ export interface ISubmission {
          this.assignment_id = newId; 
      }
 
-    getName(): string {
-         return this.name;
-     }
 
     setName(newName : string): void {
         //TODO: Determine how to refresh/update document when called
          this.name = newName;
-     }
-
-    getFiles() : string[] {
-         return this.files;
      }
 
     async addFile(content : string, filePath : string) : Promise<void> {
@@ -212,7 +219,6 @@ export interface ISubmission {
              this.files.push(analysisResultEntry.getFilePath());
          }
     }
-
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         if(this.entries.length <= 0 ) {
