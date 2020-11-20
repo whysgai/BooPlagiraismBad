@@ -176,7 +176,6 @@ describe('SubmissionRouter.ts',()=> {
             });
     });
 
-    //TODO: integration test after merging to typescript 3.9.6
     it("Should be able to interpret a request to POST /submissions/files to submit a file",async () => {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
         const sampleFilePath = "test/App.spec.ts";
@@ -196,7 +195,7 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res).to.have.status(200);
         });
     });    
-    it("Should be able to interpret a failedd request to POST /submissions/{id}/files with no file attached", async () => {
+    it("Should be able to interpret a failed request to POST /submissions/{id}/files with no file attached", async () => {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
         const sampleFilePath = "test/App.spec.ts";
         const sampleFileContent = await readFileContent(sampleFilePath);
