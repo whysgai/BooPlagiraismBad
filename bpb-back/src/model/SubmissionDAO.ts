@@ -37,10 +37,10 @@ export const SubmissionDAO : ISubmissionDAO = class {
         //Return all submissions of assignment
         return new Promise((resolve,reject) => {
             Submission.getStaticModel().find({assignment_id : assignmentId}).then((submissionModels) => {
-                Promise.all(submissionModels.map( model => { 
-                    var builder = new Submission.builder();
-                    return builder.buildFromExisting(model);
-                })).then(submissions => {
+               
+                var newSubObjects = submissionModels.map( model => {return new Submission.builder().buildFromExisting(model);});
+
+                Promise.all(newSubObjects).then(submissions => {
                     resolve(submissions);
                 }).catch((err) => {
                     reject(err);
@@ -90,7 +90,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
                             files: submission.getFiles(),
                             entries: submission.getEntries()
                         }
-                    ).then(() => {
+                    ).then((res) => {
                         resolve(submission);
                     }).catch((err) => {
                         reject(err);

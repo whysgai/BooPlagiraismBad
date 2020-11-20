@@ -1,3 +1,4 @@
+import { ConsoleErrorListener } from "antlr4ts";
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
@@ -126,7 +127,7 @@ describe("SubmissionDAO.ts",() => {
                 createdSubmission.setEntries(updatedEntries);
 
                 SubmissionDAO.updateSubmission(createdSubmission).then((updatedSubmission) => {
-                    
+                   
                     //Expect updates to be returned on pass-through
                     expect(updatedSubmission.getId()).to.deep.equal(createdSubmission.getId())
                     expect(updatedSubmission.getName()).to.deep.equal(updatedName);
