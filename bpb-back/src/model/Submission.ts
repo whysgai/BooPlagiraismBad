@@ -134,7 +134,7 @@ export interface ISubmission {
     private entries : IAnalysisResultEntry[];
     private modelInstance : ISubmissionModel;
 
-    constructor(){}
+    protected constructor(){}
 
     static getStaticModel() :  mongoose.Model<ISubmissionModel> {
         return this.submissionModel;
