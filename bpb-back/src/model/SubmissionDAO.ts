@@ -69,7 +69,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
     }
 
     static async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
-        //Add any new not-persisted AnalysisResultEntries into the database
+        //Update submission model and store all changed properties in the database
         return new Promise((resolve,reject) => {
             reject(new Error("Not implemented"));
         });
