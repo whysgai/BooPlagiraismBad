@@ -32,11 +32,23 @@ export const SubmissionDAO : ISubmissionDAO = class {
             });
        });
     }
-    
+ 
     static async readSubmissions(assignmentId : string): Promise<ISubmission[]> {
         //Return all submissions of assignment
         return new Promise((resolve,reject) => {
-            reject(new Error("Not implemented"));
+            Submission.getStaticModel().find({assignment_id : assignmentId}).then((submissionModels) => {
+
+                if(submissionModels.length == 0) {
+                    reject(new Error("Cannot find: No submissions with the given assignment id exist in the database"));
+                } else {
+                    Promise.all(submissionModels.map( model => { 
+                        var builder = new Submission.builder();
+                        return builder.buildFromExisting(model);
+                     })).then(submissions => {
+                         resolve(submissions);
+                     });
+                }
+            })
         });
     }
 

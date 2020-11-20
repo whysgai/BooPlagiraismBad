@@ -53,7 +53,7 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
-    describe("readSubmission()",() => {
+    describe.skip("readSubmission()",() => {
 
         it("Should read an submission database object if {id} is valid",() => {
 
@@ -65,8 +65,7 @@ describe("SubmissionDAO.ts",() => {
             });
         });
     
-        it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
-
+        it("Should throw an appropriate error if {id} specified for update is invalid",() => {
             var nonPersistedSubmission = new Submission.builder().build(); 
             return expect(SubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Error: Cannot find: A submission with the given ID does not exist in the database");
         });
@@ -77,23 +76,21 @@ describe("SubmissionDAO.ts",() => {
         it("should throw an appropriate error if the provided assignment id is invalid",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
-                expect(SubmissionDAO.readSubmissions("invalidId")).to.eventually.be.rejectedWith("Error: Cannot find: A submission with one of the given IDs does not exist in the database");
+                expect(SubmissionDAO.readSubmissions("invalidId")).to.eventually.be.rejectedWith("Cannot find: No submissions with the given assignment id exist in the database");
             });
         });
 
         it("should return all submissions that exist in the database", () => {
-            var assignmentId = "2";
-            var submission2 = new Submission.builder().build(); 
+            var testSubmission2 = new Submission.builder().build(); 
 
-            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
                 
-                SubmissionDAO.createSubmission(submission2.getName(), submission2.getAssignmentId()).then((res2) => {
+                SubmissionDAO.createSubmission(testSubmission2.getName(), testSubmission.getAssignmentId()).then((createdSubmission2) => {
 
-                    expect(SubmissionDAO.readSubmissions(assignmentId)).to.eventually.be.fulfilled.then((res) => {
-                        expect(res).to.not.be.undefined;
-                        expect(res.length).to.equal(2);
-                        expect(res[0].getId()).to.equal("id1"); //May break due to order
-                        expect(res[1].getId()).to.equal("id2");
+                    expect(SubmissionDAO.readSubmissions(testSubmission.getAssignmentId())).to.eventually.be.fulfilled.then((submissions) => {
+                        expect(submissions.length).to.equal(2);
+                        expect(submissions[0].getId()).to.equal(createdSubmission.getId());
+                        expect(submissions[1].getId()).to.equal(createdSubmission2.getId());
                     });
                 });
             });
@@ -101,7 +98,7 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
-    describe("updateSubmission()",() => {
+    describe.skip("updateSubmission()",() => {
     
         it("Should update an submission database object if {id} is valid"); //TODO
         
@@ -110,7 +107,7 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
-    describe("deleteSubmission()",() => {
+    describe.skip("deleteSubmission()",() => {
 
         it("Should be able to delete an submission database object",() => {
 
@@ -129,7 +126,7 @@ describe("SubmissionDAO.ts",() => {
             });
         });
     
-        it("Should throw an appropriate error if {id} is invalid",() => {
+        it("Should throw an appropriate error if {id} specified for deletion is invalid",() => {
             return expect(SubmissionDAO.deleteSubmission("nonexistent")).to.eventually.be.rejectedWith("Error: Cannot delete: A submission with the given ID does not exist in the database");
         });
     }); 
