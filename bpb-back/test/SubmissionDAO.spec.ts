@@ -1,4 +1,3 @@
-
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
@@ -6,11 +5,10 @@ import {ISubmission, Submission} from "../src/model/Submission";
 
 var mongoose = require('mongoose');
 
-import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
+import { SubmissionDAO } from "../src/model/SubmissionDAO";
 
 describe.skip("SubmissionDAO.ts",() => {
 
-    var testSubmissionDAO : ISubmissionDAO;
     var testSubmission : ISubmission;
     var testSubmissionName : string;
     var testAssignmentId : string;
@@ -28,8 +26,8 @@ describe.skip("SubmissionDAO.ts",() => {
     });
 
     beforeEach((done)=>{
+
         mongoose.connection.collections.submissions.drop(() => {
-            testSubmissionDAO = new SubmissionDAO();
             var sb = new Submission.builder();
             sb.setName(testSubmissionName);
             sb.setAssignmentId(testAssignmentId);
@@ -42,9 +40,12 @@ describe.skip("SubmissionDAO.ts",() => {
 
         it("Should create an submission database object if inputs are valid",()=> {
            
-            return expect(testSubmissionDAO.createSubmission(testSubmission.getName(),testSubmission.getAssignmentId())).to.eventually.be.fulfilled.with("Submission").then((res) => {
-                Submission.getStaticModel().findOne({"name":"testname"}).then((res) => {
-                    expect(res).to.be("Submission").with.property("name").which.equals(testSubmission.getName());
+            return SubmissionDAO.createSubmission(testSubmission.getName(),testSubmission.getAssignmentId()).then((submission) => {
+                
+                expect(submission).to.be.a("ISubmission").with.property("name").which.equals(testSubmission.getName());
+
+                Submission.getStaticModel().findOne({"name":testSubmission.getName()}).then((document) => {
+                    expect(document).to.be.an("ISubmission").with.property("name").which.equals(testSubmission.getName());
                 });
             });
         });
@@ -54,9 +55,9 @@ describe.skip("SubmissionDAO.ts",() => {
 
         it("Should read an submission database object if {id} is valid",() => {
 
-            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
-                expect(testSubmissionDAO.readSubmission(submission.getId())).to.eventually.be.fulfilled.then((res) => {
-                    expect(res).to.be("Submission").with.property("name").which.equals(testSubmission.getName());
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
+                SubmissionDAO.readSubmission(submission.getId()).then((readSubmission) => {
+                    expect(readSubmission).to.be.an("ISubmission").with.property("name").which.equals(testSubmission.getName());
                 });
             });
         });
@@ -64,7 +65,7 @@ describe.skip("SubmissionDAO.ts",() => {
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
 
             var nonPersistedSubmission = new Submission.builder().build(); 
-            return expect(testSubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Error: Cannot find: A submission with the given ID does not exist in the database");
+            return expect(SubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Error: Cannot find: A submission with the given ID does not exist in the database");
         });
     });
 
@@ -72,8 +73,8 @@ describe.skip("SubmissionDAO.ts",() => {
 
         it("should throw an appropriate error if the provided assignment id is invalid",() => {
 
-            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
-                expect(testSubmissionDAO.readSubmissions("invalidId")).to.eventually.be.rejectedWith("Error: Cannot find: A submission with one of the given IDs does not exist in the database");
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
+                expect(SubmissionDAO.readSubmissions("invalidId")).to.eventually.be.rejectedWith("Error: Cannot find: A submission with one of the given IDs does not exist in the database");
             });
         });
 
@@ -81,10 +82,11 @@ describe.skip("SubmissionDAO.ts",() => {
             var assignmentId = "2";
             var submission2 = new Submission.builder().build(); 
 
-            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
-                return testSubmissionDAO.createSubmission(submission2.getName(), submission2.getAssignmentId()).then((res2) => {
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
+                
+                SubmissionDAO.createSubmission(submission2.getName(), submission2.getAssignmentId()).then((res2) => {
 
-                    expect(testSubmissionDAO.readSubmissions(assignmentId)).to.eventually.be.fulfilled.then((res) => {
+                    expect(SubmissionDAO.readSubmissions(assignmentId)).to.eventually.be.fulfilled.then((res) => {
                         expect(res).to.not.be.undefined;
                         expect(res.length).to.equal(2);
                         expect(res[0].getId()).to.equal("id1"); //May break due to order
@@ -98,10 +100,10 @@ describe.skip("SubmissionDAO.ts",() => {
 
     describe("updateSubmission()",() => {
     
-        it("Should update an submission database object if {id} is valid");
+        it("Should update an submission database object if {id} is valid"); //TODO
         
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
-            return expect(testSubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Error: Cannot update: A submission with the given ID does not exist in the database");
+            return expect(SubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Error: Cannot update: A submission with the given ID does not exist in the database");
         });
     });
 
@@ -109,13 +111,13 @@ describe.skip("SubmissionDAO.ts",() => {
 
         it("Should be able to delete an submission database object",() => {
 
-            return testSubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createRes) => {
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createRes) => {
 
                 Submission.getStaticModel().findOne({_id:createRes.getId()}).then((firstFindRes) =>{
 
                     expect(firstFindRes).to.not.be.undefined;
                      
-                    return expect(testSubmissionDAO.deleteSubmission(testSubmission.getId())).to.eventually.be.fulfilled.then((deleteRes) => {
+                    SubmissionDAO.deleteSubmission(testSubmission.getId()).then((deleteRes) => {
                         Submission.getStaticModel().findOne({_id:createRes.getId()}).then((secondFindRes) =>{
                             expect(secondFindRes).to.be.undefined;               
                         });
@@ -125,7 +127,7 @@ describe.skip("SubmissionDAO.ts",() => {
         });
     
         it("Should throw an appropriate error if {id} is invalid",() => {
-            return expect(testSubmissionDAO.deleteSubmission("nonexistent")).to.eventually.be.rejectedWith("Error: Cannot delete: A submission with the given ID does not exist in the database");
+            return expect(SubmissionDAO.deleteSubmission("nonexistent")).to.eventually.be.rejectedWith("Error: Cannot delete: A submission with the given ID does not exist in the database");
         });
     }); 
 });
