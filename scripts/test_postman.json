@@ -1,0 +1,154 @@
+{
+	"variables": [],
+	"info": {
+		"name": "bpb",
+		"_postman_id": "c7d86186-c955-e6fe-d3a0-4aac1f21ac85",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST submissions/ (Create Submission)",
+			"request": {
+				"url": {
+					"raw": "http://192.168.33.10:8080/submissions",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"33",
+						"10"
+					],
+					"port": "8080",
+					"path": [
+						"submissions"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "",
+							"equals": false,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "test",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "assignment_id",
+							"value": "some_id_which_is_currently_ignored",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "TEST"
+			},
+			"response": []
+		},
+		{
+			"name": "(Placeholder) GET submissions/sub1/files (fake output, outdated)",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/sub1/files",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET submission/{id} (Get Submission by ID)",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/your_submission_id_here",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"value": "",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET submissions/{assignment_id} (Get Submissions of Assignment)",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/someaid",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"value": "C:\\",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "POST submission/{id}/files (Upload File to Submission)",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/5fb83962aeaf8d15957412cd/files",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "submissionFile",
+							"description": "",
+							"type": "file",
+							"src": "README.md"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
