@@ -1,3 +1,4 @@
+import { ConsoleErrorListener } from 'antlr4ts';
 import {ISubmission, Submission} from './Submission'
 
 export interface ISubmissionDAO {
@@ -8,15 +9,12 @@ export interface ISubmissionDAO {
     deleteSubmission(submissionId : string) : Promise<ISubmission>;
 }
 /**
- * Singleton Data Access Object for manipulating Assignment database objects.
+ *  Data Access static class for manipulating Submission database objects.
  */
-export class SubmissionDAO implements ISubmissionDAO {
+
+export const SubmissionDAO : ISubmissionDAO = class {
     
-    constructor(){
-        //TODO: Singletonness
-    }
-    
-    async createSubmission(name : string, assignmentId : string): Promise<ISubmission> {
+    static async createSubmission(name : string, assignmentId : string): Promise<ISubmission> {
        
         return new Promise((resolve,reject) => {
             
@@ -36,21 +34,22 @@ export class SubmissionDAO implements ISubmissionDAO {
        });
     }
     
-    async readSubmissions(assignmentId : string): Promise<ISubmission[]> {
+    static async readSubmissions(assignmentId : string): Promise<ISubmission[]> {
         //Return all submissions of assignment
         return undefined;
     }
 
-    async readSubmission(submissionId: string): Promise<ISubmission> {
+    static async readSubmission(submissionId: string): Promise<ISubmission> {
         //Return submission and all of its AnalysisResultEntries
         return undefined;
     }
 
-    async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
+    static async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
         //Add any new not-persisted AnalysisResultEntries into the database
         return undefined;
+        
     }
-    async deleteSubmission(submissionId : string): Promise<ISubmission> {
+    static async deleteSubmission(submissionId : string): Promise<ISubmission> {
         //Delete the specified submission from the db
         return undefined;
     }

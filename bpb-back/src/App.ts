@@ -30,9 +30,8 @@ class App {
             let assignmentDAO = new AssignmentDAO();
             let assignmentManager = new AssignmentManager(assignmentDAO);
 
-            // Set up SubmissionDAO and Manager
-            let submissionDAO = new SubmissionDAO();
-            let submissionManager = new SubmissionManager(submissionDAO);
+            // Set up SubmissionManager
+            let submissionManager = new SubmissionManager();
             
             // Set up express app
             let app = express();

@@ -156,20 +156,20 @@ export interface ISubmission {
         return new Promise((resolve,reject) => {
             if(this.files.includes(filePath)) {
                 reject(new Error("File at " + filePath + " was already added to the submission"));
+            } else {
+                this.files.push(filePath);
+    
+                var parseTree = parse(content.toString());
+                var visitor = new AnalysisResultEntryCollectorVisitor(filePath,this); 
+        
+                visitor.visit(parseTree);
+        
+                visitor.getAnalysisResultEntries().forEach((entry) => { 
+                    this.addAnalysisResultEntry(entry);
+                 });
+    
+                 resolve();
             }
-    
-            this.files.push(filePath);
-    
-            var parseTree = parse(content.toString());
-            var visitor = new AnalysisResultEntryCollectorVisitor(filePath,this); 
-    
-            visitor.visit(parseTree);
-    
-            visitor.getAnalysisResultEntries().forEach((entry) => { 
-                this.addAnalysisResultEntry(entry);
-             });
-
-             resolve();
         });
     }
 

@@ -1,6 +1,6 @@
 import { IAnalysisResult } from '../model/AnalysisResult';
 import {ISubmission, Submission} from '../model/Submission';
-import { ISubmissionDAO, SubmissionDAO } from '../model/SubmissionDAO';
+import { SubmissionDAO } from '../model/SubmissionDAO';
 import fs from 'fs';
 import util from 'util';
 import SubmissionData from "../types/SubmissionData"
@@ -22,11 +22,9 @@ export interface ISubmissionManager {
 
 export class SubmissionManager implements ISubmissionManager {
 
-    private submissionDAO : ISubmissionDAO;
     private submissionCache : Map<string,ISubmission>;
     
-    constructor(submissionDAO : ISubmissionDAO) {
-        this.submissionDAO = submissionDAO;
+    constructor() {
         this.submissionCache = new Map<string,ISubmission>();
     }
 
@@ -40,7 +38,7 @@ export class SubmissionManager implements ISubmissionManager {
             var name = data.name;
             var assignmentId = data.assignment_id;
     
-            this.submissionDAO.createSubmission(name,assignmentId)
+            SubmissionDAO.createSubmission(name,assignmentId)
                 .then((submission) => {
                     this.submissionCache.set(submission.getId(),submission);
                     resolve(submission);
@@ -59,7 +57,7 @@ export class SubmissionManager implements ISubmissionManager {
             if(this.submissionCache.get(submissionId) != undefined) {
                 resolve(this.submissionCache.get(submissionId));
             }
-            this.submissionDAO.readSubmission(submissionId).then((submission) => {
+            SubmissionDAO.readSubmission(submissionId).then((submission) => {
                 resolve(submission);
             }).catch((err) => {
                 reject(err);
@@ -74,7 +72,7 @@ export class SubmissionManager implements ISubmissionManager {
     getSubmissions = async(assignmentId : string): Promise<ISubmission[]> => {
         //TODO: Update to use cache
         return new Promise((resolve, reject) => {
-            this.submissionDAO.readSubmissions(assignmentId).then((submissions) => {
+            SubmissionDAO.readSubmissions(assignmentId).then((submissions) => {
                 resolve(submissions);
             }).catch((err) => {
                 reject(err);
@@ -96,7 +94,7 @@ export class SubmissionManager implements ISubmissionManager {
             this.getSubmission(submissionId).then((submission) => {
                 submission.setName(name);
                 submission.setAssignmentId(assignmentId);
-                this.submissionDAO.updateSubmission(submission).then((submission) => {
+                SubmissionDAO.updateSubmission(submission).then((submission) => {
                     this.submissionCache.set(submission.getId(),submission);
                     resolve(submission);
                 }).catch((err) => {
@@ -122,7 +120,7 @@ export class SubmissionManager implements ISubmissionManager {
                 readFileContent(filePath).then((buffer) => {
                     var content = buffer.toString();
                     submission.addFile(content,filePath).then(() => {
-                        this.submissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                        SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
                             this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
                             resolve();
                         }).catch((err) => {
@@ -155,7 +153,7 @@ export class SubmissionManager implements ISubmissionManager {
                     this.submissionCache.delete(submissionId);
                 }
         
-                this.submissionDAO.deleteSubmission(submissionId).then((submission) => {
+                SubmissionDAO.deleteSubmission(submissionId).then((submission) => {
                     resolve();
                 }).catch((err) => {
                     reject(err);
