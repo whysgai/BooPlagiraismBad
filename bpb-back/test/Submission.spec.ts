@@ -25,7 +25,7 @@ describe("Submission.ts",() => {
 
     describe("getId()",() => {
         it("Should return the submission’s id",() => {
-            expect(testSubmissionA.getId()).to.equal("id_a");
+            expect(testSubmissionA.getId()).to.equal(testSubmissionA.getModelInstance().id);
         });
     });
     describe("getName()",() => {
@@ -113,10 +113,10 @@ describe("Submission.ts",() => {
         it("Should return an object with the expected properties",() => {
 
             var expectedJSON = {
-                "assignment_id": "id_a",
+                "assignment_id": testSubmissionA.getId(),
                 "entries": [testEntryA.asJSON(),testEntryB.asJSON()],
                 "files": [testEntryA.getFilePath(),testEntryB.getFilePath()],
-                "name": "name_a"
+                "name": testSubmissionA.getName() 
             }
 
             testSubmissionA.addAnalysisResultEntry(testEntryA);

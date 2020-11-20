@@ -29,6 +29,7 @@ export interface ISubmission {
     setAssignmentId(newId : string) : void;
     getName() : string;
     setName(newName : string) : void;
+    getModelInstance() : ISubmissionModel;
     getFiles() : string[];
     addFile(content : string, filePath : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
@@ -127,16 +128,13 @@ export interface ISubmission {
         this.modelInstance = modelInstance;
     }
 
+    //Used to initially create new submissions in the database
     getModelInstance() : ISubmissionModel {
         return this.modelInstance;
     }
 
     setAssignmentId(newId : string): void {
          this.assignment_id = newId; 
-
-         //TODO: Make less expensive
-         var submissionModel = Submission.getStaticModel();
-         this.modelInstance = new submissionModel({"_id":this.id,"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
      }
 
     getName(): string {
@@ -145,10 +143,6 @@ export interface ISubmission {
 
     setName(newName : string): void {
          this.name = newName;
-
-         //TODO: Make less expensive
-         var submissionModel = Submission.getStaticModel();
-         this.modelInstance = new submissionModel({"_id":this.id,"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
      }
 
     getFiles() : string[] {

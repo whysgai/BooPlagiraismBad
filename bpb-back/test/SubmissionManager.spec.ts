@@ -19,7 +19,7 @@ describe("SubmissionManager.ts",() => {
     var testSubmissionId : string;
     var testSubmissionName : string;
     var testSubmissionAssignmentId : string;
-    var testFilePath : string;
+    const testFilePath = "/vagrant/bpb-back/package.json";
 
     before(()=>{
         chai.use(chaiSpies);
@@ -30,9 +30,11 @@ describe("SubmissionManager.ts",() => {
         testSubmissionDAO = new SubmissionDAO();
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
         testSubmissionName = "testname";
-        testSubmissionAssignmentId = "test_aid"; //Note: this is not assigned here (assigned in tests)
-        testSubmission = new Submission.builder().build();
-        testFilePath = "/vagrant/bpb-back/package.json";
+        testSubmissionAssignmentId = "test_aid"; 
+        var testSubmissionBuilder = new Submission.builder();
+        testSubmissionBuilder.setName(testSubmissionName);
+        testSubmissionBuilder.setAssignmentId(testSubmissionAssignmentId);
+        testSubmission = testSubmissionBuilder.build();
     });
 
     describe("getSubmission()",() => {
@@ -110,7 +112,6 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should properly update a submission if submission exists and only one new body parameter is provided (name)",() => {
-            testSubmission.setAssignmentId(testSubmissionAssignmentId);
             chai.spy.on(testSubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(testSubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass through
 
