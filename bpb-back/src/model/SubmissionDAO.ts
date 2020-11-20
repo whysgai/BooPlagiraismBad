@@ -79,7 +79,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
                     reject(new Error("Cannot update: No submission with the given id exists in the database"));
                 } else {
 
-                    model.updateOne(
+                    Submission.getStaticModel().findOneAndUpdate(
                         {
                             _id : submission.getId() 
                         },
