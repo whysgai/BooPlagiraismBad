@@ -92,9 +92,8 @@ describe("SubmissionDAO.ts",() => {
                 SubmissionDAO.createSubmission(testSubmission2.getName(), testSubmission.getAssignmentId()).then((createdSubmission2) => {
 
                     SubmissionDAO.readSubmissions(testSubmission.getAssignmentId()).then((submissions) => {
-                        expect(submissions.length).to.equal(2);
-                        expect(submissions[0].getId()).to.equal(createdSubmission.getId());
-                        expect(submissions[1].getId()).to.equal(createdSubmission2.getId());
+                        expect(submissions[0]).to.deep.equal(createdSubmission);
+                        expect(submissions[1]).to.deep.equal(createdSubmission2);
                     });
                 });
             });
