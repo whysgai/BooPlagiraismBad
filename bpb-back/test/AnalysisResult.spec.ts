@@ -133,4 +133,6 @@ describe.skip("AnalysisResult.ts",() => {
             expect(testAnalysisResult.getSimilarityScore()).to.be.equal(testSimilarityScore);
         });
     });
-~});
+
+
+});
