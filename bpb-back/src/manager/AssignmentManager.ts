@@ -1,4 +1,4 @@
-import { IAssignment } from "../model/Assignment";
+import { Assignment, IAssignment } from "../model/Assignment";
 import { IAssignmentDAO } from "../model/AssignmentDAO";
 
 /**
@@ -24,7 +24,9 @@ export class AssignmentManager implements IAssignmentManager {
         throw new Error("Method not implemented")
     }
     getAssignment(assignmentId : string) : Promise<IAssignment> {
-        throw new Error("Method not implemented")
+        return new Promise((resolve,reject) => {
+            resolve(new Assignment("test",assignmentId)); //TODO: Remove fake assignment! Required for SubmissionRouter.
+        });
     }
     async createAssignment(data : Object): Promise<IAssignment> {
         throw new Error("Method not implemented.");
