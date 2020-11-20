@@ -1,6 +1,59 @@
 import { expect } from "chai";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
+
+describe("Submission.ts.SubmissionBuilder",() => {
+
+    var testSubmission : ISubmission;
+    var testSubmissionBuilder : any;
+
+    beforeEach(() => {
+        testSubmissionBuilder = new Submission.builder();
+    });
+
+    describe("setName()",() => {
+        it("Should correctly set submission's name",() => {
+           var newName = "some_test";
+           testSubmissionBuilder.setName(newName);
+           testSubmission = testSubmissionBuilder.build();
+           expect(testSubmission.getName()).to.equal(newName);
+        });
+    });
+
+    describe("setAssignmentId()",() => {
+
+        it("Should correctly set submission's assignment ID",() => {
+            var newAssignmentId = "some_assignment_id";
+            testSubmissionBuilder.setAssignmentId(newAssignmentId);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getAssignmentId()).to.equal(newAssignmentId);
+        });
+    });
+
+    describe("build()",() => {
+        it("Should correctly build a submission if no builder methods are called",() => {
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getId()).to.not.be.undefined;
+            expect(testSubmission.getName()).to.not.be.undefined;
+            expect(testSubmission.getAssignmentId()).to.not.be.undefined;
+            expect(testSubmission.getModelInstance()).to.not.be.undefined;
+        });
+        it("Should correctly build a submission if builder methods are called",() => {
+            var newName = "some_other_name";
+            var newAssignmentId = "some_other_id";
+            testSubmissionBuilder.setName(newName);
+            testSubmissionBuilder.setAssignmentId(newAssignmentId);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getId()).to.equal(testSubmission.getModelInstance().id);
+            expect(testSubmission.getName()).to.equal(newName);
+            expect(testSubmission.getAssignmentId()).to.equal(newAssignmentId);
+            expect(testSubmission.getFiles()).to.be.empty;
+            expect(testSubmission.hasAnalysisResultEntries()).to.be.false;
+        });
+    })
+});
+
+
 describe("Submission.ts",() => {
 
     var testSubmissionA : ISubmission;
