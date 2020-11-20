@@ -37,17 +37,14 @@ export const SubmissionDAO : ISubmissionDAO = class {
         //Return all submissions of assignment
         return new Promise((resolve,reject) => {
             Submission.getStaticModel().find({assignment_id : assignmentId}).then((submissionModels) => {
-
-                if(submissionModels.length == 0) {
-                    reject(new Error("Cannot find: No submissions with the given assignment id exist in the database"));
-                } else {
-                    Promise.all(submissionModels.map( model => { 
-                        var builder = new Submission.builder();
-                        return builder.buildFromExisting(model);
-                     })).then(submissions => {
-                         resolve(submissions);
-                     });
-                }
+                Promise.all(submissionModels.map( model => { 
+                    var builder = new Submission.builder();
+                    return builder.buildFromExisting(model);
+                })).then(submissions => {
+                    resolve(submissions);
+                }).catch((err) => {
+                    reject(err);
+                });
             }).catch((err) => {
                 reject(err);
             });
@@ -67,7 +64,8 @@ export const SubmissionDAO : ISubmissionDAO = class {
                     resolve(submission);
                 }
             }).catch((err) => {
-                reject(err);
+                //NOTE: Suppresses Mongoose error
+                reject(new Error("Cannot find: No submission with the given id exists in the database"));
             })
         });
     }
@@ -93,11 +91,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
                             entries: submission.getEntries()
                         }
                     ).then(() => {
-                        model.save().then(() => {
-                            resolve(submission);
-                        }).catch((err) =>  {
-                            reject(err);
-                        })
+                        resolve(submission);
                     }).catch((err) => {
                         reject(err);
                     });

@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
+import { isExportDeclaration } from "typescript";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
@@ -74,28 +75,29 @@ describe("SubmissionDAO.ts",() => {
 
     describe("readSubmissions()",() => {
 
-        it("should throw an appropriate error if the provided assignment id is invalid",() => {
+        it("should return an empty array of submissions if no submissions exist with the specified assignment id",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
-                expect(SubmissionDAO.readSubmissions("invalidId")).to.eventually.be.rejectedWith("Cannot find: No submissions with the given assignment id exist in the database");
+                SubmissionDAO.readSubmissions("invalidId").then(submissions => {
+                    expect(submissions).to.deep.equal([]);
+                });
             });
         });
 
-        it("should return all submissions that exist in the database", () => {
+        it("should return all submissions with the provided assignmentid if some exist", () => {
             var testSubmission2 = new Submission.builder().build(); 
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
                 
                 SubmissionDAO.createSubmission(testSubmission2.getName(), testSubmission.getAssignmentId()).then((createdSubmission2) => {
 
-                    expect(SubmissionDAO.readSubmissions(testSubmission.getAssignmentId())).to.eventually.be.fulfilled.then((submissions) => {
+                    SubmissionDAO.readSubmissions(testSubmission.getAssignmentId()).then((submissions) => {
                         expect(submissions.length).to.equal(2);
                         expect(submissions[0].getId()).to.equal(createdSubmission.getId());
                         expect(submissions[1].getId()).to.equal(createdSubmission2.getId());
                     });
                 });
             });
-
         });
     });
 
@@ -148,7 +150,11 @@ describe("SubmissionDAO.ts",() => {
         
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
             var newSubmission = new Submission.builder().build();
-            return expect(SubmissionDAO.updateSubmission(newSubmission)).to.eventually.be.rejectedWith("Cannot update: No submission with the given id exists in the database");
+            SubmissionDAO.updateSubmission(newSubmission).then(updatedSubmission => {
+                expect(true,"updateSubmission should have failed, but it succeeded").to.equal(false);
+            }).catch((err) =>{
+                expect(err).to.have.property("message").which.contains("Cannot update: No submission with the given id exists in the database");
+            });
         });
     });
 
