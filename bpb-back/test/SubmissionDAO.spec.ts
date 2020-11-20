@@ -46,7 +46,7 @@ describe("SubmissionDAO.ts",() => {
                 expect(submission.getName()).to.equal(testSubmission.getName());
                 expect(submission.getId()).to.not.be.undefined;
 
-                Submission.getStaticModel().findOne({"name":testSubmission.getName()}).then((document) => {
+                return Submission.getStaticModel().findOne({"name":testSubmission.getName()}).then((document) => {
                     expect(document).to.have.property("name").which.equals(testSubmission.getName());
                     expect(document.id).to.equal(submission.getId());
                 });
@@ -54,12 +54,12 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
-    describe.skip("readSubmission()",() => {
+    describe("readSubmission()",() => {
 
         it("Should read an submission database object if {id} is valid",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
-                SubmissionDAO.readSubmission(submission.getId()).then((readSubmission) => {
+                return SubmissionDAO.readSubmission(submission.getId()).then((readSubmission) => {
                     expect(readSubmission.getName()).to.equal(submission.getName());
                     expect(readSubmission.getId()).to.equal(submission.getId());
                 });
@@ -77,7 +77,7 @@ describe("SubmissionDAO.ts",() => {
         it("should return an empty array of submissions if no submissions exist with the specified assignment id",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((res) => {
-                SubmissionDAO.readSubmissions("invalidId").then(submissions => {
+                return SubmissionDAO.readSubmissions("invalidId").then(submissions => {
                     expect(submissions).to.deep.equal([]);
                 });
             });
@@ -88,9 +88,9 @@ describe("SubmissionDAO.ts",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
                 
-                SubmissionDAO.createSubmission(testSubmission2.getName(), testSubmission.getAssignmentId()).then((createdSubmission2) => {
+                return SubmissionDAO.createSubmission(testSubmission2.getName(), testSubmission.getAssignmentId()).then((createdSubmission2) => {
 
-                    SubmissionDAO.readSubmissions(testSubmission.getAssignmentId()).then((submissions) => {
+                    return SubmissionDAO.readSubmissions(testSubmission.getAssignmentId()).then((submissions) => {
                         expect(submissions[0]).to.deep.equal(createdSubmission);
                         expect(submissions[1]).to.deep.equal(createdSubmission2);
                     });
@@ -164,12 +164,12 @@ describe("SubmissionDAO.ts",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createRes) => {
 
-                Submission.getStaticModel().findOne({_id:createRes.getId()}).then((firstFindRes) =>{
+                return Submission.getStaticModel().findOne({_id:createRes.getId()}).then((firstFindRes) =>{
 
                     expect(firstFindRes).to.not.be.undefined;
                      
-                    SubmissionDAO.deleteSubmission(testSubmission.getId()).then((deleteRes) => {
-                        Submission.getStaticModel().findOne({_id:createRes.getId()}).then((secondFindRes) =>{
+                    return SubmissionDAO.deleteSubmission(testSubmission.getId()).then((deleteRes) => {
+                        return Submission.getStaticModel().findOne({_id:createRes.getId()}).then((secondFindRes) =>{
                             expect(secondFindRes).to.be.undefined;               
                         });
                     });
