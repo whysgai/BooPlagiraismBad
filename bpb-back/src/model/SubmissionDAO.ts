@@ -1,4 +1,3 @@
-import { ConsoleErrorListener } from 'antlr4ts';
 import {ISubmission, Submission} from './Submission'
 
 export interface ISubmissionDAO {

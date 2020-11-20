@@ -30,6 +30,27 @@ describe("Submission.ts.SubmissionBuilder",() => {
         });
     });
 
+    describe("setFiles()",() => {
+        it("Should correctly set submission's files",() => {
+            var files = ["some","test","files"];
+            testSubmissionBuilder.setFiles(files);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getFiles()).to.equal(files);
+        });
+    });
+
+    describe("setEntries()",() => {
+        it("Should correctly set submission's entries",() => {
+            var testSubmissionNoEntries = testSubmissionBuilder.build();
+            expect(testSubmissionNoEntries.hasAnalysisResultEntries()).to.equal(false);
+
+            var entries = [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")];
+            testSubmissionBuilder.setEntries(entries);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.hasAnalysisResultEntries()).to.equal(true);
+        });
+    });
+
     describe("build()",() => {
         it("Should correctly build a submission if no builder methods are called",() => {
             testSubmission = testSubmissionBuilder.build();
@@ -50,7 +71,28 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmission.getFiles()).to.be.empty;
             expect(testSubmission.hasAnalysisResultEntries()).to.be.false;
         });
-    })
+    });
+
+    describe("buildFromExisting()",() => {
+        it("Should correctly build a submission rom an existing model",() => {
+            var newName = "some_other_name";
+            var newAssignmentId = "some_other_id";
+            testSubmissionBuilder.setName(newName);
+            testSubmissionBuilder.setAssignmentId(newAssignmentId);
+            testSubmissionBuilder.setFiles(["some","files"]);
+            testSubmissionBuilder.setEntries([new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]);
+            testSubmission = testSubmissionBuilder.build();
+            var testExistingModel = testSubmission.getModelInstance();
+
+            var testSubmissionBuilderExisting = new Submission.builder();
+            var testSubmissionExisting = testSubmissionBuilderExisting.buildFromExisting(testExistingModel);
+            expect(testSubmissionExisting.getId()).to.equal(testSubmission.getId());
+            expect(testSubmissionExisting.getName()).to.equal(testSubmission.getName());
+            expect(testSubmissionExisting.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
+            expect(testSubmissionExisting.getFiles()).to.equal(testSubmission.getFiles());
+            expect(testSubmission.hasAnalysisResultEntries()).to.equal(testSubmission.hasAnalysisResultEntries());
+        });
+    });
 });
 
 

@@ -54,10 +54,14 @@ export interface ISubmission {
     
         private assignment_id : string;
         private name : string;
+        private files : string[];
+        private entries : IAnalysisResultEntry[];
     
         constructor() {
             this.name = "Name Not Defined";
             this.assignment_id = "id_not_defined"
+            this.files = [];
+            this.entries = [];
         }
         
         setName(name : string) : void {
@@ -66,16 +70,37 @@ export interface ISubmission {
         setAssignmentId(id : string) : void {
             this.assignment_id = id;        
         }
+
+        setFiles(files : string[]) : void {
+            this.files = files;
+        }
+
+        setEntries(entries : IAnalysisResultEntry[]) : void {
+            this.entries = entries;
+        }
     
         build() : ISubmission {
             var submission = new Submission(this.name,this.assignment_id);
             
             var submissionModel = Submission.getStaticModel();
-            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":[],"entries":[]});
+            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
             submission.setId(modelInstance.id);
             submission.setModelInstance(modelInstance);
             
             return submission;
+         }
+
+         //NOTE: Using buildFromExisting overrides all other builder methods
+         buildFromExisting(model : ISubmissionModel) : ISubmission {
+             var submission = new Submission(this.name,this.assignment_id);
+             submission.setName(model.name);
+             submission.setId(model.id);
+             submission.setAssignmentId(model.assignment_id);
+             submission.setEntries(model.entries);
+             submission.setFiles(model.files);
+             submission.setModelInstance(model);
+
+             return submission;
          }
     }
 
@@ -126,6 +151,14 @@ export interface ISubmission {
 
     protected setModelInstance(modelInstance : ISubmissionModel) {
         this.modelInstance = modelInstance;
+    }
+
+    protected setFiles(files : string[]) : void {
+        this.files = files;
+    }
+
+    protected setEntries(entries : IAnalysisResultEntry[]) : void {
+        this.entries = entries;
     }
 
     //Used to initially create new submissions in the database
