@@ -72,7 +72,7 @@ describe("SubmissionDAO.ts",() => {
         });
     });
 
-    describe.skip("readSubmissions()",() => {
+    describe("readSubmissions()",() => {
 
         it("should return an empty array of submissions if no submissions exist with the specified assignment id",() => {
 
@@ -91,8 +91,17 @@ describe("SubmissionDAO.ts",() => {
                 return SubmissionDAO.createSubmission(testSubmission2.getName(), testSubmission.getAssignmentId()).then((createdSubmission2) => {
 
                     return SubmissionDAO.readSubmissions(testSubmission.getAssignmentId()).then((submissions) => {
-                        expect(submissions[0]).to.deep.equal(createdSubmission);
-                        expect(submissions[1]).to.deep.equal(createdSubmission2);
+                        expect(submissions[0].getId()).to.deep.equal(createdSubmission.getId());
+                        expect(submissions[0].getName()).to.deep.equal(createdSubmission.getName());
+                        expect(submissions[0].getAssignmentId()).to.deep.equal(createdSubmission.getAssignmentId());
+                        expect(submissions[0].getEntries()).to.deep.equal(createdSubmission.getEntries());
+                        expect(submissions[0].getFiles()).to.deep.equal(createdSubmission.getFiles());
+
+                        expect(submissions[1].getId()).to.deep.equal(createdSubmission2.getId());
+                        expect(submissions[1].getName()).to.deep.equal(createdSubmission2.getName());
+                        expect(submissions[1].getAssignmentId()).to.deep.equal(createdSubmission2.getAssignmentId());
+                        expect(submissions[1].getEntries()).to.deep.equal(createdSubmission2.getEntries());
+                        expect(submissions[1].getFiles()).to.deep.equal(createdSubmission2.getFiles());
                     });
                 });
             });
