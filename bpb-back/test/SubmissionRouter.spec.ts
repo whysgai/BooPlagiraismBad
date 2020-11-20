@@ -28,7 +28,6 @@ describe('SubmissionRouter.ts',()=> {
     var testServer : any;
     var testRouter : IRouter;
     var testSubmissionManager : SubmissionManager;
-    var testSubmissionDAO : SubmissionDAO;
     var testAssignmentManager : AssignmentManager;
     var testAssignmentDAO : AssignmentDAO;
     var testSubmission : ISubmission;
@@ -50,8 +49,7 @@ describe('SubmissionRouter.ts',()=> {
         
 
         
-        testSubmissionDAO = new SubmissionDAO();
-        testSubmissionManager = new SubmissionManager(testSubmissionDAO);
+        testSubmissionManager = new SubmissionManager();
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentManager = new AssignmentManager(testAssignmentDAO);
         
