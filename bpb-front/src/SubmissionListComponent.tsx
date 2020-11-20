@@ -6,10 +6,11 @@ import { Link } from 'react-router-dom';
 import { stateToPropertyMapper } from './containers/SubmissionListContainer';
 import SubmissionReducer from './reducers/SubmissionReducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ComparisonReducer from './reducers/ComparisonReducer';
 
 interface PropsType {
   submissions: Submission[]
-  isDisabled: boolean
+  compareEnabled: boolean
 }
 
 class SubmissionListComponent extends React.Component <PropsType, {}> {
@@ -18,19 +19,21 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
     super(props);
     this.state = {
       submissions : [],
-      isDisabled: true
+      compareEnabled: false
     };
   }
 
   setDisabled() {
-    if (stateToPropertyMapper(SubmissionReducer).submissionComparison.length === 2) {
+    console.log('setdisabled')
+    if (stateToPropertyMapper(ComparisonReducer).submissionComparison.length === 2) {
       this.setState({
-        isDisabled: false
+        compareEnabled: true
       })
     }
   }
 
   render() {
+    {console.log(ComparisonReducer)}
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>Assignment</h3>
@@ -41,11 +44,11 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
           )}
         </ul>
         { 
-          this.props.isDisabled
+          this.props.compareEnabled
           ? <Link to="/ComparisonComponent" className="enabledCompareButton">Compare Submissions 
-          {stateToPropertyMapper(SubmissionReducer).submissionComparison.length}/2</Link>
+          {stateToPropertyMapper(ComparisonReducer).submissionComparison.length}/2</Link>
           : <Link to="/ComparisonComponent" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
-          Compare Submissions {stateToPropertyMapper(SubmissionReducer).submissionComparison.length}/2</Link>
+          Compare Submissions {stateToPropertyMapper(ComparisonReducer).submissionComparison.length}/2</Link>
         }
       </div>
     );
