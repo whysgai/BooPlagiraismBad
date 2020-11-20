@@ -187,7 +187,7 @@ describe("SubmissionManager.ts",() => {
 
         //TODO: MockUpdate is being called for this test for some reason.
         //This might imply that error is not being handled correctly from addFile
-        it.skip("Should return an appropriate error if file was already added to the submission",() => {
+        it("Should return an appropriate error if file was already added to the submission",() => {
             
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1","tset",testFilePath,"test",1,1,2,2,"test","Test"));
 
