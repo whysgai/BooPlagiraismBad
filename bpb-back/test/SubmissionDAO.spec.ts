@@ -146,8 +146,9 @@ describe("SubmissionDAO.ts",() => {
             });
         });
         
-        it.skip("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
-            return expect(SubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Error: Cannot update: A submission with the given ID does not exist in the database");
+        it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
+            var newSubmission = new Submission.builder().build();
+            return expect(SubmissionDAO.updateSubmission(newSubmission)).to.eventually.be.rejectedWith("Cannot update: No submission with the given id exists in the database");
         });
     });
 
@@ -171,7 +172,7 @@ describe("SubmissionDAO.ts",() => {
         });
     
         it("Should throw an appropriate error if {id} specified for deletion is invalid",() => {
-            return expect(SubmissionDAO.deleteSubmission("nonexistent")).to.eventually.be.rejectedWith("Error: Cannot delete: A submission with the given ID does not exist in the database");
+            return expect(SubmissionDAO.deleteSubmission("nonexistent")).to.eventually.be.rejectedWith("Cannot delete: A submission with the given ID does not exist in the database");
         });
     }); 
 });

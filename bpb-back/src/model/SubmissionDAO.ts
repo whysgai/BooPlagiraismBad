@@ -48,7 +48,9 @@ export const SubmissionDAO : ISubmissionDAO = class {
                          resolve(submissions);
                      });
                 }
-            })
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
 
@@ -64,6 +66,8 @@ export const SubmissionDAO : ISubmissionDAO = class {
                     var submission = builder.buildFromExisting(model);
                     resolve(submission);
                 }
+            }).catch((err) => {
+                reject(err);
             })
         });
     }
@@ -71,23 +75,36 @@ export const SubmissionDAO : ISubmissionDAO = class {
     static async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
         //Update submission model and store all changed properties in the database
         return new Promise((resolve,reject) => {
+            Submission.getStaticModel().findOne({_id : submission.getId()}).then((model) => {
+                
+                if(model == undefined) {
+                    reject(new Error("Cannot update: No submission with the given id exists in the database"));
+                } else {
 
-                Submission.getStaticModel().updateOne(
-                    {
-                        _id : submission.getId() 
-                    },
-                    {
-                        _id : submission.getId(), 
-                        name: submission.getName(),
-                        assignment_id: submission.getAssignmentId(),
-                        files: submission.getFiles(),
-                        entries: submission.getEntries()
-                    }
-                ).then(() => {
-                    resolve(submission);
-                }).catch((err) => {
-                    reject(err);
-                });
+                    model.updateOne(
+                        {
+                            _id : submission.getId() 
+                        },
+                        {
+                            _id : submission.getId(), 
+                            name: submission.getName(),
+                            assignment_id: submission.getAssignmentId(),
+                            files: submission.getFiles(),
+                            entries: submission.getEntries()
+                        }
+                    ).then(() => {
+                        model.save().then(() => {
+                            resolve(submission);
+                        }).catch((err) =>  {
+                            reject(err);
+                        })
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                }
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
     
