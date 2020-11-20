@@ -116,7 +116,7 @@ describe("SubmissionDAO.ts",() => {
                 expect(createdSubmission.getName()).to.equal(testSubmission.getName());
                 expect(createdSubmission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
                 expect(createdSubmission.getFiles()).to.be.empty;
-                expect(createdSubmission.getEntries()).to.be.empty
+                expect(createdSubmission.getEntries()).to.be.empty;
                 
                 //Update created Submission
                 createdSubmission.setName(updatedName);
@@ -145,8 +145,9 @@ describe("SubmissionDAO.ts",() => {
                 });
             });
         });
+
         
-        it.skip("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
+        it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
             var newSubmission = new Submission.builder().build();
             return SubmissionDAO.updateSubmission(newSubmission).then(updatedSubmission => {
                 expect(true,"updateSubmission should have failed, but it succeeded").to.equal(false);

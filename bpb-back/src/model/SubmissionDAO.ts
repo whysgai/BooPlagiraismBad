@@ -64,8 +64,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
                     resolve(submission);
                 }
             }).catch((err) => {
-                //NOTE: Suppresses Mongoose error
-                reject(new Error("Cannot find: No submission with the given id exists in the database"));
+                reject(err);
             })
         });
     }
