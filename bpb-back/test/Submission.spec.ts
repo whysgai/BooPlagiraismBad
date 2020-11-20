@@ -42,12 +42,12 @@ describe("Submission.ts.SubmissionBuilder",() => {
     describe("setEntries()",() => {
         it("Should correctly set submission's entries",() => {
             var testSubmissionNoEntries = testSubmissionBuilder.build();
-            expect(testSubmissionNoEntries.hasAnalysisResultEntries()).to.equal(false);
+            expect(testSubmission.getEntries()).to.deep.equal([]);
 
             var entries = [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")];
             testSubmissionBuilder.setEntries(entries);
             testSubmission = testSubmissionBuilder.build();
-            expect(testSubmission.hasAnalysisResultEntries()).to.equal(true);
+            expect(testSubmission.getEntries()).to.equal(entries);
         });
     });
 
@@ -162,24 +162,13 @@ describe("Submission.ts",() => {
         });
 
     });
-
-    describe("hasAnalysisResultEntries()", () => {
-        it("Should return false if the submission has no AREs",() => {
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
-        })
-
-        it("Should return true if the submission has any AREs",() => {
-            testSubmissionA.addAnalysisResultEntry(testEntryA);
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
-        })
-    });
-
+    
     describe.skip("addFile()",() => {
         //TODO: Un-skip once Visitor is implemented
         //Can't mock because visitors are created in Submission
         it("Should successfully add new file contents to the submission if input is valid",() => {
             return testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
-                expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
+                expect(testSubmissionA.getEntries().length).to.be.greaterThan(0);
             });
         });
 
@@ -198,17 +187,18 @@ describe("Submission.ts",() => {
 
     describe("addAnalysisResultEntry()",() => {
         it("Should add an AnalysisResultEntry to the submission",() => {
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
+            expect(testSubmissionA.getEntries()).to.deep.equal([]);
             testSubmissionA.addAnalysisResultEntry(testEntryA);
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
+            expect(testSubmissionA.getEntries()).to.deep.equal([testEntryA]);
         });;
     });
 
     describe("asJSON()",() => {
         it("Should return an object with the expected properties",() => {
-
+            
             var expectedJSON = {
-                "assignment_id": testSubmissionA.getId(),
+                "_id": testSubmissionA.getId(),
+                "assignment_id": testSubmissionA.getAssignmentId(),
                 "entries": [testEntryA.asJSON(),testEntryB.asJSON()],
                 "files": [testEntryA.getFilePath(),testEntryB.getFilePath()],
                 "name": testSubmissionA.getName() 

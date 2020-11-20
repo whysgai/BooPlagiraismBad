@@ -111,14 +111,14 @@ describe("SubmissionDAO.ts",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
                 
+                //Ensure created submission starts with expected default values
                 expect(createdSubmission.getId()).to.not.be.undefined;
                 expect(createdSubmission.getName()).to.equal(testSubmission.getName());
                 expect(createdSubmission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
                 expect(createdSubmission.getFiles()).to.be.empty;
                 expect(createdSubmission.getEntries()).to.be.empty
                 
-                //TODO: Perform updates to object here
-
+                //Update created Submission
                 createdSubmission.setName(updatedName);
                 createdSubmission.setAssignmentId(updatedAssignmentId);
                 createdSubmission.setFiles(updatedFiles)

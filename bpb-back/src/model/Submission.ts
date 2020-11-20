@@ -36,7 +36,6 @@ export interface ISubmission {
     setFiles(files : string[]) : void;
     addFile(content : string, filePath : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
-    hasAnalysisResultEntries() : boolean;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
     compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult;
     asJSON() : Object;
@@ -229,15 +228,7 @@ export interface ISubmission {
         return otherSubmission.compareAnalysisResultEntries(this.entries);
     }
     asJSON() : Object {
-        return {assignment_id:this.id, name:this.name, files:this.files,entries:this.entries};
-    }
-
-    hasAnalysisResultEntries() : boolean {
-        if(this.entries.length > 0) {
-            return true;
-        }
-
-        return false;
+        return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:this.entries};
     }
 
     compareAnalysisResultEntries(entries : IAnalysisResultEntry[]) : IAnalysisResult {
