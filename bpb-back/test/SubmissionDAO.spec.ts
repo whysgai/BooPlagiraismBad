@@ -167,27 +167,29 @@ describe("SubmissionDAO.ts",() => {
 
     });
 
-    describe.skip("deleteSubmission()",() => {
+    describe("deleteSubmission()",() => {
 
-        it("Should be able to delete an submission database object",() => {
+        it("Should be able to delete a submission database object",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createRes) => {
 
-                return Submission.getStaticModel().findOne({_id:createRes.getId()}).then((firstFindRes) =>{
+                return Submission.getStaticModel().findOne({_id:createRes.getId()})
+                .then((firstFindRes) =>{               
+                    expect(firstFindRes).to.have.property("name").which.equals(testSubmission.getName());
 
-                    expect(firstFindRes).to.not.be.undefined;
-                     
-                    return SubmissionDAO.deleteSubmission(testSubmission.getId()).then((deleteRes) => {
-                        return Submission.getStaticModel().findOne({_id:createRes.getId()}).then((secondFindRes) =>{
-                            expect(secondFindRes).to.be.undefined;               
-                        });
+                    return SubmissionDAO.deleteSubmission(createRes.getId()).then((deleteRes) => {
+                        
+                        return Submission.getStaticModel().findOne({_id:createRes.getId()}).then((secondFindRes) => {
+                            expect(secondFindRes).to.be.null;
+                        });                     
                     });
                 });
             });
         });
     
         it("Should throw an appropriate error if {id} specified for deletion is invalid",() => {
-            return expect(SubmissionDAO.deleteSubmission("nonexistent")).to.eventually.be.rejectedWith("Cannot delete: A submission with the given ID does not exist in the database");
+            var newSubmission = new Submission.builder().build();
+            return expect(SubmissionDAO.deleteSubmission(newSubmission.getId())).to.eventually.be.rejectedWith("Cannot delete: No submission with the given id exists in the database");
         });
     }); 
 });
