@@ -150,7 +150,7 @@ describe("SubmissionDAO.ts",() => {
         
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
             var newSubmission = new Submission.builder().build();
-            SubmissionDAO.updateSubmission(newSubmission).then(updatedSubmission => {
+            return SubmissionDAO.updateSubmission(newSubmission).then(updatedSubmission => {
                 expect(true,"updateSubmission should have failed, but it succeeded").to.equal(false);
             }).catch((err) =>{
                 expect(err).to.have.property("message").which.contains("Cannot update: No submission with the given id exists in the database");
