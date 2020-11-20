@@ -1,8 +1,6 @@
 import { expect } from "chai";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
-import { ISubmission } from "../src/model/Submission";
-import { SubmissionFactory } from "../src/model/SubmissionFactory";
-import { readFileSync } from 'fs';
+import { ISubmission, Submission } from "../src/model/Submission";
 describe("Submission.ts",() => {
 
     var testSubmissionA : ISubmission;
@@ -11,8 +9,16 @@ describe("Submission.ts",() => {
     var testEntryB : IAnalysisResultEntry;
 
     beforeEach(()=>{
-        testSubmissionA = SubmissionFactory.buildSubmission("id_a","name_a");
-        testSubmissionB = SubmissionFactory.buildSubmission("id_b","name_b");
+        var sba = new Submission.builder();
+        sba.setName("name_a");
+        sba.setAssignmentId("id_a");
+        testSubmissionA = sba.build();
+
+        var sbb = new Submission.builder();
+        sbb.setName("name_b");
+        sbb.setAssignmentId("id_b");
+        testSubmissionB = sbb.build();
+
         testEntryA = new AnalysisResultEntry("are1","subid_a","/home/file.java","method",1, 0, 100, 1,"haxrtwe","void() {}");
         testEntryB = new AnalysisResultEntry("are2","subid_b","/home/filey.java","method",2, 3, 30, 4, "reerwer","void() {}");
     });

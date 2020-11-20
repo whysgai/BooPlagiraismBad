@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
-import { IAnalysisResultEntry, AnalysisResultEntry } from "./AnalysisResultEntry";
+import { IAnalysisResultEntry } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
 import {parse} from 'java-ast'; 
@@ -12,6 +12,7 @@ import { Tlsh } from '../lib/tlsh';
  */
 export interface ISubmissionModel extends Document {
     _id : string
+    assignment_id : string
     name : string
     files : string[]
     entries : IAnalysisResultEntry[]
@@ -41,7 +42,6 @@ export interface ISubmission {
     
     static builder = class SubmissionBuilder {
     
-        private id : string;
         private assignment_id : string;
         private name : string;
     
@@ -49,22 +49,16 @@ export interface ISubmission {
             this.name = "Name Not Defined";
             this.assignment_id = "id_not_defined"
         }
-    
-        setId(id : string) : void {
-            this.id = id;
+        
+        setName(name : string) : void {
+            this.name = name;
         }
-    
         setAssignmentId(id : string) : void {
             this.assignment_id = id;        
         }
     
-        setName(name : string) : void {
-            this.name = name;
-        }
-    
         build() : ISubmission {
-            var submission = new Submission(this.name);
-            submission.setAssignmentId(this.assignment_id);
+            var submission = new Submission(this.name,this.assignment_id);
             
             var submissionModel = Submission.getStaticModel();
             var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":[],"entries":[]});
@@ -91,8 +85,9 @@ export interface ISubmission {
     private entries : IAnalysisResultEntry[];
     private modelInstance : ISubmissionModel;
 
-    constructor(name : string){
+    constructor(name : string, assignment_id : string){
         this.name = name;
+        this.assignment_id = assignment_id;
         this.entries = [];
         this.files = [];
     }
@@ -122,7 +117,11 @@ export interface ISubmission {
     }
 
     setAssignmentId(newId : string): void {
-         this.assignment_id = newId;
+         this.assignment_id = newId; 
+
+         //TODO: Make less expensive
+         var submissionModel = Submission.getStaticModel();
+         this.modelInstance = new submissionModel({"_id":this.id,"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
      }
 
     getName(): string {
@@ -131,6 +130,10 @@ export interface ISubmission {
 
     setName(newName : string): void {
          this.name = newName;
+
+         //TODO: Make less expensive
+         var submissionModel = Submission.getStaticModel();
+         this.modelInstance = new submissionModel({"_id":this.id,"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
      }
 
     getFiles() : string[] {

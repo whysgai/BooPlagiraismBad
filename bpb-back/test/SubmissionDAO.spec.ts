@@ -7,7 +7,6 @@ import {ISubmission, Submission} from "../src/model/Submission";
 var mongoose = require('mongoose');
 
 import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
-import { SubmissionFactory } from "../src/model/SubmissionFactory";
 
 describe("SubmissionDAO.ts",() => {
 
@@ -31,7 +30,10 @@ describe("SubmissionDAO.ts",() => {
     beforeEach((done)=>{
         mongoose.connection.collections.submissions.drop(() => {
             testSubmissionDAO = new SubmissionDAO();
-            testSubmission = SubmissionFactory.buildSubmission(testAssignmentId,testSubmissionName);
+            var sb = new Submission.builder();
+            sb.setName(testSubmissionName);
+            sb.setAssignmentId(testAssignmentId);
+            testSubmission = sb.build();
             done();
         });
     });

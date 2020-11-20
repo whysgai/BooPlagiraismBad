@@ -31,8 +31,7 @@ describe("SubmissionManager.ts",() => {
         testSubmissionManager = new SubmissionManager(testSubmissionDAO);
         testSubmissionName = "testname";
         testSubmissionAssignmentId = "test_aid"; //Note: this is not assigned here (assigned in tests)
-        testSubmission = new Submission(testSubmissionName);
-        testSubmission.setId("test");
+        testSubmission = new Submission.builder().build();
         testFilePath = "/vagrant/bpb-back/package.json";
     });
 
@@ -265,7 +264,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
             
-            var testSubmission2 = new Submission("somevalid");
+            var testSubmission2 = new Submission.builder().build(); 
 
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test","test",1,2,1,2,"e","e"));
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission.getId(),"test","test",1,1,2,2,"e","e"));
@@ -289,7 +288,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
-            var testSubmission2 = new Submission("someinvalid");
+            var testSubmission2 = new Submission.builder().build();
 
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
@@ -313,7 +312,7 @@ describe("SubmissionManager.ts",() => {
         
         it("Should return an appropriate error if {id_b} is valid and {id_a} does not exist",() => {
 
-            var testSubmission2 = new Submission("someinvalid");
+            var testSubmission2 = new Submission.builder().build(); 
 
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {

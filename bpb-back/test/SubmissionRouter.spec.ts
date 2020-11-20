@@ -13,7 +13,6 @@ import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
 import { Submission, ISubmission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
-import { SubmissionFactory } from "../src/model/SubmissionFactory";
 import { AnalysisResult } from "../src/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
@@ -56,8 +55,13 @@ describe('SubmissionRouter.ts',()=> {
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentManager = new AssignmentManager(testAssignmentDAO);
         
-        testAssignment = new Assignment("ID998","Test Assignment")
-        testSubmission = new Submission(testAssignment.getID(),"Test");
+        testAssignment = new Assignment("ID998","Test Assignment");
+
+        var builder = new Submission.builder();
+        builder.setAssignmentId(testAssignment.getID());
+        builder.setName("test");
+        testSubmission = builder.build();
+
         testAssignment.addSubmission(testSubmission.getId());
         testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,3,7,9,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
         testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",2,4,6,8,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
