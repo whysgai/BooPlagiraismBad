@@ -134,5 +134,9 @@ describe.skip("AnalysisResult.ts",() => {
         });
     });
 
-
+    describe("getMatches", () => {
+        it("Should return expected array.", () => {
+            expect(testAnalysisResult.getMatches()).to.have.ordered.members([[mockEntry1, mockEntry2]]);
+        });
+    });
 });
