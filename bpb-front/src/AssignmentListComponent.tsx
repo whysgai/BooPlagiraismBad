@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom'
 interface PropsType {
   assignments:Assignment[]
 }
+
 class AssignmentListComponent extends React.Component <PropsType, {}> {
   //({assignments = [{_id:"01", name:"Mikayla", submissionIds:[]}]}: {assignments: Assignment[]})
   constructor(props) {
@@ -15,14 +16,13 @@ class AssignmentListComponent extends React.Component <PropsType, {}> {
     this.state = {
       assignments : []
     };
-    
   }
   
   render () {
     return (        
       <div className='assignment-list'>
         {
-          assignments.map((assignment,index) => 
+          this.props.assignments.map((assignment,index) => 
               <li key={index}><AssignmentListCard assignment={assignment} createAssignment={null}/></li>
            )
         }
