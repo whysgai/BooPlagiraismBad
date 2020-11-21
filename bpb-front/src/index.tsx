@@ -44,7 +44,7 @@ ReactDOM.render(
       <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
       <Route path="/Help" component={HelpComponent}/>
       <Route path="/CompareSubmissions" component={ComparisonComponent}/>
-    </BrowserRouter>,
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 );
