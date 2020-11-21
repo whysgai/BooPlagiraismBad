@@ -150,17 +150,17 @@ describe("Submission.ts",() => {
         });
        
         it("Should throw an appropriate error if comparator submission is invalid (no AREs)",() =>{
-            expect(function() {testSubmissionA.compare(testSubmissionB)}).to.throw("Cannot compare: A comparator submission has no entries");
+            expect(function() {testSubmissionA.compare(testSubmissionB)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
         });
 
         it("Should throw an appropriate error if comparator submission is invalid (left has no ARE)",() => {
             testSubmissionB.addAnalysisResultEntry(testEntryB);
-            expect(function() { testSubmissionA.compare(testSubmissionB)}).to.throw("Cannot compare: A comparator submission has no entries");
+            expect(function() { testSubmissionA.compare(testSubmissionB)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
         });
         
         it("Should throw and appropriate error if comparator submission is invalid (right has no ARE)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
-            expect(function() { testSubmissionB.compare(testSubmissionA)}).to.throw("Cannot compare: A comparator submission has no entries");
+            expect(function() { testSubmissionB.compare(testSubmissionA)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
         });
 
     });
