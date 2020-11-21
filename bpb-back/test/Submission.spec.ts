@@ -1,8 +1,101 @@
 import { expect } from "chai";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
-import { ISubmission } from "../src/model/Submission";
-import { SubmissionFactory } from "../src/model/SubmissionFactory";
-import { readFileSync } from 'fs';
+import { ISubmission, Submission } from "../src/model/Submission";
+
+describe("Submission.ts.SubmissionBuilder",() => {
+
+    var testSubmission : ISubmission;
+    var testSubmissionBuilder : any;
+
+    beforeEach(() => {
+        testSubmissionBuilder = new Submission.builder();
+    });
+
+    describe("setName()",() => {
+        it("Should correctly set submission's name",() => {
+           var newName = "some_test";
+           testSubmissionBuilder.setName(newName);
+           testSubmission = testSubmissionBuilder.build();
+           expect(testSubmission.getName()).to.equal(newName);
+        });
+    });
+
+    describe("setAssignmentId()",() => {
+
+        it("Should correctly set submission's assignment ID",() => {
+            var newAssignmentId = "some_assignment_id";
+            testSubmissionBuilder.setAssignmentId(newAssignmentId);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getAssignmentId()).to.equal(newAssignmentId);
+        });
+    });
+
+    describe("setFiles()",() => {
+        it("Should correctly set submission's files",() => {
+            var files = ["some","test","files"];
+            testSubmissionBuilder.setFiles(files);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getFiles()).to.equal(files);
+        });
+    });
+
+    describe("setEntries()",() => {
+        it("Should correctly set submission's entries",() => {
+            var testSubmissionNoEntries = testSubmissionBuilder.build();
+            expect(testSubmission.getEntries()).to.deep.equal([]);
+
+            var entries = [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")];
+            testSubmissionBuilder.setEntries(entries);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getEntries()).to.equal(entries);
+        });
+    });
+
+    describe("build()",() => {
+        it("Should correctly build a submission if no builder methods are called",() => {
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getId()).to.not.be.undefined;
+            expect(testSubmission.getName()).to.not.be.undefined;
+            expect(testSubmission.getAssignmentId()).to.not.be.undefined;
+            expect(testSubmission.getModelInstance()).to.not.be.undefined;
+        });
+        it("Should correctly build a submission if builder methods are called",() => {
+            var newName = "some_other_name";
+            var newAssignmentId = "some_other_id";
+            testSubmissionBuilder.setName(newName);
+            testSubmissionBuilder.setAssignmentId(newAssignmentId);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getId()).to.equal(testSubmission.getModelInstance().id);
+            expect(testSubmission.getName()).to.equal(newName);
+            expect(testSubmission.getAssignmentId()).to.equal(newAssignmentId);
+            expect(testSubmission.getFiles()).to.be.empty;
+            expect(testSubmission.getEntries()).to.be.empty;
+        });
+    });
+
+    describe("buildFromExisting()",() => {
+        it("Should correctly build a submission from an existing database model",() => {
+            var newName = "some_other_name";
+            var newAssignmentId = "some_other_id";
+            testSubmissionBuilder.setName(newName);
+            testSubmissionBuilder.setAssignmentId(newAssignmentId);
+            testSubmissionBuilder.setFiles(["some","files"]);
+            testSubmissionBuilder.setEntries([new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]);
+            testSubmission = testSubmissionBuilder.build();
+            var testExistingModel = testSubmission.getModelInstance();
+
+            var testSubmissionBuilderExisting = new Submission.builder();
+            var testSubmissionExisting = testSubmissionBuilderExisting.buildFromExisting(testExistingModel);
+            expect(testSubmissionExisting.getId()).to.deep.equal(testSubmission.getId());
+            expect(testSubmissionExisting.getName()).to.deep.equal(testSubmission.getName());
+            expect(testSubmissionExisting.getAssignmentId()).to.deep.equal(testSubmission.getAssignmentId());
+            expect(testSubmissionExisting.getEntries()).to.deep.equal(testSubmission.getEntries());
+            expect(testSubmissionExisting.getFiles()).to.deep.equal(testSubmission.getFiles());
+        });
+    });
+});
+
+
 describe("Submission.ts",() => {
 
     var testSubmissionA : ISubmission;
@@ -11,15 +104,23 @@ describe("Submission.ts",() => {
     var testEntryB : IAnalysisResultEntry;
 
     beforeEach(()=>{
-        testSubmissionA = SubmissionFactory.buildSubmission("id_a","name_a");
-        testSubmissionB = SubmissionFactory.buildSubmission("id_b","name_b");
+        var sba = new Submission.builder();
+        sba.setName("name_a");
+        sba.setAssignmentId("id_a");
+        testSubmissionA = sba.build();
+
+        var sbb = new Submission.builder();
+        sbb.setName("name_b");
+        sbb.setAssignmentId("id_b");
+        testSubmissionB = sbb.build();
+
         testEntryA = new AnalysisResultEntry("are1","subid_a","/home/file.java","method",1, 0, 100, 1,"haxrtwe","void() {}");
         testEntryB = new AnalysisResultEntry("are2","subid_b","/home/filey.java","method",2, 3, 30, 4, "reerwer","void() {}");
     });
 
     describe("getId()",() => {
         it("Should return the submission’s id",() => {
-            expect(testSubmissionA.getId()).to.equal("id_a");
+            expect(testSubmissionA.getId()).to.equal(testSubmissionA.getModelInstance().id);
         });
     });
     describe("getName()",() => {
@@ -61,24 +162,13 @@ describe("Submission.ts",() => {
         });
 
     });
-
-    describe("hasAnalysisResultEntries()", () => {
-        it("Should return false if the submission has no AREs",() => {
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
-        })
-
-        it("Should return true if the submission has any AREs",() => {
-            testSubmissionA.addAnalysisResultEntry(testEntryA);
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
-        })
-    });
-
+    
     describe.skip("addFile()",() => {
         //TODO: Un-skip once Visitor is implemented
         //Can't mock because visitors are created in Submission
         it("Should successfully add new file contents to the submission if input is valid",() => {
             return testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
-                expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
+                expect(testSubmissionA.getEntries().length).to.be.greaterThan(0);
             });
         });
 
@@ -97,20 +187,21 @@ describe("Submission.ts",() => {
 
     describe("addAnalysisResultEntry()",() => {
         it("Should add an AnalysisResultEntry to the submission",() => {
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(false);
+            expect(testSubmissionA.getEntries()).to.deep.equal([]);
             testSubmissionA.addAnalysisResultEntry(testEntryA);
-            expect(testSubmissionA.hasAnalysisResultEntries()).to.equal(true);
+            expect(testSubmissionA.getEntries()).to.deep.equal([testEntryA]);
         });;
     });
 
     describe("asJSON()",() => {
         it("Should return an object with the expected properties",() => {
-
+            
             var expectedJSON = {
-                "assignment_id": "id_a",
+                "_id": testSubmissionA.getId(),
+                "assignment_id": testSubmissionA.getAssignmentId(),
                 "entries": [testEntryA.asJSON(),testEntryB.asJSON()],
                 "files": [testEntryA.getFilePath(),testEntryB.getFilePath()],
-                "name": "name_a"
+                "name": testSubmissionA.getName() 
             }
 
             testSubmissionA.addAnalysisResultEntry(testEntryA);

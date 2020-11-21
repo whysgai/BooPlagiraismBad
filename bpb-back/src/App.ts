@@ -20,7 +20,7 @@ class App {
     run() {
         AppConfig.printEnv();
         // Set up database connection
-        mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true}).then(async() => {
+        mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
             
             console.log("bpb-back connected to " + AppConfig.dbConnectionString());
 
@@ -30,9 +30,8 @@ class App {
             let assignmentDAO = new AssignmentDAO();
             let assignmentManager = new AssignmentManager(assignmentDAO);
 
-            // Set up SubmissionDAO and Manager
-            let submissionDAO = new SubmissionDAO();
-            let submissionManager = new SubmissionManager(submissionDAO);
+            // Set up SubmissionManager
+            let submissionManager = new SubmissionManager();
             
             // Set up express app
             let app = express();

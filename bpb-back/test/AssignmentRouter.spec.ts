@@ -33,8 +33,7 @@ describe('AssignmentRouter.ts',()=> {
         app.use(bodyParser.json());      
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentMgr = new AssignmentManager(testAssignmentDAO);
-        testSubmissionDAO = new SubmissionDAO();
-        testSubmissionMgr = new SubmissionManager(testSubmissionDAO);
+        testSubmissionMgr = new SubmissionManager();
         testRouter = new AssignmentRouter(app,"/assignments",testSubmissionMgr,testAssignmentMgr); 
         testServer = app.listen(8081);
     });
