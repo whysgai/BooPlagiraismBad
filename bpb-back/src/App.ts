@@ -18,6 +18,7 @@ class App {
     port : string;
     routers : IRouter[];
     app : express.Application;
+    server : any;
 
     constructor(dbConnectionString : string, port : string) {
         this.dbConnectionString = dbConnectionString;
@@ -26,40 +27,51 @@ class App {
         this.app = express();
         this.app.use(express.json());
         this.app.use(fileUpload());
+        this.server = undefined;
     }
 
-    run() {
+    async run() {
         
-        // Set up database connection
-        mongoose.connect(this.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
-            
-            console.log("bpb-back connected to " + this.dbConnectionString);
+        return new Promise((resolve,reject) => {
 
-            mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
+            // Set up database connection
+            mongoose.connect(this.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
+                
+                console.log("bpb-back connected to " + this.dbConnectionString);
 
-            // Set up AssignmentManager
-            var assignmentDAO = new AssignmentDAO();
-            var assignmentManager = new AssignmentManager(assignmentDAO);
+                mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
 
-            // Set up SubmissionManager
-            var submissionManager = new SubmissionManager();
+                // Set up AssignmentManager
+                var assignmentDAO = new AssignmentDAO();
+                var assignmentManager = new AssignmentManager(assignmentDAO);
 
-            // Set up routers
-            this.routers.push(new SubmissionRouter(this.app,'/submissions',submissionManager,assignmentManager));
-            this.routers.push(new AssignmentRouter(this.app,'/assignments',submissionManager,assignmentManager));
+                // Set up SubmissionManager
+                var submissionManager = new SubmissionManager();
 
-            // Start listening for traffic
-            this.app.listen(this.port,() => {
-                console.log("bpb-back listening on port " + this.port);
+                // Set up routers
+                this.routers.push(new SubmissionRouter(this.app,'/submissions',submissionManager,assignmentManager));
+                this.routers.push(new AssignmentRouter(this.app,'/assignments',submissionManager,assignmentManager));
+
+                // Start listening for traffic
+                this.server = this.app.listen(this.port,() => {
+
+                    console.log("bpb-back listening on port " + this.port);
+                    
+                    this.server.on("close",() => {
+                        console.log("bpb-back shutting down...");
+                        mongoose.disconnect();
+                    });
+
+                    resolve();
+                });
+            }).catch((err) => {
+                reject(err);
             });
-
-            //Close database connection on shutdown
-            //TODO: This may cause issues with the running application
-            mongoose.disconnect();
-
-        }).catch((err) => {
-            console.log(err);
         });
+    }
+
+    shutDown() : void {
+        this.server.close();
     }
 }
 

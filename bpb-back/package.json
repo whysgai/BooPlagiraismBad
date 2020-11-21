@@ -4,7 +4,7 @@
   "description": "BPB backend API",
   "main": "_main.ts",
   "scripts": {
-    "test": "export APIPORT=test1;export UPLOADDIRECTORY=test2;export DBCONNECTIONSTRING=test;mongodb://127.0.0.1:27017/bpbtestintegration;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
+    "test": "export APIPORT=test1;export UPLOADDIRECTORY=test2;export DBCONNECTIONSTRING=test3;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
     "start": "tsc && node dist/src/_main.js"
   },
   "repository": {
