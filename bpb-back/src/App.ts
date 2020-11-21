@@ -1,11 +1,10 @@
 import express from 'express';
 import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
-import { AppConfig } from './AppConfig';
 import { AssignmentDAO } from './model/AssignmentDAO';
 import { AssignmentManager } from './manager/AssignmentManager';
-import { SubmissionDAO } from './model/SubmissionDAO';
 import { SubmissionManager } from './manager/SubmissionManager';
+import IRouter from './router/IRouter';
 import AssignmentRouter from './router/AssignmentRouter'
 import SubmissionRouter from './router/SubmissionRouter'
 
@@ -15,44 +14,52 @@ import SubmissionRouter from './router/SubmissionRouter'
  */
 class App {
     
-    constructor() {}
+    dbConnectionString : string;
+    port : string;
+    routers : IRouter[];
+    app : express.Application;
+
+    constructor(dbConnectionString : string, port : string) {
+        this.dbConnectionString = dbConnectionString;
+        this.port = port;
+        this.routers = [];
+        this.app = express();
+        this.app.use(express.json());
+        this.app.use(fileUpload());
+    }
 
     run() {
         
         // Set up database connection
-        mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
+        mongoose.connect(this.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
             
-            console.log("bpb-back connected to " + AppConfig.dbConnectionString());
+            console.log("bpb-back connected to " + this.dbConnectionString);
 
             mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
 
-            // Set up AssignmentDAO and Manager
-            let assignmentDAO = new AssignmentDAO();
-            let assignmentManager = new AssignmentManager(assignmentDAO);
+            // Set up AssignmentManager
+            var assignmentDAO = new AssignmentDAO();
+            var assignmentManager = new AssignmentManager(assignmentDAO);
 
             // Set up SubmissionManager
-            let submissionManager = new SubmissionManager();
-            
-            // Set up express app
-            let app = express();
-            app.use(express.json());
-
-            // Add app middleware
-            app.use(fileUpload());
+            var submissionManager = new SubmissionManager();
 
             // Set up routers
-            let routers = []
-
-            routers.push(new SubmissionRouter(app,'/submissions',submissionManager,assignmentManager));
-            routers.push(new AssignmentRouter(app,'/assignments',submissionManager,assignmentManager));
-
+            this.routers.push(new SubmissionRouter(this.app,'/submissions',submissionManager,assignmentManager));
+            this.routers.push(new AssignmentRouter(this.app,'/assignments',submissionManager,assignmentManager));
 
             // Start listening for traffic
-            app.listen(AppConfig.port(),() => {
-                console.log("bpb-back listening on port " + AppConfig.port());
+            this.app.listen(this.port,() => {
+                console.log("bpb-back listening on port " + this.port);
             });
 
-        }).catch(err => console.log(err));
+            //Close database connection on shutdown
+            //TODO: This may cause issues with the running application
+            mongoose.disconnect();
+
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 }
 
