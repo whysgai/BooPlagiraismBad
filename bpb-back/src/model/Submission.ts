@@ -167,7 +167,7 @@ export interface ISubmission {
             });
         });
 
-        let similarityScore = 5; //TODO: IMPLEMENT THIS ALGORITHM
+        let similarityScore = (2 * matchedEntries.length) / ((2 * matchedEntries.length) + this.entries.length + entries.length); 
         var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
         return analysisResult;
     }
