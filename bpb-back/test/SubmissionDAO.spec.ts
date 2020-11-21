@@ -30,8 +30,6 @@ describe("SubmissionDAO.ts",() => {
     beforeEach((done)=>{
 
         //Restore global prototype mocks
-        //chai.spy.restore(Submission.getStaticModel().prototype,"save");
-        //chai.spy.restore(Submission.getStaticModel().prototype,"find");
         chai.spy.restore(Submission.getStaticModel());
 
         mongoose.connection.collections.submissions.drop(() => {
@@ -90,8 +88,8 @@ describe("SubmissionDAO.ts",() => {
         });
 
         it("Should throw an appropriate error if database find fails",() => {
-            chai.spy.on(Submission.getStaticModel(),'find',() => { return Promise.reject(new Error("Cannot find"))});
-            return expect(SubmissionDAO.readSubmission(testSubmission.getId())).to.eventually.be.rejectedWith("Cannot find");
+            chai.spy.on(Submission.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(SubmissionDAO.readSubmission(testSubmission.getId())).to.eventually.be.rejectedWith("Cannot findOne");
         });
     });
 
