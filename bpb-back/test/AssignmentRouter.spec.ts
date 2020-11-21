@@ -121,6 +121,17 @@ describe('AssignmentRouter.ts',()=> {
         });
     });
 
+    it("Should be able to interpret a failed request to GET /assignments to get all assignments if manager.getAssignments fails", () => {
+        
+        chai.spy.on(testAssignmentMgr,'getAssignments',() =>{return Promise.reject(new Error("Failed to get assignments"))});
+
+        chai.request(testServer).get("/assignments")
+        .then(res  => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("Failed to get assignments");
+        });
+    });
+
     it("Should be able to interpret a request to GET /assignments/{id} where {id} is valid",() => {
 
         const expectedId = '009'
