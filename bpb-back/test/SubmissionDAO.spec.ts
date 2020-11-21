@@ -200,7 +200,7 @@ describe("SubmissionDAO.ts",() => {
             return expect(SubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Cannot findOne");
         });
 
-        it("Should throw an appropriate error if database findOneAndUpdaet fails during update",() => { 
+        it("Should throw an appropriate error if database findOneAndUpdate fails during update",() => { 
             chai.spy.on(Submission.getStaticModel(),'findOneAndUpdate',() => { return Promise.reject(new Error("Cannot findOneAndUpdate"))});
             
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
