@@ -193,7 +193,7 @@ describe('AssignmentRouter.ts',()=> {
     it("Should be able to interpret a failed request to PUT /assignments/{id} where {id} is invalid",() => {
         const expectedId = '0077'
         const expectedName = "Jims Bonde"
-        const putBody = {"_id":expectedId,"name":expectedName,"submissions":["test21"]}
+        const putBody = {"name":expectedName,"submissions":["test21"]}
 
         var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
         var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
@@ -208,11 +208,23 @@ describe('AssignmentRouter.ts',()=> {
         })
     });
 
-    //TODO: Add later
-    it('Should be able to interpret a failed request to PUT /assignments/{id} if any properties are missing');
-    
-    it('Should be able to interpret a failed request to PUT /assignments/{id} if any specified submission IDs do not exist');
+    it('Should be able to interpret a failed request to PUT /assignments/{id} if request body does not include at least one expected property',() => {
+        const expectedId = '0012'
+        const expectedName = "Faith"
+        const mockAssignment = new Assignment(expectedId,expectedName);
 
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
+ 
+        chai.request(testServer).put("/assignments/"+expectedId)
+        .then(res => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("A request body was not provided, or the provided request body is missing both name and submissions properties");
+            expect(mockGetMethod).to.not.have.been.called;
+            expect(mockUpdateMethod).not.to.have.been.called;
+        })
+    });
+    
     it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid",() => {
        
         const expectedId = '89890'

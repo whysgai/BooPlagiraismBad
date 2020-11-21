@@ -82,18 +82,26 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.status(400);
       res.send({"response":"An assignment id was not provided"});
     } else {
-      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-        this.assignmentManager.updateAssignment(assignment,req.body)
-        .then(assignment => {
-          res.send(assignment.asJSON());
+     
+      console.log(req.body);
+
+      if(!req.body.name && !req.body.submissions) {
+        res.status(400);
+        res.send({"response":"A request body was not provided, or the provided request body is missing both name and submissions properties"});
+      } else {
+        this.assignmentManager.getAssignment(assignmentId).then(assignment => {
+          this.assignmentManager.updateAssignment(assignment,req.body)
+          .then(assignment => {
+            res.send(assignment.asJSON());
+          }).catch((err) => {
+            res.status(400);  
+            res.send({"response":err.message});
+          });
         }).catch((err) => {
-          res.status(400);  
+          res.status(400);
           res.send({"response":err.message});
         });
-      }).catch((err) => {
-        res.status(400);
-        res.send({"response":err.message});
-      });
+      }
     }
   }
 
