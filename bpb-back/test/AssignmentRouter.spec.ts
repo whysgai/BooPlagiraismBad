@@ -9,7 +9,6 @@ import chaiSpies = require("chai-spies");
 import { IAssignmentManager, AssignmentManager } from "../src/manager/AssignmentManager";
 import { IAssignmentDAO, AssignmentDAO } from "../src/model/AssignmentDAO";
 import { Assignment } from "../src/model/Assignment";
-import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
 import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 
 describe('AssignmentRouter.ts',()=> {

@@ -1,7 +1,5 @@
 import { expect } from "chai";
-import { model } from "mongoose";
 import {Assignment,IAssignment} from "../src/model/Assignment"
-import {AssignmentFactory} from "../src/model/AssignmentFactory"
 
 describe("Assignment.ts",() => {
 
@@ -12,7 +10,7 @@ describe("Assignment.ts",() => {
     beforeEach(() => {
         assignmentId = "test_id"
         assignmentName = "test_name"
-        assignment = AssignmentFactory.buildAssignment(assignmentId,assignmentName);
+        assignment = new Assignment(assignmentId,assignmentName); //TODO: Replace with builder 
     });
 
     describe('getId()',() => {
