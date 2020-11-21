@@ -25,7 +25,7 @@ const reducers = combineReducers({
   SubmissionReducer: SubmissionReducer
 })
 
-const store = createStore(reducers);
+export const store = createStore(reducers);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -45,7 +45,7 @@ ReactDOM.render(
           {_id:"01", name:"Mikayla", assignment:'Assignment1', files:[]},
           {_id:"02", name:"Will", assignment:'Assignment1', files:[]},
         ] 
-      } compareEnabled={false}/></Route>
+      } compareEnabled={0}/></Route>
       {/* <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/> */}
       <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
       <Route path="/Help" component={HelpComponent}/>
