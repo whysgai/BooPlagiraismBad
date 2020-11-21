@@ -14,8 +14,14 @@ describe('App.ts',()=> {
         })
     });
 
-    it("Should throw an appropriate error if a database connection can't be acquired",() => {
+    it("Should throw an appropriate error if a database connection can't be acquired due to invalid connection string",() => {
+        
         var app = new App("invalid_connection_string","6656");
-        expect(app).to.not.be.undefined;
+        
+        return app.run().then((res) => {
+            expect(true,"App should fail to run, but it did not").to.equal(false);
+        }).catch((err) => {
+            expect(err).to.have.property("message").which.equals("Invalid connection string");
+        })
     });
 });

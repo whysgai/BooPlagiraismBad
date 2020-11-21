@@ -39,7 +39,9 @@ class App {
                 
                 console.log("bpb-back connected to " + this.dbConnectionString);
 
-                mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
+                mongoose.connection.on('error',(err) => {
+                    reject(err);
+                });
 
                 // Set up AssignmentManager
                 var assignmentDAO = new AssignmentDAO();
