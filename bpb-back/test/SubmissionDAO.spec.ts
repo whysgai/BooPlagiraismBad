@@ -141,7 +141,6 @@ describe("SubmissionDAO.ts",() => {
 
     describe("updateSubmission()",() => {
 
-    
         it("Should update an submission database object if {id} is valid",() => {
             
             //New values to assign after creation
@@ -196,6 +195,18 @@ describe("SubmissionDAO.ts",() => {
             });
         });
 
+        it("Should throw an appropriate error if database findOne fails during update",() => {
+            chai.spy.on(Submission.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(SubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Cannot findOne");
+        });
+
+        it("Should throw an appropriate error if database findOneAndUpdaet fails during update",() => { 
+            chai.spy.on(Submission.getStaticModel(),'findOneAndUpdate',() => { return Promise.reject(new Error("Cannot findOneAndUpdate"))});
+            
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
+                return expect(SubmissionDAO.updateSubmission(createdSubmission)).to.eventually.be.rejectedWith("Cannot findOneAndUpdate");
+            });
+        });
     });
 
     describe("deleteSubmission()",() => {
