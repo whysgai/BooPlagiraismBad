@@ -123,7 +123,11 @@ describe("SubmissionDAO.ts",() => {
             });
         });
 
-        it("Should throw an appropriate error if returned submissions can't be built (invalid model or builder failure)");
+        it("Should throw an appropriate error if returned submissions can't be built (invalid model or builder failure)",() => {
+            chai.spy.on(Submission.builder,'buildFromExisting',() => { return Promise.reject("Can't build from model")});
+
+            return expect(SubmissionDAO.readSubmissions("someid")).to.eventually.be.rejectedWith("Can't build from model");
+        });
     });
 
     describe("updateSubmission()",() => {
