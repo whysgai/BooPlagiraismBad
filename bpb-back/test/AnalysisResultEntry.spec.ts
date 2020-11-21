@@ -82,4 +82,15 @@ describe("AnalysisResultEntry",() => {
         });
     });
 
+    describe("getStaticModel",() => {
+        it("Should return a non-undefined static model",() => {
+            expect(AnalysisResultEntry.getStaticModel()).to.not.be.undefined;
+        });
+    });
+
+    describe("getModelInstance",() => {
+        it("Should return a non-undefined model instance",() => {
+            expect(testARE.getModelInstance()).to.not.be.undefined;
+        });
+    });
 });

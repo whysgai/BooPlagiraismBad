@@ -50,10 +50,17 @@ describe("SubmissionManager.ts",() => {
         it("Should return submission if the provided ID is valid",()=> {
             var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
+            //Initial query accesses DAO and returns mock
             return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
                 expect(submission).to.deep.equal(testSubmission);
-                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
-            })
+                expect(mockReadSubmission).to.have.been.called.once.with(testSubmissionId);
+
+                //Second query uses cache (doesn't access DAO)
+                return testSubmissionManager.getSubmission(testSubmissionId).then((submission2) => {
+                    expect(submission2).to.deep.equal(testSubmission);
+                    expect(mockReadSubmission).to.have.been.called.once; // Cache is used
+                });
+            });
         });
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
@@ -82,7 +89,17 @@ describe("SubmissionManager.ts",() => {
         it("Should return no submissions if there are none",() =>{
             chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([])});
             expect(testSubmissionManager.getSubmissions(testSubmissionAssignmentId)).to.eventually.be.fulfilled.with.an("array").that.is.empty;
-        });        
+        });     
+        
+         it("Should throw an appropriate error if DAO read fails",() =>{
+            chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.reject(new Error("Read failed"))});
+            
+            return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
+                expect(true,"getSubmissions should have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Read failed");
+            })
+        });     
     });
 
     describe("createSubmission()",() => {
@@ -97,6 +114,18 @@ describe("SubmissionManager.ts",() => {
                 expect(submission.getName()).to.equal(testSubmission.getName());
                 expect(submission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
             });
+        });
+
+        it("Should throw an appropriate error if DAO fails to create a submission",() => {
+            chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.reject(new Error("Failed to create"))});
+
+            var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
+            
+            return testSubmissionManager.createSubmission(createBody).then(() => {
+                expect(true,"createSubmission should fail, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Failed to create");
+            })
         });
     });
 
@@ -163,6 +192,23 @@ describe("SubmissionManager.ts",() => {
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("Submission does not exist");
+            });
+        });
+
+        it("Should return an appropriate error if DAO fails to update the submission",() => {
+            chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.reject(new Error("updateSubmission failed"))});
+
+            var expectedNewName = "test";
+            var expectedNewAssnId = "test2";
+
+            var updateBody : SubmissionData = {name:expectedNewName,assignment_id:expectedNewAssnId};
+
+            return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(true,"updateSubmission is succeeding where it should fail (updateSubmission should fail)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("updateSubmission failed");
             });
         });
     });
@@ -239,6 +285,24 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.contains("no such file or directory");
             });
         });
+
+        it("Should return an appropriate error if DAO fails to update the submission",() => {
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.reject(new Error("Failed to update"))}); 
+
+            var mockAddFile = chai.spy.on(testSubmission,'addFile',() => { return Promise.resolve() });
+            
+            return readFileContent(testFilePath).then((buffer) => {
+                var expectedContent = buffer.toString();
+                
+                return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                    expect(true,"processSubmissionFile should have failed (DAO should have returned mock error), but it didn't").to.equal(false);
+                }).catch((err) => {
+                    expect(err).to.have.property("message").which.equals("Failed to update");
+                })
+            });
+        });
     });
 
     describe("deleteSubmission({id})",() =>{
@@ -246,7 +310,6 @@ describe("SubmissionManager.ts",() => {
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
             
             chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
-            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
 
             var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.resolve(testSubmission)}); 
             
@@ -257,7 +320,6 @@ describe("SubmissionManager.ts",() => {
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
             
-            chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {}); 
             
@@ -267,6 +329,20 @@ describe("SubmissionManager.ts",() => {
                 expect(mockDeleteSubmission).to.not.have.been.called;
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
+            });
+        });
+
+        it("Should throw an error if the DAO fails to delete the specified submission",() =>{
+            
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
+            var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.reject(new Error("Delete failed"))}); 
+            
+            return testSubmissionManager.deleteSubmission("some_nonexistent_id").then((submission) => {
+                expect(true,"deleteSubmission is succeeding where it should fail (DAO deletion failed)").to.equal(false);
+            }).catch((err) => {
+                expect(mockDeleteSubmission).to.have.been.called;
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.equals("Delete failed");
             });
         })
     });
@@ -342,6 +418,20 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
+            });
+        });
+
+        it("Should return an appropriate error if getSubmissions fails",() => {
+
+            var testSubmission2 = new Submission.builder().build(); 
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.reject(new Error("getSubmission failed"))});
+
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (GET failed)").to.be.false;
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.equals("getSubmission failed");
             });
         });
     });

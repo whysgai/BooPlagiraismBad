@@ -31,8 +31,7 @@ export interface IAnalysisResultEntry {
  */
 export class AnalysisResultEntry implements IAnalysisResultEntry {
 
-    private static analsysResultEntrySchema = new Schema ({
-        _id: String,
+    private static analysisResultEntrySchema = new Schema ({
         submissionId : String, 
         filePath : String, 
         contextType : String, 
@@ -42,10 +41,7 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         text : String
     })
 
-    private static analysisResultEntryModel = mongoose.model<IAnalysisResultEntryModel>(
-        'AnalysisResultEntry', AnalysisResultEntry.analsysResultEntrySchema
-        );
-
+    private static analysisResultEntryModel = mongoose.model<IAnalysisResultEntryModel>('AnalysisResultEntry', AnalysisResultEntry.analysisResultEntrySchema);
 
     constructor(
         private id : string,
@@ -101,7 +97,6 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         return this.hashValue;
     }
     asJSON(): Object {
-        // throw new Error("Method not implemented.");
         return {
             id:this.id,
             submissionId:this.submissionId,
@@ -130,6 +125,4 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
             "text":this.text
         });
     }
-    
-
 }

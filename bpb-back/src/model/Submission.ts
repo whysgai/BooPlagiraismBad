@@ -100,7 +100,11 @@ export interface ISubmission {
          //NOTE: Using buildFromExisting overrides all other builder methods
          buildFromExisting(model : ISubmissionModel) : ISubmission {
              var submission = new Submission();
-             
+            
+             if(!model.id || !model.name || !model.assignment_id || !model.entries || !model.files) {
+                throw new Error("At least one required model property is not present on the provided model");
+             }
+
              submission.setId(model.id);
              submission.setName(model.name);
              submission.setAssignmentId(model.assignment_id);
@@ -222,36 +226,37 @@ export interface ISubmission {
     }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult {
-        if(this.entries.length <= 0 ) {
-            throw new Error("Cannot compare: A comparator submission has no entries");
-        }
         return otherSubmission.compareAnalysisResultEntries(this.entries);
     }
+
     asJSON() : Object {
         return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:this.entries};
     }
 
-    compareAnalysisResultEntries(entries : IAnalysisResultEntry[]) : IAnalysisResult {
+    compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult {
         
-        if(this.entries.length <= 0) {
-            throw new Error("Cannot compare: A comparator submission has no entries");
+        if(this.entries.length <= 0|| otherEntries.length <= 0) {
+            throw new Error("Cannot compare: One or more comparator submissions has no entries");
         }
 
         var analysisResult = new AnalysisResult();
 
         this.entries.forEach((entry) => {
-            entries.forEach((otherEntry) => {
+            otherEntries.forEach((otherEntry) => {
 
-                var hashA = entry.getHashValue();
-                var hashB = otherEntry.getHashValue();
 
-                //TODO: Replace
-                var comparison = 1;
-                var threshold = 0;
+                //TODO: Update to use actual hash comparison
+                //This will include all possible pairings in IAnalysisResult
 
-                if(comparison > threshold) {  
+                //var hashA = entry.getHashValue();
+                //var hashB = otherEntry.getHashValue();
+
+                //var comparison = 1;
+                //var threshold = 0;
+
+                //if(comparison > threshold) {  
                     analysisResult.addMatch(entry,otherEntry);
-                }
+                //}
             });
         });
 

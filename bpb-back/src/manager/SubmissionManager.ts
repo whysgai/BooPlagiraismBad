@@ -54,14 +54,17 @@ export class SubmissionManager implements ISubmissionManager {
      */
     getSubmission = async(submissionId : string) : Promise<ISubmission> => {
         return new Promise((resolve, reject) => {
+
             if(this.submissionCache.get(submissionId) != undefined) {
                 resolve(this.submissionCache.get(submissionId));
+            } else {
+                SubmissionDAO.readSubmission(submissionId).then((submission) => {
+                    this.submissionCache.set(submissionId,submission);
+                    resolve(submission);
+                }).catch((err) => {
+                    reject(err);
+                });    
             }
-            SubmissionDAO.readSubmission(submissionId).then((submission) => {
-                resolve(submission);
-            }).catch((err) => {
-                reject(err);
-            });    
         });
     }
 
@@ -100,7 +103,6 @@ export class SubmissionManager implements ISubmissionManager {
                 }).catch((err) => {
                    reject(err);
                 }) 
-            
             }).catch((err) => {
                 reject(err);
             });

@@ -25,7 +25,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         exampleTree = parse(javaStr);
     });
 
-    describe("Constructor Tests", () => {
+    describe("constructor()", () => {
         it('Should create visitor when provided a non-empty string for filePath parameter.', () => {
             let goodConstructor = function() { new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission)};
             expect(goodConstructor).to.not.throw(Error); 
@@ -42,7 +42,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
     });
 
-    describe("getAnalysisResultEntries", () => {
+    describe("getAnalysisResultEntries()", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
 
         beforeEach(() => {
@@ -66,21 +66,21 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
     });
 
-    describe("getFilePath", () => {
+    describe("getFilePath()", () => {
         it("Should return a string with the expected value.", () => {
             let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
             expect(newVisitor.getFilePath()).is.equal(exampleFilePath);
         });
     });
 
-    describe("getSubmission", () => {
+    describe("getSubmission()", () => {
         it("Should return the expected Submission object.", () => {
             let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
             expect(newVisitor.getSubmission()).is.equal(mockSubmission);
         });
     });
 
-    describe("hasVisited", () => {
+    describe("hasVisited()", () => {
         var newVisitor : IAnalysisResultEntryCollectorVisitor;
 
         beforeEach(() => {
@@ -97,7 +97,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         })
     })
 
-    describe("visit (checks resultant array and contents for validity)", () => {
+    describe("visit()", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
         var analysisResultEntries : AnalysisResultEntry[];
         var firstEntry : AnalysisResultEntry;
@@ -109,51 +109,41 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
             firstEntry = analysisResultEntries[0];
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.contextType Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (contextType is correct)", () => {
             expect(firstEntry.getContextType()).to.equal("compilationUnit");
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.hashValue Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (hashValue is correct)", () => {
             let expectedHash = "9EB16BE3F7DA712B429867B30547B100DE94FF20827829F8C5DEAF49554819086B7F9D";
             expect(firstEntry.getHashValue()).to.equal(expectedHash);
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.lineNumberStart Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (lineNumberStart is correct)", () => {
             expect(firstEntry.getLineNumberStart()).to.equal(1);
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.lineNumberEnd Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (lineNumberEnd is correct)", () => {
             expect(firstEntry.getLineNumberEnd()).to.equal(22);
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.charPosStart Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (charPosStart is correct)", () => {
             expect(firstEntry.getCharPosStart()).to.equal(0);
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.charPosEnd Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (charPosEnd is correct)", () => {
             expect(firstEntry.getCharPosEnd()).to.equal(1);
         });    
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.submissionId Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (submissionId is correct)", () => {
             expect(firstEntry.getSubmissionID()).to.equal(exampleSubmissionId);
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.filePath Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (filePath is correct)", () => {
             expect(firstEntry.getFilePath()).to.equal(exampleFilePath);
         });
 
-        it("First entry in resultant AnalysisResultArray[] Should correspond to the root of the given ParseTree," +
-        "and firstEntry.text Should match as expected.", () => {
+        it("Should produce a list of entries which has the correct first entry (text is correct)", () => {
             expect(firstEntry.getText()).to.equal(readFileSync('/vagrant/bpb-back/test/res/AnalysisResultEntryCollector_VisitorVisitTestText.txt').toString());
         });
-        
     });
 });

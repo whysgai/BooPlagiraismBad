@@ -1,11 +1,10 @@
 import express from 'express';
 import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
-import { AppConfig } from './AppConfig';
 import { AssignmentDAO } from './model/AssignmentDAO';
 import { AssignmentManager } from './manager/AssignmentManager';
-import { SubmissionDAO } from './model/SubmissionDAO';
 import { SubmissionManager } from './manager/SubmissionManager';
+import IRouter from './router/IRouter';
 import AssignmentRouter from './router/AssignmentRouter'
 import SubmissionRouter from './router/SubmissionRouter'
 
@@ -15,44 +14,66 @@ import SubmissionRouter from './router/SubmissionRouter'
  */
 class App {
     
-    constructor() {}
+    dbConnectionString : string;
+    port : string;
+    routers : IRouter[];
+    app : express.Application;
+    server : any;
 
-    run() {
-        AppConfig.printEnv();
-        // Set up database connection
-        mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
-            
-            console.log("bpb-back connected to " + AppConfig.dbConnectionString());
+    constructor(dbConnectionString : string, port : string) {
+        this.dbConnectionString = dbConnectionString;
+        this.port = port;
+        this.routers = [];
+        this.app = express();
+        this.app.use(express.json());
+        this.app.use(fileUpload());
+        this.server = undefined;
+    }
 
-            mongoose.connection.on('error',console.error.bind(console,'Database connection error:'));
+    async run() {
+        
+        return new Promise((resolve,reject) => {
 
-            // Set up AssignmentDAO and Manager
-            let assignmentDAO = new AssignmentDAO();
-            let assignmentManager = new AssignmentManager(assignmentDAO);
+            // Set up database connection
+            mongoose.connect(this.dbConnectionString, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
+                
+                console.log("bpb-back connected to " + this.dbConnectionString);
 
-            // Set up SubmissionManager
-            let submissionManager = new SubmissionManager();
-            
-            // Set up express app
-            let app = express();
-            app.use(express.json());
+                mongoose.connection.on('error',(err) => {
+                    reject(err);
+                });
 
-            // Add app middleware
-            app.use(fileUpload());
+                // Set up AssignmentManager
+                var assignmentDAO = new AssignmentDAO();
+                var assignmentManager = new AssignmentManager(assignmentDAO);
 
-            // Set up routers
-            let routers = []
+                // Set up SubmissionManager
+                var submissionManager = new SubmissionManager();
 
-            routers.push(new SubmissionRouter(app,'/submissions',submissionManager,assignmentManager));
-            routers.push(new AssignmentRouter(app,'/assignments',submissionManager,assignmentManager));
+                // Set up routers
+                this.routers.push(new SubmissionRouter(this.app,'/submissions',submissionManager,assignmentManager));
+                this.routers.push(new AssignmentRouter(this.app,'/assignments',submissionManager,assignmentManager));
 
+                // Start listening for traffic
+                this.server = this.app.listen(this.port,() => {
 
-            // Start listening for traffic
-            app.listen(AppConfig.port(),() => {
-                console.log("bpb-back listening on port " + AppConfig.port());
+                    console.log("bpb-back listening on port " + this.port);
+                    
+                    this.server.on("close",() => {
+                        console.log("bpb-back shutting down...");
+                        mongoose.disconnect();
+                    });
+
+                    resolve();
+                });
+            }).catch((err) => {
+                reject(err);
             });
+        });
+    }
 
-        }).catch(err => console.log(err));
+    shutDown() : void {
+        this.server.close();
     }
 }
 

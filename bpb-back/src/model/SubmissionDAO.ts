@@ -37,14 +37,16 @@ export const SubmissionDAO : ISubmissionDAO = class {
         //Return all submissions of assignment
         return new Promise((resolve,reject) => {
             Submission.getStaticModel().find({assignment_id : assignmentId}).then((submissionModels) => {
-               
-                var newSubObjects = submissionModels.map( model => {return new Submission.builder().buildFromExisting(model);});
 
-                Promise.all(newSubObjects).then(submissions => {
+                Promise.all(
+                    submissionModels.map(
+                        model => {
+                            return new Submission.builder().buildFromExisting(model);
+                        }
+                    )
+                ).then(submissions => {
                     resolve(submissions);
-                }).catch((err) => {
-                    reject(err);
-                });
+                }); //NOTE: Removed catch (should be caught downsteam in chain)
             }).catch((err) => {
                 reject(err);
             });

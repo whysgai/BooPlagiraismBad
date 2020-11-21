@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
+import { textChangeRangeIsUnchanged } from "typescript";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
@@ -28,11 +29,14 @@ describe("SubmissionDAO.ts",() => {
 
     beforeEach((done)=>{
 
+        //Restore global prototype mocks
+        chai.spy.restore(Submission.getStaticModel());
+
         mongoose.connection.collections.submissions.drop(() => {
-            var sb = new Submission.builder();
-            sb.setName(testSubmissionName);
-            sb.setAssignmentId(testAssignmentId);
-            testSubmission = sb.build();
+            var builder = new Submission.builder();
+            builder.setName(testSubmissionName);
+            builder.setAssignmentId(testAssignmentId);
+            testSubmission = builder.build();
             done();
         });
     });
@@ -57,6 +61,13 @@ describe("SubmissionDAO.ts",() => {
                 });
             });
         });
+
+        it("Should throw an appropriate error if object can't be saved",() => {
+
+            chai.spy.on(Submission.getStaticModel().prototype,'save',() => {return Promise.reject(new Error("Cannot save"))});
+
+            return expect(SubmissionDAO.createSubmission(testSubmission.getName(),testSubmission.getAssignmentId())).to.eventually.be.rejectedWith("Cannot save");
+        });
     });
 
     describe("readSubmission()",() => {
@@ -74,6 +85,11 @@ describe("SubmissionDAO.ts",() => {
         it("Should throw an appropriate error if {id} of submission to be read is invalid",() => {
             var nonPersistedSubmission = new Submission.builder().build(); 
             return expect(SubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Cannot find: No submission with the given id exists in the database");
+        });
+
+        it("Should throw an appropriate error if database find fails",() => {
+            chai.spy.on(Submission.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(SubmissionDAO.readSubmission(testSubmission.getId())).to.eventually.be.rejectedWith("Cannot findOne");
         });
     });
 
@@ -111,11 +127,20 @@ describe("SubmissionDAO.ts",() => {
                 });
             });
         });
+        
+        it("Should throw an appropriate error if database find fails",() => {
+            chai.spy.on(Submission.getStaticModel(),'find',() => { return Promise.reject(new Error("Cannot find"))});
+            return expect(SubmissionDAO.readSubmissions("someid")).to.eventually.be.rejectedWith("Cannot find");
+        });
+
+        it("Should throw an appropriate error if returned submissions can't be built (can't map model results)",() => {
+            chai.spy.on(Submission.getStaticModel(),'find',() => { return Promise.resolve([{}])});
+            return expect(SubmissionDAO.readSubmissions("someid")).to.eventually.be.rejectedWith("At least one required model property is not present on the provided model");
+        });
     });
 
     describe("updateSubmission()",() => {
 
-    
         it("Should update an submission database object if {id} is valid",() => {
             
             //New values to assign after creation
@@ -170,6 +195,18 @@ describe("SubmissionDAO.ts",() => {
             });
         });
 
+        it("Should throw an appropriate error if database findOne fails during update",() => {
+            chai.spy.on(Submission.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(SubmissionDAO.updateSubmission(testSubmission)).to.eventually.be.rejectedWith("Cannot findOne");
+        });
+
+        it("Should throw an appropriate error if database findOneAndUpdate fails during update",() => { 
+            chai.spy.on(Submission.getStaticModel(),'findOneAndUpdate',() => { return Promise.reject(new Error("Cannot findOneAndUpdate"))});
+            
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
+                return expect(SubmissionDAO.updateSubmission(createdSubmission)).to.eventually.be.rejectedWith("Cannot findOneAndUpdate");
+            });
+        });
     });
 
     describe("deleteSubmission()",() => {
@@ -195,6 +232,19 @@ describe("SubmissionDAO.ts",() => {
         it("Should throw an appropriate error if {id} specified for deletion is invalid",() => {
             var newSubmission = new Submission.builder().build();
             return expect(SubmissionDAO.deleteSubmission(newSubmission.getId())).to.eventually.be.rejectedWith("Cannot delete: No submission with the given id exists in the database");
+        });
+
+        it("Should throw an appropriate error if database findOne fails during deletion",() => {
+            chai.spy.on(Submission.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(SubmissionDAO.deleteSubmission(testSubmission.getId())).to.eventually.be.rejectedWith("Cannot findOne");
+        });
+
+        it("Should throw an appropriate error if database findOneAndDelete fails during deletion",() => { 
+            chai.spy.on(Submission.getStaticModel(),'findOneAndDelete',() => { return Promise.reject(new Error("Cannot findOneAndDelete"))});
+            
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
+                return expect(SubmissionDAO.deleteSubmission(createdSubmission.getId())).to.eventually.be.rejectedWith("Cannot findOneAndDelete");
+            });
         });
     }); 
 });

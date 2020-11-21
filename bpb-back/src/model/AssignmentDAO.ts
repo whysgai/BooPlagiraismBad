@@ -1,6 +1,4 @@
 import {IAssignment, Assignment} from './Assignment'
-import { AssignmentFactory } from './AssignmentFactory';
-//import AssignmentModel from './AssignmentModel';
 
 export interface IAssignmentDAO {
     createAssignment(assignment : IAssignment) : Promise<void>; 
