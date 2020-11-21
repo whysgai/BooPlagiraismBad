@@ -20,7 +20,6 @@ describe('AssignmentRouter.ts',()=> {
     var testAssignmentMgr : IAssignmentManager;
     var testAssignmentDAO : IAssignmentDAO;
     var testSubmissionMgr : ISubmissionManager;
-    var testSubmissionDAO : ISubmissionDAO;
 
     before(() => {
         chai.use(chaiHttp);
