@@ -250,7 +250,27 @@ describe('AssignmentRouter.ts',()=> {
             expect(mockUpdateMethod).not.to.have.been.called;
         })
     });
-    
+
+    it("Should be able to interpret a failed request to PUT /assignments/{id} if manager.updateAssignment fails",() => {
+       
+        const expectedId = "999";
+        const expectedName = "Felicia's Static Code Analysis Mission #3";
+        const mockAssignment = new Assignment(expectedId,expectedName);
+        const putBody = {"name":expectedName,"submissions":["test1","test2"]}
+
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("Update failed"))});
+ 
+        chai.request(testServer).put("/assignments/" + expectedId)
+        .send(putBody)
+        .then(res => {
+            expect(res).to.have.status(400);
+            expect(mockGetMethod).to.have.been.called.with(mockAssignment.getID());
+            expect(mockUpdateMethod).to.have.been.called.with(mockAssignment, putBody);
+            expect(res.body).to.have.property("response").which.equals("Update failed");
+        })
+    });
+
     it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid",() => {
        
         const expectedId = '89890'
