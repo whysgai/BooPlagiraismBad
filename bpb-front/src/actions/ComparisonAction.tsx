@@ -7,16 +7,16 @@ export function compareSubmissions(compareSubmissions : Submission[]) {
     }
 };
 
-export function addSubmissionComparison(addSubmission : Submission) {
+export function addSubmissionComparison(submission : Submission) {
     return {
         type: 'ADD_COMPARE',
-        addSubmission: addSubmission,
+        addSubmission: submission,
     }
 }
 
-export function removeSubmissionComparison(addSubmission : Submission) {
+export function removeSubmissionComparison(submission : Submission) {
     return {
         type: 'REMOVE_COMPARE',
-        addSubmission: addSubmission,
+        removeSubmission: submission,
     }
 }

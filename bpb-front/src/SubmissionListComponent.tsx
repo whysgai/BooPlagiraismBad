@@ -34,7 +34,6 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
   }
 
   render() {
-    //console.log(store.getState().ComparisonReducer.compareSubmissions)
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>Assignment</h3>
