@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
+import { textChangeRangeIsUnchanged } from "typescript";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
@@ -28,11 +29,14 @@ describe("SubmissionDAO.ts",() => {
 
     beforeEach((done)=>{
 
+        //Restore global prototype mocks
+        chai.spy.restore(Submission.getStaticModel().prototype,"save");
+
         mongoose.connection.collections.submissions.drop(() => {
-            var sb = new Submission.builder();
-            sb.setName(testSubmissionName);
-            sb.setAssignmentId(testAssignmentId);
-            testSubmission = sb.build();
+            var builder = new Submission.builder();
+            builder.setName(testSubmissionName);
+            builder.setAssignmentId(testAssignmentId);
+            testSubmission = builder.build();
             done();
         });
     });
@@ -56,6 +60,13 @@ describe("SubmissionDAO.ts",() => {
                     expect(document.id).to.equal(submission.getId());
                 });
             });
+        });
+
+        it("Should throw an appropriate error if object can't be saved",() => {
+
+            chai.spy.on(Submission.getStaticModel().prototype,'save',() => {return Promise.reject(new Error("Cannot save"))});
+
+            return expect(SubmissionDAO.createSubmission(testSubmission.getName(),testSubmission.getAssignmentId())).to.eventually.be.rejectedWith("Cannot save");
         });
     });
 
@@ -111,6 +122,8 @@ describe("SubmissionDAO.ts",() => {
                 });
             });
         });
+
+        it("Should throw an appropriate error if returned submissions can't be built (invalid model or builder failure)");
     });
 
     describe("updateSubmission()",() => {
