@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactPropTypes } from 'react';
 import './AssignmentListComponent.css';
 import AssignmentListCard from './AssignmentListCard'
 import Assignment from './types/Assignment'
@@ -11,7 +11,7 @@ interface PropsType {
 
 class AssignmentListComponent extends React.Component <PropsType, {}> {
   //({assignments = [{_id:"01", name:"Mikayla", submissionIds:[]}]}: {assignments: Assignment[]})
-  constructor(props) {
+  constructor(props: PropsType) {
     super(props);
     this.state = {
       assignments : []
@@ -25,7 +25,7 @@ class AssignmentListComponent extends React.Component <PropsType, {}> {
         <ul>
           {
             this.props.assignments.map((assignment,index) => 
-                <li key={index}><AssignmentListCard assignment={assignment} createAssignment={null}/></li>
+                <li key={index}><AssignmentListCard assignment={assignment} createAssignment={(arg: String) => null}/></li>
             )
           }
         </ul>
