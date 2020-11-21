@@ -7,8 +7,11 @@ const initialState = {
 const ComparisonReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ADD_COMPARE':
+
             if (state.compareSubmissions.length < 2) {
-                state.compareSubmissions.push(action.submission)
+                console.log('before: '+ action.addSubmission)
+                state.compareSubmissions.push(action.addSubmission)
+                console.log('comparisonReducer: '+ state.compareSubmissions)
             }
             else {
                 // throw an error?
@@ -17,8 +20,10 @@ const ComparisonReducer = (state = initialState, action) => {
         case 'REMOVE_COMPARE':
             if (state.compareSubmissions.length == 0) {
                 return state
+            } else {
+                // throw an error?
             }
-            state.compareSubmissions = state.compareSubmissions.filter(subIndex => subIndex != action.submission)
+            state.compareSubmissions = state.compareSubmissions.filter(subIndex => subIndex != action.removeSubmission)
             return state
         case 'COMPARE':
             return //TODO;
