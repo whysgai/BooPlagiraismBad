@@ -109,15 +109,15 @@ describe("Submission.ts",() => {
     var testEntryB : IAnalysisResultEntry;
 
     beforeEach(()=>{
-        var sba = new Submission.builder();
-        sba.setName("name_a");
-        sba.setAssignmentId("id_a");
-        testSubmissionA = sba.build();
+        var builderA = new Submission.builder();
+        builderA.setName("name_a");
+        builderA.setAssignmentId("id_a");
+        testSubmissionA = builderA.build();
 
-        var sbb = new Submission.builder();
-        sbb.setName("name_b");
-        sbb.setAssignmentId("id_b");
-        testSubmissionB = sbb.build();
+        var builderB = new Submission.builder();
+        builderB.setName("name_b");
+        builderB.setAssignmentId("id_b");
+        testSubmissionB = builderB.build();
 
         testFileContent = "reallylongstringwithplentyofcontenttoexceedtheminimumlengthrequiredinordertohavesufficientlevelsofdifferencetobemeasurable";
         testEntryA = new AnalysisResultEntry("are1","subid_a","/home/file.java","method",1, 0, 100, 1,"haxrtwe","void() {}");
