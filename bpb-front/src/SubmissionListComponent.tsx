@@ -7,10 +7,11 @@ import { stateToPropertyMapper } from './containers/SubmissionListContainer';
 import SubmissionReducer from './reducers/SubmissionReducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ComparisonReducer from './reducers/ComparisonReducer';
+import {store} from './index'
 
 interface PropsType {
   submissions: Submission[]
-  compareEnabled: boolean
+  compareEnabled: number
 }
 
 class SubmissionListComponent extends React.Component <PropsType, {}> {
@@ -19,21 +20,23 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
     super(props);
     this.state = {
       submissions : [],
-      compareEnabled: false
+      compareEnabled: 0
     };
   }
 
   setDisabled() {
-    console.log('setdisabled')
-    if (stateToPropertyMapper(ComparisonReducer).submissionComparison.length === 2) {
+    if (store.getState().ComparisonReducer.compareSubmissions.length <= 2) {
+      console.log('setdisabled')
+      let newNum = this.props.compareEnabled + 1
       this.setState({
-        compareEnabled: true
+        compareEnabled: newNum
       })
-    }
+    } 
   }
 
   render() {
-    {console.log(ComparisonReducer)}
+    console.log(store.getState().ComparisonReducer.compareSubmissions.length)
+    
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>Assignment</h3>
@@ -43,12 +46,21 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
             <li key={index}><SubmissionListItemComponent submission={submission} createSubmission={null}/></li>
           )}
         </ul>
+
+        {
+          store.getState().ComparisonReducer.compareSubmissions.length === 0 &&
+            <Link to="/ComparisonComponent" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
+            Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2</Link>
+        } 
+        {
+          store.getState().ComparisonReducer.compareSubmissions.length === 1 &&
+            <Link to="/ComparisonComponent" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
+            Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2</Link>
+        }
         { 
-          this.props.compareEnabled
-          ? <Link to="/ComparisonComponent" className="enabledCompareButton">Compare Submissions 
-          {stateToPropertyMapper(ComparisonReducer).submissionComparison.length}/2</Link>
-          : <Link to="/ComparisonComponent" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
-          Compare Submissions {stateToPropertyMapper(ComparisonReducer).submissionComparison.length}/2</Link>
+          store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
+            <Link to="/ComparisonComponent" className="enabledCompareButton">Compare Submissions 
+            {store.getState().ComparisonReducer.compareSubmissions.length}/2</Link>
         }
       </div>
     );
