@@ -84,6 +84,21 @@ describe('AssignmentRouter.ts',()=> {
     //TODO: Add later
     it('Should be able to interpret a failed request to POST /assignments/ if any specified submission IDs do not exist');
     
+    it('Should be able to interpret a failed request to POST /assignments/ if manager fails to create submission',() => {
+
+        chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.reject(new Error("Failed to create submission"))})
+        
+        const expectedName = "test assignment"
+        const postBody = {"name":expectedName};
+
+        chai.request(testServer).post("/assignments/")
+        .send(postBody)
+        .then(res => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("Failed to create submission");
+        });
+    });
+    
     it("Should be able to interpret a request to GET /assignments to get all assignments", () => {
         
         const firstMockAssignment = new Assignment('007', 'BondJamesBond');
