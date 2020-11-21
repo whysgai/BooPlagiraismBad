@@ -320,7 +320,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
             
-            chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
+            //chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {}); 
             
@@ -330,6 +330,20 @@ describe("SubmissionManager.ts",() => {
                 expect(mockDeleteSubmission).to.not.have.been.called;
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
+            });
+        });
+
+        it("Should throw an error if the DAO fails to delete the specified submission",() =>{
+            
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
+            var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.reject(new Error("Delete failed"))}); 
+            
+            return testSubmissionManager.deleteSubmission("some_nonexistent_id").then((submission) => {
+                expect(true,"deleteSubmission is succeeding where it should fail (DAO deletion failed)").to.equal(false);
+            }).catch((err) => {
+                expect(mockDeleteSubmission).to.have.been.called;
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.equals("Delete failed");
             });
         })
     });
