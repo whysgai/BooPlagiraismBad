@@ -47,17 +47,20 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
         {
           store.getState().ComparisonReducer.compareSubmissions.length === 0 &&
             <Link to="/ComparisonComponent" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
-            Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2</Link>
+              Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
+            </Link>
         } 
         {
           store.getState().ComparisonReducer.compareSubmissions.length === 1 &&
             <Link to="/ComparisonComponent" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
-            Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2</Link>
+              Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
+            </Link>
         }
         { 
           store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
-            <Link to="/ComparisonComponent" className="enabledCompareButton">Compare Submissions 
-            {store.getState().ComparisonReducer.compareSubmissions.length}/2</Link>
+            <Link to="/ComparisonComponent" className="enabledCompareButton">
+              Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
+            </Link>
         }
       </div>
     );
