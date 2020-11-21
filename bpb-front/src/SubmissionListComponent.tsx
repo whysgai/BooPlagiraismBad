@@ -26,7 +26,6 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
 
   setDisabled() {
     if (store.getState().ComparisonReducer.compareSubmissions.length <= 2) {
-      console.log('setdisabled')
       let newNum = this.props.compareEnabled + 1
       this.setState({
         compareEnabled: newNum
@@ -35,15 +34,14 @@ class SubmissionListComponent extends React.Component <PropsType, {}> {
   }
 
   render() {
-    console.log(store.getState().ComparisonReducer.compareSubmissions.length)
-    
+    //console.log(store.getState().ComparisonReducer.compareSubmissions)
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>Assignment</h3>
         <Link to='/CreateSubmissionComponent'>Upload Submission</Link>
         <ul>
           {this.props.submissions.map((submission, index) => 
-            <li key={index}><SubmissionListItemComponent submission={submission} createSubmission={null}/></li>
+            <li key={index}><SubmissionListItemComponent checkboxOn={false} submission={submission} createSubmission={null}/></li>
           )}
         </ul>
 
