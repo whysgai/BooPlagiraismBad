@@ -233,5 +233,18 @@ describe("SubmissionDAO.ts",() => {
             var newSubmission = new Submission.builder().build();
             return expect(SubmissionDAO.deleteSubmission(newSubmission.getId())).to.eventually.be.rejectedWith("Cannot delete: No submission with the given id exists in the database");
         });
+
+        it("Should throw an appropriate error if database findOne fails during deletion",() => {
+            chai.spy.on(Submission.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(SubmissionDAO.deleteSubmission(testSubmission.getId())).to.eventually.be.rejectedWith("Cannot findOne");
+        });
+
+        it("Should throw an appropriate error if database findOneAndDelete fails during deletion",() => { 
+            chai.spy.on(Submission.getStaticModel(),'findOneAndDelete',() => { return Promise.reject(new Error("Cannot findOneAndDelete"))});
+            
+            return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
+                return expect(SubmissionDAO.deleteSubmission(createdSubmission.getId())).to.eventually.be.rejectedWith("Cannot findOneAndDelete");
+            });
+        });
     }); 
 });
