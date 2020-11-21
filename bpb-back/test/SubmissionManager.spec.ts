@@ -421,5 +421,19 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
             });
         });
+
+        it("Should return an appropriate error if getSubmissions fails",() => {
+
+            var testSubmission2 = new Submission.builder().build(); 
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.reject(new Error("getSubmission failed"))});
+
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (GET failed)").to.be.false;
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.equals("getSubmission failed");
+            });
+        });
     });
 });
