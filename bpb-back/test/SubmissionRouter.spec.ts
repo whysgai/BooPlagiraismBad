@@ -1,5 +1,4 @@
 import { expect, spy } from "chai";
-import bodyParser from "body-parser"; //TODO: this may be removed from this test suite, since we are not uploading json in our post test
 import SubmissionRouter from "../src/router/SubmissionRouter"
 import express from "express";
 import IRouter from "../src/router/IRouter";
@@ -10,7 +9,6 @@ import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
 import { SubmissionManager } from "../src/manager/SubmissionManager";
-import { SubmissionDAO } from "../src/model/SubmissionDAO";
 import { Submission, ISubmission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { AnalysisResult } from "../src/AnalysisResult";
@@ -301,6 +299,30 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("submissions").with.lengthOf(0); //TODO: ?
             });
     });
+    it("Should be able to interpret a failed request to GET /submissions/ofAssignment/{id} if AssignmentManager fails to obtain assignment", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
+        const expectedSubs = {submissions: [testSubmission.asJSON()]};
+
+    
+        testAssignment.addSubmission(testSubmission.getId());
+
+        chai.spy.on(
+            testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("Failed to find assignment"));}
+        )
+
+        var mockGetSubmissions = chai.spy.on(
+            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
+        );
+
+        chai.request(testServer).get("/submissions/ofAssignment/"+testAssignment.getID())
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("Failed to find assignment");
+            });
+    });
+
     it("Should be able to interpret a request to GET /submissions/{id} where {id} is valid", () => {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
