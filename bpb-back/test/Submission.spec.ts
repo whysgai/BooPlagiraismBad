@@ -100,6 +100,7 @@ describe("Submission.ts",() => {
 
     var testSubmissionA : ISubmission;
     var testSubmissionB : ISubmission;
+    var testFileContent : string;
     var testEntryA : IAnalysisResultEntry;
     var testEntryB : IAnalysisResultEntry;
 
@@ -114,6 +115,7 @@ describe("Submission.ts",() => {
         sbb.setAssignmentId("id_b");
         testSubmissionB = sbb.build();
 
+        testFileContent = "reallylongstringwithplentyofcontenttoexceedtheminimumlengthrequiredinordertohavesufficientlevelsofdifferencetobemeasurable";
         testEntryA = new AnalysisResultEntry("are1","subid_a","/home/file.java","method",1, 0, 100, 1,"haxrtwe","void() {}");
         testEntryB = new AnalysisResultEntry("are2","subid_b","/home/filey.java","method",2, 3, 30, 4, "reerwer","void() {}");
     });
@@ -163,11 +165,10 @@ describe("Submission.ts",() => {
 
     });
     
-    describe.skip("addFile()",() => {
-        //TODO: Un-skip once Visitor is implemented
-        //Can't mock because visitors are created in Submission
+    describe("addFile()",() => {
+        
         it("Should successfully add new file contents to the submission if input is valid",() => {
-            return testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
+            return testSubmissionA.addFile(testFileContent,testEntryA.getFilePath()).then(() => {
                 expect(testSubmissionA.getEntries().length).to.be.greaterThan(0);
             });
         });
@@ -175,7 +176,7 @@ describe("Submission.ts",() => {
         it("Should throw an appropriate error if the specified file was already added to the submission",() => {
             var expectedErrorMsg = "File at " + testEntryA.getFilePath() + " was already added to the submission";
 
-            return testSubmissionA.addFile(testEntryA.getText(),testEntryA.getFilePath()).then(() => {
+            return testSubmissionA.addFile(testFileContent,testEntryA.getFilePath()).then(() => {
                 testSubmissionA.addFile("the same file ",testEntryA.getFilePath()).then(() => {
                     expect(true,"addFile should be failing (specified file already added)").to.equal(false);
                 }).catch((err) => {
