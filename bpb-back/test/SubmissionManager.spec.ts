@@ -89,7 +89,17 @@ describe("SubmissionManager.ts",() => {
         it("Should return no submissions if there are none",() =>{
             chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([])});
             expect(testSubmissionManager.getSubmissions(testSubmissionAssignmentId)).to.eventually.be.fulfilled.with.an("array").that.is.empty;
-        });        
+        });     
+        
+         it("Should throw an appropriate error if DAO read fails",() =>{
+            chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.reject(new Error("Read failed"))});
+            
+            return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
+                expect(true,"getSubmissions should have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Read failed");
+            })
+        });     
     });
 
     describe("createSubmission()",() => {
@@ -110,6 +120,7 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.reject(new Error("Failed to create"))});
 
             var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
+            
             return testSubmissionManager.createSubmission(createBody).then(() => {
                 expect(true,"createSubmission should fail, but it didn't").to.equal(false);
             }).catch((err) => {

@@ -55,8 +55,6 @@ export class SubmissionManager implements ISubmissionManager {
     getSubmission = async(submissionId : string) : Promise<ISubmission> => {
         return new Promise((resolve, reject) => {
 
-            console.log("CACHE!!! " + this.submissionCache.get(submissionId));
-
             if(this.submissionCache.get(submissionId) != undefined) {
                 resolve(this.submissionCache.get(submissionId));
             } else {
