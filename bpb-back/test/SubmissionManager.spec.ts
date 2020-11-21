@@ -194,6 +194,23 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.contains("Submission does not exist");
             });
         });
+
+        it("Should return an appropriate error if DAO fails to update the submission",() => {
+            chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.reject(new Error("updateSubmission failed"))});
+
+            var expectedNewName = "test";
+            var expectedNewAssnId = "test2";
+
+            var updateBody : SubmissionData = {name:expectedNewName,assignment_id:expectedNewAssnId};
+
+            return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
+                expect(true,"updateSubmission is succeeding where it should fail (updateSubmission should fail)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.contains("updateSubmission failed");
+            });
+        });
     });
 
     describe("processSubmissionFile()",() =>{
@@ -266,6 +283,24 @@ describe("SubmissionManager.ts",() => {
                 expect(mockAddFile).to.not.have.been.called;
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("no such file or directory");
+            });
+        });
+
+        it("Should return an appropriate error if DAO fails to update the submission",() => {
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.reject(new Error("Failed to update"))}); 
+
+            var mockAddFile = chai.spy.on(testSubmission,'addFile',() => { return Promise.resolve() });
+            
+            return readFileContent(testFilePath).then((buffer) => {
+                var expectedContent = buffer.toString();
+                
+                return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
+                    expect(true,"processSubmissionFile should have failed (DAO should have returned mock error), but it didn't").to.equal(false);
+                }).catch((err) => {
+                    expect(err).to.have.property("message").which.equals("Failed to update");
+                })
             });
         });
     });

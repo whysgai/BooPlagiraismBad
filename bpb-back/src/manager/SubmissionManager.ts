@@ -103,7 +103,6 @@ export class SubmissionManager implements ISubmissionManager {
                 }).catch((err) => {
                    reject(err);
                 }) 
-            
             }).catch((err) => {
                 reject(err);
             });
