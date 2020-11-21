@@ -88,6 +88,11 @@ describe("SubmissionDAO.ts",() => {
             var nonPersistedSubmission = new Submission.builder().build(); 
             return expect(SubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Cannot find: No submission with the given id exists in the database");
         });
+
+        it("Should throw an appropriate error if database find fails",() => {
+            chai.spy.on(Submission.getStaticModel(),'find',() => { return Promise.reject(new Error("Cannot find"))});
+            return expect(SubmissionDAO.readSubmission(testSubmission.getId())).to.eventually.be.rejectedWith("Cannot find");
+        });
     });
 
     describe("readSubmissions()",() => {
@@ -125,7 +130,7 @@ describe("SubmissionDAO.ts",() => {
             });
         });
         
-        it("Should throw an appropriate error if find fails",() => {
+        it("Should throw an appropriate error if database find fails",() => {
             chai.spy.on(Submission.getStaticModel(),'find',() => { return Promise.reject(new Error("Cannot find"))});
             return expect(SubmissionDAO.readSubmissions("someid")).to.eventually.be.rejectedWith("Cannot find");
         });

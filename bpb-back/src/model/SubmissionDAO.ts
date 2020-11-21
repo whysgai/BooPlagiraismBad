@@ -46,9 +46,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
                     )
                 ).then(submissions => {
                     resolve(submissions);
-                }).catch((err) => {
-                    reject(err);
-                });
+                }); //NOTE: Removed catch (should be caught downsteam in chain)
             }).catch((err) => {
                 reject(err);
             });
