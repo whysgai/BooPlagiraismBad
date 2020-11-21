@@ -240,8 +240,8 @@ export interface ISubmission {
             throw new Error("Cannot compare: One or more comparator submissions has no entries");
         }
 
-        var analysisResult = new AnalysisResult();
-
+        
+        let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
         this.entries.forEach((entry) => {
             otherEntries.forEach((otherEntry) => {
 
@@ -261,6 +261,8 @@ export interface ISubmission {
             });
         });
 
+        let similarityScore = 5; //TODO: IMPLEMENT THIS ALGORITHM
+        var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
         return analysisResult;
     }
 }
