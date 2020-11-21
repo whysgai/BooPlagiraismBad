@@ -37,7 +37,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
         //Return all submissions of assignment
         return new Promise((resolve,reject) => {
             Submission.getStaticModel().find({assignment_id : assignmentId}).then((submissionModels) => {
-               
+
                 Promise.all(
                     submissionModels.map(
                         model => {

@@ -92,6 +92,10 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmissionExisting.getEntries()).to.deep.equal(testSubmission.getEntries());
             expect(testSubmissionExisting.getFiles()).to.deep.equal(testSubmission.getFiles());
         });
+
+        it("Should throw an appropriate error message if the provided model is missing one or more properties",() => {
+            expect(() => { testSubmissionBuilder.buildFromExisting({}); }).to.throw("At least one required model property is not present on the provided model");
+        });
     });
 });
 

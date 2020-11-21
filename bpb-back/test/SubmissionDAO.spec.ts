@@ -30,7 +30,9 @@ describe("SubmissionDAO.ts",() => {
     beforeEach((done)=>{
 
         //Restore global prototype mocks
-        chai.spy.restore(Submission.getStaticModel().prototype,"save");
+        //chai.spy.restore(Submission.getStaticModel().prototype,"save");
+        //chai.spy.restore(Submission.getStaticModel().prototype,"find");
+        chai.spy.restore(Submission.getStaticModel());
 
         mongoose.connection.collections.submissions.drop(() => {
             var builder = new Submission.builder();
@@ -122,11 +124,15 @@ describe("SubmissionDAO.ts",() => {
                 });
             });
         });
+        
+        it("Should throw an appropriate error if find fails",() => {
+            chai.spy.on(Submission.getStaticModel(),'find',() => { return Promise.reject(new Error("Cannot find"))});
+            return expect(SubmissionDAO.readSubmissions("someid")).to.eventually.be.rejectedWith("Cannot find");
+        });
 
-        it("Should throw an appropriate error if returned submissions can't be built (invalid model or builder failure)",() => {
-            chai.spy.on(Submission.builder,'buildFromExisting',() => { return Promise.reject("Can't build from model")});
-
-            return expect(SubmissionDAO.readSubmissions("someid")).to.eventually.be.rejectedWith("Can't build from model");
+        it("Should throw an appropriate error if returned submissions can't be built (can't map model results)",() => {
+            chai.spy.on(Submission.getStaticModel(),'find',() => { return Promise.resolve([{}])});
+            return expect(SubmissionDAO.readSubmissions("someid")).to.eventually.be.rejectedWith("At least one required model property is not present on the provided model");
         });
     });
 
