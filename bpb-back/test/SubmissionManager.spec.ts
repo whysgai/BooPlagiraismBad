@@ -98,6 +98,17 @@ describe("SubmissionManager.ts",() => {
                 expect(submission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
             });
         });
+
+        it("Should throw an appropriate error if DAO fails to create a submission",() => {
+            chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.reject(new Error("Failed to create"))});
+
+            var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
+            return testSubmissionManager.createSubmission(createBody).then(() => {
+                expect(true,"createSubmission should fail, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Failed to create");
+            })
+        });
     });
 
     describe("updateSubmission()",() => {
