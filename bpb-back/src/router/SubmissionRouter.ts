@@ -141,7 +141,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       let submissionFile = req.files.submissionFile;
       if(!submissionFile) {
         res.status(400);
-        res.send({"response":"File was not submitted using the key name submissionFile. Please resend the file using that key (case sensitive)."});
+        res.send({"response":"File was not submitted using the key name submissionFile. Please resend the file using that key (case sensitive)"});
       } else {
           
         const filePath = AppConfig.submissionFileUploadDirectory() + submissionFile.name;

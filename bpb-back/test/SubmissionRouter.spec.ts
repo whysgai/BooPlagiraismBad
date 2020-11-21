@@ -163,8 +163,7 @@ describe('SubmissionRouter.ts',()=> {
 
         const postBody = {};
         
-        var mockGetAssignment = chai.spy.on(
-            testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
+        chai.spy.on(testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
 
         var mockCreateSubmission = chai.spy.on(
             testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission);});
@@ -175,6 +174,24 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res).to.have.status(400);
                 expect(mockCreateSubmission).to.have.not.been.called();
                 expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be present in the request body");
+            });
+    });
+
+    it("Should be able to interpret a failed request to POST /submissions if manager.createSubmission fails",() => {
+        
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
+        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
+
+        chai.spy.on(testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);})
+
+        chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.reject(new Error("Failed to create submission"))});
+
+        chai.request(testServer).post("/submissions")
+            .send(postBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("Failed to create submission");
             });
     });
 
@@ -224,7 +241,7 @@ describe('SubmissionRouter.ts',()=> {
         await chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
             .attach("badKeyName", sampleFileContent, sampleFileName)
             .then((res) => {
-                expect(res.body).to.have.property("response", "File was not submitted using the key name submissionfile. Please resend the file using that key.");
+                expect(res.body).to.have.property("response").which.equals("File was not submitted using the key name submissionFile. Please resend the file using that key (case sensitive)");
                 expect(res).to.have.status(400);
         });
     });
