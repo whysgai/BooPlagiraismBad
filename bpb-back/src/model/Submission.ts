@@ -149,24 +149,26 @@ export interface ISubmission {
             throw new Error("Cannot compare: A comparator submission has no entries");
         }
 
-        var analysisResult = new AnalysisResult();
-
+        
+        let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
         this.entries.forEach((entry) => {
             entries.forEach((otherEntry) => {
-
+                
                 var hashA = entry.getHashValue();
                 var hashB = otherEntry.getHashValue();
-
+                
                 //TODO: Replace
                 var comparison = 1;
                 var threshold = 0;
-
+                
                 if(comparison > threshold) {  
-                    analysisResult.addMatch(entry,otherEntry);
+                    matchedEntries.push([entry,otherEntry]);
                 }
             });
         });
 
+        let similarityScore = 5; //TODO: IMPLEMENT THIS ALGORITHM
+        var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
         return analysisResult;
     }
 }
