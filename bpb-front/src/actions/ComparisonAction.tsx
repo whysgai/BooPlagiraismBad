@@ -13,3 +13,10 @@ export function addSubmissionComparison(addSubmission : Submission) {
         addSubmission: addSubmission,
     }
 }
+
+export function removeSubmissionComparison(addSubmission : Submission) {
+    return {
+        type: 'REMOVE_COMPARE',
+        addSubmission: addSubmission,
+    }
+}

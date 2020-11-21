@@ -13,19 +13,13 @@ import * as serviceWorker from './serviceWorker';
 import NavbarComponent from './NavbarComponent';
 import Assignment from './types/Assignment'
 import { createStore, combineReducers } from 'redux';
+import {store} from './store'
 import { Provider } from 'react-redux';
 import ComparisonReducer from './reducers/ComparisonReducer';
 import SubmissionReducer from './reducers/SubmissionReducer';
 
 //import "../node_modules/bootstrap/dist/css/bootstrap.min";
 //require('bootstrap');
-
-const reducers = combineReducers({
-  ComparisonReducer: ComparisonReducer,
-  SubmissionReducer: SubmissionReducer
-})
-
-export const store = createStore(reducers);
 
 ReactDOM.render(
   <Provider store={store}>

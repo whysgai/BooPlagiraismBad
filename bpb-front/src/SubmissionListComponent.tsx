@@ -7,7 +7,7 @@ import { stateToPropertyMapper } from './containers/SubmissionListContainer';
 import SubmissionReducer from './reducers/SubmissionReducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ComparisonReducer from './reducers/ComparisonReducer';
-import {store} from './index'
+import {store} from './store'
 
 interface PropsType {
   submissions: Submission[]

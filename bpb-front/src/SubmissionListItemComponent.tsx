@@ -3,7 +3,7 @@ import Submission from './types/Submission'
 import { Link } from 'react-router-dom';
 import {addSubmissionComparison} from './actions/ComparisonAction';
 import { dispatchToPropertyMapper, stateToPropertyMapper } from './containers/SubmissionListContainer'
-import {store} from './index'
+import {store} from './store'
 
 interface PropsType {
   submission: Submission
