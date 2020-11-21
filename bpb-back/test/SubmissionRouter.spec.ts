@@ -299,7 +299,8 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("submissions").with.lengthOf(0); //TODO: ?
             });
     });
-    it("Should be able to interpret a failed request to GET /submissions/ofAssignment/{id} if AssignmentManager fails to obtain assignment", () => {
+
+    it("Should be able to interpret a failed request to GET /submissions/ofAssignment/{id} if AssignmentManager fails to getAssignment", () => {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
@@ -308,18 +309,34 @@ describe('SubmissionRouter.ts',()=> {
     
         testAssignment.addSubmission(testSubmission.getId());
 
-        chai.spy.on(
-            testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("Failed to find assignment"));}
-        )
+        chai.spy.on(testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("Failed to find assignment"));})
 
-        var mockGetSubmissions = chai.spy.on(
-            testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
-        );
+        chai.spy.on(testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);});
+
+        chai.request(testServer).get("/submissions/ofAssignment/" + testAssignment.getID())
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("Failed to find assignment");
+            });
+    });
+
+    it("Should be able to interpret a failed request to GET /submissions/ofAssignment/{id} if SubmissionManager fails to getSubmissions", () => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
+        const expectedSubs = {submissions: [testSubmission.asJSON()]};
+
+    
+        testAssignment.addSubmission(testSubmission.getId());
+
+        chai.spy.on(testAssignmentManager,'getAssignment',() => {return Promise.resolve(testAssignment);})
+
+        chai.spy.on(testSubmissionManager, 'getSubmissions', () => {return Promise.reject(new Error("Failed to get submissions"));});
 
         chai.request(testServer).get("/submissions/ofAssignment/"+testAssignment.getID())
             .then(res => {
                 expect(res).to.have.status(400);
-                expect(res.body).to.have.property("response").which.equals("Failed to find assignment");
+                expect(res.body).to.have.property("response").which.equals("Failed to get submissions");
             });
     });
 
