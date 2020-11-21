@@ -50,10 +50,17 @@ describe("SubmissionManager.ts",() => {
         it("Should return submission if the provided ID is valid",()=> {
             var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
+            //Initial query accesses DAO and returns mock
             return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
                 expect(submission).to.deep.equal(testSubmission);
-                expect(mockReadSubmission).to.have.been.called.with(testSubmissionId);
-            })
+                expect(mockReadSubmission).to.have.been.called.once.with(testSubmissionId);
+
+                //Second query uses cache (doesn't access DAO)
+                return testSubmissionManager.getSubmission(testSubmissionId).then((submission2) => {
+                    expect(submission2).to.deep.equal(testSubmission);
+                    expect(mockReadSubmission).to.have.been.called.once; // Cache is used
+                });
+            });
         });
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
