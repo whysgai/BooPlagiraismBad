@@ -310,7 +310,6 @@ describe("SubmissionManager.ts",() => {
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
             
             chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
-            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
 
             var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.resolve(testSubmission)}); 
             
