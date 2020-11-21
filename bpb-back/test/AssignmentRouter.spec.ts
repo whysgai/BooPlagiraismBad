@@ -235,8 +235,8 @@ describe('AssignmentRouter.ts',()=> {
     });
 
     it('Should be able to interpret a failed request to PUT /assignments/{id} if request body does not include at least one expected property',() => {
-        const expectedId = '0012'
-        const expectedName = "Faith"
+        const expectedId = "2233";
+        const expectedName = "Dr. Jones and the Technicolor Code Coverage Report";
         const mockAssignment = new Assignment(expectedId,expectedName);
 
         var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
@@ -302,5 +302,23 @@ describe('AssignmentRouter.ts',()=> {
             expect(mockGetMethod).to.have.been.called.once;
             expect(mockDeleteMethod).not.to.have.been.called;
         })
+    });
+
+    it("Should be able to interpret a failed request to DELETE /assignments/{id} where manager.deleteAssignment fails",() => {
+       
+        const expectedId = '89890'
+        const expectedName = "Tabitha and the Seventh Level of the Recursive CS6999 Escher World Test Exercise";
+        const mockAssignment = new Assignment(expectedId,expectedName);
+
+        var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
+        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.reject(new Error("Delete failed"))});
+ 
+        chai.request(testServer).delete("/assignments/"+expectedId)
+        .then(res => {
+            expect(res).to.have.status(400);
+            expect(mockGetMethod).to.have.been.called.with(expectedId);
+            expect(mockDeleteMethod).to.have.been.called.with(mockAssignment.getID());
+            expect(res.body).to.have.property("response").which.equals("Delete failed");
+        });
     });
 });
