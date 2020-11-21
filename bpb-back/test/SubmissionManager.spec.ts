@@ -320,7 +320,6 @@ describe("SubmissionManager.ts",() => {
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
             
-            //chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {}); 
             
