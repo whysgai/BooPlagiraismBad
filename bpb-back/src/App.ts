@@ -18,7 +18,7 @@ class App {
     constructor() {}
 
     run() {
-        AppConfig.printEnv();
+        
         // Set up database connection
         mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(async() => {
             

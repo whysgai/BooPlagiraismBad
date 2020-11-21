@@ -1,16 +1,23 @@
+import { expect } from "chai";
+import { AppConfig } from "../src/AppConfig";
 
 describe("AppConfig",() => {
-    //When you implement this, make sure to update bootstrap_sudo or it won't work (even if  vars are set in PM2)
     
-    describe("getPort",() => {
-        it("returns the expected environment variable");
+    describe("port()",() => {
+        it("returns the expected environment variable",() => {
+            expect(AppConfig.port()).to.not.be.undefined;
+        });
     });
 
-    describe("getDBConnectionString",() => {
-       it("returns the expected environment variable");
+    describe("dbConnectionString()",() => {
+       it("returns the expected environment variable",() =>  {
+           expect(AppConfig.dbConnectionString()).to.not.be.undefined;
+       });
     });
 
-    describe("getSubmissionFileUploadDirectory",() => {
-        it("returns the expected environment variable");
+    describe("submissionFileUploadDirectory()",() => {
+        it("returns the expected environment variable",() => {
+            expect(AppConfig.submissionFileUploadDirectory()).to.not.be.undefined;
+        });
     });
 });
