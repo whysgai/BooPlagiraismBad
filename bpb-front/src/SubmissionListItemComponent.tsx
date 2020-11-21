@@ -3,6 +3,7 @@ import Submission from './types/Submission'
 import { Link } from 'react-router-dom';
 import {addSubmissionComparison} from './actions/ComparisonAction';
 import { dispatchToPropertyMapper, stateToPropertyMapper } from './containers/SubmissionListContainer'
+import {store} from './index'
 
 interface PropsType {
   submission: Submission
@@ -25,7 +26,7 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
       <div className='submission-list-item'>
         <div>
           <input type="checkbox" className="form-check-input" id="exampleCheck1" 
-          onClick={() => {dispatchToPropertyMapper(addSubmissionComparison(this.props.submission)); 
+          onClick={() => {store.dispatch(addSubmissionComparison(this.props.submission)); 
           console.log('component disabled check')}}/> 
         </div>
         <span>
