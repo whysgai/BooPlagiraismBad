@@ -34,7 +34,7 @@ ReactDOM.render(
       {/* <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route> */}
       <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
 
-      <Route exact path="/Submissions"><SubmissionListComponent submissions={
+      <Route exact path="/Submissions"><SubmissionListComponent store={store} submissions={
         [
           {_id:"01", name:"Mikayla", assignment:'Assignment1', files:[]},
           {_id:"02", name:"Will", assignment:'Assignment1', files:[]},
