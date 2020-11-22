@@ -2,20 +2,22 @@ import React from 'react';
 import Submission from './types/Submission'
 import { Link } from 'react-router-dom';
 import {addSubmissionComparison, removeSubmissionComparison} from './actions/ComparisonAction';
-import { dispatchToPropertyMapper, stateToPropertyMapper } from './containers/SubmissionListContainer'
+//import { dispatchToPropertyMapper, stateToPropertyMapper } from './containers/SubmissionListContainer'
 import {store} from './store'
+import { Store } from 'redux';
 
 interface PropsType {
   submission: Submission
   createSubmission: (arg: String) => void
   checkboxOn: boolean
+  store: Store
 }
 
 //({submission, createSubmission}:{submission : Submission, createSubmission: (arg: String) => void })
 
 class SubmissionListItemComponent extends React.Component <PropsType, {}> {
   
-  constructor(props) {
+  constructor(props : PropsType) {
     super(props);
     this.state = {
       submission : this.props.submission,
@@ -24,7 +26,7 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
   }
 
   checkbox() {
-    if(store.getState().ComparisonReducer.compareSubmissions.filter((submission) => 
+    if(store.getState().ComparisonReducer.compareSubmissions.filter((submission : Submission) => 
     submission === this.props.submission).length === 1){
       store.dispatch(removeSubmissionComparison(this.props.submission))
       this.setState({
