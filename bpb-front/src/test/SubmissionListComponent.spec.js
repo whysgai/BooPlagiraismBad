@@ -8,6 +8,7 @@ import Enzyme from 'enzyme'
 import { Link } from 'react-router-dom';
 import Adapter from 'enzyme-adapter-react-16';
 import configureMockStore from 'redux-mock-store'
+import { addSubmissionComparison } from '../actions/ComparisonAction';
 
 describe("SubmissionListComponent tests:", () => {
     let container;
@@ -84,12 +85,23 @@ describe("SubmissionListComponent tests:", () => {
         expect(container.getElementsByClassName('submission-list-item').length).toBe(4);
         expect(document.querySelector('.disabledCompareButton').getAttribute('href')).toBe('/ComparisonComponent')
     });
+})
+describe("CompareButton tests:", () => {
+    let container;
+    let mockStore;
+    beforeEach(() => {
+        container = document.createElement('div');
+        // container.appendChild(<BrowserRouter><Route path="/" /></BrowserRouter>)
+        document.body.appendChild(container);
+        Enzyme.configure({ adapter: new Adapter() })
+    })
     it('Should not be clickable and should show 0 when no submissions are selected', async() => {
+        mockStore = configureMockStore()
         const jestFn = jest.fn();
         const wrapper = mount(<StaticRouter location="/" context={{}}><SubmissionListComponent submissions={[1,2]}/></StaticRouter>);
         const store = mockStore({ compareSubmissions: [] });
         let count = 0;
-        wrapper.find("#zeroCompare").simulate('click', {
+        wrapper.find("Link#zeroCompare").simulate('click', {
             preventDefault: () => {
                 count ++;
             }
@@ -99,13 +111,15 @@ describe("SubmissionListComponent tests:", () => {
         wrapper.unmount();
     });
     it('Should not be clickable and should show 1 when one submission is selected', () => {
+        let mocStore = configureMockStore()
         const jestFn = jest.fn();
-        const wrapper = mount(<StaticRouter location="/" context={{}}><SubmissionListComponent submissions={[1,2]}/></StaticRouter> );
-        const store = mockStore({ compareSubmissions: [] });
+        const wrapper = mount(<StaticRouter location="/" context={{}}><SubmissionListComponent submissions={[1]}/></StaticRouter> );
         let count = 0;
-        // wrapper.find(".form-check-input").simulate('click');
-        //console.log(store.getState())
-        wrapper.find("#oneCompare").simulate('click', {
+        let store = mocStore({ compareSubmissions: [] });
+        wrapper.find(".form-check-input").simulate('click', {
+            preventDefault: ()=> {console.log('hello'); store=mocStore({ compareSubmissions: [1] })}
+        });
+        wrapper.find("Link#oneCompare").simulate('click', {
             preventDefault: () => {
                 count ++;
             }
@@ -114,15 +128,26 @@ describe("SubmissionListComponent tests:", () => {
         expect(store.getState().compareSubmissions.length).toEqual(1);
         wrapper.unmount();
     });
-    //TODO
-    it.skip('Should be clickable and should show 2 when two submissions are selected', () => {
-        let container = document.createElement('div');
-        document.body.appendChild(container);
-        act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);
-        });
-        //TODO
-        expect(document.querySelector("a").getAttribute("href")).toBe("/")
+    it('Should be clickable and should show 2 when two submissions are selected', () => {
+        let mocStore = configureMockStore()
+        const jestFn = jest.fn();
+        const wrapper = mount(<StaticRouter location="/" context={{}}><SubmissionListComponent submissions={[1,2]}/></StaticRouter> );
+        const store = mocStore({ compareSubmissions: [] });
+        let count = 0;
+        let click = wrapper.find(".form-check-input")
+        for (test in click) {
+            test.simulate('click', {
+                default: () => {store = mocStore({ compareSubmissions: [1,2] })}
+            });
+        }
+        wrapper.find("Link#oneCompare").simulate('click', {
+            preventDefault: () => {
+                count ++;
+            }
+           });
+        expect(count).toEqual(1);
+        expect(store.getState().compareSubmissions.length).toEqual(2);
+        wrapper.unmount();
     });
     //TODO
     it.skip('Should take user to ComparisonComponent when clicked', () => {
