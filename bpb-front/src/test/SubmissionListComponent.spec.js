@@ -46,15 +46,15 @@ describe("SubmissionListComponent tests:", () => {
         expect(container.getElementsByClassName('submission-list').length).toBe(1);
         expect(container.getElementsByClassName('submission-list-item').length).toBe(1);
     });
-    //TODO: does this test make sense??
-    it.skip('Should display a single submission if only one exists for the specified assignment', () => {
+    //TODO
+    it('Should display a single submission if only one exists for the specified assignment', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);
+            render(<StaticRouter location='/' context={{}}><SubmissionListComponent submissions={[1]}/></StaticRouter>, container);
         });
-        //TODO
-        expect(document.querySelector("a").getAttribute("href")).toBe("/")
+        expect(container.getElementsByClassName('submission-list').length).toBe(1);
+        expect(container.getElementsByClassName('submission-list-item').length).toBe(1);
     });
     it('Should display all submissions if one or more submissions exist for the specified assignment', () => {
         let container = document.createElement('div');
@@ -149,15 +149,22 @@ describe("CompareButton tests:", () => {
         expect(store.getState().compareSubmissions.length).toEqual(2);
         wrapper.unmount();
     });
-    //TODO
     it.skip('Should take user to ComparisonComponent when clicked', () => {
-        let container = document.createElement('div');
-        document.body.appendChild(container);
-        act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);
-        });
-        //TODO
-        expect(document.querySelector("a").getAttribute("href")).toBe("/")
+        let mocStore = configureMockStore()
+        const jestFn = jest.fn();
+        const wrapper = mount(<StaticRouter location="/" context={{}}><SubmissionListComponent submissions={[1,2]}/></StaticRouter> );
+        const store = mocStore({ compareSubmissions: [1,2] });
+        let count = 0;
+        wrapper.find("Link#twoCompare").simulate('click', {
+            preventDefault: () => {
+                count ++;
+            }
+           });
+        expect(count).toEqual(1);
+        expect(store.getState().compareSubmissions.length).toEqual(2);
+        wrapper.unmount();
+
+        expect(document.querySelector("Link#twoCompare").getAttribute("href")).toBe("/ComparisonComponent")
     });
     //TODO
     it.skip('Should not be clickable and should show 0 when no submissions are selected', () => {
