@@ -1,8 +1,9 @@
 import { compareSubmissions } from "../actions/ComparisonAction";
 import Action from "../types/Action"
+import Submission from "../types/Submission";
 
 const initialState = {
-    compareSubmissions: [],
+    compareSubmissions: [] as Submission[],
 }
 
 const ComparisonReducer = (state = initialState, action: Action) => {

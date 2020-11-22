@@ -1,16 +1,17 @@
 import Submission from '../types/Submission';
+import Action from "../types/Action"
 
 const initialState = {
-    submissions: [],
-    compareSubmissions: [],
+    submissions: [] as Submission[],
+    compareSubmissions: [] as Submission[],
     tempAssignment: {
         _id: '123',
         name: 'Temp Assignment',
-        submissionIds: []
+        submissionIds: [] as Submission[]
     }
 }
 
-const SubmissionReducer = (state = initialState, action) => {
+const SubmissionReducer = (state = initialState, action : Action) => {
     switch (action.type) {
 
         case 'READ_SUBMISSIONS':
