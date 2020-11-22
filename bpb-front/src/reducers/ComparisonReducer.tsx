@@ -1,10 +1,11 @@
 import { compareSubmissions } from "../actions/ComparisonAction";
+import Action from "../types/Action"
 
 const initialState = {
     compareSubmissions: [],
 }
 
-const ComparisonReducer = (state = initialState, action) => {
+const ComparisonReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case 'ADD_COMPARE':
 
