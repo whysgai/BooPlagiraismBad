@@ -3,7 +3,7 @@ import SubmissionListItemComponent from './SubmissionListItemComponent'
 import Submission from './types/Submission'
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { stateToPropertyMapper } from './containers/SubmissionListContainer';
+// import { stateToPropertyMapper } from './containers/SubmissionListContainer';
 import SubmissionReducer from './reducers/SubmissionReducer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ComparisonReducer from './reducers/ComparisonReducer';
