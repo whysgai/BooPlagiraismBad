@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, Store } from 'redux';
 import { Provider } from 'react-redux';
 import ComparisonReducer from './reducers/ComparisonReducer';
 import SubmissionReducer from './reducers/SubmissionReducer';
@@ -11,4 +11,4 @@ const reducers = combineReducers({
   SubmissionReducer: SubmissionReducer
 })
 
-export const store = createStore(reducers);
+export const store: Store = createStore(reducers);
