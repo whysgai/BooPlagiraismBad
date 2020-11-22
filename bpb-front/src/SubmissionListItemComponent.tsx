@@ -10,7 +10,6 @@ interface PropsType {
   submission: Submission
   createSubmission: (arg: String) => void
   checkboxOn: boolean
-  store: Store
 }
 
 //({submission, createSubmission}:{submission : Submission, createSubmission: (arg: String) => void })

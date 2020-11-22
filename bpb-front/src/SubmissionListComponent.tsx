@@ -13,7 +13,6 @@ import { Store } from 'redux';
 interface PropTypes {
   submissions: Submission[]
   compareEnabled: number
-  store: Store
 }
 
 class SubmissionListComponent extends React.Component <PropTypes, {}> {
@@ -42,26 +41,26 @@ class SubmissionListComponent extends React.Component <PropTypes, {}> {
         <Link to='/CreateSubmissionComponent'>Upload Submission</Link>
         <ul>
           {this.props.submissions.map((submission, index) => 
-            <li key={index}><SubmissionListItemComponent store={store} checkboxOn={false} submission={submission} createSubmission={(arg: String) => null}/></li>
+            <li key={index}><SubmissionListItemComponent checkboxOn={false} submission={submission} createSubmission={(arg: String) => null}/></li>
           )}
         </ul>
 
         {
-          this.props.store.getState().ComparisonReducer.compareSubmissions.length === 0 &&
+          store.getState().ComparisonReducer.compareSubmissions.length === 0 &&
             <Link to="/ComparisonComponent" id="zeroCompare" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
-              Compare Submissions {this.props.store.getState().ComparisonReducer.compareSubmissions.length}/2
+              Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         } 
         {
-          this.props.store.getState().ComparisonReducer.compareSubmissions.length === 1 &&
+          store.getState().ComparisonReducer.compareSubmissions.length === 1 &&
             <Link to="/ComparisonComponent" id="oneCompare" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
-              Compare Submissions {this.props.store.getState().ComparisonReducer.compareSubmissions.length}/2
+              Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         }
         { 
-          this.props.store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
+          store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
             <Link to="/ComparisonComponent" id="twoCompare" className="enabledCompareButton">
-              Compare Submissions {this.props.store.getState().ComparisonReducer.compareSubmissions.length}/2
+              Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         }
       </div>
