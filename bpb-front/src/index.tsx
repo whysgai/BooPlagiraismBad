@@ -11,12 +11,8 @@ import HelpComponent from './HelpComponent';
 import SubmissionListComponent from './SubmissionListComponent';
 import * as serviceWorker from './serviceWorker';
 import NavbarComponent from './NavbarComponent';
-import Assignment from './types/Assignment'
-import { createStore, combineReducers } from 'redux';
 import {store} from './store'
 import { Provider } from 'react-redux';
-import ComparisonReducer from './reducers/ComparisonReducer';
-import SubmissionReducer from './reducers/SubmissionReducer';
 
 //import "../node_modules/bootstrap/dist/css/bootstrap.min";
 //require('bootstrap');
@@ -34,7 +30,7 @@ ReactDOM.render(
       {/* <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route> */}
       <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
 
-      <Route exact path="/Submissions"><SubmissionListComponent store={store} submissions={
+      <Route exact path="/Submissions"><SubmissionListComponent submissions={
         [
           {_id:"01", name:"Mikayla", assignment:'Assignment1', files:[]},
           {_id:"02", name:"Will", assignment:'Assignment1', files:[]},
