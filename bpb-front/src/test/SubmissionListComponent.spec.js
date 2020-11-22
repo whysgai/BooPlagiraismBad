@@ -11,13 +11,13 @@ import configureMockStore from 'redux-mock-store'
 
 describe("SubmissionListComponent tests:", () => {
     let container;
-    let mockstore;
+    let mockStore;
     beforeEach(() => {
         container = document.createElement('div');
         // container.appendChild(<BrowserRouter><Route path="/" /></BrowserRouter>)
         document.body.appendChild(container);
         Enzyme.configure({ adapter: new Adapter() })
-        mockstore = configureMockStore([])
+        mockStore = configureMockStore([])
     })
     it('Should display no submissions if none exist for the specified assignment', () =>{
         act(() =>{
@@ -86,8 +86,8 @@ describe("SubmissionListComponent tests:", () => {
     });
     it('Should not be clickable and should show 0 when no submissions are selected', async() => {
         const jestFn = jest.fn();
-        const wrapper = shallow(<SubmissionListComponent submissions={[1,2]}/>);
-        const store = mockstore({ compareSubmissions: [] });
+        const wrapper = mount(<StaticRouter location="/" context={{}}><SubmissionListComponent submissions={[1,2]}/></StaticRouter>);
+        const store = mockStore({ compareSubmissions: [] });
         let count = 0;
         wrapper.find("#zeroCompare").simulate('click', {
             preventDefault: () => {
@@ -96,13 +96,14 @@ describe("SubmissionListComponent tests:", () => {
            });
         expect(count).toEqual(1);
         expect(store.getState().compareSubmissions.length).toEqual(0);
+        wrapper.unmount();
     });
     it('Should not be clickable and should show 1 when one submission is selected', () => {
         const jestFn = jest.fn();
-        const wrapper = mount(<SubmissionListComponent submissions={[1,2]}/>);
-        const store = mockstore({ compareSubmissions: [] });
+        const wrapper = mount(<StaticRouter location="/" context={{}}><SubmissionListComponent submissions={[1,2]}/></StaticRouter> );
+        const store = mockStore({ compareSubmissions: [] });
         let count = 0;
-        wrapper.find(".form-check-input").simulate('click');
+        // wrapper.find(".form-check-input").simulate('click');
         //console.log(store.getState())
         wrapper.find("#oneCompare").simulate('click', {
             preventDefault: () => {
@@ -111,6 +112,7 @@ describe("SubmissionListComponent tests:", () => {
            });
         expect(count).toEqual(1);
         expect(store.getState().compareSubmissions.length).toEqual(1);
+        wrapper.unmount();
     });
     //TODO
     it.skip('Should be clickable and should show 2 when two submissions are selected', () => {
