@@ -5,17 +5,17 @@ describe("Assignment.ts",() => {
 
     var assignment : IAssignment;
     var assignmentName : string;
-    var assignmentId : string;
 
     beforeEach(() => {
-        assignmentId = "test_id"
-        assignmentName = "test_name"
-        assignment = new Assignment(assignmentId,assignmentName); //TODO: Replace with builder 
+        assignmentName = "Dr Hugo Z. Hackenbush"
+        const assignmentBuilder = new Assignment.builder();
+        assignmentBuilder.setName(assignmentName);
+        assignment = assignmentBuilder.build();
     });
 
     describe('getId()',() => {
         it("Should return the assignment’s {id}",() =>{
-            expect(assignment.getID()).to.equal(assignmentId);
+            expect(assignment.getId()).to.equal(assignment.getId());
         });
     });
 
