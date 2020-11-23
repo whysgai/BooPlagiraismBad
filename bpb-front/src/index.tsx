@@ -11,20 +11,37 @@ import HelpComponent from './HelpComponent';
 import SubmissionListComponent from './SubmissionListComponent';
 import * as serviceWorker from './serviceWorker';
 import NavbarComponent from './NavbarComponent';
-import Assignment from './types/Assignment'
+import {store} from './store'
+import { Provider } from 'react-redux';
+
 //import "../node_modules/bootstrap/dist/css/bootstrap.min";
 //require('bootstrap');
 
 ReactDOM.render(
-  <BrowserRouter>
-    <NavbarComponent />
-    <Route exact path="/"><AssignmentListComponent assignments={[{id:"001", title:"Bond", submissions:[]}]}/></Route>
-    <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
-    <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/>
-    <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
-    <Route path="/Help" component={HelpComponent}/>
-    <Route path="/CompareSubmissions" component={ComparisonComponent}/>
-  </BrowserRouter>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <NavbarComponent />
+      <Route exact path="/"><AssignmentListComponent assignments={
+        [
+          {_id:"01", name:"Mikayla", submissionIds:[]},
+          {_id:"02", name:"Ture", submissionIds:[]}
+        ]
+      }/></Route>
+      {/* <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route> */}
+      <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
+
+      <Route exact path="/Submissions"><SubmissionListComponent submissions={
+        [
+          {_id:"01", name:"Mikayla", assignment:'Assignment1', files:[]},
+          {_id:"02", name:"Will", assignment:'Assignment1', files:[]},
+        ] 
+      } compareEnabled={0}/></Route>
+      {/* <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/> */}
+      <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
+      <Route path="/Help" component={HelpComponent}/>
+      <Route path="/CompareSubmissions" component={ComparisonComponent}/>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 

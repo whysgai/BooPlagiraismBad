@@ -1,7 +1,7 @@
 type Assignment = {
-    id: String,
-    title: String,
-    submissions: String[]
+    _id: String,
+    name: String,
+    submissionIds: String[]
 }
 
 export default Assignment
