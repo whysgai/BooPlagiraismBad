@@ -51,10 +51,10 @@ describe('SubmissionRouter.ts',()=> {
         testAssignmentDAO = new AssignmentDAO();
         testAssignmentManager = new AssignmentManager(testAssignmentDAO);
         
-        testAssignment = new Assignment("ID998","Test Assignment");
+        testAssignment = new Assignment.builder().build();
 
         var builder = new Submission.builder();
-        builder.setAssignmentId(testAssignment.getID());
+        builder.setAssignmentId(testAssignment.getId());
         builder.setName("test");
         testSubmission = builder.build();
 
@@ -75,7 +75,7 @@ describe('SubmissionRouter.ts',()=> {
         
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
+        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getId()};
         
         var mockARECollector = chai.spy.on(AnalysisResultEntryCollectorVisitor, 'getAnalysisResultEntries', () => { return [testAre1, testAre2]})
 
@@ -88,7 +88,7 @@ describe('SubmissionRouter.ts',()=> {
             .send(postBody)
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getID());
+                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getId());
                 expect(res.body).to.deep.equals(testSubmission.asJSON());
             });
     });
@@ -96,7 +96,7 @@ describe('SubmissionRouter.ts',()=> {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
+        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getId()};
         
         var mockGetAssignment = chai.spy.on(
             testAssignmentManager, 'getAssignment', () => {return Promise.reject(new Error("The requested assignment does not exist"));}
@@ -107,7 +107,7 @@ describe('SubmissionRouter.ts',()=> {
             .send(postBody)
             .then(res => {
                 expect(res).to.have.status(400);
-                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getID());
+                expect(mockGetAssignment).to.have.been.called.with(testAssignment.getId());
                 expect(mockCreateSubmission).to.have.not.been.called();
                 expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
             });
@@ -117,7 +117,7 @@ describe('SubmissionRouter.ts',()=> {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const postBody = {"assignment_id": testAssignment.getID()};
+        const postBody = {"assignment_id": testAssignment.getId()};
         
         var mockGetAssignment = chai.spy.on(
             testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
@@ -179,7 +179,7 @@ describe('SubmissionRouter.ts',()=> {
         
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getID()};
+        const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getId()};
 
         chai.spy.on(testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);})
 
@@ -261,10 +261,10 @@ describe('SubmissionRouter.ts',()=> {
             testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
         );
 
-        chai.request(testServer).get("/submissions/ofAssignment/"+testAssignment.getID())
+        chai.request(testServer).get("/submissions/ofAssignment/"+testAssignment.getId())
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(mockGetSubmissions).to.have.been.called.with(testAssignment.getID());
+                expect(mockGetSubmissions).to.have.been.called.with(testAssignment.getId());
                 expect(res.body).to.deep.equal(expectedSubs);
             });
     });
@@ -285,7 +285,7 @@ describe('SubmissionRouter.ts',()=> {
         
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const mockAssignment = new Assignment("QQ29", "PewPew");
+        const mockAssignment = new Assignment.builder().build();
         
         chai.spy.on(
             testAssignmentManager,'getAssignment',() => {return Promise.resolve(mockAssignment);}
@@ -313,7 +313,7 @@ describe('SubmissionRouter.ts',()=> {
 
         chai.spy.on(testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);});
 
-        chai.request(testServer).get("/submissions/ofAssignment/" + testAssignment.getID())
+        chai.request(testServer).get("/submissions/ofAssignment/" + testAssignment.getId())
             .then(res => {
                 expect(res).to.have.status(400);
                 expect(res.body).to.have.property("response").which.equals("Failed to find assignment");
@@ -333,7 +333,7 @@ describe('SubmissionRouter.ts',()=> {
 
         chai.spy.on(testSubmissionManager, 'getSubmissions', () => {return Promise.reject(new Error("Failed to get submissions"));});
 
-        chai.request(testServer).get("/submissions/ofAssignment/"+testAssignment.getID())
+        chai.request(testServer).get("/submissions/ofAssignment/"+testAssignment.getId())
             .then(res => {
                 expect(res).to.have.status(400);
                 expect(res.body).to.have.property("response").which.equals("Failed to get submissions");
