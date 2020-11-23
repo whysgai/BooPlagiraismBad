@@ -104,10 +104,10 @@ export class Assignment implements IAssignment {
     protected setModelInstance(modelInstance : IAssignmentModel) : void {
         this.modelInstance = modelInstance;
     }
-    protected setName(name : string) : void {
+    setName(name : string) : void {
         this.name = name;
     }
-    protected setSubmissionIds(submissionIds : string[]) {
+    setSubmissionIds(submissionIds : string[]) {
         this.submissionIds = submissionIds;
     }
     getID(): string {

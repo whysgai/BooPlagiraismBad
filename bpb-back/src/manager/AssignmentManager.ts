@@ -25,7 +25,7 @@ export class AssignmentManager implements IAssignmentManager {
     }
     getAssignment(assignmentId : string) : Promise<IAssignment> {
         return new Promise((resolve,reject) => {
-            resolve(new Assignment("test",assignmentId)); //TODO: Remove fake assignment! Required for SubmissionRouter.
+            resolve(new Assignment.builder().build()); //TODO: Remove fake assignment! Required for SubmissionRouter.
         });
     }
     async createAssignment(data : Object): Promise<IAssignment> {
