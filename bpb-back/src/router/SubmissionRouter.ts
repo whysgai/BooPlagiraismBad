@@ -40,7 +40,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.assignmentManager.getAssignment(assignmentId)
       .then((assignment) => {
         
-        var createBody = {name:submissionName,assignment_id:assignment.getID()};
+        var createBody = {name:submissionName,assignment_id:assignment.getId()};
         
         this.submissionManager.createSubmission(createBody)
         .then((submission) =>{

@@ -14,7 +14,7 @@ export interface IAssignmentModel extends Document {
  * Represents an Assignment to which Submissions may be made.
  */
 export interface IAssignment {
-    getID() : string
+    getId() : string
     getName() : string
     getSubmissionIDs() : string[]
     addSubmission(submissionID : string) : void
@@ -110,7 +110,7 @@ export class Assignment implements IAssignment {
     setSubmissionIds(submissionIds : string[]) {
         this.submissionIds = submissionIds;
     }
-    getID(): string {
+    getId(): string {
         return this.id;
     }
     getName(): string {

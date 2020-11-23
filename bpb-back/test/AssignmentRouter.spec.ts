@@ -272,7 +272,7 @@ describe('AssignmentRouter.ts',()=> {
         .then(res => {
             expect(res).to.have.status(200);
             expect(mockGetMethod).to.have.been.called.with(mockAssignment.getId());
-            expect(mockDeleteMethod).to.have.been.called.with(mockAssignment.getID());
+            expect(mockDeleteMethod).to.have.been.called.with(mockAssignment.getId());
             expect(res.body.response).to.equal("Deleted assignment "+mockAssignment.getId());
         })
     });
