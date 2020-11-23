@@ -44,7 +44,7 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
       <div className='submission-list-item'>
         <div>
           <input type="checkbox" className="form-check-input" id="exampleCheck1" 
-          onClick={() => this.checkbox()}/> 
+          onClick={() => this.checkbox()} />
         </div>
         <span>
           {this.props.submission.name}
