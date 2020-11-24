@@ -18,6 +18,7 @@ export interface ISubmissionManager {
     processSubmissionFile(submissionId : string, filePath : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
     compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult>
+    getSubmissionFileContent(submissionId : string, filePath : string) : Promise<string>
 }
 
 export class SubmissionManager implements ISubmissionManager {
@@ -171,7 +172,7 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionIdA 
      * @param submissionIdB 
      */
-    compareSubmissions = async(submissionIdA : string, submissionIdB : string): Promise<IAnalysisResult> => {
+    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult> => {
 
         return new Promise((resolve,reject) => {
             this.getSubmission(submissionIdA)
@@ -186,6 +187,16 @@ export class SubmissionManager implements ISubmissionManager {
             }).catch((err) => {
                 reject(err);
             });
+        });
+    }
+
+    /**
+     * Obtains and returns the content of the specified submission file as a string
+     */
+    getSubmissionFileContent = async(submissionId : string, filePath : string) : Promise<string> => {
+        return new Promise((resolve,reject) => {
+            //TODO
+            reject(new Error("Not yet implemented"));
         });
     }
 }

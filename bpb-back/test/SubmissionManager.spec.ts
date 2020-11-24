@@ -435,4 +435,10 @@ describe("SubmissionManager.ts",() => {
             });
         });
     });
+
+    describe("getSubmissionFileContent()",() => {
+        it("Should obtain the content of the specified file if it exists");
+        it("Should throw an appropriate error if the specified file does not exist");
+        it("Should throw an appropriate error if the specified file does not contain text or cannot be parsed");
+    });
 });

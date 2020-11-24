@@ -5,6 +5,7 @@ import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmission } from '../model/Submission'
+import { createJsxJsxClosingFragment } from 'typescript';
 
 /**
  * Router for requests related to Submissions
@@ -20,7 +21,6 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.post("/",this.createSubmissionFn);
     this.router.put("/:id",this.updateSubmissionFn);
     this.router.delete("/:id",this.deleteSubmissionFn);
-    //this.router.get("/test/files/test",this.getSubmissionFileContentsFn);
     this.router.get("/:id/files/:fileId",this.getSubmissionFileContentsFn);
     this.router.post("/:id/files",this.createSubmissionFileFn);
     this.router.get("/ofAssignment/:id", this.getSubmissionsOfAssignmentFn);
@@ -183,8 +183,35 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
    
   //GET /{id}/files/{index} : Get the contents of a submission's nth file as a string
   getSubmissionFileContentsFn = async (req : express.Request,res : express.Response) => {
-    console.log("1jwpodifjwoidfjoiwejrfoiwejrowiejrowiejr");
-    res.send({"response":"Not yet implemented"});
+
+    var submissionId = req.params.id;
+    var fileId = req.params.fileId;
+    var fileIndex : number;
+
+    try { 
+      fileIndex = Number(fileId);
+    } catch {
+      res.status(400);
+      res.send({"response":"File index provided must be a number"})
+    }
+
+    this.submissionManager.getSubmission(submissionId).then((submission) => {
+
+      var fileNames = submission.getFiles();
+
+      if(fileIndex < 0 || fileIndex > (fileNames.length - 1)) {
+        res.status(400);
+        res.send({"response":"The provided file index is out of bounds"});
+      } else {
+        this.submissionManager.getSubmissionFileContent(submissionId,fileNames[fileIndex]).then((fileContent) => {
+          res.status(200);
+          res.send({"content":fileContent});
+        });
+      }
+    }).catch((err) => {
+      res.status(400);
+      res.send({"response":err.message});
+    })
   }
 }
 

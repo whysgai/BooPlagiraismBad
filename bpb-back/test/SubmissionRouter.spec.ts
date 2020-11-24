@@ -533,6 +533,20 @@ describe('SubmissionRouter.ts',()=> {
         });
     });
 
+    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if index provided is not a number",() => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+        const testContent = "thisissometestfilecontent";
+
+        chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
+
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/test").then((res) => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.deep.equals("File index provided must be a number");
+        });
+    });
+
     it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if the submission has no files",() => {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
@@ -556,7 +570,7 @@ describe('SubmissionRouter.ts',()=> {
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/9").then((res) => {
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property("response").which.equals("The specified file index is invalid");
+            expect(res.body).to.have.property("response").which.equals("The specified file index is out of bounds");
         });
     });
 
@@ -569,7 +583,7 @@ describe('SubmissionRouter.ts',()=> {
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/-1").then((res) => {
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property("response").which.equals("The specified file index is invalid");
+            expect(res.body).to.have.property("response").which.equals("The specified file index is out of bounds");
         });
     });
 
