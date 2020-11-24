@@ -20,6 +20,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.post("/",this.createSubmissionFn);
     this.router.put("/:id",this.updateSubmissionFn);
     this.router.delete("/:id",this.deleteSubmissionFn);
+    //this.router.get("/test/files/test",this.getSubmissionFileContentsFn);
     this.router.get("/:id/files/:fileId",this.getSubmissionFileContentsFn);
     this.router.post("/:id/files",this.createSubmissionFileFn);
     this.router.get("/ofAssignment/:id", this.getSubmissionsOfAssignmentFn);
@@ -182,6 +183,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
    
   //GET /{id}/files/{index} : Get the contents of a submission's nth file as a string
   getSubmissionFileContentsFn = async (req : express.Request,res : express.Response) => {
+    console.log("1jwpodifjwoidfjoiwejrfoiwejrowiejrowiejr");
     res.send({"response":"Not yet implemented"});
   }
 }

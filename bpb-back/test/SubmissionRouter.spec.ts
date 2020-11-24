@@ -521,12 +521,14 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a request to GET /submissions/{id}/files/{index} to return the contents of a submission file",() => {
 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         const testContent = "thisissometestfilecontent";
 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
         chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/1").then((res) => {
+            console.log(res);
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("content").which.deep.equals(testContent);
         });
@@ -534,6 +536,7 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if the submission has no files",() => {
 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         var mockSubmission = new Submission.builder().build();
 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(mockSubmission)});
@@ -545,6 +548,8 @@ describe('SubmissionRouter.ts',()=> {
     });
 
     it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if an invalid index (1 ... n) is specified (right bound)",() => {
+
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         const testContent = "thisissometestfilecontent";
 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
@@ -557,6 +562,7 @@ describe('SubmissionRouter.ts',()=> {
     });
 
     it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if an invalid index (1 ... n) is specified (left bound)",() => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         const testContent = "thisissometestfilecontent";
 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
@@ -570,6 +576,7 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if getSubmission fails and the specified submission does not exist",() => {
 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.reject(new Error("The specified submission does not exist"))});
         chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve("test")});
 
@@ -581,6 +588,7 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if getSubmissionFileContent fails (bad content, not a text file, or nonexistent file)",() => {
 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
         chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.reject("Cannot process the specified file. It may not exist on the server filesystem or may not contain text")});
 
