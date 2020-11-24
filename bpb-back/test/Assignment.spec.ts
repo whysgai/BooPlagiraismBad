@@ -11,6 +11,7 @@ describe("Assignment.ts",() => {
         const assignmentBuilder = new Assignment.builder();
         assignmentBuilder.setName(assignmentName);
         assignment = assignmentBuilder.build();
+        //console.log(assignment.getSubmissionIds());
     });
 
     describe('getId()',() => {
@@ -27,20 +28,21 @@ describe("Assignment.ts",() => {
 
     describe("getSubmissionIds()",() => {
         it("Should return an empty collection if assignment has no submissions ",() => {
-            expect(assignment.getSubmissionIDs()).to.be.empty;
+            console.log(assignment.getSubmissionIds());
+            expect(assignment.getSubmissionIds()).to.be.empty;
         });
         
         it("Should return the assignment’s submission’s {id}s if there are some",() => {
             assignment.addSubmission("some_submission_id");
-            expect(assignment.getSubmissionIDs()).to.contain("some_submission_id");
+            expect(assignment.getSubmissionIds()).to.contain("some_submission_id");
         });
     });
 
     describe("addSubmission()",() => {
         it("Should add a submission to the assignment",() => {
-            expect(assignment.getSubmissionIDs()).to.be.empty;
+            expect(assignment.getSubmissionIds()).to.be.empty;
             assignment.addSubmission("some_submission_id");
-            expect(assignment.getSubmissionIDs()).to.contain("some_submission_id");
+            expect(assignment.getSubmissionIds()).to.contain("some_submission_id");
         });
     });
 
@@ -49,9 +51,9 @@ describe("Assignment.ts",() => {
             assignment.addSubmission("a");
             assignment.addSubmission("c");
             assignment.removeSubmission("b");
-            expect(assignment.getSubmissionIDs()).to.contain("a");
-            expect(assignment.getSubmissionIDs()).to.contain("c");
-            expect(assignment.getSubmissionIDs().length).to.equal(2);
+            expect(assignment.getSubmissionIds()).to.contain("a");
+            expect(assignment.getSubmissionIds()).to.contain("c");
+            expect(assignment.getSubmissionIds().length).to.equal(2);
  
         });
         
@@ -60,15 +62,15 @@ describe("Assignment.ts",() => {
             assignment.addSubmission("b");
             assignment.addSubmission("c");
             assignment.removeSubmission("b");
-            expect(assignment.getSubmissionIDs()).to.not.contain("b");
-            expect(assignment.getSubmissionIDs().length).to.equal(2);
+            expect(assignment.getSubmissionIds()).to.not.contain("b");
+            expect(assignment.getSubmissionIds().length).to.equal(2);
         });
     });
 
     describe("getModelInstance()",() => {
         it("should return a new model instance that matches the Assignment object if there are no submissions",() => {
             var modelInstance = assignment.getModelInstance();
-            var expected  = '{ submissionIds: [], _id: \'test_id\', name: \'test_name\' }';
+            var expected  = '{\n  submissionIds: [],\n  _id: ' + assignment.getId() + ',\n  name: \'' + assignmentName + '\'\n}';
             expect(modelInstance.toString()).to.equal(expected);
         });
         
@@ -76,7 +78,7 @@ describe("Assignment.ts",() => {
             assignment.addSubmission("testy");
             assignment.addSubmission("testy2");
             var modelInstance = assignment.getModelInstance();
-            var expected  = '{\n  submissionIds: [ \'testy\', \'testy2\' ],\n  _id: \'test_id\',\n  name: \'test_name\'\n}';
+            var expected  = '{\n  submissionIds: [ \'testy\', \'testy2\' ],\n  _id: ' + assignment.getId() + ',\n  name: \'' + assignmentName + '\'\n}';
             expect(modelInstance.toString()).to.equal(expected);
         });
 
