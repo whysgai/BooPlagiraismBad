@@ -5,7 +5,6 @@ import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmission } from '../model/Submission'
-import { createJsxJsxClosingFragment } from 'typescript';
 
 /**
  * Router for requests related to Submissions
@@ -21,11 +20,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.post("/",this.createSubmissionFn);
     this.router.put("/:id",this.updateSubmissionFn);
     this.router.delete("/:id",this.deleteSubmissionFn);
+    this.router.get("/:id/files/:fileId",this.getSubmissionFileContentsFn);
     this.router.post("/:id/files",this.createSubmissionFileFn);
     this.router.get("/ofAssignment/:id", this.getSubmissionsOfAssignmentFn);
     this.router.get("/:id", this.getSubmissionFn);
     this.router.get("/compare/:ida/:idb",this.compareSubmissionsFn);
-    this.router.get("/:id/files/:fileid",this.getSubmissionFileContentsFn);
   }
 
   //POST / : Create a submission with the provided name and assignment_id
