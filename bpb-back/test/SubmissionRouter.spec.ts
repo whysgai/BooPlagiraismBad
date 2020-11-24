@@ -296,7 +296,7 @@ describe('SubmissionRouter.ts',()=> {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const expectedSubs = {submissions: [testSubmission.asJSON()]};
+        const expectedSubs = {submissionIds: [testSubmission.getId()]};
 
     
         testAssignment.addSubmission(testSubmission.getId());
@@ -344,7 +344,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.request(testServer).get("/submissions/ofAssignment/test")
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.have.property("submissions").with.lengthOf(0); //TODO: ?
+                expect(res.body).to.have.property("submissionIds").with.lengthOf(0); //TODO: ?
             });
     });
 

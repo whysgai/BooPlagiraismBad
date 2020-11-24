@@ -65,8 +65,8 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       .then((assignment) => {
         this.submissionManager.getSubmissions(assignmentId)
           .then((submissions: ISubmission[]) => {
-            var submissionEntries = submissions.map((submission) => { return submission.asJSON(); });
-            var responseBody = { submissions:submissionEntries }
+            var submissionEntries = submissions.map((submission) => { return submission.getId(); });
+            var responseBody = { submissionIds:submissionEntries }
             res.send(responseBody);
           }).catch((err) => {
             res.status(400)
