@@ -5,13 +5,40 @@ describe("Assignment.ts",() => {
 
     var assignment : IAssignment;
     var assignmentName : string;
+    var subIds : string[];
 
     beforeEach(() => {
-        assignmentName = "Dr Hugo Z. Hackenbush"
+        assignmentName = "Dr Hugo Z. Hackenbush"        
         const assignmentBuilder = new Assignment.builder();
-        assignmentBuilder.setName(assignmentName);
+        assignmentBuilder.setName(assignmentName);        
         assignment = assignmentBuilder.build();
         //console.log(assignment.getSubmissionIds());
+    });
+
+    describe('AssignmentBuilder', () => {
+        it("should correctly build and assignment if no builder methods are called", () => {
+            assignment = new Assignment.builder().build();
+            expect(assignment.getId()).to.not.be.undefined;
+            expect(assignment.getName()).to.not.be.undefined;
+            expect(assignment.getSubmissionIds()).to.not.be.undefined;
+            expect(assignment.getModelInstance()).to.not.be.undefined;
+            
+        });
+        it("should correctly build and assignment if builder methods are called", () => {
+            const testName = "Xavier Chambers: Master of Microservices";
+            const testSubIds = [
+                "Dr. Jones and the Technicolor Code Coverage Report", 
+                "Felicia's Static Code Analysis Mission #3"
+            ]
+            const testAssignmentBuilder = new Assignment.builder();
+            testAssignmentBuilder.setName(testName);
+            testAssignmentBuilder.setSubmissionIds(testSubIds)
+            assignment = testAssignmentBuilder.build();
+
+            expect(assignment.getId()).to.equal(assignment.getModelInstance().id);
+            expect(assignment.getName()).to.equal(testName);
+            expect(assignment.getSubmissionIds()).to.equal(testSubIds);
+        });
     });
 
     describe('getId()',() => {
@@ -88,6 +115,24 @@ describe("Assignment.ts",() => {
         it("should return a valid Assignment model",() => {
             var staticModel = Assignment.getStaticModel();
             expect(staticModel.schema).to.not.be.undefined;
+        });
+    });
+
+    describe("asJSON()", () => {
+        it("should return a properly formatted JSON", () => {
+            subIds = ["Tony","Stuffy","Emily Upjohn"];
+            const assignmentBuilder = new Assignment.builder();
+            assignmentBuilder.setName(assignmentName);
+            assignmentBuilder.setSubmissionIds(subIds);
+            assignment = assignmentBuilder.build();
+
+            var expectedJSON = {
+                "_id": assignment.getId(),
+                "name": assignment.getName(),
+                "submissionIds": assignment.getSubmissionIds()
+            };
+
+            expect(assignment.asJSON()).to.deep.equal(expectedJSON);
         });
     });
 });
