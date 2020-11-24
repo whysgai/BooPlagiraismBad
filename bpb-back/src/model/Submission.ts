@@ -34,7 +34,7 @@ export interface ISubmission {
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
     setFiles(files : string[]) : void;
-    addFile(content : string, filePath : string) : Promise<void>;
+    addFile(content : string, fileName : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
     compare(otherSubmission : ISubmission) : IAnalysisResult;
     compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult;
@@ -196,16 +196,16 @@ export interface ISubmission {
          this.name = newName;
      }
 
-    async addFile(content : string, filePath : string) : Promise<void> {
+    async addFile(content : string, fileName : string) : Promise<void> {
      
         return new Promise((resolve,reject) => {
-            if(this.files.includes(filePath)) {
-                reject(new Error("File at " + filePath + " was already added to the submission"));
+            if(this.files.includes(fileName)) {
+                reject(new Error("Submission file " + fileName + " was already added to the submission"));
             } else {
-                this.files.push(filePath);
+                this.files.push(fileName);
     
                 var parseTree = parse(content.toString());
-                var visitor = new AnalysisResultEntryCollectorVisitor(filePath,this); 
+                var visitor = new AnalysisResultEntryCollectorVisitor(fileName,this); 
         
                 visitor.visit(parseTree);
         

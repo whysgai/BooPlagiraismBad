@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
     "java-ast": "^0.3.0",
+    "mkdirp": "^1.0.4",
     "mocha": "^8.2.0",
     "mock-mongoose": "^8.0.1-a",
     "mongoose": "^5.10.13",

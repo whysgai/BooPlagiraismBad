@@ -201,13 +201,13 @@ describe('SubmissionRouter.ts',()=> {
         var mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
         var mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
 
-        await chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+        return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
             .attach("submissionFile", sampleFileContent, sampleFileName)
             .then((res) => {
-                expect(res.body).to.have.property("response", "File uploaded to submission successfully.");
+                expect(res.body).to.have.property("response", "File " + sampleFileName + " uploaded to submission successfully.");
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockProcessSubmissionFile).to.have.been.called.with(testSubmission.getId()); 
-                expect(mockProcessSubmissionFile).to.have.been.called.with(AppConfig.submissionFileUploadDirectory() + testSubmission.getId() + "/" + sampleFileName);
+                expect(mockProcessSubmissionFile).to.have.been.called.with(sampleFileName);
                 expect(res).to.have.status(200);
         });
     });
@@ -227,19 +227,19 @@ describe('SubmissionRouter.ts',()=> {
         return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
         .attach("submissionFile", sampleFileContent, sampleFileName)
         .then((res) => {
-            expect(res.body).to.have.property("response", "File uploaded to submission successfully.");
+            expect(res.body).to.have.property("response", "File " + sampleFileName + " uploaded to submission successfully.");
             expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
             expect(mockProcessSubmissionFile).to.have.been.called.with(testSubmission.getId()); 
-            expect(mockProcessSubmissionFile).to.have.been.called.with(AppConfig.submissionFileUploadDirectory() + testSubmission.getId() + "/" + sampleFileName);
+            expect(mockProcessSubmissionFile).to.have.been.called.with(sampleFileName);
             expect(res).to.have.status(200);
 
             return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
             .attach("submissionFile", sampleFileContent2, sampleFileName2)
             .then((res) => {
-                expect(res.body).to.have.property("response", "File uploaded to submission successfully.");
+                expect(res.body).to.have.property("response", "File " + sampleFileName2 + " uploaded to submission successfully.");
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockProcessSubmissionFile).to.have.been.called.with(testSubmission.getId()); 
-                expect(mockProcessSubmissionFile).to.have.been.called.with(AppConfig.submissionFileUploadDirectory() + testSubmission.getId() + "/" + sampleFileName2);
+                expect(mockProcessSubmissionFile).to.have.been.called.with(sampleFileName2);
                 expect(res).to.have.status(200);
             });
         });
@@ -251,7 +251,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
         chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
 
-        await chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+        return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
             .then((res) => {
                 expect(res.body).to.have.property("response", "No file was included in this request. Please ensure a file is provided.");
                 expect(res).to.have.status(400);

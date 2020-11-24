@@ -179,7 +179,7 @@ describe("Submission.ts",() => {
         });
 
         it("Should throw an appropriate error if the specified file was already added to the submission",() => {
-            var expectedErrorMsg = "File at " + testEntryA.getFilePath() + " was already added to the submission";
+            var expectedErrorMsg = "Submission file " + testEntryA.getFilePath() + " was already added to the submission";
 
             return testSubmissionA.addFile(testFileContent,testEntryA.getFilePath()).then(() => {
                 testSubmissionA.addFile("the same file ",testEntryA.getFilePath()).then(() => {

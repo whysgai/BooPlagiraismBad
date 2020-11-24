@@ -5,9 +5,7 @@ import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmission } from '../model/Submission';
-import fs from 'fs';
-import util from 'util';
-const makeDir = util.promisify(fs.mkdir);
+const mkdirp = require('mkdirp');
 
 /**
  * Router for requests related to Submissions
@@ -156,22 +154,19 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
         } else {
 
           const directoryPath = AppConfig.submissionFileUploadDirectory() + submissionId + "/";
-          const filePath = directoryPath + submissionFile.name;
+          const fileName = submissionFile.name
+          const filePath = directoryPath + fileName;
           
-          makeDir(directoryPath).then(() => {
+          mkdirp(directoryPath).then(() => {
 
             submissionFile.mv(filePath).then(() => {
           
               this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
     
-                this.submissionManager.processSubmissionFile(submission.getId(),filePath).then(() => {
+                this.submissionManager.processSubmissionFile(submission.getId(),fileName).then(() => {
               
                   res.send({
-                    "response": 'File uploaded to submission successfully.',
-                    "data": {
-                        "name": submissionFile.name,
-                        "size": submissionFile.size
-                    }
+                    "response": "File " + fileName + " uploaded to submission successfully."
                   });
                 }).catch((err) => {
                   res.status(400);
@@ -182,9 +177,6 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
                   res.send({"response":err.message});
               });
             });
-          }).catch((err) => {
-            res.status(400);
-            res.send({"response":err.message});
           });
         }
       }
