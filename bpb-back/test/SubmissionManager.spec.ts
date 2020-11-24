@@ -244,6 +244,23 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
+        it("Should return an appropriate error if file content can't be read (name is invalid)",() => {
+
+            var mockSubmission = new Submission.builder().build();
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(mockSubmission)}); //Required
+
+            chai.spy.on(mockSubmission,'addFile',() => { return Promise.resolve() });
+            
+            return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
+                expect(true,"processSubmissionFile is succeeding where it should fail (file doesn't exist, was not copied)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.contains("no such file or directory");
+            });
+        });
+
         it("Should return an appropriate error if file was already added to the submission",() => {
             
             var mockSubmission = new Submission.builder().build();
@@ -261,7 +278,7 @@ describe("SubmissionManager.ts",() => {
                         var expectedContent = buffer.toString();
                         
                         return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
-                            expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
+                            expect(true,"processSubmissionFile is succeeding where it should fail (file name was already added)").to.equal(false);
                         }).catch((err) => {
                             expect(err).to.not.be.undefined;
                             expect(err).to.have.property("message").which.equals("Submission file " + testFileName + " was already added to the submission");
