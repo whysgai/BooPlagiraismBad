@@ -10,6 +10,7 @@ import { IAssignmentManager, AssignmentManager } from "../src/manager/Assignment
 import { IAssignmentDAO, AssignmentDAO } from "../src/model/AssignmentDAO";
 import { Assignment, IAssignment } from "../src/model/Assignment";
 import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
+import { ConsoleErrorListener } from "antlr4ts";
 
 describe('AssignmentRouter.ts',()=> {
     
@@ -140,10 +141,12 @@ describe('AssignmentRouter.ts',()=> {
 
         const mockMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.resolve(mockAssignment)});
 
+        console.log(mockAssignment.getId());
+
         chai.request(testServer).get("/assignments/" + mockAssignment.getId())
         .then(res  => {
             expect(res).to.have.status(200);
-            expect(res.body).to.have.property("name").which.equals(mockAssignment.getId());
+            expect(res.body).to.have.property("name").which.equals(mockAssignment.getName());
             expect(mockMethod).to.have.been.called.with(mockAssignment.getId());
         });
     });
@@ -278,12 +281,11 @@ describe('AssignmentRouter.ts',()=> {
     });
 
     it("Should be able to interpret a failed request to DELETE /assignments/{id} where {id} is invalid",() => {
-        const expectedId = 'ewtr12'
 
         var mockGetMethod = chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
         var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
  
-        chai.request(testServer).delete("/assignments/"+expectedId)
+        chai.request(testServer).delete("/assignments/" + mockAssignment.getId())
         .then(res => {
             expect(res).to.have.status(400);
             expect(res.body).to.have.property("response").which.equals("The requested assignment does not exist");
