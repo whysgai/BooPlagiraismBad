@@ -21,7 +21,7 @@ export interface IAssignment {
     setSubmissionIds(submissionIds : string[]) : void
     addSubmission(submissionID : string) : void
     removeSubmission(submissionID : string) : void
-    getModelInstance() : Document;
+    getModelInstance() : IAssignmentModel;
     asJSON() : Object;
 }
     
@@ -123,7 +123,7 @@ export class Assignment implements IAssignment {
             this.submissionIds.splice(foundValueIndex,1);
         }
     }
-    getModelInstance() : Document {
+    getModelInstance() : IAssignmentModel {
         return new Assignment.assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
     }
     asJSON() : Object {
