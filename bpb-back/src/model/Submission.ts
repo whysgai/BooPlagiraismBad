@@ -268,6 +268,13 @@ export interface ISubmission {
         let tlshB = new Tlsh();
         tlshA.fromTlshStr(hashB);
 
-        return tlshA.totalDiff(tlshB);
+        let lenDiff : boolean;
+        if(hashA.length != hashB.length) {
+            lenDiff = true;
+        } else {
+            false;
+        }
+        
+        return tlshA.totalDiff(tlshB, lenDiff);
     }
 }
