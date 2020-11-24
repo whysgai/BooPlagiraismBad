@@ -527,8 +527,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
         chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
 
-        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/1").then((res) => {
-            console.log(res);
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/0").then((res) => {
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("content").which.deep.equals(testContent);
         });
@@ -541,7 +540,7 @@ describe('SubmissionRouter.ts',()=> {
 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(mockSubmission)});
 
-        return chai.request(testServer).get("/submissions/" + mockSubmission.getId() + "/files/1").then((res) => {
+        return chai.request(testServer).get("/submissions/" + mockSubmission.getId() + "/files/0").then((res) => {
             expect(res).to.have.status(400);
             expect(res.body).to.have.property("response").which.equals("The specified submission has no files");
         });
@@ -568,7 +567,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
         chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
 
-        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/0").then((res) => {
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/-1").then((res) => {
             expect(res).to.have.status(400);
             expect(res.body).to.have.property("response").which.equals("The specified file index is invalid");
         });
