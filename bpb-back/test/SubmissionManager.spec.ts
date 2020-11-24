@@ -231,12 +231,12 @@ describe("SubmissionManager.ts",() => {
 
             var mockAddFile = chai.spy.on(mockSubmission,'addFile',() => { return Promise.resolve() });
             
-            return mkdirp(AppConfig.submissionFileUploadDirectory + mockSubmission.getId()).then(() => {
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
                 return copyFile(testFilePath,submissionFilePath).then(() => {
                     return readFileContent(submissionFilePath).then((buffer) => {
                         var expectedContent = buffer.toString();
                         
-                        testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFileName).then(() => {
+                        testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
                             expect(mockAddFile).to.have.been.called.with(expectedContent,testFileName);
                         });
                     });
@@ -255,12 +255,12 @@ describe("SubmissionManager.ts",() => {
             
             chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("Submission file " + testFileName + " was already added to the submission"))});
             
-            return mkdirp(AppConfig.submissionFileUploadDirectory + mockSubmission.getId()).then(() => {
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
                 return copyFile(testFilePath,submissionFilePath).then(() => {
                     return readFileContent(submissionFilePath).then((buffer) => {
                         var expectedContent = buffer.toString();
                         
-                        return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFileName).then(() => {
+                        return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
                             expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
                         }).catch((err) => {
                             expect(err).to.not.be.undefined;
@@ -282,7 +282,7 @@ describe("SubmissionManager.ts",() => {
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
             return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
-                return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFileName).then(() => {
+                return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
                     expect(true,"processSubmissionFile is succeeding where it should fail (submission doesn't exist with id)").to.equal(false);
                 }).catch((err) => {
                     expect(mockAddFile).to.not.have.been.called;
@@ -302,11 +302,11 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.reject(new Error("Failed to update"))}); 
             chai.spy.on(testSubmission,'addFile',() => { return Promise.resolve() });
             
-            return mkdirp(AppConfig.submissionFileUploadDirectory + mockSubmission.getId()).then(() => {
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
                 return copyFile(testFilePath,submissionFilePath).then(() => {
                     return readFileContent(submissionFilePath).then((buffer) => {
                         
-                        return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFileName).then(() => {
+                        return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
                             expect(true,"processSubmissionFile should have failed (DAO should have returned mock error), but it didn't").to.equal(false);
                         }).catch((err) => {
                             expect(err).to.have.property("message").which.equals("Failed to update");
