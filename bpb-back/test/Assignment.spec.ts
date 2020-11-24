@@ -16,7 +16,7 @@ describe("Assignment.ts",() => {
     });
 
     describe('AssignmentBuilder', () => {
-        it("should correctly build and assignment if no builder methods are called", () => {
+        it("should correctly build an assignment if no builder methods are called", () => {
             assignment = new Assignment.builder().build();
             expect(assignment.getId()).to.not.be.undefined;
             expect(assignment.getName()).to.not.be.undefined;
@@ -24,7 +24,7 @@ describe("Assignment.ts",() => {
             expect(assignment.getModelInstance()).to.not.be.undefined;
             
         });
-        it("should correctly build and assignment if builder methods are called", () => {
+        it("should correctly build an assignment if builder methods are called", () => {
             const testName = "Xavier Chambers: Master of Microservices";
             const testSubIds = [
                 "Dr. Jones and the Technicolor Code Coverage Report", 
@@ -38,6 +38,33 @@ describe("Assignment.ts",() => {
             expect(assignment.getId()).to.equal(assignment.getModelInstance().id);
             expect(assignment.getName()).to.equal(testName);
             expect(assignment.getSubmissionIds()).to.equal(testSubIds);
+        });
+
+        it("should correctly build an assignment from exisiting database model", () => {
+            const existingName = "Otis B Driftwood";
+            const existingSubIds = [
+                "Tomasso", 
+                "Fiorello",
+                "Mrs. Claypool"
+            ]
+
+            let exisitingAssignmentBuilder = new Assignment.builder();
+            exisitingAssignmentBuilder.setName(existingName);
+            exisitingAssignmentBuilder.setSubmissionIds(existingSubIds);
+            assignment = exisitingAssignmentBuilder.build();
+            let exisitingModel = assignment.getModelInstance();
+
+            let testExistingAssigmentBuilder = new Assignment.builder();
+            let existingAssignment = testExistingAssigmentBuilder.buildFromExisting(exisitingModel);
+
+            expect(existingAssignment.getId()).to.deep.equal(assignment.getId());
+            expect(existingAssignment.getName()).to.deep.equal(assignment.getName());
+            expect(existingAssignment.getSubmissionIds()).to.deep.equal(assignment.getSubmissionIds());
+        });
+        
+        it.skip("Should throw an appropriate error message if the provided model is missing one or more properties",() => {
+            // Compiler error when giving it empty object, unsure how to test
+            //expect(() => { const testAssignmentBuilder = new Assignment.builder().buildFromExisting({}); }).to.throw("At least one required model property is not present on the provided model");
         });
     });
 
