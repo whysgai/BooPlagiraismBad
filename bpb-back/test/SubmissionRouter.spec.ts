@@ -518,4 +518,75 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body.response).to.equal("Submission ID not found: " + nonexistentId);
             });
     });
+
+    it("Should be able to interpret a request to GET /submissions/{id}/files/{index} to return the contents of a submission file",() => {
+
+        const testContent = "thisissometestfilecontent";
+
+        chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
+
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/1").then((res) => {
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property("content").which.deep.equals(testContent);
+        });
+    });
+
+    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if the submission has no files",() => {
+
+        var mockSubmission = new Submission.builder().build();
+
+        chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(mockSubmission)});
+
+        return chai.request(testServer).get("/submissions/" + mockSubmission.getId() + "/files/1").then((res) => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("The specified submission has no files");
+        });
+    });
+
+    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if an invalid index (1 ... n) is specified (right bound)",() => {
+        const testContent = "thisissometestfilecontent";
+
+        chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
+
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/9").then((res) => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("The specified file index is invalid");
+        });
+    });
+
+    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if an invalid index (1 ... n) is specified (left bound)",() => {
+        const testContent = "thisissometestfilecontent";
+
+        chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
+
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/0").then((res) => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("The specified file index is invalid");
+        });
+    });
+
+    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if getSubmission fails and the specified submission does not exist",() => {
+
+        chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.reject(new Error("The specified submission does not exist"))});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve("test")});
+
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/1").then((res) => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("The specified submission does not exist");
+        });
+    });
+
+    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if getSubmissionFileContent fails",() => {
+
+        chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.reject("Cannot process the specified file. It may not exist on the server filesystem")});
+
+        return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/1").then((res) => {
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property("response").which.equals("Cannot process the specified file. It may not exist on the server filesystem");
+        });
+    });
 });
