@@ -19,17 +19,17 @@ export class AnalysisResult implements IAnalysisResult {
         if(matches.length == 0 && similarityScore != 0) {
             throw new Error("Bad Constructor: if no matches are provided, param 'similarityScore' should be 0.");
         }
-        let file1_filepath : string;
+        // let file1_filepath : string;
         let file1_submissionId : string;
-        let file2_filepath : string;
+        // let file2_filepath : string;
         let file2_submissionId : string;
         if(matches[0] != undefined) {
             if(matches[0][0] != undefined) {
-                file1_filepath = matches[0][0].getFilePath();
+                // file1_filepath = matches[0][0].getFilePath();
                 file1_submissionId = matches[0][0].getSubmissionID();
             }
             if(matches[0][1] != undefined) {
-                file2_filepath = matches[0][1].getFilePath();
+                // file2_filepath = matches[0][1].getFilePath();
                 file2_submissionId = matches[0][1].getSubmissionID();
             }       
             matches.forEach(match => {
@@ -47,12 +47,6 @@ export class AnalysisResult implements IAnalysisResult {
                 }
                 if(match[0].getSubmissionID() === match[1].getSubmissionID()) {
                     throw new Error("Bad Constructor: entries in 'matches[*][0]' and matches[*][1] must not have the same submissionId.");
-                }         
-                if(match[0].getFilePath() != file1_filepath) {
-                    throw new Error("Bad Constructor: all entries in param 'matches[*][0]' must have the same filepath.");
-                }
-                if(match[1].getFilePath() != file2_filepath) {
-                    throw new Error("Bad Constructor: all entries in param 'matches[*][1]' must have the same filepath.");
                 }
                 if(match[0].getSubmissionID() != file1_submissionId) {
                     throw new Error("Bad Constructor: all entries in param 'matches[*][0]' must have the same submissionId.");
