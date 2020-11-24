@@ -230,7 +230,8 @@ export interface ISubmission {
     }
 
     asJSON() : Object {
-        return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:this.entries};
+        var entriesJSON = this.entries.map(entry => entry.asJSON());
+        return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:entriesJSON};
     }
 
     compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult {

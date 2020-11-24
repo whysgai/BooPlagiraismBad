@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { createJsxJsxClosingFragment } from "typescript";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
 
@@ -208,9 +209,10 @@ describe("Submission.ts",() => {
                 "files": [testEntryA.getFilePath(),testEntryB.getFilePath()],
                 "name": testSubmissionA.getName() 
             }
-
+            
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionA.addAnalysisResultEntry(testEntryB);
+console.log(testSubmissionA.asJSON());
             expect(testSubmissionA.asJSON()).to.deep.equal(expectedJSON);
         });
     });
