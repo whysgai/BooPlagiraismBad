@@ -257,7 +257,7 @@ export interface ISubmission {
             });
         });
 
-        let similarityScore = (2 * matchedEntries.length) / ((2 * matchedEntries.length) + this.entries.length + entries.length); 
+        let similarityScore = (2 * matchedEntries.length) / ((2 * matchedEntries.length) + this.entries.length + otherEntries.length); 
         var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
         return analysisResult;
     }
