@@ -25,7 +25,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.get("/ofAssignment/:id", this.getSubmissionsOfAssignmentFn);
     this.router.get("/:id", this.getSubmissionFn);
     this.router.get("/compare/:ida/:idb",this.compareSubmissionsFn);
-    this.router.get("/:id/files/:index",this.getSubmissionFileContentsFn);
+    this.router.get("/:id/files/:fileid",this.getSubmissionFileContentsFn);
   }
 
   //POST / : Create a submission with the provided name and assignment_id
