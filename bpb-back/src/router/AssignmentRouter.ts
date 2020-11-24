@@ -98,7 +98,7 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     var assignmentId = req.params.id;
     
     this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-      this.assignmentManager.deleteAssignment(assignment.getID())
+      this.assignmentManager.deleteAssignment(assignment.getId())
       .then(() => {
         res.send({"response":"Deleted assignment " + assignmentId});
       }).catch((err) => {
