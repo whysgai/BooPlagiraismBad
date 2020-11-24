@@ -23,6 +23,8 @@ describe("SubmissionManager.ts",() => {
     var testSubmissionAssignmentId : string;
     var testFileName : string;
     var testFilePath : string;
+    var testBinaryFileName : string;
+    var testBinaryFilePath : string;
 
     before(()=>{
         chai.use(chaiSpies);
@@ -31,6 +33,8 @@ describe("SubmissionManager.ts",() => {
         testSubmissionAssignmentId = "test_aid";
         testFileName = "javaExample.java";
         testFilePath = "/vagrant/bpb-back/test/res/javaExample.java"; //Must be full path :(
+        testBinaryFileName = "example.png";
+        testBinaryFilePath = "/vagrant/bpb-back/test/res/example.png"
     });
 
     beforeEach((done)=>{
@@ -466,8 +470,54 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("getSubmissionFileContent()",() => {
-        it("Should obtain the content of the specified file if it exists");
-        it("Should throw an appropriate error if the specified file does not exist");
-        it("Should throw an appropriate error if the specified file does not contain text or cannot be parsed");
+        it("Should obtain the content of the specified file if it exists",()=> {
+            
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
+
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+            
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testFilePath,submissionFilePath).then(() => {                    
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        var expectedContent = buffer.toString();
+                        return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+                            expect(content).to.deep.equal(expectedContent);
+                        });
+                    });
+                });
+            });
+        });
+
+        it("Should throw an appropriate error if the specified file does not exist",() => {
+            
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
+
+            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+                expect(true,"Expected getSubmissionFileContent to fail (no file) but it succeeded").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.contains("no such file or directory");
+            });
+        });
+        it("Should throw an appropriate error if the specified file does not contain text or cannot be parsed",() => {
+           
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testBinaryFileName,"1",2,3,4,5,"5","5"));
+
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testBinaryFileName;
+            
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testBinaryFilePath,submissionFilePath).then(() => {                    
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testBinaryFileName).then(() => {
+                            expect(true,"Expected getSubmissionFileContent to fail (not a text file) but it succeeded").to.equal(false);
+                        }).catch((err) => {
+                            expect(err).to.have.property("message").which.equals("Some error");
+                        });
+                    });
+                });
+            });
+        });
     });
 });
