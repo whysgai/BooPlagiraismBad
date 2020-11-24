@@ -579,14 +579,14 @@ describe('SubmissionRouter.ts',()=> {
         });
     });
 
-    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if getSubmissionFileContent fails",() => {
+    it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if getSubmissionFileContent fails (bad content, not a text file, or nonexistent file)",() => {
 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
-        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.reject("Cannot process the specified file. It may not exist on the server filesystem")});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.reject("Cannot process the specified file. It may not exist on the server filesystem or may not contain text")});
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/1").then((res) => {
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property("response").which.equals("Cannot process the specified file. It may not exist on the server filesystem");
+            expect(res.body).to.have.property("response").which.equals("Cannot process the specified file. It may not exist on the server filesystem or may not contain text");
         });
     });
 });
