@@ -21,7 +21,7 @@ class AssignmentListComponent extends React.Component <PropsType, {}> {
   render () {
     return (        
       <div className='assignment-list'>
-        <Link to="#" className="new-assignment-btn">new</Link>
+        <Link to="/CreateAssignment" className="new-assignment-btn">new</Link>
         <ul>
           {
             this.props.assignments.map((assignment,index) => 
