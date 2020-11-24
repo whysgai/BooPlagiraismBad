@@ -195,9 +195,9 @@ describe('SubmissionRouter.ts',()=> {
 
     it("Should be able to interpret a request to POST /submissions/files to submit a file",async () => {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
-        const sampleFilePath = "test/App.spec.ts";
+        const sampleFilePath = "test/res/javaExample.java";
         const sampleFileContent = await readFileContent(sampleFilePath);
-        const sampleFileName = 'testFile.ts';
+        const sampleFileName = 'javaExample.java';
 
         var mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
         var mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
@@ -214,9 +214,6 @@ describe('SubmissionRouter.ts',()=> {
     });    
     it("Should be able to interpret a failed request to POST /submissions/{id}/files with no file attached", async () => {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
-        const sampleFilePath = "test/App.spec.ts";
-        const sampleFileContent = await readFileContent(sampleFilePath);
-        const sampleFileName = 'testFile.ts';
 
         chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
         chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
@@ -229,14 +226,14 @@ describe('SubmissionRouter.ts',()=> {
     });
     it("Should be able to interpret a failed request to POST /submissions/{id}/files with the incorrect file key", async () => {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
-        const sampleFilePath = "test/App.spec.ts";
+        const sampleFilePath = "test/res/javaExample.java";
         const sampleFileContent = await readFileContent(sampleFilePath);
-        const sampleFileName = 'testFile.ts';
+        const sampleFileName = 'javaExample.java';
 
         chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
         chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
 
-        await chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+        return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
             .attach("badKeyName", sampleFileContent, sampleFileName)
             .then((res) => {
                 expect(res.body).to.have.property("response").which.equals("File was not submitted using the key name submissionFile. Please resend the file using that key (case sensitive)");
@@ -244,11 +241,62 @@ describe('SubmissionRouter.ts',()=> {
         });
     });
 
+    it("Should be able to interpret a failed request to POST /submissions/{id}/files if the file is too large", async () => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
+        const sampleFilePath = "test/res/largeJavaExample.java";
+        const sampleFileContent = await readFileContent(sampleFilePath);
+        const sampleFileName = 'largeJavaExample.java';
+
+        chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
+
+        return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+            .attach("submissionFile", sampleFileContent, sampleFileName)
+            .then((res) => {
+                expect(res.body).to.have.property("response").which.equals("The file specified for upload is too large. The maximum individual file size is " + AppConfig.maxFileUploadSize());
+                expect(res).to.have.status(400);
+        });
+    });
+
+    it("Should be able to interpret a failed request to POST /submissions/{id}/files if getSubmission fails", async () => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
+        const sampleFilePath = "test/res/javaExample.java";
+        const sampleFileContent = await readFileContent(sampleFilePath);
+        const sampleFileName = 'javaExample.java';
+
+        chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.reject(new Error("getSubmission failed"));});
+        chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
+
+        return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+            .attach("submissionFile", sampleFileContent, sampleFileName)
+            .then((res) => {
+                expect(res.body).to.have.property("response").which.equals("getSubmission failed");
+                expect(res).to.have.status(400);
+        });
+    });
+
+    it("Should be able to interpret a failed request to POST /submissions/{id}/files if processSubmissionFile fails", async () => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
+        const sampleFilePath = "test/res/javaExample.java";
+        const sampleFileContent = await readFileContent(sampleFilePath);
+        const sampleFileName = 'javaExample.java';
+
+        chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.reject(new Error("processSubmission failed"));});    
+
+        return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+            .attach("submissionFile", sampleFileContent, sampleFileName)
+            .then((res) => {
+                expect(res.body).to.have.property("response").which.equals("processSubmission failed");
+                expect(res).to.have.status(400);
+        });
+    });
+    
     it("Should be able to interpret a request to GET /submissions/ofAssignment/{id} to get all submissions for the specified assignment if {id} is valid", () => {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const expectedSubs = {submissions: [testSubmission.asJSON()]};
+        const expectedSubs = {submissionIds: [testSubmission.getId()]};
 
     
         testAssignment.addSubmission(testSubmission.getId());
@@ -296,7 +344,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.request(testServer).get("/submissions/ofAssignment/test")
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.have.property("submissions").with.lengthOf(0); //TODO: ?
+                expect(res.body).to.have.property("submissionIds").with.lengthOf(0); //TODO: ?
             });
     });
 

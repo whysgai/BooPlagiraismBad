@@ -5,6 +5,7 @@ import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmission } from '../model/Submission'
+import { createJsxJsxClosingFragment } from 'typescript';
 
 /**
  * Router for requests related to Submissions
@@ -64,8 +65,8 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       .then((assignment) => {
         this.submissionManager.getSubmissions(assignmentId)
           .then((submissions: ISubmission[]) => {
-            var submissionEntries = submissions.map((submission) => { return submission.asJSON(); });
-            var responseBody = { submissions:submissionEntries }
+            var submissionEntries = submissions.map((submission) => { return submission.getId(); });
+            var responseBody = { submissionIds:submissionEntries }
             res.send(responseBody);
           }).catch((err) => {
             res.status(400)
@@ -143,25 +144,38 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
         res.status(400);
         res.send({"response":"File was not submitted using the key name submissionFile. Please resend the file using that key (case sensitive)"});
       } else {
-          
+         
+        const maxFileSize = AppConfig.maxFileUploadSize();
+
         const filePath = AppConfig.submissionFileUploadDirectory() + submissionFile.name;
 
-        submissionFile.mv(filePath).then(() => {
+        if(submissionFile.size >= maxFileSize) {
+          res.status(400);
+          res.send({"response":"The file specified for upload is too large. The maximum individual file size is " + maxFileSize});
+        } else {
+          submissionFile.mv(filePath).then(() => {
           
-          this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
-
-            this.submissionManager.processSubmissionFile(submission.getId(),filePath).then(() => {
-          
-              res.send({
-                "response": 'File uploaded to submission successfully.',
-                "data": {
-                    "name": submissionFile.name,
-                    "size": submissionFile.size
-                }
+            this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
+  
+              this.submissionManager.processSubmissionFile(submission.getId(),filePath).then(() => {
+            
+                res.send({
+                  "response": 'File uploaded to submission successfully.',
+                  "data": {
+                      "name": submissionFile.name,
+                      "size": submissionFile.size
+                  }
+                });
+              }).catch((err) => {
+                res.status(400);
+                res.send({"response":err.message});
               });
+            }).catch((err) => {
+                res.status(400);
+                res.send({"response":err.message});
             });
           });
-        });
+        }
       }
     } 
   }

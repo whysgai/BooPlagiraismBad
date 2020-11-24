@@ -14,4 +14,8 @@ export class AppConfig {
     public static dbConnectionString() : string {
         return process.env.DBCONNECTIONSTRING;
     }
+
+    public static maxFileUploadSize() : number {
+        return Number(process.env.MAXFILEUPLOADSIZE);
+    }
 }

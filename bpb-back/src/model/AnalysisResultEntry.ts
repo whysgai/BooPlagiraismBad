@@ -99,15 +99,13 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     asJSON(): Object {
         return {
             id:this.id,
-            submissionId:this.submissionId,
             filePath:this.filePath,
             contextType:this.contextType,
             lineNumberStart:this.lineNumberStart,
             charPosStart:this.charPosStart,
             charPosEnd:this.charPosEnd,
             lineNumberEnd:this.lineNumberEnd,
-            hashValue:this.hashValue,
-            text:this.text
+            hashValue:this.hashValue
          }
     }
     static getStaticModel() : mongoose.Model<IAnalysisResultEntryModel> {
