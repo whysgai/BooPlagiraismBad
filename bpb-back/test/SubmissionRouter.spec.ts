@@ -4,7 +4,6 @@ import express from "express";
 import IRouter from "../src/router/IRouter";
 import fs from 'fs';
 import util from 'util';
-const readFileContent = util.promisify(fs.readFile);
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
@@ -18,7 +17,7 @@ import { AssignmentDAO } from "../src/model/AssignmentDAO";
 import { AnalysisResultEntryCollectorVisitor } from "../src/model/AnalysisResultEntryCollectorVisitor";
 import fileUpload = require("express-fileupload");
 import { AppConfig } from '../src/AppConfig';
-
+const readFileContent = util.promisify(fs.readFile);
 
 describe('SubmissionRouter.ts',()=> {
     
@@ -208,10 +207,44 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("response", "File uploaded to submission successfully.");
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockProcessSubmissionFile).to.have.been.called.with(testSubmission.getId()); 
-                expect(mockProcessSubmissionFile).to.have.been.called.with(AppConfig.submissionFileUploadDirectory() + sampleFileName)
+                expect(mockProcessSubmissionFile).to.have.been.called.with(AppConfig.submissionFileUploadDirectory() + testSubmission.getId() + "/" + sampleFileName);
                 expect(res).to.have.status(200);
         });
-    });    
+    });
+
+    it("Should be able to interpret a request to POST /submissions/files to submit a file (even if submission directory exists)",async () => {
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
+        const sampleFilePath = "test/res/javaExample.java";
+        const sampleFileContent = await readFileContent(sampleFilePath);
+        const sampleFileName = 'javaExample.java';
+        const sampleFilePath2 = "test/res/javaExample2.java";
+        const sampleFileContent2 = await readFileContent(sampleFilePath2);
+        const sampleFileName2 = "javaExample2.java";
+
+        var mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        var mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
+
+        return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+        .attach("submissionFile", sampleFileContent, sampleFileName)
+        .then((res) => {
+            expect(res.body).to.have.property("response", "File uploaded to submission successfully.");
+            expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+            expect(mockProcessSubmissionFile).to.have.been.called.with(testSubmission.getId()); 
+            expect(mockProcessSubmissionFile).to.have.been.called.with(AppConfig.submissionFileUploadDirectory() + testSubmission.getId() + "/" + sampleFileName);
+            expect(res).to.have.status(200);
+
+            return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
+            .attach("submissionFile", sampleFileContent2, sampleFileName2)
+            .then((res) => {
+                expect(res.body).to.have.property("response", "File uploaded to submission successfully.");
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockProcessSubmissionFile).to.have.been.called.with(testSubmission.getId()); 
+                expect(mockProcessSubmissionFile).to.have.been.called.with(AppConfig.submissionFileUploadDirectory() + testSubmission.getId() + "/" + sampleFileName2);
+                expect(res).to.have.status(200);
+            });
+        });
+    });
+
     it("Should be able to interpret a failed request to POST /submissions/{id}/files with no file attached", async () => {
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager);
 
@@ -542,8 +575,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/test").then((res) => {
-            expect(res).to.have.status(400);
-            expect(res.body).to.have.property("response").which.deep.equals("File index provided must be a number");
+            expect(res).to.have.status(404);
         });
     });
 
@@ -570,7 +602,7 @@ describe('SubmissionRouter.ts',()=> {
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/9").then((res) => {
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property("response").which.equals("The specified file index is out of bounds");
+            expect(res.body).to.have.property("response").which.equals("The provided file index is out of bounds");
         });
     });
 
@@ -582,8 +614,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.resolve(testContent)});
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/-1").then((res) => {
-            expect(res).to.have.status(400);
-            expect(res.body).to.have.property("response").which.equals("The specified file index is out of bounds");
+            expect(res).to.have.status(404); //Negative integers should fail regex check
         });
     });
 
@@ -603,7 +634,7 @@ describe('SubmissionRouter.ts',()=> {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(testSubmission)});
-        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.reject("Cannot process the specified file. It may not exist on the server filesystem or may not contain text")});
+        chai.spy.on(testSubmissionManager,"getSubmissionFileContent",() => { return Promise.reject(new Error("Cannot process the specified file. It may not exist on the server filesystem or may not contain text"))});
 
         return chai.request(testServer).get("/submissions/" + testSubmission.getId() + "/files/1").then((res) => {
             expect(res).to.have.status(400);

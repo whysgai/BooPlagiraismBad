@@ -13,7 +13,7 @@ describe("AppConfig",() => {
 
     describe("submissionFileUploadDirectory()",() => {
         it("returns the expected environment variable",() => {
-            expect(AppConfig.submissionFileUploadDirectory()).to.equal("test2");
+            expect(AppConfig.submissionFileUploadDirectory()).to.equal("/home/vagrant/");
         });
     });
 
