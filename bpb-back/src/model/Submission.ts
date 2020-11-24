@@ -240,27 +240,41 @@ export interface ISubmission {
             throw new Error("Cannot compare: One or more comparator submissions has no entries");
         }
 
-        var analysisResult = new AnalysisResult();
-
+        
+        let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
         this.entries.forEach((entry) => {
             otherEntries.forEach((otherEntry) => {
 
+                let hashA = entry.getHashValue();
+                let hashB = otherEntry.getHashValue();
 
-                //TODO: Update to use actual hash comparison
-                //This will include all possible pairings in IAnalysisResult
+                let comparison = this.compareHashValues(hashA, hashB);
+                var threshold = 100; //TODO: determine actual threshold, using 100 for now
 
-                //var hashA = entry.getHashValue();
-                //var hashB = otherEntry.getHashValue();
-
-                //var comparison = 1;
-                //var threshold = 0;
-
-                //if(comparison > threshold) {  
-                    analysisResult.addMatch(entry,otherEntry);
-                //}
+                if(comparison < threshold) {  //the more similar a comparison, the lower the number
+                    matchedEntries.push([entry,otherEntry]);
+                }
             });
         });
 
+        let similarityScore = (2 * matchedEntries.length) / ((2 * matchedEntries.length) + this.entries.length + otherEntries.length); 
+        var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
         return analysisResult;
+    }
+
+    private compareHashValues(hashA : string, hashB : string) : number {
+        let tlshA = new Tlsh();
+        tlshA.fromTlshStr(hashA);
+        let tlshB = new Tlsh();
+        tlshA.fromTlshStr(hashB);
+
+        let lenDiff : boolean;
+        if(hashA.length != hashB.length) {
+            lenDiff = true;
+        } else {
+            false;
+        }
+        
+        return tlshA.totalDiff(tlshB, lenDiff);
     }
 }
