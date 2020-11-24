@@ -101,11 +101,11 @@ export interface ISubmission {
          buildFromExisting(model : ISubmissionModel) : ISubmission {
              var submission = new Submission();
             
-             if(!model._id || !model.name || !model.assignment_id || !model.entries || !model.files) {
+             if(!model.id || !model.name || !model.assignment_id || !model.entries || !model.files) {
                 throw new Error("At least one required model property is not present on the provided model");
              }
 
-             submission.setId(model._id);
+             submission.setId(model.id);
              submission.setName(model.name);
              submission.setAssignmentId(model.assignment_id);
              submission.setEntries(model.entries);

@@ -66,11 +66,11 @@ export class Assignment implements IAssignment {
         buildFromExisting(model : IAssignmentModel) : IAssignment {
             var assignment = new Assignment();
 
-            if (!model._id || !model.name || !model.submissionIds) {
+            if (!model.id || !model.name || !model.submissionIds) {
                 throw new Error("At least one required assignment model property is not present on the provided model");
             }
 
-            assignment.setId(model._id);
+            assignment.setId(model.id);
             assignment.setModelInstance(model);
             assignment.setName(model.name);
             assignment.setSubmissionIds(model.submissionIds);
