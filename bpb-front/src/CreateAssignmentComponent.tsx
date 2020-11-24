@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { store } from './store';
+import { createAssignment } from './actions/AssignmentAction';
 
 interface PropsType {
   name: string
@@ -22,7 +23,7 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
   }
 
   callDispatch() {
-    
+    store.dispatch(createAssignment('ADD_ASSIGNMENT', this.props.name))
   }
 
   render() {
