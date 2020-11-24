@@ -194,10 +194,20 @@ export class SubmissionManager implements ISubmissionManager {
     /**
      * Obtains and returns the content of the specified submission file as a string
      */
-    getSubmissionFileContent = async(submissionId : string, filePath : string) : Promise<string> => {
+    getSubmissionFileContent = async(submissionId : string, fileName : string) : Promise<string> => {
+        
         return new Promise((resolve,reject) => {
-            //TODO
-            reject(new Error("Not yet implemented"));
+
+            this.getSubmission(submissionId).then((submission) => {
+                readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
+                    var content = buffer.toString();
+                    resolve(content);
+                }).catch((err) => {
+                    reject(err);
+                });
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
 }
