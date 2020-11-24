@@ -109,7 +109,6 @@ export class Assignment implements IAssignment {
         return this.name;
     }
     getSubmissionIds(): string[] {
-        console.log("SubIDs from Assignment", this.submissionIds)
         return this.submissionIds;
     }
     addSubmission(submissionId: string): void {
