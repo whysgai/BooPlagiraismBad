@@ -64,7 +64,7 @@ describe("Assignment.ts",() => {
         
         it.skip("Should throw an appropriate error message if the provided model is missing one or more properties",() => {
             // Compiler error when giving it empty object, unsure how to test
-            //expect(() => { const testAssignmentBuilder = new Assignment.builder().buildFromExisting({}); }).to.throw("At least one required model property is not present on the provided model");
+            // expect(() => { const testAssignmentBuilder = new Assignment.builder().buildFromExisting({}); }).to.throw("At least one required model property is not present on the provided model");
         });
     });
 
