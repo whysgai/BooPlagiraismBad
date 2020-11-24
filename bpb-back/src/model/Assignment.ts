@@ -16,7 +16,9 @@ export interface IAssignmentModel extends Document {
 export interface IAssignment {
     getId() : string
     getName() : string
-    getSubmissionIDs() : string[]
+    setName(name: string) : void
+    getSubmissionIds() : string[]
+    setSubmissionIds(submissionIds : string[]) : void
     addSubmission(submissionID : string) : void
     removeSubmission(submissionID : string) : void
     getModelInstance() : Document;
@@ -53,10 +55,10 @@ export class Assignment implements IAssignment {
             var modelInstance = new assignmentModel({"name" : this.name, "submissionIds" : this.setSubmissionIds});
 
             assignment.setId(modelInstance.id);
-            assignment.setName(modelInstance.name);
+            assignment.setName(this.name);
+            assignment.setSubmissionIds(this.submissionIds);
             assignment.setModelInstance(modelInstance);
-            assignment.setSubmissionIds(modelInstance.submissionIds);
-
+            
             return assignment;
         }
 
@@ -77,38 +79,28 @@ export class Assignment implements IAssignment {
         }
     }
 
-
-    
+    /**
+     * Mongoose Schema for Submissions
+     */
     private static assignmentSchema = new Schema({
-        _id:  String,
         name: String,
         submissionIds: [String]
       });
 
+    /**
+    * Static Model for Submissions
+    */
     private static assignmentModel = mongoose.model<IAssignmentModel>('Assignment',Assignment.assignmentSchema);
     
-    private submissionIds : string[];
-    private modelInstance : IAssignmentModel;
     private id : string;
     private name : string;
+    private submissionIds : string[];
+    private modelInstance : IAssignmentModel;    
     
-    protected constructor() {
-    }
+    protected constructor() { }
 
     static getStaticModel() : mongoose.Model<IAssignmentModel> {
         return this.assignmentModel;
-    }
-    protected setId(id : string): void {
-        this.id = id;
-    }
-    protected setModelInstance(modelInstance : IAssignmentModel) : void {
-        this.modelInstance = modelInstance;
-    }
-    setName(name : string) : void {
-        this.name = name;
-    }
-    setSubmissionIds(submissionIds : string[]) {
-        this.submissionIds = submissionIds;
     }
     getId(): string {
         return this.id;
@@ -116,7 +108,8 @@ export class Assignment implements IAssignment {
     getName(): string {
         return this.name;
     }
-    getSubmissionIDs(): string[] {
+    getSubmissionIds(): string[] {
+        console.log("SubIDs from Assignment", this.submissionIds)
         return this.submissionIds;
     }
     addSubmission(submissionId: string): void {
@@ -135,6 +128,18 @@ export class Assignment implements IAssignment {
     }
     asJSON() : Object {
         return {_id:this.id, name:this.name, submissionIds:this.submissionIds};
+    }
+    protected setId(id : string): void {
+        this.id = id;
+    }
+    protected setModelInstance(modelInstance : IAssignmentModel) : void {
+        this.modelInstance = modelInstance;
+    }
+    setName(name : string) : void {
+        this.name = name;
+    }
+    setSubmissionIds(submissionIds : string[]) {
+        this.submissionIds = submissionIds;
     }
 
 }
