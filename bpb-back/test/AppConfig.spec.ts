@@ -25,7 +25,7 @@ describe("AppConfig",() => {
 
      describe("maxFileUploadSize()",() => {
          it("returns the expected max file size",() => {
-             expect(AppConfig.maxFileUploadSize()).to.equal(640);
+             expect(AppConfig.maxFileUploadSize()).to.equal(1000);
          })
      })
 });
