@@ -62,11 +62,11 @@ describe("Assignment.ts",() => {
             expect(existingAssignment.getSubmissionIds()).to.deep.equal(assignment.getSubmissionIds());
         });
         
-        it.skip("Should throw an appropriate error message if the provided model is missing one or more properties",() => {
+        it("Should throw an appropriate error message if the provided model is missing one or more properties",() => {
             // Compiler error when giving it empty object, unsure how to test
             let testAssignmentBuilder : any;
             testAssignmentBuilder = new Assignment.builder();
-            expect(() => { testAssignmentBuilder.buildFromExisting({}); }).to.throw("At least one required model property is not present on the provided model");
+            expect(() => { testAssignmentBuilder.buildFromExisting({}); }).to.throw("At least one required assignment model property is not present on the provided model");
         });
     });
 
