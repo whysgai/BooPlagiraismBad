@@ -145,7 +145,6 @@ describe("AnalysisResult.ts", () => {
 
     describe("asJSON", () => {
         it("Should return a valid JSON object with the expected properties", () => {
-            //TODO: Expected property changes may make this test fail!
             let are1 = new AnalysisResultEntry("are1", "subid1", "/test/file.java", "method", 1, 3, 2, 4, "245rr1", "void test() { }");
             let are2 = new AnalysisResultEntry("are2", "subid2", "test/file2.java", "method", 5, 7, 6, 8, "423qq1", "void similar() { }");
             let matches = [[are1, are2]]
