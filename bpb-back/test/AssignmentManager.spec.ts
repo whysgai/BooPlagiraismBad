@@ -31,7 +31,7 @@ describe("AssignmentManager.ts",() => {
     describe("createAssignment()",()  => {
         it("Should create an assignment if inputs are valid",() => {
 
-            var mockCreateAssignment = chai.spy.on(AssignmentDAO,'createAssignment',() => { return Promise.resolve(testAssignment) });
+            chai.spy.on(AssignmentDAO,'createAssignment',() => { return Promise.resolve(testAssignment) });
 
             var createData = {"name":testAssignment.getName(),"submissionIds":testAssignment.getSubmissionIds()};
 
@@ -39,6 +39,21 @@ describe("AssignmentManager.ts",() => {
                 expect(assignment.getName()).to.equal(testAssignment.getName());
                 expect(assignment.getSubmissionIds()).to.equal(testAssignment.getSubmissionIds());
             });
+        });
+
+        it("Should throw an appropriate error if input data is not valid",() => {
+            var createData = {"name":undefined as string,"submissionIds":undefined as string[]};
+
+            return expect(testAssignmentManager.createAssignment(createData)).to.be.rejectedWith("Input data is not valid");        
+        });
+
+        it("Should throw an appropriate error if DAO createAssignment fails",() => {
+   
+            chai.spy.on(AssignmentDAO,'createAssignment',() => { return Promise.reject(new Error("Create failed")) });
+
+            var createData = {"name":testAssignment.getName(),"submissionIds":testAssignment.getSubmissionIds()};
+
+            return expect(testAssignmentManager.createAssignment(createData)).to.be.rejectedWith("Create failed");        
         });
     });
 
