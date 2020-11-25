@@ -9,7 +9,10 @@ import SubmissionData from "../src/types/SubmissionData"
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import fs from 'fs';
 import util from 'util';
+import { AppConfig } from "../src/AppConfig";
 const readFileContent = util.promisify(fs.readFile);
+const copyFile = util.promisify(fs.copyFile);
+const mkdirp = require('mkdirp');
 
 describe("SubmissionManager.ts",() => {
 
@@ -18,13 +21,16 @@ describe("SubmissionManager.ts",() => {
     var testSubmissionId : string;
     var testSubmissionName : string;
     var testSubmissionAssignmentId : string;
-    const testFilePath = "/vagrant/bpb-back/package.json";
+    var testFileName : string;
+    var testFilePath : string;
 
     before(()=>{
         chai.use(chaiSpies);
         chai.use(chaiAsPromised);
         testSubmissionName = "testname";
-        testSubmissionAssignmentId = "test_aid"; 
+        testSubmissionAssignmentId = "test_aid";
+        testFileName = "javaExample.java";
+        testFilePath = "/vagrant/bpb-back/test/res/javaExample.java"; //Must be full path :(
     });
 
     beforeEach((done)=>{
@@ -217,90 +223,113 @@ describe("SubmissionManager.ts",() => {
 
         it("Should save and add a file into the submission specified by the client",() => {
 
-            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
-            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
+            var mockSubmission = new Submission.builder().build();
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
 
-            var mockAddFile = chai.spy.on(testSubmission,'addFile',() => { return Promise.resolve() });
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(mockSubmission)}); //Required
+
+            var mockAddFile = chai.spy.on(mockSubmission,'addFile',() => { return Promise.resolve() });
             
-            return readFileContent(testFilePath).then((buffer) => {
-                var expectedContent = buffer.toString();
-                
-                testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
-                    expect(mockAddFile).to.have.been.called.with(expectedContent,testFilePath);
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testFilePath,submissionFilePath).then(() => {
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        var expectedContent = buffer.toString();
+                        
+                        testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
+                            expect(mockAddFile).to.have.been.called.with(expectedContent,testFileName);
+                        });
+                    });
                 });
             });
         });
 
-        //TODO: MockUpdate is being called for this test for some reason.
-        //This might imply that error is not being handled correctly from addFile
+        it("Should return an appropriate error if file content can't be read (name is invalid)",() => {
+
+            var mockSubmission = new Submission.builder().build();
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(mockSubmission)}); //Required
+
+            chai.spy.on(mockSubmission,'addFile',() => { return Promise.resolve() });
+            
+            return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
+                expect(true,"processSubmissionFile is succeeding where it should fail (file doesn't exist, was not copied)").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.contains("no such file or directory");
+            });
+        });
+
         it("Should return an appropriate error if file was already added to the submission",() => {
             
-            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1","tset",testFilePath,"test",1,1,2,2,"test","Test"));
+            var mockSubmission = new Submission.builder().build();
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1","tset",testFileName,"test",1,1,2,2,"test","Test"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
             var mockUpdate = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{ return Promise.resolve(testSubmission)}); //Required
             
-            chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("File at " + testFilePath + " was already added to the submission"))});
+            chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("Submission file " + testFileName + " was already added to the submission"))});
             
-            return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
-                expect(true,"processSubmissionFile is succeeding where it should fail (filePath was already added)").to.equal(false);
-            }).catch((err) => {
-                expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.equals("File at " + testFilePath + " was already added to the submission");
-                expect(mockUpdate).to.not.have.been.called;
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testFilePath,submissionFilePath).then(() => {
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        var expectedContent = buffer.toString();
+                        
+                        return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
+                            expect(true,"processSubmissionFile is succeeding where it should fail (file name was already added)").to.equal(false);
+                        }).catch((err) => {
+                            expect(err).to.not.be.undefined;
+                            expect(err).to.have.property("message").which.equals("Submission file " + testFileName + " was already added to the submission");
+                            expect(mockUpdate).to.not.have.been.called;
+                        });
+                    });
+                });
             });
         });
 
         it("Should return an appropriate error if submission ID is invalid",() => {
             
+            var mockSubmission = new Submission.builder().build();
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+            
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("Submission does not exist"))});
             var mockUpdate = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
-        
-            var mockAddFile = chai.spy.on(testSubmission,'addFile');
-
-            return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
-                expect(true,"processSubmissionFile is succeeding where it should fail (submission doesn't exist with id)").to.equal(false);
-            }).catch((err) => {
-                expect(mockAddFile).to.not.have.been.called;
-                expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.equals("Submission does not exist");
-                expect(mockUpdate).to.not.have.been.called;
-            });
-        });
-
-        it("Should return an appropriate error if submission file doesn't exist at the specified location",() => {
-
-            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
-            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
-            
             var mockAddFile = chai.spy.on(testSubmission,'addFile');
             
-            var nonexistentFilePath = "/test/non/existent/file";
-            
-            return testSubmissionManager.processSubmissionFile(testSubmission.getId(),nonexistentFilePath).then(() => {
-                expect(true,"processSubmissionFile is succeeding where it should fail (file doesn't exist at specified location)").to.equal(false);
-            }).catch((err) => {
-                expect(mockAddFile).to.not.have.been.called;
-                expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.contains("no such file or directory");
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
+                    expect(true,"processSubmissionFile is succeeding where it should fail (submission doesn't exist with id)").to.equal(false);
+                }).catch((err) => {
+                    expect(mockAddFile).to.not.have.been.called;
+                    expect(err).to.not.be.undefined;
+                    expect(err).to.have.property("message").which.equals("Submission does not exist");
+                    expect(mockUpdate).to.not.have.been.called;
+                });
             });
         });
 
         it("Should return an appropriate error if DAO fails to update the submission",() => {
 
+            var mockSubmission = new Submission.builder().build();
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+            
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
             chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.reject(new Error("Failed to update"))}); 
-
-            var mockAddFile = chai.spy.on(testSubmission,'addFile',() => { return Promise.resolve() });
+            chai.spy.on(testSubmission,'addFile',() => { return Promise.resolve() });
             
-            return readFileContent(testFilePath).then((buffer) => {
-                var expectedContent = buffer.toString();
-                
-                return testSubmissionManager.processSubmissionFile(testSubmission.getId(),testFilePath).then(() => {
-                    expect(true,"processSubmissionFile should have failed (DAO should have returned mock error), but it didn't").to.equal(false);
-                }).catch((err) => {
-                    expect(err).to.have.property("message").which.equals("Failed to update");
-                })
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testFilePath,submissionFilePath).then(() => {
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        
+                        return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
+                            expect(true,"processSubmissionFile should have failed (DAO should have returned mock error), but it didn't").to.equal(false);
+                        }).catch((err) => {
+                            expect(err).to.have.property("message").which.equals("Failed to update");
+                        })
+                    });
+                });
             });
         });
     });
@@ -432,6 +461,55 @@ describe("SubmissionManager.ts",() => {
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("getSubmission failed");
+            });
+        });
+    });
+
+    describe("getSubmissionFileContent()",() => {
+        it("Should obtain the content of the specified file if it exists",()=> {
+            
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
+
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+            
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testFilePath,submissionFilePath).then(() => {                    
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        var expectedContent = buffer.toString();
+                        return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+                            expect(content).to.deep.equal(expectedContent);
+                        });
+                    });
+                });
+            });
+        });
+
+        it("Should throw an appropriate error if the specified submission does not exist",() => {
+            
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("Submission does not exist"))});
+            
+            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+                expect(true,"Expected getSubmissionFileContent to fail (no submission) but it succeeded").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Submission does not exist");
+            });
+        });
+
+        it("Should throw an appropriate error if the specified file does not exist",() => {
+            
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
+
+            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+                expect(true,"Expected getSubmissionFileContent to fail (no file) but it succeeded").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.contains("no such file or directory");
             });
         });
     });

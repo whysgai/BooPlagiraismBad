@@ -12,7 +12,7 @@ import { AnalysisResultEntry } from '../src/model/AnalysisResultEntry';
 
 describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     var exampleTree : ParseTree;
-    var exampleFilePath : string;
+    var exampleFileName: string;
     var exampleSubmissionId = '8675309';
     var mockSubmission : ISubmission;
 
@@ -20,25 +20,25 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         mockSubmission = Sinon.createStubInstance(Submission);
         chai.use(spies);
         chai.spy.on(mockSubmission, 'getId', () => exampleSubmissionId);
-        exampleFilePath = '/vagrant/bpb-back/test/res/javaExample.java';
-        let javaStr = readFileSync(exampleFilePath).toString();
+        exampleFileName = '/vagrant/bpb-back/test/res/javaExample.java';
+        let javaStr = readFileSync(exampleFileName).toString();
         exampleTree = parse(javaStr);
     });
 
     describe("constructor()", () => {
         it('Should create visitor when provided a non-empty string for filePath parameter.', () => {
-            let goodConstructor = function() { new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission)};
+            let goodConstructor = function() { new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission)};
             expect(goodConstructor).to.not.throw(Error); 
         });
 
         it("Should throw an error if undefined is passed as the filePath parameter.", () => {
             let badConstructor = function() {new AnalysisResultEntryCollectorVisitor(undefined, mockSubmission)};
-            expect(badConstructor).to.throw(Error, "filePath must be non-empty and may not be undefined.");
+            expect(badConstructor).to.throw(Error, "file name must be non-empty and may not be undefined.");
         });
 
         it("Should throw an error if an empty string is passed as the filePath parameter.", () => {
             let badConstructor = function() {new AnalysisResultEntryCollectorVisitor("", mockSubmission)};
-            expect(badConstructor).to.throw(Error, "filePath must be non-empty and may not be undefined.");
+            expect(badConstructor).to.throw(Error, "file name must be non-empty and may not be undefined.");
         });
     });
 
@@ -46,7 +46,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         var newVisitor : AnalysisResultEntryCollectorVisitor;
 
         beforeEach(() => {
-            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
         });
 
         it("Should throw an error if no ParseTree has been visited.", () => { 
@@ -66,16 +66,16 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
     });
 
-    describe("getFilePath()", () => {
+    describe("getFileName()", () => {
         it("Should return a string with the expected value.", () => {
-            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
-            expect(newVisitor.getFilePath()).is.equal(exampleFilePath);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            expect(newVisitor.getFileName()).is.equal(exampleFileName);
         });
     });
 
     describe("getSubmission()", () => {
         it("Should return the expected Submission object.", () => {
-            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             expect(newVisitor.getSubmission()).is.equal(mockSubmission);
         });
     });
@@ -84,7 +84,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         var newVisitor : IAnalysisResultEntryCollectorVisitor;
 
         beforeEach(() => {
-            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
         });
 
         it("Should return FALSE when the visitor has NOT visited a parseTree.", () => {
@@ -103,7 +103,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         var firstEntry : AnalysisResultEntry;
 
         before(() => {
-            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFilePath, mockSubmission);
+            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             newVisitor.visit(exampleTree);
             analysisResultEntries = newVisitor.getAnalysisResultEntries();
             firstEntry = analysisResultEntries[0];
@@ -138,8 +138,8 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
             expect(firstEntry.getSubmissionID()).to.equal(exampleSubmissionId);
         });
 
-        it("Should produce a list of entries which has the correct first entry (filePath is correct)", () => {
-            expect(firstEntry.getFilePath()).to.equal(exampleFilePath);
+        it("Should produce a list of entries which has the correct first entry (filename is correct)", () => {
+            expect(firstEntry.getFileName()).to.equal(exampleFileName);
         });
 
         it("Should produce a list of entries which has the correct first entry (text is correct)", () => {

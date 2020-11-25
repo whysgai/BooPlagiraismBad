@@ -4,7 +4,7 @@
   "description": "BPB backend API",
   "main": "_main.ts",
   "scripts": {
-    "test": "export APIPORT=test1;export UPLOADDIRECTORY=test2;export DBCONNECTIONSTRING=test3;export MAXFILEUPLOADSIZE=1000;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
+    "test": "export APIPORT=test1;export UPLOADDIRECTORY=/home/vagrant/;export DBCONNECTIONSTRING=test3;export MAXFILEUPLOADSIZE=1000;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
     "start": "tsc && node dist/src/_main.js"
   },
   "repository": {
@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
     "java-ast": "^0.3.0",
+    "mkdirp": "^1.0.4",
     "mocha": "^8.2.0",
     "mock-mongoose": "^8.0.1-a",
     "mongoose": "^5.10.13",

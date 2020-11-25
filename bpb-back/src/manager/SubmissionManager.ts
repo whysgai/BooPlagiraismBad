@@ -4,6 +4,7 @@ import { SubmissionDAO } from '../model/SubmissionDAO';
 import fs from 'fs';
 import util from 'util';
 import SubmissionData from "../types/SubmissionData"
+import { AppConfig } from '../AppConfig';
 //Promisfy readFile
 const readFileContent = util.promisify(fs.readFile);
 
@@ -15,9 +16,10 @@ export interface ISubmissionManager {
     getSubmissions(assignmentId : string) : Promise<ISubmission[]>;
     getSubmission(submissionId : string) : Promise<ISubmission>;
     updateSubmission(submissionId : string, data : SubmissionData) : Promise<ISubmission>;
-    processSubmissionFile(submissionId : string, filePath : string) : Promise<void>; 
+    processSubmissionFile(submissionId : string, fileName : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
     compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult>
+    getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
 }
 
 export class SubmissionManager implements ISubmissionManager {
@@ -112,16 +114,16 @@ export class SubmissionManager implements ISubmissionManager {
     /**
      * Processes a submission file and adds entries to the specified submission
      * @param submissionId
-     * @param filePath 
+     * @param fileName
      */
-    processSubmissionFile = async(submissionId : string, filePath : string): Promise<void> => {
+    processSubmissionFile = async(submissionId : string, fileName : string): Promise<void> => {
 
         return new Promise((resolve,reject) => {
 
             this.getSubmission(submissionId).then((submission) => {
-                readFileContent(filePath).then((buffer) => {
+                readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
                     var content = buffer.toString();
-                    submission.addFile(content,filePath).then(() => {
+                    submission.addFile(content,fileName).then(() => {
                         SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
                             this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
                             resolve();
@@ -171,7 +173,7 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionIdA 
      * @param submissionIdB 
      */
-    compareSubmissions = async(submissionIdA : string, submissionIdB : string): Promise<IAnalysisResult> => {
+    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult> => {
 
         return new Promise((resolve,reject) => {
             this.getSubmission(submissionIdA)
@@ -181,6 +183,26 @@ export class SubmissionManager implements ISubmissionManager {
                         resolve(submissionA.compare(submissionB)); //TODO: This is synchronous
                     }
                 ).catch((err) => {
+                    reject(err);
+                });
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    }
+
+    /**
+     * Obtains and returns the content of the specified submission file as a string
+     */
+    getSubmissionFileContent = async(submissionId : string, fileName : string) : Promise<string> => {
+        
+        return new Promise((resolve,reject) => {
+
+            this.getSubmission(submissionId).then((submission) => {
+                readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
+                    var content = buffer.toString();
+                    resolve(content);
+                }).catch((err) => {
                     reject(err);
                 });
             }).catch((err) => {

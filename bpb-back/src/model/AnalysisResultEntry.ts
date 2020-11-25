@@ -19,7 +19,7 @@ export interface IAnalysisResultEntry {
     asJSON() : Object 
     getSubmissionID() : string;
     getHashValue(): string
-    getFilePath(): string
+    getFileName(): string
     getContextType(): string
     getLineNumberStart(): number
     getLineNumberEnd(): number
@@ -47,7 +47,7 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     constructor(
         private id : string,
         private submissionId : string, 
-        private filePath : string, 
+        private fileName : string, 
         private contextType : string, 
         private lineNumberStart : number,
         private charPosStart : number, 
@@ -59,15 +59,6 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         if (lineNumberStart > lineNumberEnd) {
             throw new Error('lineNumberStart can not be > lineNumberEnd');
         }
-        
-        this.id = id;
-        this.submissionId = submissionId;
-        this.filePath = filePath;
-        this.contextType = contextType;
-        this.lineNumberStart = lineNumberStart;
-        this.lineNumberEnd = lineNumberEnd;
-        this.hashValue = hashValue;
-        this.text = text;
     }
 
     getSubmissionID(): string {
@@ -88,8 +79,8 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     getText(): string {
         return this.text;
     }
-    getFilePath(): string {
-        return this.filePath;
+    getFileName(): string {
+        return this.fileName;
     }
     getContextType(): string {
         return this.contextType;
@@ -100,7 +91,7 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
     asJSON(): Object {
         return {
             id:this.id,
-            filePath:this.filePath,
+            fileName:this.fileName,
             contextType:this.contextType,
             lineNumberStart:this.lineNumberStart,
             charPosStart:this.charPosStart,
@@ -116,7 +107,7 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         return new AnalysisResultEntry.analysisResultEntryModel({
             "id":this.id,
             "submissionId":this.submissionId,
-            "filePath":this.filePath,
+            "fileName":this.fileName,
             "contextType":this.contextType,
             "lineNumberStart":this.lineNumberStart,
             "lineNumberEnd":this.lineNumberEnd,

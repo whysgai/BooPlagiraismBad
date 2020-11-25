@@ -173,16 +173,16 @@ describe("Submission.ts",() => {
     describe("addFile()",() => {
         
         it("Should successfully add new file contents to the submission if input is valid",() => {
-            return testSubmissionA.addFile(testFileContent,testEntryA.getFilePath()).then(() => {
+            return testSubmissionA.addFile(testFileContent,testEntryA.getFileName()).then(() => {
                 expect(testSubmissionA.getEntries().length).to.be.greaterThan(0);
             });
         });
 
         it("Should throw an appropriate error if the specified file was already added to the submission",() => {
-            var expectedErrorMsg = "File at " + testEntryA.getFilePath() + " was already added to the submission";
+            var expectedErrorMsg = "Submission file " + testEntryA.getFileName() + " was already added to the submission";
 
-            return testSubmissionA.addFile(testFileContent,testEntryA.getFilePath()).then(() => {
-                testSubmissionA.addFile("the same file ",testEntryA.getFilePath()).then(() => {
+            return testSubmissionA.addFile(testFileContent,testEntryA.getFileName()).then(() => {
+                testSubmissionA.addFile("the same file ",testEntryA.getFileName()).then(() => {
                     expect(true,"addFile should be failing (specified file already added)").to.equal(false);
                 }).catch((err) => {
                     expect(err).to.have.property("message").which.equals(expectedErrorMsg);
@@ -206,13 +206,12 @@ describe("Submission.ts",() => {
                 "_id": testSubmissionA.getId(),
                 "assignment_id": testSubmissionA.getAssignmentId(),
                 "entries": [testEntryA.asJSON(),testEntryB.asJSON()],
-                "files": [testEntryA.getFilePath(),testEntryB.getFilePath()],
+                "files": [testEntryA.getFileName(),testEntryB.getFileName()],
                 "name": testSubmissionA.getName() 
             }
             
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionA.addAnalysisResultEntry(testEntryB);
-console.log(testSubmissionA.asJSON());
             expect(testSubmissionA.asJSON()).to.deep.equal(expectedJSON);
         });
     });

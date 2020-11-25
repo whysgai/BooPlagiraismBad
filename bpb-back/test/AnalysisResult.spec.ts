@@ -33,13 +33,13 @@ describe("AnalysisResult.ts", () => {
         mockEntry3 = Sinon.createStubInstance(AnalysisResultEntry);
         mockEntry4 = Sinon.createStubInstance(AnalysisResultEntry);
 
-        chai.spy.on(mockEntry1, 'getFilePath', () => filePath1);
+        chai.spy.on(mockEntry1, 'getFileName', () => filePath1);
         chai.spy.on(mockEntry1, 'getSubmissionID', () => subId1);
-        chai.spy.on(mockEntry2, 'getFilePath', () => filePath2);
+        chai.spy.on(mockEntry2, 'getFileName', () => filePath2);
         chai.spy.on(mockEntry2, 'getSubmissionID', () => subId2);
-        chai.spy.on(mockEntry3, 'getFilePath', () => filePath3);
+        chai.spy.on(mockEntry3, 'getFileName', () => filePath3);
         chai.spy.on(mockEntry3, 'getSubmissionID', () => subId3);
-        chai.spy.on(mockEntry4, 'getFilePath', () => filePath4);
+        chai.spy.on(mockEntry4, 'getFileName', () => filePath4);
         chai.spy.on(mockEntry4, 'getSubmissionID', () => subId4);
         
         testSimilarityScore = 5;

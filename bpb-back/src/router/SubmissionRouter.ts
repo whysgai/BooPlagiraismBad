@@ -4,8 +4,8 @@ import AbstractRouter from './AbstractRouter'
 import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
-import { ISubmission } from '../model/Submission'
-import { createJsxJsxClosingFragment } from 'typescript';
+import { ISubmission } from '../model/Submission';
+const mkdirp = require('mkdirp');
 
 /**
  * Router for requests related to Submissions
@@ -21,6 +21,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     this.router.post("/",this.createSubmissionFn);
     this.router.put("/:id",this.updateSubmissionFn);
     this.router.delete("/:id",this.deleteSubmissionFn);
+    this.router.get("/:id/files/:fileId([0-9]{1,})",this.getSubmissionFileContentsFn);
     this.router.post("/:id/files",this.createSubmissionFileFn);
     this.router.get("/ofAssignment/:id", this.getSubmissionsOfAssignmentFn);
     this.router.get("/:id", this.getSubmissionFn);
@@ -129,7 +130,7 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
         res.send({"response":err.message});
       });
   }
-  
+
   //POST /{id}/files : Upload a file to a given submission
   createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
@@ -147,37 +148,72 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
          
         const maxFileSize = AppConfig.maxFileUploadSize();
 
-        const filePath = AppConfig.submissionFileUploadDirectory() + submissionFile.name;
-
         if(submissionFile.size >= maxFileSize) {
           res.status(400);
           res.send({"response":"The file specified for upload is too large. The maximum individual file size is " + maxFileSize});
         } else {
-          submissionFile.mv(filePath).then(() => {
+
+          const directoryPath = AppConfig.submissionFileUploadDirectory() + submissionId + "/";
+          const fileName = submissionFile.name
+          const filePath = directoryPath + fileName;
           
-            this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
-  
-              this.submissionManager.processSubmissionFile(submission.getId(),filePath).then(() => {
-            
-                res.send({
-                  "response": 'File uploaded to submission successfully.',
-                  "data": {
-                      "name": submissionFile.name,
-                      "size": submissionFile.size
-                  }
+          mkdirp(directoryPath).then(() => {
+
+            submissionFile.mv(filePath).then(() => {
+          
+              this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
+    
+                this.submissionManager.processSubmissionFile(submission.getId(),fileName).then(() => {
+              
+                  res.send({
+                    "response": "File " + fileName + " uploaded to submission successfully."
+                  });
+                }).catch((err) => {
+                  res.status(400);
+                  res.send({"response":err.message});
                 });
               }).catch((err) => {
-                res.status(400);
-                res.send({"response":err.message});
+                  res.status(400);
+                  res.send({"response":err.message});
               });
-            }).catch((err) => {
-                res.status(400);
-                res.send({"response":err.message});
             });
           });
         }
       }
     } 
+  }
+   
+  //GET /{id}/files/{index} : Get the contents of a submission's nth file as a string
+  getSubmissionFileContentsFn = async (req : express.Request,res : express.Response) => {
+
+    var submissionId = req.params.id;
+    var fileIndex = Number(req.params.fileId); 
+    
+    this.submissionManager.getSubmission(submissionId).then((submission) => {
+
+      var fileNames = submission.getFiles();
+
+      if(fileNames.length == 0) {
+        res.status(400);
+        res.send({"response":"The specified submission has no files"});
+      } else {
+        if(fileIndex < 0 || fileIndex > (fileNames.length - 1)) {
+          res.status(400);
+          res.send({"response":"The provided file index is out of bounds"});
+        } else {
+          this.submissionManager.getSubmissionFileContent(submissionId,fileNames[fileIndex]).then((fileContent) => {
+            res.status(200);
+            res.send({"content":fileContent});
+          }).catch((err) => {
+            res.status(400);
+            res.send({"response":err.message});
+          });
+        }
+      }
+    }).catch((err) => {
+      res.status(400);
+      res.send({"response":err.message});
+    });
   }
 }
 
