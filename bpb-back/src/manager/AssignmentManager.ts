@@ -1,4 +1,5 @@
 import { Assignment, IAssignment } from "../model/Assignment";
+import { AssignmentDAO } from "../model/AssignmentDAO";
 import AssignmentData from "../types/AssignmentData";
 
 /**
@@ -14,10 +15,26 @@ export interface IAssignmentManager {
 
 export class AssignmentManager implements IAssignmentManager {
 
-    constructor() {}   
+    private assignmentCache : Map<string,IAssignment>;
+
+    constructor() {
+        this.assignmentCache = new Map<string,IAssignment>();
+    }   
     
-    async createAssignment(data : AssignmentData): Promise<IAssignment> {
-        throw new Error("Method not implemented.");
+    createAssignment = async(data : AssignmentData): Promise<IAssignment> => {
+
+        return new Promise((resolve, reject) => {
+            var name = data.name;
+            var submissionIds = data.submissionIds;
+
+            AssignmentDAO.createAssignment(name, submissionIds)
+                .then((assignment) => {
+                    this.assignmentCache.set(assignment.getId(), assignment);
+                    resolve(assignment);
+                }).catch((err) => {
+                    reject(err);
+                });
+        });
     }
 
     async getAssignment(assignmentId : string) : Promise<IAssignment> {
@@ -27,6 +44,8 @@ export class AssignmentManager implements IAssignmentManager {
     }
 
     async getAssignments(): Promise<IAssignment[]> {
+        // if chache is empty, load from db
+        // else check cache
         throw new Error("Method not implemented")
     }
 
