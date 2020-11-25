@@ -80,7 +80,7 @@ describe("AssignmentManager.ts",() => {
         });
     })
     describe("getAssignments()",() => {
-        it("Should return assignments if assignments exist",() => {
+        it("Should not utilise cache to return assignments if assignments exist but are not in cache",() => {
             var mockAssignment = new Assignment.builder().build();
             var expectedAssignments = [testAssignment,mockAssignment];
             var mockReadAssignments = chai.spy.on(AssignmentDAO,'readAssignments',() => {return Promise.resolve(expectedAssignments)});
@@ -90,6 +90,8 @@ describe("AssignmentManager.ts",() => {
                 expect(assignments).to.deep.equal(expectedAssignments);
             });
         });
+
+        it("Should use the cache and return assignments if cache contains assignments");
 
         it("Should return no assignments if none exist",() => {
             var expectedAssignments = [] as IAssignment[];
