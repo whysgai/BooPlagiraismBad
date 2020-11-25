@@ -27,7 +27,7 @@ class AssignmentListCard extends React.Component <PropsType,{}> {
   render() {
     return (
       <div className="assignment-list-card card">
-        <Link to='/' className='card-body' onClick={() => this.setAssignment()}>
+        <Link to='/Submissions' className='card-body' onClick={() => this.setAssignment()}>
           <span className='card-title'>
             {this.props.assignment.name}
           </span>
