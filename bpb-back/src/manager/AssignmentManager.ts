@@ -1,4 +1,3 @@
-import { isThrowStatement } from "typescript";
 import { Assignment, IAssignment } from "../model/Assignment";
 import { AssignmentDAO } from "../model/AssignmentDAO";
 import AssignmentData from "../types/AssignmentData";
@@ -112,6 +111,8 @@ export class AssignmentManager implements IAssignmentManager {
 
     deleteAssignment = async(assignmentId : string) : Promise<void> => {
         // remember to decrease cacheCount
-        throw new Error("Method not implemented.");
+        return new Promise((resolve,reject) => {
+            reject(new Error("Method not implemented"));
+        });
     }
 }
