@@ -42,7 +42,7 @@ export class AnalysisResult implements IAnalysisResult {
                 if(match[0] ==  match[1]) {
                     throw new Error("Bad Constructor: the two entries in a match at 'match[*]' must not be the same AnalysisResultEntry object instance.");
                 }
-                if(match[0].getFilePath() === match[1].getFilePath()) {
+                if(match[0].getFileName() === match[1].getFileName()) {
                     throw new Error("Bad Constructor: entries in 'matches[*][0]' and matches[*][1] must not have the same filepath.");
                 }
                 if(match[0].getSubmissionID() === match[1].getSubmissionID()) {
