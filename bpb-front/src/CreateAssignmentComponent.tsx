@@ -2,6 +2,7 @@ import React, { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { store } from './store';
 import { createAssignment } from './actions/AssignmentAction';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface PropsType {
   name: string
@@ -29,8 +30,8 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
   render() {
     return (
         <div style={{ textAlign: 'center', paddingTop: '20px' }}>
-            <div style={{textAlign: 'right', paddingRight: '50px', fontWeight: 'bolder'}}>
-                <Link to="/">
+            <div style={{textAlign: 'right', paddingRight: '100px', paddingTop: '30px', fontWeight: 'bolder'}}>
+                <Link className="btn btn-outline-danger mt-2" to="/">
                   x 
                 </Link>
             </div>
@@ -38,14 +39,9 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
             <br/>
             <span text-align="center">
                 <h5>Assignment Name:</h5>
-                <input
-                    name="name"
-                    type="text"
-                    value={this.props.name}
-                    onChange={this.onInputchange}
-                />
-                <br />
-                <Link
+                <input name="name" className='assignment-name-input' type="text" value={this.props.name} onChange={this.onInputchange}/>
+                <br/>
+                <Link className='create-assignment-btn btn btn-outline-success mt-2'
                     to="/"
                     onClick={() => this.callDispatch()}>
                     Create Assignment
