@@ -12,7 +12,7 @@ describe("ComparisonComponent",() => {
 
     it("Should render a CloseComparisonViewButton",() => {
         act(() =>{
-            render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
+            render(<StaticRouter location='/' context={{}}><ComparisonComponent/></StaticRouter>, container);
         });
 
         expect(container.getElementsByClassName("close-comparison-btn").length).to.equal(1);
@@ -20,7 +20,7 @@ describe("ComparisonComponent",() => {
 
     it("Should render ChangeComparisonViewButton",() => {
         act(() =>{
-            render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
+            render(<StaticRouter location='/' context={{}}><ComparisonComponent/></StaticRouter>, container);
         });
 
         expect(container.getElementsByClassName("change-comparison-btn").length).to.equal(1);
@@ -32,7 +32,7 @@ describe("ComparisonComponent",() => {
 
     it("Should render two DocumentVisualizationComponents",() => { 
         act(() =>{
-            render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
+            render(<StaticRouter location='/' context={{}}><ComparisonComponent/></StaticRouter>, container);
         });
 
         expect(container.getElementsByClassName("document-pane").length).to.equal(2);
@@ -40,7 +40,7 @@ describe("ComparisonComponent",() => {
 
     it("Should render two DirectoryListComponents",() => {
         act(() =>{
-            render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
+            render(<StaticRouter location='/' context={{}}><ComparisonComponent/></StaticRouter>, container);
         });
 
         expect(container.getElementsByClassName("directory-list").length).to.equal(2);
@@ -50,7 +50,7 @@ describe("ComparisonComponent",() => {
 describe("CloseComparisonViewButton",() => {
     it("Should redirect the user to the assignment page",() => {
         act(() =>{
-            render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
+            render(<StaticRouter location='/' context={{}}><ComparisonComponent/></StaticRouter>, container);
         });
 
         expect(document.querySelector(".close-comparison-btn").getAttribute("href")).toBe("/Assignments"); 
