@@ -3,12 +3,14 @@ export interface IAnalysisResult {
     asJSON() : Object;
     getSimilarityScore() : number;
     getMatches() : Array<Array<IAnalysisResultEntry>>; 
+    getFiles() : Map<string, string>;
 }
 
 /**
  * Represents a list of matches (i.e associations) between AnalysisResultEntries, representing matches between highlighted sections
  */
 export class AnalysisResult implements IAnalysisResult {
+    private fileNames : Map<string, string>; // key: submissionId, val: fileName
 
     constructor(private matches : Array<Array<IAnalysisResultEntry>>, private similarityScore : number) {
 
@@ -19,18 +21,22 @@ export class AnalysisResult implements IAnalysisResult {
         if(matches.length == 0 && similarityScore != 0) {
             throw new Error("Bad Constructor: if no matches are provided, param 'similarityScore' should be 0.");
         }
-        // let file1_filepath : string;
+
+        this.fileNames = new Map();
+        let file1_fileName : string;
         let file1_submissionId : string;
-        // let file2_filepath : string;
+        let file2_fileName : string;
         let file2_submissionId : string;
         if(matches[0] != undefined) {
             if(matches[0][0] != undefined) {
-                // file1_filepath = matches[0][0].getFilePath();
+                file1_fileName = matches[0][0].getFilePath();
                 file1_submissionId = matches[0][0].getSubmissionID();
+                this.fileNames.set(file1_submissionId, file1_fileName);
             }
             if(matches[0][1] != undefined) {
-                // file2_filepath = matches[0][1].getFilePath();
+                file2_fileName = matches[0][1].getFilePath();
                 file2_submissionId = matches[0][1].getSubmissionID();
+                this.fileNames.set(file2_submissionId, file2_fileName);
             }       
             matches.forEach(match => {
                 if(match == undefined) {
@@ -57,6 +63,10 @@ export class AnalysisResult implements IAnalysisResult {
             });
         }
     };
+    
+    getFiles(): Map<string, string> {
+        throw new Error("Method not implemented.");
+    }
         
     getSimilarityScore(): number {
         return this.similarityScore;
