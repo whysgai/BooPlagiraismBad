@@ -41,6 +41,7 @@ describe("AssignmentManager.ts",() => {
             });
         });
 
+        //TODO: May not need this test
         it("Should throw an appropriate error if input data is not valid",() => {
             var createData = {"name":undefined as string,"submissionIds":undefined as string[]};
 
@@ -103,18 +104,41 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("updateAssignment()",()=> {
-        it("Should correctly manipulate AssignmentDAO to update the specified assignment if {id} is valid");
+        it("Should correctly manipulate AssignmentDAO to update the specified assignment if {id} is valid",() => {
+            var updatedAssignmentBuilder = new Assignment.builder();
+            var expectedName = "Updated Name";
+            var expectedSubmissionIds = ["Updated","List"];
 
-        it("Should throw an appropriate error when trying to update the specified assignment if {id} is invalid");
+            updatedAssignmentBuilder.setSubmissionIds(expectedSubmissionIds);
+            updatedAssignmentBuilder.setName(expectedName);
+            var updatedAssignment = updatedAssignmentBuilder.build();
 
-        it("Should throw an appropriate error if DAO fails to update the specified assignment");
+            var updateBody ={"name":expectedName,"submissionIds",expectedSubmissionIds}
+
+            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
+            var mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.resolve(testAssignment)}); // Should be updated by method
+
+            return testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody).then((assignment) => {
+                expect(mockUpdateAssignment).to.have.been.called.with(testAssignment.getId());
+                expect(assignment).to.deep.equal(updatedAssignment);
+            });
+        });
+
+        it("Should throw an appropriate error when trying to update the specified assignment if {id} is invalid",() => {
+            var updateBody ={"name":"test","submissionIds":["test"]}
+
+            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("Assignment not found")});
+            chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.reject(new Error("Assignment could not be updated"))});
+
+            return expect(testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody)).to.eventually.be.rejected.with("Assignment not found");
+        });
     });
 
     describe("deleteAssignment()",() => {
         it("Should correctly manipulate AssignmentDAO to delete the specified assignment if {id} is valid");
 
         it("Should throw an appropriate error when trying to delete the specified assignment if {id} is invalid");
-        
+
         it("Should throw an appropriate error if DAO fails to delete the specified assignment");
     });
 });
