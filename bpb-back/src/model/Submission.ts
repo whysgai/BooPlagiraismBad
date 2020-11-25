@@ -227,10 +227,10 @@ export interface ISubmission {
     compare(otherSubmission: ISubmission) : IAnalysisResult[] {
         let analysisResults = new Array<IAnalysisResult>();
         this.files.forEach(subAFile => {
-            let fileAEntries = this.entries.filter((entry) => entry.getFilePath() === subAFile);
+            let fileAEntries = this.entries.filter((entry) => entry.getFileName() === subAFile);
             otherSubmission.getFiles().forEach(subBFile => {
                 let fileBEntries = otherSubmission.getEntries().filter(
-                    (entry) => entry.getFilePath() === subBFile);
+                    (entry) => entry.getFileName() === subBFile);
                     analysisResults.push(this.compareAnalysisResultEntries(fileAEntries, fileBEntries)); 
             }); 
         });
