@@ -121,8 +121,8 @@ describe("Submission.ts",() => {
         testSubmissionB = builderB.build();
 
         testFileContent = "reallylongstringwithplentyofcontenttoexceedtheminimumlengthrequiredinordertohavesufficientlevelsofdifferencetobemeasurable";
-        testEntryA = new AnalysisResultEntry("are1","subid_a","/home/file.java","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
-        testEntryB = new AnalysisResultEntry("are2","subid_b","/home/filey.java","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
+        testEntryA = new AnalysisResultEntry("are1", testSubmissionA.getId(),"/home/file.java","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
+        testEntryB = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
     });
 
     describe("getId()",() => {
@@ -171,7 +171,13 @@ describe("Submission.ts",() => {
             expect(function() { testSubmissionB.compare(testSubmissionA)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
         });
 
-        it("Contents of returned array should  ")
+        it.only("Contents of returned array should hold the proper filename mapping.", () => {
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
+            var results = testSubmissionB.compare(testSubmissionA);
+            expect(results[0].getFiles().get(testSubmissionA.getId())).to.be.equal(testEntryA.getFileName());
+            expect(results[0].getFiles().get(testSubmissionB.getId())).to.be.equal(testEntryB.getFileName());
+        });
 
     });
     
