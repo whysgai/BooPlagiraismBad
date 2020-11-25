@@ -1,5 +1,10 @@
 describe("ComparisonComponent",() => {
 
+    beforeEach(() => {
+        container = document.createElement('div');
+        document.body.appendChild(container);
+    });
+
     it("Should render a static title");
 
     it("Should render a CloseComparisonComponentButton");
