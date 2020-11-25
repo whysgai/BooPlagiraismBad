@@ -1,3 +1,4 @@
+import { isThrowStatement } from "typescript";
 import { Assignment, IAssignment } from "../model/Assignment";
 import { AssignmentDAO } from "../model/AssignmentDAO";
 import AssignmentData from "../types/AssignmentData";
@@ -47,8 +48,8 @@ export class AssignmentManager implements IAssignmentManager {
                 resolve(this.assignmentCache.get(assignmentId));
             } else {
                 AssignmentDAO.readAssignment(assignmentId).then((assignment) => {
-                    console.log(assignment);
                     this.assignmentCache.set(assignmentId, assignment);
+                    this.cacheCount++;
                     resolve(assignment);
                 }).catch((err) => {
                     reject(err);
@@ -63,6 +64,12 @@ export class AssignmentManager implements IAssignmentManager {
 
             if(this.cacheCount <= 0) {
                 AssignmentDAO.readAssignments().then((assignments) => {
+
+                    for(var assignment of assignments) {
+                        this.assignmentCache.set(assignment.getId(),assignment);
+                        this.cacheCount++;
+                    }
+
                     resolve(assignments);
                 }).catch((err) => {
                     reject(err);
@@ -78,8 +85,29 @@ export class AssignmentManager implements IAssignmentManager {
     }
 
     updateAssignment = async(assignmentId : string, data : AssignmentData) : Promise<IAssignment> => {
-        // remember to update cacheCount if cache miss occurs
-        throw new Error("Method not implemented.");
+
+        return new Promise((resolve,reject) => {
+            this.getAssignment(assignmentId).then((assignment) => {
+
+                assignment.setName(data.name);
+                assignment.setSubmissionIds(data.submissionIds);
+
+                AssignmentDAO.updateAssignment(assignment).then((updatedAssignment) => {
+                    
+                    if(this.assignmentCache.get(assignmentId) == undefined) { 
+                        this.cacheCount++; //Update cacheCount if cache miss occurs
+                    }
+
+                    this.assignmentCache.set(assignmentId,updatedAssignment); //Update cache
+
+                    resolve(updatedAssignment);
+                }).catch((err) => {
+                    reject(err);
+                });
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 
     deleteAssignment = async(assignmentId : string) : Promise<void> => {

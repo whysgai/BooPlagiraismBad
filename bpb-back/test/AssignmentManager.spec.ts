@@ -122,11 +122,12 @@ describe("AssignmentManager.ts",() => {
             var updateBody ={"name":expectedName,"submissionIds":expectedSubmissionIds}
 
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
-            var mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.resolve(testAssignment)}); // Should be updated by method
+            var mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',(assn) => {return Promise.resolve(assn)}); // Should be updated by method (thus, mock is passthrough)
 
             return testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody).then((assignment) => {
-                expect(mockUpdateAssignment).to.have.been.called.with(testAssignment.getId());
-                expect(assignment).to.deep.equal(updatedAssignment);
+                expect(mockUpdateAssignment).to.have.been.called.with(testAssignment);
+                expect(assignment.getName()).to.equal(updatedAssignment.getName());
+                expect(assignment.getSubmissionIds()).to.equal(updatedAssignment.getSubmissionIds());
             });
         });
 
@@ -134,9 +135,14 @@ describe("AssignmentManager.ts",() => {
             var updateBody ={"name":"test","submissionIds":["test"]}
 
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("Assignment not found"))});
-            chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.reject(new Error("Assignment could not be updated"))});
+            var mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.reject(new Error("Assignment could not be updated"))});
 
-            return expect(testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody)).to.eventually.be.rejected.with("Assignment not found");
+            return testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody).then(() => {
+                expect(true, "updateAssignment should have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Assignment not found");
+                expect(mockUpdateAssignment).to.not.have.been.called;
+            });;
         });
     });
 
@@ -151,19 +157,27 @@ describe("AssignmentManager.ts",() => {
         });
 
         it("Should throw an appropriate error when trying to delete the specified assignment if {id} is invalid",() => {
-            var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("ID is invalid"))});
+            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("Assignment not found"))});
             var mockDeleteAssignment = chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.resolve()});
-
-            return expect(testAssignmentManager.deleteAssignment(testAssignment.getId())).to.eventually.be.rejected.with("ID is invalid").then(() => {
+            
+            return testAssignmentManager.deleteAssignment(testAssignment.getId()).then(() => {
+                expect(true, "deleteAssignment should have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Assignment not found");
                 expect(mockDeleteAssignment).to.not.have.been.called;
-            });
+            });;
         });
 
         it("Should throw an appropriate error if DAO fails to delete the specified assignment",() => {
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
-             chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.reject("Could not delete assignment")});
+            var mockDeleteAssignment = chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.reject("Could not delete assignment")});
 
-            return expect(testAssignmentManager.deleteAssignment(testAssignment.getId())).to.eventually.be.rejected.with("Could not delete assignment");
+            return testAssignmentManager.deleteAssignment(testAssignment.getId()).then(() => {
+                expect(true, "deleteAssignment should have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Could not delete assignment");
+                expect(mockDeleteAssignment).to.not.have.been.called;
+            });
         });
     });
 });
