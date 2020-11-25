@@ -23,8 +23,8 @@ ReactDOM.render(
       <NavbarComponent />
       <Route exact path="/"><AssignmentListComponent assignments={
         [
-          {_id:"01", name:"Mikayla", submissionIds:[]},
-          {_id:"02", name:"Ture", submissionIds:[]}
+          {_id:"01", name:"Mikayla", submissionIds:['1','2','3']},
+          {_id:"02", name:"Ture", submissionIds:['2']}
         ]
       }/></Route>
       {/* <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route> */}
