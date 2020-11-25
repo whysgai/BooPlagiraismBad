@@ -257,7 +257,10 @@ export interface ISubmission {
             });
         });
 
-        let similarityScore = (2 * matchedEntries.length) / ((2 * matchedEntries.length) + this.entries.length + otherEntries.length); 
+        let H = matchedEntries.length;
+        let L = this.entries.length - H;
+        let R = otherEntries.length - H;
+        let similarityScore = (2 * H) / ((2 * H) + R + L); //DECKARD SIMILARITY SCORE ALGORITHM
         var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
         return analysisResult;
     }
