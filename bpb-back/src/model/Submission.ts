@@ -275,7 +275,6 @@ export interface ISubmission {
         let fileNameA = fileAEntries[0].getFileName();
         let fileNameB = fileBEntries[0].getFileName();
         var analysisResult = new AnalysisResult(matchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
-        console.log(analysisResult);
         return analysisResult;
     }
 
