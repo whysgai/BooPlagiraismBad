@@ -6,13 +6,13 @@ describe("AnalysisResultEntry",() => {
     var testARE : AnalysisResultEntry;
 
     before(() => {
-        testARE = new AnalysisResultEntry("are1","subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
+        testARE = new AnalysisResultEntry("are1","subid1", "test.java", "method", 
         1, 3, 2, 4, "245rr1", "void test() { }" );
     });
     
     describe("constructor", () => {
         it("Should throw an Error when lineNumberEnd < lineNumberStart", () => {
-            let badConstructor = function(){new AnalysisResultEntry("are1","subid1", "/vagrant/bpb-back/uploads/test.java", "method", 
+            let badConstructor = function(){new AnalysisResultEntry("are1","subid1", "test.java", "method", 
             5, 1, 2, 3, "hash", "void test() { }")};
             expect(badConstructor).to.throw(Error, 'lineNumberStart can not be > lineNumberEnd')
         });
@@ -54,9 +54,9 @@ describe("AnalysisResultEntry",() => {
         }); 
     });
     
-    describe("getFilePath", () => {
+    describe("getFileName", () => {
         it("Should return a string with the expected value.", () => {
-            expect(testARE.getFilePath()).to.equal("/vagrant/bpb-back/uploads/test.java")
+            expect(testARE.getFileName()).to.equal("test.java")
         });
     });
     
@@ -68,7 +68,7 @@ describe("AnalysisResultEntry",() => {
     
     describe("asJSON",() => {
         it("Should return a valid JSON object with the expected properties",() => {
-            var expected = '{"id":"are1","filePath":"/vagrant/bpb-back/uploads/test.java",\
+            var expected = '{"id":"are1","fileName":"test.java",\
             "contextType":"method","lineNumberStart":1, "charPosStart":3, "lineNumberEnd":2, "charPosEnd":4,\
             "hashValue":"245rr1"}'
             var expectedJSON = JSON.parse(expected);

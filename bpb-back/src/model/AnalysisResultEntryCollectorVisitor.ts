@@ -22,9 +22,9 @@ export interface IAnalysisResultEntryCollectorVisitor extends ParseTreeVisitor<a
     getAnalysisResultEntries(): AnalysisResultEntry[];
     
     /**
-     * Returns the filePath of the file whose AST the visitor is visiting.
+     * Returns the file whose AST the visitor is visiting.
      */
-    getFilePath() : string;
+    getFileName() : string;
     
     /**
      * returns the ISubmission implementing object that this visitor is working on the behalf of.
@@ -55,11 +55,11 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         return this.analysisResultEntries;
     }
     
-    constructor(private filePath : string, private submission : ISubmission) {
+    constructor(private fileName : string, private submission : ISubmission) {
         super();
         this.visited = false;
-        if(filePath == undefined || filePath == "") {
-            throw new Error("filePath must be non-empty and may not be undefined.")
+        if(fileName == undefined || fileName == "") {
+            throw new Error("file name must be non-empty and may not be undefined.")
         }
         this.analysisResultEntries = new Array<AnalysisResultEntry>();
     }
@@ -79,10 +79,10 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
     }
 
     /**
-     * returns this.filePath
+     * returns this.fileName
      */
-    getFilePath(): string {
-        return this.filePath;
+    getFileName(): string {
+        return this.fileName;
     }
 
     /**
@@ -122,7 +122,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
             charPosStart = asParserRuleContext._start.charPositionInLine;
             charPosStop = asParserRuleContext._stop.charPositionInLine;
         }
-        return new AnalysisResultEntry("",submissionId, this.filePath, contextType, lineStart, charPosStart, lineStop, charPosStop, hashValue, textContent);
+        return new AnalysisResultEntry("",submissionId, this.fileName, contextType, lineStart, charPosStart, lineStop, charPosStop, hashValue, textContent);
     }
 
     /**
