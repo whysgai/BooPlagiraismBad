@@ -3,12 +3,10 @@ import {render} from 'react-dom';
 import { act } from "react-dom/test-utils";
 import { StaticRouter } from 'react-router'
 import SubmissionListComponent from '../SubmissionListComponent';
-import {shallow, mount} from 'enzyme'
+import { mount} from 'enzyme'
 import Enzyme from 'enzyme'
-import { Link } from 'react-router-dom';
 import Adapter from 'enzyme-adapter-react-16';
 import configureMockStore from 'redux-mock-store'
-import { addSubmissionComparison } from '../actions/ComparisonAction';
 
 describe("SubmissionListComponent tests:", () => {
     let container;

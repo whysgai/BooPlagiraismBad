@@ -1,4 +1,3 @@
-import { createAssignment } from "../actions/AssignmentAction";
 import Action from "../types/Action"
 
 const initialState = {

@@ -1,6 +1,5 @@
 import React from 'react';
 import Assignment from './types/Assignment'
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 function AssignmentListCard({assignment, createAssignment}:{assignment : Assignment, createAssignment: (arg: String) => void }) {
   return (

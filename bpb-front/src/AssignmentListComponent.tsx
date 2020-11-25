@@ -1,10 +1,8 @@
-import React, { ReactPropTypes } from 'react';
+import React from 'react';
 import './AssignmentListComponent.css';
 import AssignmentListCard from './AssignmentListCard'
 import Assignment from './types/Assignment'
 import {Link} from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 interface PropsType {
   assignments:Assignment[]

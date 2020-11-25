@@ -1,11 +1,8 @@
 import React from 'react';
-import {render, unmountComponentAtNode} from 'react-dom';
+import {render} from 'react-dom';
 import { act } from "react-dom/test-utils";
 import AssignmentListComponent from "../AssignmentListComponent";
-import BrowserRouter from "react-router-dom";
-import Route from "react-router-dom";
 import { StaticRouter } from 'react-router'
-import AssignmentListCard from '../AssignmentListCard';
 
 
 describe("AssignmentListComponent tests:", () => {
