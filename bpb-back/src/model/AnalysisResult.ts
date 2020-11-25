@@ -29,12 +29,12 @@ export class AnalysisResult implements IAnalysisResult {
         let file2_submissionId : string;
         if(matches[0] != undefined) {
             if(matches[0][0] != undefined) {
-                file1_fileName = matches[0][0].getFilePath();
+                file1_fileName = matches[0][0].getFileName();
                 file1_submissionId = matches[0][0].getSubmissionID();
                 this.fileNames.set(file1_submissionId, file1_fileName);
             }
             if(matches[0][1] != undefined) {
-                file2_fileName = matches[0][1].getFilePath();
+                file2_fileName = matches[0][1].getFileName();
                 file2_submissionId = matches[0][1].getSubmissionID();
                 this.fileNames.set(file2_submissionId, file2_fileName);
             }       
