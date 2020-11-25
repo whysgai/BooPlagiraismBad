@@ -171,7 +171,7 @@ describe("Submission.ts",() => {
             expect(function() { testSubmissionB.compare(testSubmissionA)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
         });
 
-        it.only("Contents of returned array should hold the proper filename mapping.", () => {
+        it("Contents of returned array should hold the proper filename mapping.", () => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var results = testSubmissionB.compare(testSubmissionA);
