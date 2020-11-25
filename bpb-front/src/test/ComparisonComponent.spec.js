@@ -10,7 +10,7 @@ describe("ComparisonComponent",() => {
         document.body.appendChild(container);
     });
 
-    it("Should render a CloseComparisonComponentButton",() => {
+    it("Should render a CloseComparisonViewButton",() => {
         act(() =>{
             render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
         });
@@ -48,12 +48,18 @@ describe("ComparisonComponent",() => {
 });
 
 describe("CloseComparisonViewButton",() => {
-    it("Should close the ComparisonComponent and redirect to the ???")
+    it("Should redirect the user to the assignment page",() => {
+        act(() =>{
+            render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
+        });
+
+        expect(container.getElementsByClassName("close-comparison-view-btn").getAttribute("href")).toBe("/Assignments"); 
+    });
 });
 
 describe("ChangeComparisonViewButton",() => {
-    it("Should switch to Document view if in Snippet view when clicked");
+    //Skipped due to issues with testing interactions
+    it.skip("Should switch to Document view if in Snippet view when clicked");
 
-    it("Should switch to Snippet view if in Document view when clicked");
+    it.skip("Should switch to Snippet view if in Document view when clicked");
 });
-
