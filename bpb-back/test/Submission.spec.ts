@@ -141,7 +141,7 @@ describe("Submission.ts",() => {
 
         
 //TODO: add tests to check files of returned AnalysisResult[]
-        it("Should return a valid AnalysisResult if comparator submission is valid (left direction)",() => {
+        it("Should return a valid AnalysisResult[] if comparator submission is valid (left direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultA = testSubmissionA.compare(testSubmissionB);
@@ -149,7 +149,7 @@ describe("Submission.ts",() => {
             expect(resultA.map((result) => result.asJSON())).to.not.be.be.undefined;
         });
         
-        it("Should return a valid AnalysisResult if comparator submission is valid (right direction)",() => {
+        it("Should return a valid AnalysisResult[] if comparator submission is valid (right direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultB = testSubmissionB.compare(testSubmissionA);
@@ -170,6 +170,8 @@ describe("Submission.ts",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             expect(function() { testSubmissionB.compare(testSubmissionA)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
         });
+
+        it("Contents of returned array should  ")
 
     });
     
