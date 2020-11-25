@@ -1,7 +1,6 @@
 import express from 'express';
 import fileUpload from "express-fileupload";
 import mongoose from 'mongoose';
-import { AssignmentDAO } from './model/AssignmentDAO';
 import { AssignmentManager } from './manager/AssignmentManager';
 import { SubmissionManager } from './manager/SubmissionManager';
 import IRouter from './router/IRouter';
@@ -44,8 +43,7 @@ class App {
                 });
 
                 // Set up AssignmentManager
-                var assignmentDAO = new AssignmentDAO();
-                var assignmentManager = new AssignmentManager(assignmentDAO);
+                var assignmentManager = new AssignmentManager();
 
                 // Set up SubmissionManager
                 var submissionManager = new SubmissionManager();
