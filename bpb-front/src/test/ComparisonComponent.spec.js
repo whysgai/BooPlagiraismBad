@@ -53,7 +53,7 @@ describe("CloseComparisonViewButton",() => {
             render(<StaticRouter><ComparisonComponent/></StaticRouter>, container);
         });
 
-        expect(container.getElementsByClassName("close-comparison-view-btn").getAttribute("href")).toBe("/Assignments"); 
+        expect(document.querySelector(".close-comparison-btn").getAttribute("href")).toBe("/Assignments"); 
     });
 });
 
