@@ -23,7 +23,7 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
   }
 
   callDispatch() {
-    store.dispatch(createAssignment('ADD_ASSIGNMENT', this.props.name))
+    store.dispatch(createAssignment('ADD_ASSIGNMENT', this.props.name));
   }
 
   render() {
