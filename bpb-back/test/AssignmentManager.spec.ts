@@ -103,12 +103,18 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("updateAssignment()",()=> {
-        it("Should correctly manipulate AssignmentDAO to update an assignment if {id} is valid");
-        it("Should throw an appropriate error when trying to update an assignment if {id} is invalid");
+        it("Should correctly manipulate AssignmentDAO to update the specified assignment if {id} is valid");
+
+        it("Should throw an appropriate error when trying to update the specified assignment if {id} is invalid");
+
+        it("Should throw an appropriate error if DAO fails to update the specified assignment");
     });
 
     describe("deleteAssignment()",() => {
-        it("Should correctly manipulate AssignmentDAO to delete an assignment if {id} is valid");
-        it("Should throw an appropriate error when trying to delete an assignment if {id} is invalid");
+        it("Should correctly manipulate AssignmentDAO to delete the specified assignment if {id} is valid");
+
+        it("Should throw an appropriate error when trying to delete the specified assignment if {id} is invalid");
+        
+        it("Should throw an appropriate error if DAO fails to delete the specified assignment");
     });
 });
