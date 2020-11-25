@@ -1,7 +1,7 @@
 import React from 'react';
 //import "font-awesome/css/font-awesome.min";
 import ReactDOM from 'react-dom';
-import './index.css';
+import './css/index.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import AssignmentListComponent from './AssignmentListComponent';
 import ComparisonComponent from './ComparisonComponent';
