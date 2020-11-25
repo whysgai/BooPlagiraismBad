@@ -269,7 +269,13 @@ export interface ISubmission {
         let L = fileAEntries.length - H;
         let R = fileBEntries.length - H;
         let similarityScore = (2 * H) / ((2 * H) + R + L); //DECKARD SIMILARITY SCORE ALGORITHM
-        var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
+
+        let submissionIdA = fileAEntries[0].getSubmissionID();
+        let submissionIdB = fileBEntries[0].getSubmissionID();
+        let fileNameA = fileAEntries[0].getFileName();
+        let fileNameB = fileBEntries[0].getFileName();
+        var analysisResult = new AnalysisResult(matchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
+        console.log(analysisResult);
         return analysisResult;
     }
 
