@@ -50,7 +50,7 @@ describe("AnalysisResult.ts", () => {
         filePath2 = 'testPath2';
         subId2 = 'testID2'
 
-        testAnalysisResult = new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore);
+        testAnalysisResult = new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, filePath2);
     });
 
     
@@ -75,82 +75,82 @@ describe("AnalysisResult.ts", () => {
         })
         
         it("Should successfuly construct.", () => {
-            let goodConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore);
+            let goodConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, filePath2);
             expect(goodConstructor).to.not.throw(Error);
         });
 
         it("Should throw an error if an empty array is provided, and similarityScore is not 0", () => {
             let emptyArray = new Array<Array<IAnalysisResultEntry>>();
-            let badConstructor = () => new AnalysisResult(emptyArray, 5);
+            let badConstructor = () => new AnalysisResult(emptyArray, 5, subId1, subId2, filePath1, filePath2);
             expect(badConstructor).to.throw(Error, "Bad Constructor: if no matches are provided, param 'similarityScore' should be 0.");
         });
 
         it("Should NOT throw an error if an empty array is provided, and similarityScore is 0", () => {
             let emptyArray = new Array<Array<IAnalysisResultEntry>>();
-            let badConstructor = () => new AnalysisResult(emptyArray, 0);
+            let badConstructor = () => new AnalysisResult(emptyArray, 0, subId1, subId2, filePath1, filePath2);
             expect(badConstructor).to.not.throw(Error);            
         });
 
         it("Should throw an error if matches[*][0] is undefined.", () => {
             let badArray = new Array<Array<IAnalysisResultEntry>>();
             badArray.push([undefined, mockEntry2]);
-            let badConstructor = () => new AnalysisResult(badArray, testSimilarityScore);
+            let badConstructor = () => new AnalysisResult(badArray, testSimilarityScore, subId1, subId2, filePath1, filePath2);
             expect(badConstructor).to.throw(Error, "Bad Constructor: AnalysisResultEntry objects in param 'matches' must not be undefined.");
         });
 
         it("Should throw an error if matches[*][1] is undefined.", () => {
             let badArray = new Array<Array<IAnalysisResultEntry>>();
             badArray.push([mockEntry1, undefined]);
-            let badConstructor = () => new AnalysisResult(badArray, testSimilarityScore);
+            let badConstructor = () => new AnalysisResult(badArray, testSimilarityScore, subId1, subId2, filePath1, filePath2);
             expect(badConstructor).to.throw(Error, "Bad Constructor: AnalysisResultEntry objects in param 'matches' must not be undefined.");
         });
 
         it("Should throw an error if similarityScore is < 0", () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], -1);
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], -1, subId1, subId2, filePath1, filePath2);
             expect(badConstructor).to.throw(Error, "Bad Constructor: param 'similarityScore' must be <= 0.");
         });
         
         it("Should throw an error if matches[*][0] and matches[*][1] have the same filepath.", async () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore);
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, filePath2);
             filePath2 = 'path1';
             expect(badConstructor).to.throw(Error, "Bad Constructor: entries in 'matches[*][0]' and matches[*][1] must not have the same filepath.");
 
         });
 
         it("Should throw an error if matches[*][0] has an inconsistent submissionId.", async () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2], [mockEntry3, mockEntry4]], testSimilarityScore);
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2], [mockEntry3, mockEntry4]], testSimilarityScore, subId1, subId2, filePath1, filePath2);
             subId3 = 'id3';
             expect(badConstructor).to.throw(Error, "Bad Constructor: all entries in param 'matches[*][0]' must have the same submissionId.");
 
         });
 
         it("Should throw an error if matches[*][1] has an inconsistent submissionId.", async () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2], [mockEntry3, mockEntry4]], testSimilarityScore);
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2], [mockEntry3, mockEntry4]], testSimilarityScore, subId1, subId2, filePath1, filePath2);
             subId4 = 'id3';
             expect(badConstructor).to.throw(Error, "Bad Constructor: all entries in param 'matches[*][1]' must have the same submissionId.");
 
         });
 
         it("Should throw an error if matches[*][0] and matches[*][1] have the same submissionId.", async () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore);
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, filePath2);
             subId2 = 'id1';
             expect(badConstructor).to.throw(Error, "Bad Constructor: entries in 'matches[*][0]' and matches[*][1] must not have the same submissionId.");
         });
 
         it("Should throw an error if matches[*][0] and matches[*][1] are the same AnalysisResultEntry object instance.", async () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry1]], testSimilarityScore);
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry1]], testSimilarityScore, subId1, subId2, filePath1, filePath2);
             expect(badConstructor).to.throw(Error, "Bad Constructor: the two entries in a match at 'match[*]' must not be the same AnalysisResultEntry object instance.");
         });
     });
 
-    describe("asJSON", () => {
+    describe("asJSON", () => { //TODO: add file and submission details to JSON
         it("Should return a valid JSON object with the expected properties", () => {
-            let are1 = new AnalysisResultEntry("are1", "subid1", "/test/file.java", "method", 1, 3, 2, 4, "245rr1", "void test() { }");
-            let are2 = new AnalysisResultEntry("are2", "subid2", "test/file2.java", "method", 5, 7, 6, 8, "423qq1", "void similar() { }");
+            let are1 = new AnalysisResultEntry("are1", subId1, filePath1, "method", 1, 3, 2, 4, "245rr1", "void test() { }");
+            let are2 = new AnalysisResultEntry("are2", subId2, filePath2, "method", 5, 7, 6, 8, "423qq1", "void similar() { }");
             let matches = [[are1, are2]]
             var expectedJSON = {'similarityScore': 5,
                                 'matches': matches.map((match) => {return [match[0].asJSON(), match[1].asJSON()]})} //ARE.asJSON should be tested on its own level, so safe to use here to prevent test break-age down the line
-            var analysisResult = new AnalysisResult(matches, 5);
+            var analysisResult = new AnalysisResult(matches, 5, subId1, subId2, filePath1, filePath2);
             expect(analysisResult.asJSON()).to.deep.equal(expectedJSON);
         });
     });
