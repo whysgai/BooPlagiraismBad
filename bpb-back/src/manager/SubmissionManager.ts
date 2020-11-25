@@ -18,7 +18,7 @@ export interface ISubmissionManager {
     updateSubmission(submissionId : string, data : SubmissionData) : Promise<ISubmission>;
     processSubmissionFile(submissionId : string, fileName : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
-    compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult>
+    compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]>
     getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
 }
 
@@ -173,7 +173,7 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionIdA 
      * @param submissionIdB 
      */
-    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult> => {
+    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
 
         return new Promise((resolve,reject) => {
             this.getSubmission(submissionIdA)
