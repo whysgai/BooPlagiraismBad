@@ -37,23 +37,23 @@ export class AssignmentManager implements IAssignmentManager {
         });
     }
 
-    async getAssignment(assignmentId : string) : Promise<IAssignment> {
+    getAssignment = async(assignmentId : string) : Promise<IAssignment> => {
         return new Promise((resolve,reject) => {
             resolve(new Assignment.builder().build()); //TODO: Remove fake assignment! Required for SubmissionRouter.
         });
     }
 
-    async getAssignments(): Promise<IAssignment[]> {
+    getAssignments = async(): Promise<IAssignment[]> => {
         // if chache is empty, load from db
         // else check cache
         throw new Error("Method not implemented")
     }
 
-    async updateAssignment(assignmentId : string, data : AssignmentData) : Promise<IAssignment> {
+    updateAssignment = async(assignmentId : string, data : AssignmentData) : Promise<IAssignment> => {
         throw new Error("Method not implemented.");
     }
 
-    async deleteAssignment(assignmentId : string) : Promise<void> {
+    deleteAssignment = async(assignmentId : string) : Promise<void> => {
         throw new Error("Method not implemented.");
     }
 }
