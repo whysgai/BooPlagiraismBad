@@ -60,8 +60,7 @@ describe("AssignmentListComponent tests:", () => {
             render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[]}/></StaticRouter>, container);  
         });
         
-        //TODO
-        expect(document.querySelector("a").getAttribute("href")).toBe("/")
+        expect(document.querySelector("a").getAttribute("href")).toBe("/CreateAssignment")
     });
 
 });
