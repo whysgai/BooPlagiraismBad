@@ -59,15 +59,6 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         if (lineNumberStart > lineNumberEnd) {
             throw new Error('lineNumberStart can not be > lineNumberEnd');
         }
-        
-        this.id = id;
-        this.submissionId = submissionId;
-        this.fileName = fileName;
-        this.contextType = contextType;
-        this.lineNumberStart = lineNumberStart;
-        this.lineNumberEnd = lineNumberEnd;
-        this.hashValue = hashValue;
-        this.text = text;
     }
 
     getSubmissionID(): string {
