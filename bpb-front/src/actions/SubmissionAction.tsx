@@ -1,8 +1,11 @@
-import Submission from '../types/Submission'
+import Assignment from '../types/Assignment'
 
-export default function submissionAction(submission : Submission) {
+export default function createSubmission(type : string, name : string, assignment : Assignment, files : JSON[]) {
     return {
-        type: 'ADD_COMPARE',
-        submission: submission,
+        type: 'ADD_SUBMISSION',
+        name: name,
+        assignment: assignment,
+        files: files,
+        newSubmission:
     }
 };
