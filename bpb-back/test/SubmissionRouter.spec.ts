@@ -508,7 +508,8 @@ describe('SubmissionRouter.ts',()=> {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const mockAnalysisResult = new AnalysisResult([[testAre1, testAre2]], 5);
+        const mockAnalysisResult = new AnalysisResult([[testAre1, testAre2]], 5, testAre1.getSubmissionID(), 
+        testAre2.getSubmissionID(), testAre1.getFileName(), testAre2.getFileName());
         var mockAnalysisResultArray = new Array<AnalysisResult>();
         mockAnalysisResultArray.push(mockAnalysisResult);
 
