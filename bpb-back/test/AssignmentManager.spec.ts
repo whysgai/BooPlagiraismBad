@@ -58,8 +58,21 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("getAssignment()",() => {
-        it("Should return the specified assignment if one exists with the given id");
-        it("Should throw an appropriate error if the specified assignment does not exist");
+        it("Should return the specified assignment if one exists with the given id",() => {
+
+            var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
+
+            return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignment) => {
+                expect(mockReadAssignment).to.have.been.called.with(testAssignment.getId());
+                expect(assignment).to.deep.equal(testAssignment);
+            });
+        });
+
+        it("Should throw an appropriate error if the specified assignment does not exist",() => {
+            chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.reject(new Error("An assignment does not exist with the given id"))});
+            
+            return expect(testAssignmentManager.getAssignment(testAssignment.getId())).to.eventually.be.rejected.with("An assignment does not exist with the given id");
+        });
     })
     describe("getAssignments()",() => {
         it("Should return assignments if assignments exist");
