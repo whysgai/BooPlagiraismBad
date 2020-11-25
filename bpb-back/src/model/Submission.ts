@@ -225,6 +225,9 @@ export interface ISubmission {
     }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult[] {
+        if(this.entries.length == 0 || otherSubmission.getEntries().length == 0) {
+            throw new Error("Cannot compare: One or more comparator submissions has no entries");
+        }
         let analysisResults = new Array<IAnalysisResult>();
         this.files.forEach(subAFile => {
             let fileAEntries = this.entries.filter((entry) => entry.getFileName() === subAFile);
@@ -244,9 +247,6 @@ export interface ISubmission {
 
     private compareAnalysisResultEntries(fileAEntries : IAnalysisResultEntry[], fileBEntries : IAnalysisResultEntry[]) : IAnalysisResult {
         
-        if(fileAEntries.length <= 0|| fileBEntries.length <= 0) {
-            throw new Error("Cannot compare: One or more comparator submissions has no entries");
-        }
 
         
         let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
