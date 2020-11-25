@@ -75,8 +75,31 @@ describe("AssignmentManager.ts",() => {
         });
     })
     describe("getAssignments()",() => {
-        it("Should return assignments if assignments exist");
-        it("Should return no assignments if none exist");
+        it("Should return assignments if assignments exist",() => {
+            var mockAssignment = new Assignment.builder().build();
+            var expectedAssignments = [testAssignment,mockAssignment];
+            var mockReadAssignments = chai.spy.on(AssignmentDAO,'readAssignments',() => {return Promise.resolve(expectedAssignments)});
+
+            return testAssignmentManager.getAssignments().then((assignments) => {
+                expect(mockReadAssignments).to.have.been.called.once;
+                expect(assignments).to.deep.equal(expectedAssignments);
+            });
+        });
+
+        it("Should return no assignments if none exist",() => {
+            var expectedAssignments = [] as IAssignment[];
+            var mockReadAssignments = chai.spy.on(AssignmentDAO,'readAssignments',() => {return Promise.resolve(expectedAssignments)});
+
+            return testAssignmentManager.getAssignments().then((assignments) => {
+                expect(mockReadAssignments).to.have.been.called.once;
+                expect(assignments).to.deep.equal(expectedAssignments);
+            });
+        });
+
+        it("Should throw an appropriate error if DAO fails to read assignments",() => {
+            chai.spy.on(AssignmentDAO,'readAssignments',() => {return Promise.reject(new Error("Failed to read assignments"))});
+            return expect(testAssignmentManager.getAssignments()).to.eventually.be.rejectedWith("Failed to read assignments");
+        })
     });
 
     describe("updateAssignment()",()=> {
