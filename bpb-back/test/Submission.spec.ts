@@ -138,6 +138,9 @@ describe("Submission.ts",() => {
 
     //TODO: Add more tests when comparison is more mature
     describe("compare()",() => {
+
+        
+//TODO: add tests to check files of returned AnalysisResult[]
         it("Should return a valid AnalysisResult if comparator submission is valid (left direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
