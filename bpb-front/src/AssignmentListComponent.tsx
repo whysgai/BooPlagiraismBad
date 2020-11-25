@@ -3,6 +3,7 @@ import './AssignmentListComponent.css';
 import AssignmentListCard from './AssignmentListCard'
 import Assignment from './types/Assignment'
 import {Link} from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 interface PropsType {
@@ -20,8 +21,8 @@ class AssignmentListComponent extends React.Component <PropsType, {}> {
   
   render () {
     return (        
-      <div className='assignment-list'>
-        <Link to="#" className="new-assignment-btn">new</Link>
+      <div className='assignment-list pl-2'>
+        <Link to="/CreateAssignment" className="new-assignment-btn btn btn-outline-info ml-2">Create New Assignment</Link>
         <ul>
           {
             this.props.assignments.map((assignment,index) => 
