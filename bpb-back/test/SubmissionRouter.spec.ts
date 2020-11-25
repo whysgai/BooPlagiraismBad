@@ -10,7 +10,7 @@ import chaiSpies = require("chai-spies");
 import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { Submission, ISubmission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
-import { AnalysisResult } from "../src/AnalysisResult";
+import { AnalysisResult, IAnalysisResult } from "../src/model/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { AnalysisResultEntryCollectorVisitor } from "../src/model/AnalysisResultEntryCollectorVisitor";
@@ -503,15 +503,16 @@ describe('SubmissionRouter.ts',()=> {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
 
-        const mockAnalysisResult = new AnalysisResult();
-        mockAnalysisResult.addMatch(testAre1, testAre2);
+        const mockAnalysisResult = new AnalysisResult([[testAre1, testAre2]], 5);
+        var mockAnalysisResultArray = new Array<AnalysisResult>();
+        mockAnalysisResultArray.push(mockAnalysisResult);
 
-        chai.spy.on(testSubmissionManager, 'compareSubmissions', () => {return Promise.resolve(mockAnalysisResult)});
+        chai.spy.on(testSubmissionManager, 'compareSubmissions', () => {return Promise.resolve(mockAnalysisResultArray)});
 
         chai.request(testServer).get("/submissions/compare/" + testAre1.getSubmissionID() + "/" + testAre2.getSubmissionID())
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.deep.equals(mockAnalysisResult.asJSON());
+                expect(res.body).to.deep.equals(mockAnalysisResultArray.map((result) => result.asJSON()));
             });
     });
     it("Should be able to interpret a failed request to GET /submissions/compare/{submission_id_1}/{submission_id_2} (1 does not exist)", () => {
