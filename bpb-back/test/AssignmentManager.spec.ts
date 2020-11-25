@@ -63,9 +63,14 @@ describe("AssignmentManager.ts",() => {
 
             var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
 
-            return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignment) => {
-                expect(mockReadAssignment).to.have.been.called.with(testAssignment.getId());
-                expect(assignment).to.deep.equal(testAssignment);
+            return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentMiss) => {
+                expect(mockReadAssignment).to.have.been.called.once.with(testAssignment.getId());
+                expect(assignmentMiss).to.deep.equal(testAssignment);
+                
+                testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentHit) => {
+                    expect(mockReadAssignment).to.have.been.called.once.with(testAssignment.getId());
+                    expect(assignmentHit).to.deep.equal(testAssignment);
+                });
             });
         });
 
