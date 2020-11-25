@@ -135,10 +135,29 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("deleteAssignment()",() => {
-        it("Should correctly manipulate AssignmentDAO to delete the specified assignment if {id} is valid");
+        it("Should correctly manipulate AssignmentDAO to delete the specified assignment if {id} is valid",() => {
+            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
+            var mockDeleteAssignment = chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.resolve()});
 
-        it("Should throw an appropriate error when trying to delete the specified assignment if {id} is invalid");
+            return testAssignmentManager.deleteAssignment(testAssignment.getId()).then(() => {
+                expect(mockDeleteAssignment).to.have.been.called.once.with(testAssignment.getId());
+            });
+        });
 
-        it("Should throw an appropriate error if DAO fails to delete the specified assignment");
+        it("Should throw an appropriate error when trying to delete the specified assignment if {id} is invalid",() => {
+            var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("ID is invalid"))});
+            var mockDeleteAssignment = chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.resolve()});
+
+            return expect(testAssignmentManager.deleteAssignment(testAssignment.getId())).to.eventually.be.rejected.with("ID is invalid").then(() => {
+                expect(mockDeleteAssignment).to.not.have.been.called;
+            });
+        });
+
+        it("Should throw an appropriate error if DAO fails to delete the specified assignment",() => {
+            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
+             chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.reject("Could not delete assignment")});
+
+            return expect(testAssignmentManager.deleteAssignment(testAssignment.getId())).to.eventually.be.rejected.with("Could not delete assignment");
+        });
     });
 });
