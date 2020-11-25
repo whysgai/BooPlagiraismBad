@@ -1,4 +1,3 @@
-import { compareSubmissions } from "../actions/ComparisonAction";
 import Action from "../types/Action"
 import Submission from "../types/Submission";
 
@@ -18,10 +17,10 @@ const ComparisonReducer = (state = initialState, action: Action) => {
             }
             return state
         case 'REMOVE_COMPARE':
-            if (state.compareSubmissions.length == 0) {
+            if (state.compareSubmissions.length === 0) {
                 return state
             } else {
-                state.compareSubmissions = state.compareSubmissions.filter(subIndex => subIndex != action.removeSubmission)
+                state.compareSubmissions = state.compareSubmissions.filter(subIndex => subIndex !== action.removeSubmission)
                 return state
             }
         case 'COMPARE':

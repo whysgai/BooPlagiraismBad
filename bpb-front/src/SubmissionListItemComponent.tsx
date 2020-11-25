@@ -1,10 +1,7 @@
 import React from 'react';
 import Submission from './types/Submission'
-import { Link } from 'react-router-dom';
 import {addSubmissionComparison, removeSubmissionComparison} from './actions/ComparisonAction';
-//import { dispatchToPropertyMapper, stateToPropertyMapper } from './containers/SubmissionListContainer'
 import {store} from './store'
-import { Store } from 'redux';
 
 interface PropsType {
   submission: Submission

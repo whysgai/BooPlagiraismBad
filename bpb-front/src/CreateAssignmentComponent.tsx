@@ -2,7 +2,6 @@ import React, { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { store } from './store';
 import { createAssignment } from './actions/AssignmentAction';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface PropsType {
   name: string

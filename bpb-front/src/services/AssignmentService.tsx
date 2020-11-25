@@ -1,7 +1,7 @@
 const assignmentURL = 'http://192.168.33.10:8080/'
 
 export function postAssignment(name : string) : void {
-    fetch(`${assignmentURL}/Assignments`, {
+    fetch(`${assignmentURL}Assignments`, {
         method: 'POST',
         body: JSON.stringify({'name': name}),
         headers: {'content-type': 'application/json'}
