@@ -143,7 +143,7 @@ describe("Submission.ts",() => {
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultA = testSubmissionA.compare(testSubmissionB);
             expect(resultA).to.not.be.undefined;
-            expect(resultA.asJSON()).to.not.be.be.undefined;
+            expect(resultA.map((result) => result.asJSON())).to.not.be.be.undefined;
         });
         
         it("Should return a valid AnalysisResult if comparator submission is valid (right direction)",() => {
@@ -151,7 +151,7 @@ describe("Submission.ts",() => {
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultB = testSubmissionB.compare(testSubmissionA);
             expect(resultB).to.not.be.undefined;
-            expect(resultB.asJSON()).to.not.be.undefined;
+            expect(resultB.map((result) => result.asJSON())).to.not.be.undefined;
         });
        
         it("Should throw an appropriate error if comparator submission is invalid (no AREs)",() =>{
