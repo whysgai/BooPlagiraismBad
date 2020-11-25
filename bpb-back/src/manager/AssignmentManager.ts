@@ -16,9 +16,11 @@ export interface IAssignmentManager {
 export class AssignmentManager implements IAssignmentManager {
 
     private assignmentCache : Map<string,IAssignment>;
+    private cacheCount : number
 
     constructor() {
         this.assignmentCache = new Map<string,IAssignment>();
+        this.cacheCount = 0;
     }   
     
     createAssignment = async(data : AssignmentData): Promise<IAssignment> => {
@@ -30,6 +32,7 @@ export class AssignmentManager implements IAssignmentManager {
             AssignmentDAO.createAssignment(name, submissionIds)
                 .then((assignment) => {
                     this.assignmentCache.set(assignment.getId(), assignment);
+                    this.cacheCount++;
                     resolve(assignment);
                 }).catch((err) => {
                     reject(err);
@@ -39,21 +42,48 @@ export class AssignmentManager implements IAssignmentManager {
 
     getAssignment = async(assignmentId : string) : Promise<IAssignment> => {
         return new Promise((resolve,reject) => {
-            resolve(new Assignment.builder().build()); //TODO: Remove fake assignment! Required for SubmissionRouter.
+            
+            if(this.assignmentCache.get(assignmentId) != undefined) {
+                resolve(this.assignmentCache.get(assignmentId));
+            } else {
+                AssignmentDAO.readAssignment(assignmentId).then((assignment) => {
+                    console.log(assignment);
+                    this.assignmentCache.set(assignmentId, assignment);
+                    resolve(assignment);
+                }).catch((err) => {
+                    reject(err);
+                })
+            }
         });
     }
 
     getAssignments = async(): Promise<IAssignment[]> => {
-        // if chache is empty, load from db
-        // else check cache
-        throw new Error("Method not implemented")
+
+        return new Promise((resolve, reject) => {
+
+            if(this.cacheCount <= 0) {
+                AssignmentDAO.readAssignments().then((assignments) => {
+                    resolve(assignments);
+                }).catch((err) => {
+                    reject(err);
+                });
+            } else {
+                var rtnAssignments : IAssignment[] = [];
+                for (var assignment of this.assignmentCache.values()) {
+                    rtnAssignments.push(assignment);
+                }
+                resolve(rtnAssignments);
+            }
+        });
     }
 
     updateAssignment = async(assignmentId : string, data : AssignmentData) : Promise<IAssignment> => {
+        // remember to update cacheCount if cache miss occurs
         throw new Error("Method not implemented.");
     }
 
     deleteAssignment = async(assignmentId : string) : Promise<void> => {
+        // remember to decrease cacheCount
         throw new Error("Method not implemented.");
     }
 }

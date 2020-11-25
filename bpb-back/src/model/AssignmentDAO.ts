@@ -17,25 +17,25 @@ export const AssignmentDAO : IAssignmentDAO = class {
         //Create the Assignment in DB
         //var assignment = AssignmentFactory.buildAssignment("test","test");
         //return assignment.getNewModelInstance().save().then((res) => {return;})
-        return undefined;
+        return new Promise((resolve, reject) => {resolve(undefined)} );
     }
     
     static async readAssignments(): Promise<IAssignment[]> {
         //Return the specified Assignments from db
         //This probably needs some kind of filter
         //TODO: Add parameter to use as filter
-        return undefined;
+        return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 
     static async readAssignment(AssignmentID: string): Promise<IAssignment> {
-        return undefined;
+        return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 
     static async updateAssignment(assignment : IAssignment) : Promise<IAssignment> {
-        return undefined;
+        return new Promise((resolve, reject) => {resolve(undefined)} );
     }
     static async deleteAssignment(assignmentId : string): Promise<void> {
         //Delete the specified Assignment from the db
-        return undefined;
+        return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 }

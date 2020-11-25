@@ -17,7 +17,7 @@ describe("AssignmentManager.ts",() => {
         chai.use(chaiAsPromised);
     });
 
-    beforeEach(() => {
+    beforeEach((done) => {
         chai.spy.restore(AssignmentDAO,'createAssignment');
         chai.spy.restore(AssignmentDAO,'readAssignment');
         chai.spy.restore(AssignmentDAO,'readAssignments');
@@ -26,6 +26,7 @@ describe("AssignmentManager.ts",() => {
 
         testAssignmentManager = new AssignmentManager();
         testAssignment = new Assignment.builder().build();
+        done();
     });
 
     describe("createAssignment()",()  => {
@@ -39,13 +40,6 @@ describe("AssignmentManager.ts",() => {
                 expect(assignment.getName()).to.equal(testAssignment.getName());
                 expect(assignment.getSubmissionIds()).to.equal(testAssignment.getSubmissionIds());
             });
-        });
-
-        //TODO: May not need this test
-        it("Should throw an appropriate error if input data is not valid",() => {
-            var createData = {"name":undefined as string,"submissionIds":undefined as string[]};
-
-            return expect(testAssignmentManager.createAssignment(createData)).to.be.rejectedWith("Input data is not valid");        
         });
 
         it("Should throw an appropriate error if DAO createAssignment fails",() => {
@@ -62,12 +56,13 @@ describe("AssignmentManager.ts",() => {
         it("Should return the specified assignment if one exists with the given id",() => {
 
             var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
+            //var mockGetAssignment = chai.spy.on(testAssignmentManager, 'getAssignment', () => { return Promise.resolve(testAssignment) });
 
             return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentMiss) => {
                 expect(mockReadAssignment).to.have.been.called.once.with(testAssignment.getId());
                 expect(assignmentMiss).to.deep.equal(testAssignment);
                 
-                testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentHit) => {
+                return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentHit) => {
                     expect(mockReadAssignment).to.have.been.called.once.with(testAssignment.getId());
                     expect(assignmentHit).to.deep.equal(testAssignment);
                 });
@@ -77,7 +72,11 @@ describe("AssignmentManager.ts",() => {
         it("Should throw an appropriate error if the specified assignment does not exist",() => {
             chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.reject(new Error("An assignment does not exist with the given id"))});
             
-            return expect(testAssignmentManager.getAssignment(testAssignment.getId())).to.eventually.be.rejected.with("An assignment does not exist with the given id");
+            return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignment) => {
+                expect(true, "getAssignment should have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("An assignment does not exist with the given id")
+            });
         });
     })
     describe("getAssignments()",() => {
@@ -118,7 +117,7 @@ describe("AssignmentManager.ts",() => {
             updatedAssignmentBuilder.setName(expectedName);
             var updatedAssignment = updatedAssignmentBuilder.build();
 
-            var updateBody ={"name":expectedName,"submissionIds",expectedSubmissionIds}
+            var updateBody ={"name":expectedName,"submissionIds":expectedSubmissionIds}
 
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
             var mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.resolve(testAssignment)}); // Should be updated by method
@@ -132,7 +131,7 @@ describe("AssignmentManager.ts",() => {
         it("Should throw an appropriate error when trying to update the specified assignment if {id} is invalid",() => {
             var updateBody ={"name":"test","submissionIds":["test"]}
 
-            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("Assignment not found")});
+            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("Assignment not found"))});
             chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.reject(new Error("Assignment could not be updated"))});
 
             return expect(testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody)).to.eventually.be.rejected.with("Assignment not found");
