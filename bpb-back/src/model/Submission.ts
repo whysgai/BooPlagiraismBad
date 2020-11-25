@@ -36,8 +36,7 @@ export interface ISubmission {
     setFiles(files : string[]) : void;
     addFile(content : string, fileName : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
-    compare(otherSubmission : ISubmission) : IAnalysisResult;
-    compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult;
+    compare(otherSubmission : ISubmission) : IAnalysisResult[];
     asJSON() : Object;
 }
 
@@ -225,8 +224,17 @@ export interface ISubmission {
          }
     }
 
-    compare(otherSubmission: ISubmission) : IAnalysisResult {
-        return otherSubmission.compareAnalysisResultEntries(this.entries);
+    compare(otherSubmission: ISubmission) : IAnalysisResult[] {
+        let analysisResults = new Array<IAnalysisResult>();
+        this.files.forEach(subAFile => {
+            let fileAEntries = this.entries.filter((entry) => entry.getFilePath() === subAFile);
+            otherSubmission.getFiles().forEach(subBFile => {
+                let fileBEntries = otherSubmission.getEntries().filter(
+                    (entry) => entry.getFilePath() === subBFile);
+                    analysisResults.push(this.compareAnalysisResultEntries(fileAEntries, fileBEntries)); 
+            }); 
+        });
+        return analysisResults;
     }
 
     asJSON() : Object {
@@ -234,16 +242,16 @@ export interface ISubmission {
         return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:entriesJSON};
     }
 
-    compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult {
+    private compareAnalysisResultEntries(fileAEntries : IAnalysisResultEntry[], fileBEntries : IAnalysisResultEntry[]) : IAnalysisResult {
         
-        if(this.entries.length <= 0|| otherEntries.length <= 0) {
+        if(fileAEntries.length <= 0|| fileBEntries.length <= 0) {
             throw new Error("Cannot compare: One or more comparator submissions has no entries");
         }
 
         
         let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
-        this.entries.forEach((entry) => {
-            otherEntries.forEach((otherEntry) => {
+        fileAEntries.forEach((entry) => {
+            fileBEntries.forEach((otherEntry) => {
 
                 let hashA = entry.getHashValue();
                 let hashB = otherEntry.getHashValue();
@@ -258,8 +266,8 @@ export interface ISubmission {
         });
 
         let H = matchedEntries.length;
-        let L = this.entries.length - H;
-        let R = otherEntries.length - H;
+        let L = fileAEntries.length - H;
+        let R = fileBEntries.length - H;
         let similarityScore = (2 * H) / ((2 * H) + R + L); //DECKARD SIMILARITY SCORE ALGORITHM
         var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
         return analysisResult;
