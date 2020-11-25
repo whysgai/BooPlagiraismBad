@@ -42,13 +42,13 @@ class SubmissionListComponent extends React.Component <PropTypes, {}> {
 
         {
           store.getState().ComparisonReducer.compareSubmissions.length === 0 &&
-            <Link className='disabledCompareButton btn btn-outline-success disabled' to="/ComparisonComponent" id="zeroCompare" onClick={ (event) => event.preventDefault() }>
+            <Link className='disabledCompareButton btn btn-outline-secondary disabled' to="/ComparisonComponent" id="zeroCompare" onClick={ (event) => event.preventDefault() }>
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         } 
         {
           store.getState().ComparisonReducer.compareSubmissions.length === 1 &&
-            <Link className='disabledCompareButton btn btn-outline-success disabled' to="/ComparisonComponent" id="oneCompare" onClick={ (event) => event.preventDefault() }>
+            <Link className='disabledCompareButton btn btn-outline-secondary disabled' to="/ComparisonComponent" id="oneCompare" onClick={ (event) => event.preventDefault() }>
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         }
