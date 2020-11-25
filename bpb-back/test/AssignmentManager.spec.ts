@@ -5,6 +5,7 @@ import chaiAsPromised = require("chai-as-promised");
 import {AssignmentDAO} from "../src/model/AssignmentDAO";
 import { AssignmentManager, IAssignmentManager } from "../src/manager/AssignmentManager";
 import { IAssignment, Assignment } from "../src/model/Assignment";
+import { ExpressionContext } from "java-ast";
 
 describe("AssignmentManager.ts",() => {
 
@@ -30,6 +31,14 @@ describe("AssignmentManager.ts",() => {
     describe("createAssignment()",()  => {
         it("Should create an assignment if inputs are valid",() => {
 
+            var mockCreateAssignment = chai.spy.on(AssignmentDAO,'createAssignment',() => { return Promise.resolve(testAssignment) });
+
+            var createData = {"name":testAssignment.getName(),"submissionIds":testAssignment.getSubmissionIds()};
+
+            return testAssignmentManager.createAssignment(createData).then((assignment) => {
+                expect(assignment.getName()).to.equal(testAssignment.getName());
+                expect(assignment.getSubmissionIds()).to.equal(testAssignment.getSubmissionIds());
+            });
         });
     });
 
