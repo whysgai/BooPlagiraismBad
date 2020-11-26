@@ -158,6 +158,19 @@ describe("AssignmentManager.ts",() => {
                 expect(mockUpdateAssignment).to.not.have.been.called;
             });;
         });
+        it("Should throw an appropriate error when trying to update the specified assignment if update fails",() => {
+            var updateBody ={"name":"test","submissionIds":["test"]}
+
+            chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
+            var mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.reject(new Error("Assignment could not be updated"))});
+
+            return testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody).then(() => {
+                expect(true, "updateAssignment should have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Assignment could not be updated");
+                expect(mockUpdateAssignment).to.have.been.called.once;
+            });;
+        });
     });
 
     describe("deleteAssignment()",() => {

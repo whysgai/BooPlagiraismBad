@@ -86,6 +86,7 @@ export class AssignmentManager implements IAssignmentManager {
     updateAssignment = async(assignmentId : string, data : AssignmentData) : Promise<IAssignment> => {
 
         return new Promise((resolve,reject) => {
+            
             this.getAssignment(assignmentId).then((assignment) => {
 
                 assignment.setName(data.name);
@@ -93,11 +94,9 @@ export class AssignmentManager implements IAssignmentManager {
 
                 AssignmentDAO.updateAssignment(assignment).then((updatedAssignment) => {
                     
-                    if(this.assignmentCache.get(assignmentId) == undefined) { 
-                        this.cacheCount++; //Update cacheCount if cache miss occurs
-                    }
-
-                    this.assignmentCache.set(assignmentId,updatedAssignment); //Update cache
+                    //Note: cache entry will always already exist due to cache set in getAssignment (upstream)
+                    //Thus, no cache increment required
+                    this.assignmentCache.set(assignmentId,updatedAssignment);
 
                     resolve(updatedAssignment);
                 }).catch((err) => {
@@ -112,11 +111,10 @@ export class AssignmentManager implements IAssignmentManager {
     deleteAssignment = async(assignmentId : string) : Promise<void> => {
         return new Promise((resolve,reject) => {
             this.getAssignment(assignmentId).then(() => {
-                
-                if(this.assignmentCache.get(assignmentId) != undefined) {
-                    this.assignmentCache.delete(assignmentId);
-                    this.cacheCount--;
-                }
+               
+                //Note: cache entry will always already exist due to cache set in getAssignment (upstream)
+                this.assignmentCache.delete(assignmentId);
+                this.cacheCount--;
 
                AssignmentDAO.deleteAssignment(assignmentId).then(( )=> {
                     resolve();
