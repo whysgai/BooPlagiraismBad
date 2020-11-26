@@ -30,7 +30,10 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.status(400);
       res.send({"response":"An assignment name was not provided"});
     } else {
-      this.assignmentManager.createAssignment(req.body)
+
+      var createBody = {"name":assignmentName,"submissionIds":[] as string[]}
+
+      this.assignmentManager.createAssignment(createBody)
       .then(assignment => {
         res.send(assignment.asJSON());
       }).catch((err) => {
@@ -73,20 +76,18 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
     var assignmentId = req.params.id;
     
-    if(!req.body.name && !req.body.submissions) {
+    if(!req.body.name || !req.body.submissionIds) {
       res.status(400);
-      res.send({"response":"A request body was not provided, or the provided request body is missing both name and submissions properties"});
+      res.send({"response":"A request body was not provided, or the provided request body is missing either name or submissionIds properties"});
     } else {
-      this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-        this.assignmentManager.updateAssignment(assignment,req.body)
-        .then(assignment => {
-          res.send(assignment.asJSON());
-        }).catch((err) => {
-          res.status(400);  
-          res.send({"response":err.message});
-        });
+      
+      var updateBody = {"name":req.body.name,"submissionIds":req.body.submissionIds}
+
+      this.assignmentManager.updateAssignment(assignmentId,updateBody)
+      .then(assignment => {
+        res.send(assignment.asJSON());
       }).catch((err) => {
-        res.status(400);
+        res.status(400);  
         res.send({"response":err.message});
       });
     }
@@ -97,18 +98,13 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
 
     var assignmentId = req.params.id;
     
-    this.assignmentManager.getAssignment(assignmentId).then(assignment => {
-      this.assignmentManager.deleteAssignment(assignment.getId())
+      this.assignmentManager.deleteAssignment(assignmentId)
       .then(() => {
         res.send({"response":"Deleted assignment " + assignmentId});
       }).catch((err) => {
         res.status(400);  
         res.send({"response":err.message});
       });
-    }).catch((err) => {
-      res.status(400);
-      res.send({"response":err.message});;
-    });
   }
 }
 

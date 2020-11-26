@@ -13,7 +13,6 @@ import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { AnalysisResult } from "../src/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
-import { AssignmentDAO } from "../src/model/AssignmentDAO";
 import { AnalysisResultEntryCollectorVisitor } from "../src/model/AnalysisResultEntryCollectorVisitor";
 import fileUpload = require("express-fileupload");
 import { AppConfig } from '../src/AppConfig';
@@ -26,7 +25,6 @@ describe('SubmissionRouter.ts',()=> {
     var testRouter : IRouter;
     var testSubmissionManager : SubmissionManager;
     var testAssignmentManager : AssignmentManager;
-    var testAssignmentDAO : AssignmentDAO;
     var testSubmission : ISubmission;
     var testAssignment : IAssignment;
     var testAre1 : AnalysisResultEntry;
@@ -43,12 +41,9 @@ describe('SubmissionRouter.ts',()=> {
         app = express();
         app.use(express.json());
         app.use(fileUpload()); //Need to use for multipart data, rather than bodyparser.json()
-        
 
-        
         testSubmissionManager = new SubmissionManager();
-        testAssignmentDAO = new AssignmentDAO();
-        testAssignmentManager = new AssignmentManager(testAssignmentDAO);
+        testAssignmentManager = new AssignmentManager();
         
         testAssignment = new Assignment.builder().build();
 

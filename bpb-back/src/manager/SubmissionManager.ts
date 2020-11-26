@@ -44,9 +44,9 @@ export class SubmissionManager implements ISubmissionManager {
                 .then((submission) => {
                     this.submissionCache.set(submission.getId(),submission);
                     resolve(submission);
-            }).catch((err) => {
-                reject(err);
-            });
+                }).catch((err) => {
+                    reject(err);
+                });
         });
     }
 
