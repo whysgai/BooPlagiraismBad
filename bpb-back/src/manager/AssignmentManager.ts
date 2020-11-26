@@ -1,4 +1,4 @@
-import { Assignment, IAssignment } from "../model/Assignment";
+import { IAssignment } from "../model/Assignment";
 import { AssignmentDAO } from "../model/AssignmentDAO";
 import AssignmentData from "../types/AssignmentData";
 
@@ -110,9 +110,22 @@ export class AssignmentManager implements IAssignmentManager {
     }
 
     deleteAssignment = async(assignmentId : string) : Promise<void> => {
-        // remember to decrease cacheCount
         return new Promise((resolve,reject) => {
-            reject(new Error("Method not implemented"));
+            this.getAssignment(assignmentId).then(() => {
+                
+                if(this.assignmentCache.get(assignmentId) != undefined) {
+                    this.assignmentCache.delete(assignmentId);
+                    this.cacheCount--;
+                }
+
+               AssignmentDAO.deleteAssignment(assignmentId).then(( )=> {
+                    resolve();
+               }).catch((err) => {
+                    reject(err);
+               });
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
 }

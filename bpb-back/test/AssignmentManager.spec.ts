@@ -91,7 +91,21 @@ describe("AssignmentManager.ts",() => {
             });
         });
 
-        it("Should use the cache and return assignments if cache contains assignments");
+        it("Should use the cache and return assignments if cache contains assignments",() => {
+            var mockAssignment = new Assignment.builder().build();
+            var expectedAssignments = [testAssignment,mockAssignment];
+            var mockReadAssignments = chai.spy.on(AssignmentDAO,'readAssignments',() => {return Promise.resolve(expectedAssignments)});
+
+            return testAssignmentManager.getAssignments().then((assignmentsMiss) => {
+                expect(mockReadAssignments).to.have.been.called.once;
+                expect(assignmentsMiss).to.deep.equal(expectedAssignments);
+
+                return testAssignmentManager.getAssignments().then((assignmentsHit) => {
+                    expect(mockReadAssignments).to.have.been.called.once;
+                    expect(assignmentsHit).to.deep.equal(expectedAssignments);
+                });
+            });
+        });
 
         it("Should return no assignments if none exist",() => {
             var expectedAssignments = [] as IAssignment[];
@@ -170,7 +184,7 @@ describe("AssignmentManager.ts",() => {
 
         it("Should throw an appropriate error if DAO fails to delete the specified assignment",() => {
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
-            var mockDeleteAssignment = chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.reject("Could not delete assignment")});
+            var mockDeleteAssignment = chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.reject(new Error("Could not delete assignment"))});
 
             return testAssignmentManager.deleteAssignment(testAssignment.getId()).then(() => {
                 expect(true, "deleteAssignment should have failed, but it didn't").to.equal(false);
