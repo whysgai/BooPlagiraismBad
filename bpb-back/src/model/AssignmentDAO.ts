@@ -8,7 +8,7 @@ export interface IAssignmentDAO {
     deleteAssignment(assignmentId : string) : Promise<void>;
 }
 /**
- * Data Access Object for manipulating Assignment database objects.
+ * Data Access static class for manipulating Assignment database objects.
  */
 export const AssignmentDAO : IAssignmentDAO = class {
     
