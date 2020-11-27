@@ -33,7 +33,7 @@ export class AnalysisResult implements IAnalysisResult {
         
         matches.forEach(match => {
             if(match == undefined) {
-                throw new Error("Bad Constructor: sub-array'matches[*]' must not be undefined.");//TODO add test for this
+                throw new Error("Bad Constructor: sub-array'matches[*]' must not be undefined.");
             }
             if(match[0] == undefined || match[1] == undefined) {
                 throw new Error("Bad Constructor: AnalysisResultEntry objects in param 'matches' must not be undefined.");
