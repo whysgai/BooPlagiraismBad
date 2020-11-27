@@ -79,6 +79,11 @@ describe("AnalysisResult.ts", () => {
             expect(goodConstructor).to.not.throw(Error);
         });
 
+        it("Should throw an error if a sub-array representing a match is undefined.", () => {
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2], undefined], testSimilarityScore, subId1, subId2, filePath1, filePath2);
+            expect(badConstructor).to.throw(Error, "Bad Constructor: sub-array'matches[*]' must not be undefined.");
+        });
+
         it("Should throw an error if an empty array is provided, and similarityScore is not 0", () => {
             let emptyArray = new Array<Array<IAnalysisResultEntry>>();
             let badConstructor = () => new AnalysisResult(emptyArray, 5, subId1, subId2, filePath1, filePath2);
