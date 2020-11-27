@@ -141,7 +141,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
              * we will skip this node, as its content is not viable for us to perform a 
              * LocalitySensitiveHash upon, using the trendmicro/tlsh library.
             */
-            if (err.message.includes("ERROR: length too small -") || 
+            if (err.message.includes("ERROR: length too small -") || //TODO: get this file to 100% coverage
             err.message.includes("ERROR: not enough variation in input - ")) {
                 throw new Error("Cannot perform a LocalitySensitiveHash upon the" +
                 "root node of the subtree. The following error was thrown: " + err.message);
