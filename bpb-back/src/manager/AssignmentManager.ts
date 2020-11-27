@@ -48,7 +48,7 @@ export class AssignmentManager implements IAssignmentManager {
     }
 
     /**
-     * Gets a reference to an Assignment with the given AssignmentId (if one exists)
+     * Gets a reference to an Assignment with the given id (if one exists)
      * @param assignmentId
      * @returns A Promise containing the requested Assignment
      */

@@ -5,11 +5,12 @@ import fs from 'fs';
 import util from 'util';
 import SubmissionData from "../types/SubmissionData"
 import { AppConfig } from '../AppConfig';
-//Promisfy readFile
-const readFileContent = util.promisify(fs.readFile);
+const readFileContent = util.promisify(fs.readFile); //Promisify readfile  to allow use of Promise chaining
 
 /**
  * Represents a controller for Submission objects.
+ * Is called by SubmissionRouter to access Submission objects
+ * Calls SubmissionDAO to persist Submission objects in the database
  */
 export interface ISubmissionManager {
     createSubmission(data : SubmissionData) : Promise<ISubmission>;
@@ -31,8 +32,9 @@ export class SubmissionManager implements ISubmissionManager {
     }
 
     /**
-     * Creates a submission with the given data
+     * Creates a submission with the given SubmissionData
      * @param data 
+     * @returns A Promise containing the created Submission
      */
     createSubmission = async(data : SubmissionData): Promise<ISubmission> => {
         
@@ -51,15 +53,18 @@ export class SubmissionManager implements ISubmissionManager {
     }
 
     /**
-     *  Gets a single submission by id
+     * Gets a reference to a Submission with the given id (if one exists)
      * @param submissionId
+     * @returns A Promise containing the requested Submission
      */
     getSubmission = async(submissionId : string) : Promise<ISubmission> => {
         return new Promise((resolve, reject) => {
 
+            //Read from cache if entry exists in cache
             if(this.submissionCache.get(submissionId) != undefined) {
                 resolve(this.submissionCache.get(submissionId));
             } else {
+                //Read from database if cache entry does not exist
                 SubmissionDAO.readSubmission(submissionId).then((submission) => {
                     this.submissionCache.set(submissionId,submission);
                     resolve(submission);
@@ -71,8 +76,9 @@ export class SubmissionManager implements ISubmissionManager {
     }
 
     /**
-     *  Gets all submissions of the specified assignment
+     *  Gets all submissions of the specified assignment (by id)
      * @param assignmentId
+     * @returns A Promise containing all Submissions of the specified assignment, if any exist. Will return an empty list otherwise.
      */
     getSubmissions = async(assignmentId : string): Promise<ISubmission[]> => {
         //TODO: Update to use cache
@@ -89,6 +95,7 @@ export class SubmissionManager implements ISubmissionManager {
      * Updates the specified submission with the provided data
      * @param submissionId 
      * @param data 
+     * @returns A Promise containing the updated Submission
      */
     updateSubmission = async(submissionId : string, data : SubmissionData): Promise<ISubmission> => {
         
@@ -112,9 +119,10 @@ export class SubmissionManager implements ISubmissionManager {
     }
 
     /**
-     * Processes a submission file and adds entries to the specified submission
-     * @param submissionId
-     * @param fileName
+     * Adds the specified file to the submission
+     * @param submissionId Id of the submission to add a file  to
+     * @param fileName Name of the file to add (file must exist at AppConfig.submissionFileUploadDirectory/submissionid/filename)
+     * @returns An empty Promise
      */
     processSubmissionFile = async(submissionId : string, fileName : string): Promise<void> => {
 
@@ -145,6 +153,7 @@ export class SubmissionManager implements ISubmissionManager {
     /**
      * Delete a submission from the cache and database
      * @param submissionId Submission to delete
+     * @returns An empty Promise
      */
     deleteSubmission = async(submissionId : string): Promise<void> => {
 
@@ -169,9 +178,10 @@ export class SubmissionManager implements ISubmissionManager {
     }
     
     /**
-     * Compares two submissions and returns an AnalysisResult of matchings
-     * @param submissionIdA 
-     * @param submissionIdB 
+     * Compares two submissions and returns the result of the comparative analysis
+     * @param submissionIdA Submission A's Id
+     * @param submissionIdB Submission B's Id
+     * @returns A Promise containing the result of the comparison as an AnalysisResult
      */
     compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult> => {
 
@@ -180,7 +190,7 @@ export class SubmissionManager implements ISubmissionManager {
             .then(submissionA => {
                 this.getSubmission(submissionIdB)
                     .then(submissionB => {
-                        resolve(submissionA.compare(submissionB)); //TODO: This is synchronous
+                        resolve(submissionA.compare(submissionB)); 
                     }
                 ).catch((err) => {
                     reject(err);
@@ -193,6 +203,9 @@ export class SubmissionManager implements ISubmissionManager {
 
     /**
      * Obtains and returns the content of the specified submission file as a string
+     * @param submissionId Submission to check
+     * @param fileName Name of the submission file to retrieve content from
+     * @returns a Promise containing the file's content as a string
      */
     getSubmissionFileContent = async(submissionId : string, fileName : string) : Promise<string> => {
         
