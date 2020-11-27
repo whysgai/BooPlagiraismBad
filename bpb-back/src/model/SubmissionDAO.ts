@@ -32,9 +32,13 @@ export const SubmissionDAO : ISubmissionDAO = class {
             });
        });
     }
- 
+
+    /**
+     * Obtain all submissions of the specified assignment from the  database
+     * @param assignmentId assignment to query
+     * @returns a Promise containing all submissions of the specified assignment, if any exist
+     */
     static async readSubmissions(assignmentId : string): Promise<ISubmission[]> {
-        //Return all submissions of assignment
         return new Promise((resolve,reject) => {
             Submission.getStaticModel().find({assignment_id : assignmentId}).then((submissionModels) => {
 
@@ -53,8 +57,12 @@ export const SubmissionDAO : ISubmissionDAO = class {
         });
     }
 
+    /**
+     * Obtain a single submission from the database by id
+     * @param submissionId id of submission
+     * @returns a Promise containing the specified submission, if it exists
+     */
     static async readSubmission(submissionId: string): Promise<ISubmission> {
-        //Return a single submission with the given submissionId
         return new Promise((resolve,reject) => {
             Submission.getStaticModel().findOne({_id : submissionId}).then((model) => {
 
@@ -71,8 +79,12 @@ export const SubmissionDAO : ISubmissionDAO = class {
         });
     }
 
+    /**
+     * Updates the database records which match the specified submission to match the specified submission's data
+     * @param submission Submission to update
+     * @returns A Promise containing the updated Submission 
+     */
     static async updateSubmission(submission: ISubmission) : Promise<ISubmission> {
-        //Update submission model and store all changed properties in the database
         return new Promise((resolve,reject) => {
             Submission.getStaticModel().findOne({_id : submission.getId()}).then((model) => {
                 
@@ -102,7 +114,11 @@ export const SubmissionDAO : ISubmissionDAO = class {
             });
         });
     }
-    
+   
+    /**
+     * Delete the specified submission from the database
+     * @param submissionId 
+     */
     static async deleteSubmission(submissionId : string): Promise<void> {
         //Delete the specified submission from the db
         return new Promise((resolve,reject) => {
