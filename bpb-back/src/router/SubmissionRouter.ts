@@ -140,7 +140,11 @@ class SubmissionRouter extends AbstractRouter {
       });
   }
 
-  //GET /compare/?a={ida}&b={idb} : Compare two submissions
+  /**
+   * GET /compare/{id_a}/{id_b} : Compare two submissions 
+   * @param req must have parameters ida and idb
+   * @param res 200 and JSON body (comparison analysis result) if comparison is successful, 400 otherwise
+   */
   compareSubmissionsFn = async(req : express.Request,res : express.Response) => {
     const submissionIdA = req.params.ida;
     const submissionIdB = req.params.idb;
@@ -154,7 +158,11 @@ class SubmissionRouter extends AbstractRouter {
       });
   }
 
-  //POST /{id}/files : Upload a file to a given submission
+  /**
+   * POST /submissions/{id}/files : Upload a file to a given submission
+   * @param req must have multipart-formbody data associated with key name submissionFile. Data must be less than the configured max size (in bytes)
+   * @param res 200 and JSON body if file is uploaded, 400 otherwise
+   */
   createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
     var submissionId = req.params.id;
@@ -206,7 +214,11 @@ class SubmissionRouter extends AbstractRouter {
     } 
   }
    
-  //GET /{id}/files/{index} : Get the contents of a submission's nth file as a string
+  /**
+   * GET /submissions/{id}/files/{n} : Get the content of the specified submission's nth file as a string
+   * @param req must have parameters id (string), fileId (number, zero-indexed)
+   * @param res 200 and file content in JSON body if file content is retrieved, 400 otherwise
+   */
   getSubmissionFileContentsFn = async (req : express.Request,res : express.Response) => {
 
     var submissionId = req.params.id;
