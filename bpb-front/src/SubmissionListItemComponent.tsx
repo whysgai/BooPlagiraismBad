@@ -15,6 +15,7 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
   
   constructor(props : PropsType) {
     super(props);
+    //TODO: remove this.state since it is not used here
     this.state = {
       submission : this.props.submission,
       checkboxOn: this.props.checkboxOn,
