@@ -12,11 +12,15 @@ export class AnalysisResult implements IAnalysisResult {
     
     private analysisMatches : Array<AnalysisResultEntry[]>; 
 
-
     constructor() {
         this.analysisMatches = [];
     }
 
+    /**
+     * Adds a match
+     * @param analysisResultEntryA 
+     * @param analysisResultEntryB 
+     */
     addMatch(analysisResultEntryA : AnalysisResultEntry, analysisResultEntryB : AnalysisResultEntry) {
         let analysisMatch = [];
         analysisMatch.push(analysisResultEntryA);
@@ -24,6 +28,10 @@ export class AnalysisResult implements IAnalysisResult {
         this.analysisMatches.push(analysisMatch);
     }
 
+    /**
+     * Returns the object as a JSON object
+     * @returns object
+     */
     asJSON(): Object {
         return this.analysisMatches.map((match) => {
             return [match[0].asJSON(), match[1].asJSON()];

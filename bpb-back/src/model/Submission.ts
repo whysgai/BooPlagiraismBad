@@ -65,22 +65,43 @@ export interface ISubmission {
             this.files = [];
             this.entries = [];
         }
-        
+       
+        /**
+         * Sets the name of the Submission to be created
+         * @param name 
+         */
         setName(name : string) : void {
             this.name = name;
         }
+
+        /**
+         * Sets the assignment the Submission was made to (by id)
+         * @param id 
+         */
         setAssignmentId(id : string) : void {
             this.assignment_id = id;        
         }
 
+        /**
+         * Sets the  file names associated with the submission
+         * @param files 
+         */
         setFiles(files : string[]) : void {
             this.files = files;
         }
 
+        /**
+         * Sets the AnalysisResultEntries associated with the submission
+         * @param entries 
+         */
         setEntries(entries : IAnalysisResultEntry[]) : void {
             this.entries = entries;
         }
     
+        /**
+         * Builds a Submission with the provided inputs, sets a database model instance and Id
+         * @returns a new Submission with the provided data, new database model, and corresponding Id
+         */
         build() : ISubmission {
             var submission = new Submission();
             
@@ -97,7 +118,11 @@ export interface ISubmission {
             return submission;
          }
 
-         //NOTE: Using buildFromExisting overrides all other builder methods
+         /**
+          * Builds a submission from an existing database model
+          * @param model existing model to build from
+          * @returns  A submission with the provided data, the provided database model, and the model's id
+          */
          buildFromExisting(model : ISubmissionModel) : ISubmission {
              var submission = new Submission();
             
@@ -140,62 +165,112 @@ export interface ISubmission {
 
     protected constructor(){}
 
+    /**
+     * Returns the static database model for submissions
+     * @returns static database model
+     */
     static getStaticModel() :  mongoose.Model<ISubmissionModel> {
         return this.submissionModel;
     }
 
+    /**
+     * Returns the id of the submission
+     */
     getId() : string {
         return this.id;
     }
 
+    /**
+     * Returns the assignment id of the submission
+     */
     getAssignmentId(): string {
          return this.assignment_id;
      }
 
+    /**
+     * Returns the name of the submission
+     */
     getName(): string {
         return this.name;
     }
     
+    /**
+     * Returns all file names associated with the submission
+     */
     getFiles() : string[] {
         return this.files;
     }
 
+    /**
+     * Returns all entries associated with the submission
+     */
     getEntries() : IAnalysisResultEntry[] {
         return this.entries;
     }
 
+    /**
+     * Sets the id of the submission. Called by SubmissionBuilder.
+     * @param newId id to set
+     */
     protected setId(newId : string) : void {
         this.id = newId;
     }
 
+    /**
+     * Sets the database model of the submission. Called by SubmissionBuilder.
+     * @param modelInstance model instance to set
+     */
     protected setModelInstance(modelInstance : ISubmissionModel) {
         this.modelInstance = modelInstance;
     }
 
+    /**
+     * Sets the filenames associated with the submission
+     * @param files file names (as a string list)
+     */
     setFiles(files : string[]) : void {
         this.files = files;
     }
 
+    /**
+     * Sets the entries associated with the submission
+     * @param entries AnalysisResultEntries associated with the submission
+     */
     setEntries(entries : IAnalysisResultEntry[]) : void {
         this.entries = entries;
     }
-
-    //Used to initially create new submissions in the database
+    
+    /**
+     * Returns the database model instance for this submission
+     * @returns instance of the database model from this submission
+     */
     getModelInstance() : ISubmissionModel {
         return this.modelInstance;
     }
 
+    /**
+     * Sets the assignment id of the submission
+     * @param newId 
+     */
     setAssignmentId(newId : string): void {
-         //TODO: Determine how to refresh/update document when called
          this.assignment_id = newId; 
      }
 
-
+     /**
+      * Sets the name of the submission
+      * @param newName 
+      */
     setName(newName : string): void {
-        //TODO: Determine how to refresh/update document when called
          this.name = newName;
      }
 
+     /**
+      * Adds a file's content to the submission
+      * Parses the specified file content and adds AnalysisResultEntries to the submission from parsing results
+      * @param content File content to parse (string)
+      * @param fileName Name of the file which is being parsed
+      * @return an empty Promise
+      */
     async addFile(content : string, fileName : string) : Promise<void> {
      
         return new Promise((resolve,reject) => {
@@ -218,6 +293,10 @@ export interface ISubmission {
         });
     }
 
+    /**
+     * Add a single entry to the submission
+     * @param analysisResultEntry entry to add
+     */
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
          this.entries.push(analysisResultEntry);
          if(!this.files.includes(analysisResultEntry.getFileName())) {
@@ -225,15 +304,27 @@ export interface ISubmission {
          }
     }
 
+    /**
+     * Compare this submission against another submission and obtain the results of the analysis
+     * @param otherSubmission submission to compare to
+     */
     compare(otherSubmission: ISubmission) : IAnalysisResult {
         return otherSubmission.compareAnalysisResultEntries(this.entries);
     }
 
+    /**
+     * Returns the submission as a JSON object
+     */
     asJSON() : Object {
         var entriesJSON = this.entries.map(entry => entry.asJSON());
         return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:entriesJSON};
     }
 
+    /**
+     * Performs direct entry -> entry comparison between submissions
+     * Called by compare()
+     * @param otherEntries entries of other submission to compare to
+     */
     compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult {
         
         if(this.entries.length <= 0|| otherEntries.length <= 0) {
@@ -265,6 +356,11 @@ export interface ISubmission {
         return analysisResult;
     }
 
+    /**
+     * Compares two entry hash values and produces a result
+     * @param hashA 
+     * @param hashB 
+     */
     private compareHashValues(hashA : string, hashB : string) : number {
         let tlshA = new Tlsh();
         tlshA.fromTlshStr(hashA);

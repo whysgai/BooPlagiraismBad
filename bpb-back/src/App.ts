@@ -29,6 +29,10 @@ class App {
         this.server = undefined;
     }
 
+    /**
+     * Bootstraps the app database
+     * Runs the app server
+     */
     async run() {
         
         return new Promise((resolve,reject) => {

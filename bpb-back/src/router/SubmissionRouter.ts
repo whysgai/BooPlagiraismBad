@@ -1,5 +1,4 @@
 import express from 'express';
-import IRouter from './IRouter'
 import AbstractRouter from './AbstractRouter'
 import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
@@ -10,13 +9,16 @@ const mkdirp = require('mkdirp');
 /**
  * Router for requests related to Submissions
  */
-class SubmissionRouter extends AbstractRouter implements IRouter {
+class SubmissionRouter extends AbstractRouter {
     
   constructor(app : any,route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager) {
     super(app,route, submissionManager, assignmentManager);
     this.setupRoutes();
   }
 
+  /**
+   * Binds routes to the express router
+   */
   setupRoutes() {
     this.router.post("/",this.createSubmissionFn);
     this.router.put("/:id",this.updateSubmissionFn);
@@ -29,6 +31,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
   }
 
   //POST / : Create a submission with the provided name and assignment_id
+  /**
+   * POST /submissions: Create a submission with the provided data
+   * @param req must have a body with properties name, assignment_id
+   * @param res 200 and JSON body if submission is created, 400 otherwise
+   */
   createSubmissionFn = async(req : express.Request,res : express.Response) => {
     var submissionName = req.body.name;
     var assignmentId = req.body.assignment_id;
@@ -59,7 +66,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       })
   }
 
-  //GET /ofAssignment?id:{id} : Get all submissions for the specified assignment
+  /**
+   * GET /submissions/ofAssignment/{id}: Get all submissions of the specified assignment
+   * @param req must have parameter id
+   * @param res 200 and JSON body if submissions are found, 400 otherwise
+   */
   getSubmissionsOfAssignmentFn = async(req : express.Request,res : express.Response) => {
     var assignmentId = req.params.id; 
     this.assignmentManager.getAssignment(assignmentId)
@@ -79,7 +90,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       });
   }
 
-  //GET /{id} : Get a submission by ID
+  /**
+   * GET /submissions/{id}: Get a submission by submissionId
+   * @param req must have parameter id 
+   * @param res 200 and JSON body if submission is found, 400 otherwise
+   */
   getSubmissionFn = async(req : express.Request,res : express.Response) => {    
     var submissionId = req.params.id; 
     this.submissionManager.getSubmission(submissionId)
@@ -91,11 +106,15 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       });
   }
 
-  //PUT /{id} : Update a given submission's name or associated assignment
+  /**
+   * PUT /submissions/{id} : Update a given submission with the provided data
+   * @param req must have a body with name, assignment_id properties
+   * @param res 200 and JSON body if submission was updated, 400 otherwise
+   */
   updateSubmissionFn = async(req : express.Request,res : express.Response) => {
     var submissionId = req.params.id; 
     var submissionData = req.body;
-    this.submissionManager.updateSubmission(submissionId, submissionData)
+    this.submissionManager.updateSubmission(submissionId, submissionData) //TODO: Update to shift creation of data object here
       .then((submission) => {
         res.send(submission.asJSON());  
       }).catch((err) => {
@@ -104,7 +123,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       });
   }
 
-  //DELETE /{id} : Delete a given submission
+  /**
+   * DELETE /submissions/{id} : Delete the submission with the specified submissionId
+   * @param req must have parameter id
+   * @param res 200 and JSON body if submission is deleted, 400 otherwise
+   */
   deleteSubmissionFn = async(req : express.Request,res : express.Response) => {
     var submissionId = req.params.id; 
     this.submissionManager.deleteSubmission(submissionId)
@@ -117,7 +140,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       });
   }
 
-  //GET /compare/?a={ida}&b={idb} : Compare two submissions
+  /**
+   * GET /compare/{id_a}/{id_b} : Compare two submissions 
+   * @param req must have parameters ida and idb
+   * @param res 200 and JSON body (comparison analysis result) if comparison is successful, 400 otherwise
+   */
   compareSubmissionsFn = async(req : express.Request,res : express.Response) => {
     const submissionIdA = req.params.ida;
     const submissionIdB = req.params.idb;
@@ -131,7 +158,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
       });
   }
 
-  //POST /{id}/files : Upload a file to a given submission
+  /**
+   * POST /submissions/{id}/files : Upload a file to a given submission
+   * @param req must have multipart-formbody data associated with key name submissionFile. Data must be less than the configured max size (in bytes)
+   * @param res 200 and JSON body if file is uploaded, 400 otherwise
+   */
   createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
     var submissionId = req.params.id;
@@ -183,7 +214,11 @@ class SubmissionRouter extends AbstractRouter implements IRouter {
     } 
   }
    
-  //GET /{id}/files/{index} : Get the contents of a submission's nth file as a string
+  /**
+   * GET /submissions/{id}/files/{n} : Get the content of the specified submission's nth file as a string
+   * @param req must have parameters id (string), fileId (number, zero-indexed)
+   * @param res 200 and file content in JSON body if file content is retrieved, 400 otherwise
+   */
   getSubmissionFileContentsFn = async (req : express.Request,res : express.Response) => {
 
     var submissionId = req.params.id;
