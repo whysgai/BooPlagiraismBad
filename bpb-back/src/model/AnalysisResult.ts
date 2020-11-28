@@ -16,7 +16,7 @@ export class AnalysisResult implements IAnalysisResult {
         submissionIdA : string, submissionIdB : string, filePathA : string, filePathB : string) {
         
         if(submissionIdA == undefined || submissionIdB == undefined || submissionIdA === "" || submissionIdB === "") {
-            throw new Error('Provided submissionId values must not be undefined or empty strings') //TODO: test
+            throw new Error('Provided submissionId values must not be undefined or empty strings');
         }
         
         if(filePathA == undefined || filePathB == undefined || filePathA === "" || filePathB === "") {
