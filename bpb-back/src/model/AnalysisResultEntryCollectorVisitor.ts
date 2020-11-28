@@ -160,8 +160,8 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         let result = this.defaultResult();
         let n = node.childCount;
         for (let i = 0; i < n; i++) {
-            if (!this.shouldVisitNextChild(node, result)) {
-                break;
+            if (!this.shouldVisitNextChild(node, result)) { 
+                break; //TODO get test coverage for this line
             }
             let c = node.getChild(i);
             
@@ -180,7 +180,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
                 err.message.includes("ERROR: not enough variation in input - ")) {
                     //Skip this node
                 } else {
-                    throw err;
+                    throw err; //TODO figure out how to make this throw upstream
                 }
             }
         }
