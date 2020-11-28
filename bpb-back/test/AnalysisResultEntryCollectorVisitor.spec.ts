@@ -98,15 +98,32 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     })
 
     describe("visit()", () => {
-        var newVisitor : AnalysisResultEntryCollectorVisitor;
         var analysisResultEntries : AnalysisResultEntry[];
         var firstEntry : AnalysisResultEntry;
 
         before(() => {
-            newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             newVisitor.visit(exampleTree);
             analysisResultEntries = newVisitor.getAnalysisResultEntries();
             firstEntry = analysisResultEntries[0];
+        });
+
+        it("Should throw an error if there is not enough variation in a subtree's text content", () => {
+            //TODO
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let faultyExampleTree = parse(readFileSync('').toString()); //TODO make a file that will throw this error)
+            let badVisitAttempt = () => newVisitor.visit(faultyExampleTree);
+            expect(badVisitAttempt).to.throw(Error, "Cannot perform a LocalitySensitiveHash upon the" +
+            "root node of the subtree. The following error was thrown: ");
+        });
+
+        it("Should throw an error if a subtree's text content is too small", () => {
+            //TODO
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let faultyExampleTree = parse(readFileSync('').toString()); //TODO make a file that will throw this error)
+            let badVisitAttempt = () => newVisitor.visit(faultyExampleTree);
+            expect(badVisitAttempt).to.throw(Error, "Cannot perform a LocalitySensitiveHash upon the" +
+            "root node of the subtree. The following error was thrown: ");
         });
 
         it("Should produce a list of entries which has the correct first entry (contextType is correct)", () => {
