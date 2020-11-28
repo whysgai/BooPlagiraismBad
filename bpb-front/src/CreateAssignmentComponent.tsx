@@ -7,7 +7,7 @@ interface PropsType {
   name: string
 }
 
-class CreateAssignmentComponent extends React.Component <PropsType, {}> {
+class CreateAssignmentComponent extends React.Component <PropsType, {name: string}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
@@ -17,26 +17,28 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
   }
 
   // onInputchange(event : ChangeEvent<HTMLInputElement>) {
-  onInputchange(event : any) {
+  onInputchange(event : ChangeEvent<HTMLInputElement>) {
     console.log("OnInputCHange has happened!");
     console.log("Event target value:", event.target.value);
     console.log("Event target name:", event.target.name);
+    //const name = event.target.name;
+    const value = event.target.value;
     this.setState((state) => {
-      return {[event.target.name]: event.target.value}
+      return {name: value}
     });   
     // this.setState({
     //   ...this.state,
     //     [event.target.name]: event.target.value
     // });
-    console.log("Props from on change:", this.props.name);
   }
 
   callDispatch() {
-    console.log("Component:", this.props.name);
-    store.dispatch(createAssignment('ADD_ASSIGNMENT', this.props.name));
+    console.log("Component:", this.state.name);
+    store.dispatch(createAssignment('CREATE_ASSIGNMENT', this.state.name));
   }
 
   render() {
+    console.log(this.state.name)
     return (
         <div style={{ textAlign: 'center', paddingTop: '20px' }}>
             <div style={{textAlign: 'right', paddingRight: '100px', paddingTop: '30px', fontWeight: 'bolder'}}>
@@ -52,13 +54,12 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
                   name="name" 
                   className='assignment-name-input' 
                   type="text" 
-                  // value={this.props.name} 
                   onChange={this.onInputchange}
                 />
                 <br/>
                 <Link className='create-assignment-btn btn btn-outline-success mt-2'
                     to="/"
-                    onClick={() => {console.log("OnCLick:", this.props.name); this.callDispatch()}}>
+                    onClick={() => {console.log("OnCLick:", this.state.name); this.callDispatch()}}>
                     Create Assignment
                 </Link>
             </span>
