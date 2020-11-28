@@ -20,7 +20,7 @@ export class AnalysisResult implements IAnalysisResult {
         }
         
         if(filePathA == undefined || filePathB == undefined || filePathA === "" || filePathB === "") {
-            throw new Error('Provided filePath values must not be undefined or empty strings') //TODO: test
+            throw new Error('Provided filePath values must not be undefined or empty strings');
         }
 
         if(similarityScore < 0) {

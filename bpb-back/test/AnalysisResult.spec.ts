@@ -166,6 +166,26 @@ describe("AnalysisResult.ts", () => {
             let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, "", filePath1, filePath2);
             expect(badConstructor).to.throw(Error, "Provided submissionId values must not be undefined or empty strings")
         });
+
+        it("Should throw an error if filePathA is undefined.", () => {
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, undefined);
+            expect(badConstructor).to.throw(Error, 'Provided filePath values must not be undefined or empty strings');
+        });
+
+        it("Should throw an error if filePathA is an empty string.", () => {
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, "");
+            expect(badConstructor).to.throw(Error, 'Provided filePath values must not be undefined or empty strings');
+        });
+
+        it("Should throw an error if filePathB is undefined.", () => {
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, undefined);
+            expect(badConstructor).to.throw(Error, 'Provided filePath values must not be undefined or empty strings');
+        });
+
+        it("Should throw an error if filePathB is an empty string.", () => {
+            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filePath1, "");
+            expect(badConstructor).to.throw(Error, 'Provided filePath values must not be undefined or empty strings');
+        });
     });
 
     describe("asJSON", () => { //TODO: add file and submission details to JSON
