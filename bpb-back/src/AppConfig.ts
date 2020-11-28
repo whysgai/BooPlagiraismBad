@@ -20,6 +20,6 @@ export class AppConfig {
     }
 
     public static getComparisonThreshold() : number {
-        return 100; //TODO: IMPLEMENT THIS INTO PROCESS.ENV
+        return Number(process.env.COMPARISONTHRESHOLD);
     }
 }
