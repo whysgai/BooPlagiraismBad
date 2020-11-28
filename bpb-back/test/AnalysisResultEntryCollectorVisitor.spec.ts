@@ -109,21 +109,29 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("Should throw an error if there is not enough variation in a subtree's text content", () => {
-            //TODO
             var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
-            let faultyExampleTree = parse(readFileSync('').toString()); //TODO make a file that will throw this error)
-            let badVisitAttempt = () => newVisitor.visit(faultyExampleTree);
-            expect(badVisitAttempt).to.throw(Error, "Cannot perform a LocalitySensitiveHash upon the" +
-            "root node of the subtree. The following error was thrown: ");
+            let errorMsg = 'ERROR: not enough variation in input - ';
+            chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
+            let badVisitAttempt = () => newVisitor.visit(exampleTree);
+            expect(badVisitAttempt).to.throw(Error, "Cannot perform a LocalitySensitiveHash upon the " +
+            "root node of the subtree. The following error was thrown: " + errorMsg);
         });
 
         it("Should throw an error if a subtree's text content is too small", () => {
-            //TODO
             var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
-            let faultyExampleTree = parse(readFileSync('').toString()); //TODO make a file that will throw this error)
-            let badVisitAttempt = () => newVisitor.visit(faultyExampleTree);
-            expect(badVisitAttempt).to.throw(Error, "Cannot perform a LocalitySensitiveHash upon the" +
-            "root node of the subtree. The following error was thrown: ");
+            let errorMsg = "ERROR: not enough variation in input - "
+            chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
+            let badVisitAttempt = () => newVisitor.visit(exampleTree);
+            expect(badVisitAttempt).to.throw(Error, "Cannot perform a LocalitySensitiveHash upon the " +
+            "root node of the subtree. The following error was thrown: " + errorMsg);
+        });
+
+        it("Should throw an error if an unexpected error is thrown by createAnalysisResultEntry", () => {
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let errorMsg = "some unexpected error"
+            chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
+            let badVisitAttempt = () => newVisitor.visit(exampleTree);
+            expect(badVisitAttempt).to.throw(Error, errorMsg);
         });
 
         it("Should produce a list of entries which has the correct first entry (contextType is correct)", () => {
