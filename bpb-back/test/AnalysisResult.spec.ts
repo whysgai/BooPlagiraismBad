@@ -154,14 +154,17 @@ describe("AnalysisResult.ts", () => {
 
         it("Should throw an error if submissionIdA is an empty string.", () => {
             let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, "", subId2, filePath1, filePath2);
+            expect(badConstructor).to.throw(Error, "Provided submissionId values must not be undefined or empty strings")
         });
 
         it("Should throw an error if submissionIdB is undefined.", () => {
             let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, undefined, filePath1, filePath2);
+            expect(badConstructor).to.throw(Error, "Provided submissionId values must not be undefined or empty strings")
         });
 
         it("Should throw an error if submissionIdB is an empty string.", () => {
             let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, "", filePath1, filePath2);
+            expect(badConstructor).to.throw(Error, "Provided submissionId values must not be undefined or empty strings")
         });
     });
 
