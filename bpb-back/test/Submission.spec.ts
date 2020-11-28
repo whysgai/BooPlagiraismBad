@@ -136,12 +136,9 @@ describe("Submission.ts",() => {
         });
     });
 
-    //TODO: Add more tests when comparison is more mature
     describe("compare()",() => {
 
-        
-//TODO: add tests to check files of returned AnalysisResult[]
-        it("Should return a valid AnalysisResult[] if comparator submission is valid (left direction)",() => {
+                it("Should return a valid AnalysisResult[] if comparator submission is valid (left direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultA = testSubmissionA.compare(testSubmissionB);
@@ -178,7 +175,6 @@ describe("Submission.ts",() => {
             expect(results[0].getFiles().get(testSubmissionA.getId())).to.be.equal(testEntryA.getFileName());
             expect(results[0].getFiles().get(testSubmissionB.getId())).to.be.equal(testEntryB.getFileName());
         });
-
     });
     
     describe("addFile()",() => {
