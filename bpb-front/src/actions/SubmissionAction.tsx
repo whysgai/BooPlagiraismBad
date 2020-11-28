@@ -1,11 +1,12 @@
 import Assignment from '../types/Assignment'
+import { postSubmission } from '../services/SubmissionService'
 
 export default function createSubmission(type : string, name : string, assignment : Assignment, files : JSON[]) {
     return {
-        type: 'ADD_SUBMISSION',
+        type: 'UPLOAD_SUBMISSION',
         name: name,
         assignment: assignment,
         files: files,
-        newSubmission:
+        newAssignment: postSubmission(name, assignment, files)
     }
 };
