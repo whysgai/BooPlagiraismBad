@@ -18,4 +18,8 @@ export class AppConfig {
     public static maxFileUploadSize() : number {
         return Number(process.env.MAXFILEUPLOADSIZE);
     }
+
+    public static getComparisonThreshold() : number {
+        return 100; //TODO: IMPLEMENT THIS INTO PROCESS.ENV
+    }
 }
