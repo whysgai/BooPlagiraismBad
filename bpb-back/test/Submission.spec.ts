@@ -138,7 +138,7 @@ describe("Submission.ts",() => {
 
     describe("compare()",() => {
 
-                it("Should return a valid AnalysisResult[] if comparator submission is valid (left direction)",() => {
+        it("Should return a valid AnalysisResult[] if comparator submission is valid (left direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             var resultA = testSubmissionA.compare(testSubmissionB);
@@ -174,6 +174,14 @@ describe("Submission.ts",() => {
             var results = testSubmissionB.compare(testSubmissionA);
             expect(results[0].getFiles().get(testSubmissionA.getId())).to.be.equal(testEntryA.getFileName());
             expect(results[0].getFiles().get(testSubmissionB.getId())).to.be.equal(testEntryB.getFileName());
+        });
+
+        it("Should not throw an error when two similar hashValues are compared.", () => {
+            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, testEntryA.getHashValue(),"void() {}");
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryC);
+            let compare = () => testSubmissionB.compare(testSubmissionA);
+            expect(compare).to.not.throw(Error);
         });
     });
     
