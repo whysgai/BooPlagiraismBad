@@ -6,6 +6,7 @@ import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollec
 import {parse} from 'java-ast'; 
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
+import { AppConfig } from "../AppConfig";
 
 /**
  * Represents an Submission database model object
@@ -277,7 +278,7 @@ export interface ISubmission {
                 let hashB = otherEntry.getHashValue();
 
                 let comparison = this.compareHashValues(hashA, hashB);
-                var threshold = 100; //TODO: determine actual threshold, using 100 for now
+                var threshold = AppConfig.getComparisonThreshold(); //TODO: determine actual threshold, using 100 for now
 
                 if(comparison < threshold) {  //the more similar a comparison, the lower the number
                     matchedEntries.push([entry,otherEntry]);
