@@ -8,7 +8,8 @@ const initialState = {
         _id: '123',
         name: 'Temp Assignment',
         submissionIds: [] as Submission[]
-    }
+    },
+    newSubmission: {} as Submission,
 }
 
 const SubmissionReducer = (state = initialState, action : Action) => {
@@ -17,6 +18,9 @@ const SubmissionReducer = (state = initialState, action : Action) => {
         case 'READ_SUBMISSIONS':
             
         case 'UPLOAD_SUBMISSION':
+            return {
+                ...state,
+            }
 
         case 'DELETE_SUBMISSION':
 
