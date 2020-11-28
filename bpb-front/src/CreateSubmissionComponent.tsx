@@ -58,7 +58,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
             <br/>
             <span text-align="center">
                 <h5>Submission Name:</h5>
-                <input name="name" className='assignment-name-input' type="text" value={this.props.name} onChange={this.onInputchange}/>
+                <input name="name" className='submission-name-input' type="text" value={this.props.name} onChange={this.onInputchange}/>
                 <Upload {...propsUpload}>
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
@@ -69,7 +69,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                     </p>
                 </Upload>      
                 <br/>
-                <Link className='create-assignment-btn btn btn-outline-success mt-2'
+                <Link className='create-submission-btn btn btn-outline-success mt-2'
                     to="/"
                     onClick={() => this.callDispatch()}>
                     Upload Submission
