@@ -1,5 +1,5 @@
 import { parse } from 'java-ast';
-import { ParseTree } from 'antlr4ts/tree';
+import { ParseTree, RuleNode } from 'antlr4ts/tree';
 import { readFileSync } from 'fs';
 import { expect, assert } from 'chai';
 var chai = require('chai')
@@ -169,6 +169,36 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
         it("Should produce a list of entries which has the correct first entry (text is correct)", () => {
             expect(firstEntry.getText()).to.equal(readFileSync('/vagrant/bpb-back/test/res/AnalysisResultEntryCollector_VisitorVisitTestText.txt').toString());
+        });
+    });
+
+    describe("visitChildren()", () => {
+
+        it("Should throw an error if attempting to visit a child node throws an unanticipated error.", () => {
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let errorMsg = "some unexpected error";
+            chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
+            let exampleRuleNode = exampleTree as RuleNode;
+            let badVisitAttempt = () => newVisitor.visitChildren(exampleRuleNode);
+            expect(badVisitAttempt).to.throw(Error, errorMsg);
+        });
+
+        it("Should not throw an error if createAnalysisResultEntry throws an error because the string content is too short.", () => {
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let errorMsg = "ERROR: length too small -";
+            chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
+            let exampleRuleNode = exampleTree as RuleNode;
+            let visitAttempt = () => newVisitor.visitChildren(exampleRuleNode);
+            expect(visitAttempt).to.not.throw(Error);
+        });
+
+        it("Should not throw an error if createAnalysisResultEntry throws an error because the string content is too short.", () => {
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let errorMsg = "ERROR: not enough variation in input - ";
+            chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
+            let exampleRuleNode = exampleTree as RuleNode;
+            let visitAttempt = () => newVisitor.visitChildren(exampleRuleNode);
+            expect(visitAttempt).to.not.throw(Error);
         });
     });
 });

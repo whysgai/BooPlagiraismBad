@@ -180,7 +180,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
                 err.message.includes("ERROR: not enough variation in input - ")) {
                     //Skip this node
                 } else {
-                    throw err; //TODO figure out how to make this throw upstream
+                    throw err;
                 }
             }
         }
