@@ -71,7 +71,7 @@ describe("SubmissionListComponent tests:", () => {
         });
         expect(container.getElementsByClassName('submission-list').length).toBe(1);
         expect(container.getElementsByClassName('submission-list-item').length).toBe(4);
-        expect(document.querySelector("a").getAttribute("href")).toBe("/CreateSubmissionComponent")
+        expect(document.querySelector("a").getAttribute("href")).toBe("/CreateSubmission")
     });
     it('Should display SubmissionCompareButton', () => {
         let container = document.createElement('div');
