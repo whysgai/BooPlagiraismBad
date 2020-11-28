@@ -33,7 +33,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {}> {
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>{store.getState().AssignmentReducer.currentAssignment.name}</h3>
-        <Link className='btn btn-outline-success' to='/CreateSubmissionComponent'>Upload Submission</Link>
+        <Link className='btn btn-outline-success' to='/CreateSubmission'>Upload Submission</Link>
         <ul>
           {this.props.submissions.map((submission, index) => 
             <li key={index}><SubmissionListItemComponent checkboxOn={false} submission={submission} createSubmission={(arg: String) => null}/></li>
