@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
-import { IAnalysisResultEntry } from "./AnalysisResultEntry";
+import { AnalysisResultEntry, IAnalysisResultEntry } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
 import {parse} from 'java-ast'; 
@@ -211,7 +211,6 @@ export interface ISubmission {
                 visitor.getAnalysisResultEntries().forEach((entry) => { 
                     this.addAnalysisResultEntry(entry);
                  });
-    
                  resolve();
             }
         });
@@ -228,15 +227,36 @@ export interface ISubmission {
         if(this.entries.length == 0 || otherSubmission.getEntries().length == 0) {
             throw new Error("Cannot compare: One or more comparator submissions has no entries");
         }
-        let analysisResults = new Array<IAnalysisResult>();
-        this.files.forEach(subAFile => {
-            let fileAEntries = this.entries.filter((entry) => entry.getFileName() === subAFile);
-            otherSubmission.getFiles().forEach(subBFile => {
-                let fileBEntries = otherSubmission.getEntries().filter(
-                    (entry) => entry.getFileName() === subBFile);
-                    analysisResults.push(this.compareAnalysisResultEntries(fileAEntries, fileBEntries)); 
-            }); 
+        let submissionAEntries = new Map<string, Array<IAnalysisResultEntry>>();
+        let submissionBEntries = new Map<string, Array<IAnalysisResultEntry>>();
+        this.getFiles().forEach(fileName => {
+            if(submissionAEntries.get(fileName) == undefined) {
+                submissionAEntries.set(fileName, new Array<IAnalysisResultEntry>());
+            }
+            this.getEntries().forEach(entry => {
+                if(entry.getFileName() === fileName) {
+                    submissionAEntries.get(fileName).push(entry);
+                }                
+            });          
         });
+        otherSubmission.getFiles().forEach(fileName => {
+            if(submissionBEntries.get(fileName) == undefined) {
+                submissionBEntries.set(fileName, new Array<IAnalysisResultEntry>());
+            }
+            otherSubmission.getEntries().forEach(entry => {
+                if(entry.getFileName() === fileName) {
+                    submissionBEntries.get(fileName).push(entry);
+                }                
+            });          
+        });
+        let subAValues = submissionAEntries.values();
+        let subBValues = submissionBEntries.values();
+        let analysisResults = new Array<IAnalysisResult>();
+        for(let subAFileEntries of subAValues) {
+            for(let subBFileEntries of subBValues) {
+                analysisResults.push(this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries));
+            }
+        }
         return analysisResults;
     }
 

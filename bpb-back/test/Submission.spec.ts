@@ -183,6 +183,32 @@ describe("Submission.ts",() => {
             let compare = () => testSubmissionB.compare(testSubmissionA);
             expect(compare).to.not.throw(Error);
         });
+
+        it("Should not throw an error when Submission.files contains the same filename twice.", () => {
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
+            let newSubAFiles = testSubmissionA.getFiles();
+            let subADuplicateFile = newSubAFiles[0];
+            newSubAFiles.push(subADuplicateFile);
+            testSubmissionA.setFiles(newSubAFiles);
+            let compare1 = () => testSubmissionB.compare(testSubmissionA);
+            let compare2 = () => testSubmissionA.compare(testSubmissionB);
+            expect(compare1).to.not.throw(Error);
+            expect(compare2).to.not.throw(Error);
+        });
+
+        it("Should not throw an error when a submission contains two entries from two different files.", () => {
+            let testEntryC = new AnalysisResultEntry("are1", testSubmissionA.getId(),"/home/file.javaa","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
+            let testEntryD = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.javab","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
+            testSubmissionA.addAnalysisResultEntry(testEntryC);
+            testSubmissionB.addAnalysisResultEntry(testEntryD);
+            let compare1 = () => testSubmissionB.compare(testSubmissionA);
+            let compare2 = () => testSubmissionA.compare(testSubmissionB);
+            expect(compare1).to.not.throw(Error);
+            expect(compare2).to.not.throw(Error);
+        });
     });
     
     describe("addFile()",() => {
