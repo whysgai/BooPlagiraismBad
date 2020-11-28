@@ -16,13 +16,23 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
         this.onInputchange = this.onInputchange.bind(this);
   }
 
-  onInputchange(event : ChangeEvent<HTMLInputElement>) {
-    this.setState({
-        [event.target.name]: event.target.value,
-    });
+  // onInputchange(event : ChangeEvent<HTMLInputElement>) {
+  onInputchange(event : any) {
+    console.log("OnInputCHange has happened!");
+    console.log("Event target value:", event.target.value);
+    console.log("Event target name:", event.target.name);
+    this.setState((state) => {
+      return {[event.target.name]: event.target.value}
+    });   
+    // this.setState({
+    //   ...this.state,
+    //     [event.target.name]: event.target.value
+    // });
+    console.log("Props from on change:", this.props.name);
   }
 
   callDispatch() {
+    console.log("Component:", this.props.name);
     store.dispatch(createAssignment('ADD_ASSIGNMENT', this.props.name));
   }
 
@@ -38,11 +48,17 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
             <br/>
             <span text-align="center">
                 <h5>Assignment Name:</h5>
-                <input name="name" className='assignment-name-input' type="text" value={this.props.name} onChange={this.onInputchange}/>
+                <input 
+                  name="name" 
+                  className='assignment-name-input' 
+                  type="text" 
+                  // value={this.props.name} 
+                  onChange={this.onInputchange}
+                />
                 <br/>
                 <Link className='create-assignment-btn btn btn-outline-success mt-2'
                     to="/"
-                    onClick={() => this.callDispatch()}>
+                    onClick={() => {console.log("OnCLick:", this.props.name); this.callDispatch()}}>
                     Create Assignment
                 </Link>
             </span>

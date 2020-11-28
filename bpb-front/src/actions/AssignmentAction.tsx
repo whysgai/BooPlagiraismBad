@@ -2,7 +2,7 @@ import {postAssignment} from '../services/AssignmentService'
 import Assignment from '../types/Assignment'
 
 export function createAssignment(type : string, name : string) {
-
+    console.log("Action:", name);
     return {
         type: 'CREATE_ASSIGNMENT',
         name: name,
