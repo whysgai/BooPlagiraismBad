@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { createJsxJsxClosingFragment } from "typescript";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
 
@@ -208,6 +207,15 @@ describe("Submission.ts",() => {
             let compare2 = () => testSubmissionA.compare(testSubmissionB);
             expect(compare1).to.not.throw(Error);
             expect(compare2).to.not.throw(Error);
+        });
+
+        it("Should recognize a match for two nodes that share an identical hash value", () => {
+            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, "1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryC);
+            let analysisResults = testSubmissionA.compare(testSubmissionB);
+            expect(analysisResults.length).to.equal(1);
+            expect(analysisResults[0].getMatches()).to.deep.equal([[testEntryA, testEntryC]]);
         });
     });
     
