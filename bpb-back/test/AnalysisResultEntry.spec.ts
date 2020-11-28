@@ -70,7 +70,7 @@ describe("AnalysisResultEntry",() => {
         it("Should return a valid JSON object with the expected properties",() => {
             var expected = '{"id":"are1","fileName":"test.java",\
             "contextType":"method","lineNumberStart":1, "charPosStart":3, "lineNumberEnd":2, "charPosEnd":4,\
-            "hashValue":"245rr1"}'
+            "hashValue":"245rr1", "submissionId":"subid1", "text":"void test() { }"}'
             var expectedJSON = JSON.parse(expected);
             expect(testARE.asJSON()).to.deep.equal(expectedJSON);
         });
