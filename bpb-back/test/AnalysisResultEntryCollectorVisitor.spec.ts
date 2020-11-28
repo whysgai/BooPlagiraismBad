@@ -200,5 +200,14 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
             let visitAttempt = () => newVisitor.visitChildren(exampleRuleNode);
             expect(visitAttempt).to.not.throw(Error);
         });
+
+        it("Should break loop in function if shouldVisitNextChild returns false.", () => {
+            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let errorMsg = "ERROR: not enough variation in input - ";
+            chai.spy.on(newVisitor, 'shouldVisitNextChild', () => false);
+            let exampleRuleNode = exampleTree as RuleNode;
+            let visitAttempt = () => newVisitor.visitChildren(exampleRuleNode);
+            expect(visitAttempt).to.not.throw(Error);
+        });
     });
 });
