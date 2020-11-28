@@ -260,7 +260,7 @@ export interface ISubmission {
                 var threshold = 100; //TODO: determine actual threshold, using 100 for now
 
                 if(comparison < threshold) {  //the more similar a comparison, the lower the number
-                    matchedEntries.push([entry,otherEntry]); //TODO test
+                    matchedEntries.push([entry,otherEntry]);
                 }
             });
         });
@@ -282,7 +282,7 @@ export interface ISubmission {
         let tlshA = new Tlsh();
         tlshA.fromTlshStr(hashA);
         let tlshB = new Tlsh();
-        tlshA.fromTlshStr(hashB);
+        tlshB.fromTlshStr(hashB);
         return tlshA.totalDiff(tlshB, false);
     }
 }
