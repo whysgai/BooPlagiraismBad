@@ -4,6 +4,8 @@ import AssignmentData from "../types/AssignmentData";
 
 /**
  * Represents a controller for Assignment objects.
+ * Is called by AssignmentRouter to access Assignment objects.
+ * Calls AssignmentDAO to persist Assignment objects in the database.
  */
 export interface IAssignmentManager {
     getAssignments() : Promise<IAssignment[]>;
@@ -23,6 +25,11 @@ export class AssignmentManager implements IAssignmentManager {
         this.cacheCount = 0;
     }   
     
+    /**
+     * Creates an Assignment with the given AssignmentData
+     * @param data AssignmentData to use when creating an Assignment
+     * @returns A Promise containing the created Assignment
+     */
     createAssignment = async(data : AssignmentData): Promise<IAssignment> => {
 
         return new Promise((resolve, reject) => {
@@ -40,12 +47,19 @@ export class AssignmentManager implements IAssignmentManager {
         });
     }
 
+    /**
+     * Gets a reference to an Assignment with the given id (if one exists)
+     * @param assignmentId
+     * @returns A Promise containing the requested Assignment
+     */
     getAssignment = async(assignmentId : string) : Promise<IAssignment> => {
         return new Promise((resolve,reject) => {
             
+            //Read from cache if entry exists
             if(this.assignmentCache.get(assignmentId) != undefined) {
                 resolve(this.assignmentCache.get(assignmentId));
             } else {
+                //Read from database if cache entry does not exist
                 AssignmentDAO.readAssignment(assignmentId).then((assignment) => {
                     this.assignmentCache.set(assignmentId, assignment);
                     this.cacheCount++;
@@ -57,10 +71,15 @@ export class AssignmentManager implements IAssignmentManager {
         });
     }
 
+    /**
+     * Gets all Assignments in the system.
+     * @returns A Promise containing all Assignments in the cache and/or database
+     */
     getAssignments = async(): Promise<IAssignment[]> => {
 
         return new Promise((resolve, reject) => {
 
+            //Read from database if cache is empty
             if(this.cacheCount <= 0) {
                 AssignmentDAO.readAssignments().then((assignments) => {
 
@@ -74,6 +93,7 @@ export class AssignmentManager implements IAssignmentManager {
                     reject(err);
                 });
             } else {
+                //Read from cache if entries exist
                 var rtnAssignments : IAssignment[] = [];
                 for (var assignment of this.assignmentCache.values()) {
                     rtnAssignments.push(assignment);
@@ -83,6 +103,12 @@ export class AssignmentManager implements IAssignmentManager {
         });
     }
 
+    /**
+     * Update the assignment with the given assignmentId with the provided assignmentData
+     * @param assignmentId Assignment to to update
+     * @param data Data to use when updating Assignment
+     * @return a Promise containing the updated Assignment
+     */
     updateAssignment = async(assignmentId : string, data : AssignmentData) : Promise<IAssignment> => {
 
         return new Promise((resolve,reject) => {
@@ -108,6 +134,11 @@ export class AssignmentManager implements IAssignmentManager {
         });
     }
 
+    /**
+     * Deletes the specified assignment from cache and database
+     * @param assignmentId Assignment to delete
+     * @returns A Promise (containing nothing)
+     */
     deleteAssignment = async(assignmentId : string) : Promise<void> => {
         return new Promise((resolve,reject) => {
             this.getAssignment(assignmentId).then(() => {

@@ -14,7 +14,6 @@ export interface IAnalysisResultEntryModel extends Document {
     text : string
 }
 
-
 export interface IAnalysisResultEntry {
     asJSON() : Object 
     getSubmissionID() : string;
@@ -61,33 +60,82 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
         }
     }
 
+    /**
+     * Return the submission Id associated with this entry
+     * @returns submission Id
+     */
     getSubmissionID(): string {
         return this.submissionId;
     }
+
+    /**
+     * Returns the starting line number associated with this entry
+     * @returns starting line number
+     */
     getLineNumberStart(): number {
         return this.lineNumberStart;
     }
+    
+    /**
+     * Returns the ending line number associated with this entry
+     * @returns ending line  number
+     */
     getLineNumberEnd(): number {
         return this.lineNumberEnd;
     }
+
+    /**
+     * Returns the starting character position associated with this entry
+     * @returns starting character position
+     */
     getCharPosStart(): number {
         return this.charPosStart;
     }
+
+    /**
+     * Returns the ending character position associated with this entry
+     * @returns ending character position
+     */
     getCharPosEnd(): number {
         return this.charPosEnd;
     }
+
+    /**
+     * Returns the raw AST text associated with this entry (value used to create hash)
+     * @returns raw AST text as a string
+     */
     getText(): string {
         return this.text;
     }
+
+    /**
+     * Returns the name of the file that this entry was derived from
+     * @returns filename as a string
+     */
     getFileName(): string {
         return this.fileName;
     }
+
+    /**
+     * Returns the context of the entry (i.e. which AST element the entry was derived from)
+     * @returns the context of the entry as a string
+     */
     getContextType(): string {
         return this.contextType;
     }
+
+    /**
+     * Returns the comparison hash value of the entry (derived during parsing)
+     * @returns the hash value of the entry as a string
+     */
     getHashValue(): string {
         return this.hashValue;
     }
+
+    /**
+     * Returns the object as a JSON object
+     * @returns object as JSON
+     */
     asJSON(): Object {
         return {
             id:this.id,
@@ -102,9 +150,19 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
             text:this.text
          }
     }
+
+    /**
+     * Returns the static model for AnalysisResultEntry database model
+     * @returns Mongoose static model for AnalysisResultEntry
+     */
     static getStaticModel() : mongoose.Model<IAnalysisResultEntryModel> {
         return this.analysisResultEntryModel;
-    }    
+    }  
+    
+    /**
+     * Returns a new Mongoose document model instance for the current entry
+     * @returns Mongoose document model instance
+     */
     getModelInstance() : Document {
         return new AnalysisResultEntry.analysisResultEntryModel({
             "id":this.id,

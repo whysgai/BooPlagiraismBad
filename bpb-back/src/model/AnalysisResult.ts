@@ -63,14 +63,27 @@ export class AnalysisResult implements IAnalysisResult {
         return this.fileNames;
     }
         
+       
+    /**
+     * Returns the overall similarity score of the analysis
+     * @returns similarity score
+     */
     getSimilarityScore(): number {
         return this.similarityScore;
     }
     
+    /**
+     * Returns all matches between submission entries that are contained in the analysis
+     * @returns all matches as an array of arrays of AnalysisResultEntry (1  .. n arrays of matching AnalysisResultEntries)
+     */
     getMatches() : Array<Array<IAnalysisResultEntry>> {
         return this.matches;
     }
     
+    /**
+     * Returns the AnalysisResult as a JSON object
+     * @returns This object as JSON
+     */
     asJSON(): Object {
         return {'similarityScore': this.similarityScore,
         'files': [...this.fileNames], // When parsing json object, this can be converted back to a Map with: files = new Map(JSONObject["files"]);
