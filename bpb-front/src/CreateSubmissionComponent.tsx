@@ -25,7 +25,7 @@ const propsUpload = {
   },
 };
 
-class CreateSubmissionComponent extends React.Component <PropsType, {}> {
+class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: JSON[]}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
@@ -36,13 +36,14 @@ class CreateSubmissionComponent extends React.Component <PropsType, {}> {
   }
 
   onInputchange(event : ChangeEvent<HTMLInputElement>) {
-    this.setState({
-        [event.target.name]: event.target.value,
+    const value = event.target.value;
+    this.setState((state) => {
+      return {name: value}
     });
   }
 
   callDispatch() {
-    store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.props.name, store.getState().AssignmentReducer.currentAssignment, this.props.files))
+    store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.state.name, store.getState().AssignmentReducer.currentAssignment, this.state.files))
   }
 
   render() {
