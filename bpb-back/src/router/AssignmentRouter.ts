@@ -1,17 +1,22 @@
-import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
 import express, { Router } from 'express';
 import {IAssignment } from '../model/Assignment'
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 
-class AssignmentRouter extends AbstractRouter implements IRouter {
+/**
+ * Router for requests related to Assignments
+ */
+class AssignmentRouter extends AbstractRouter {
   
   constructor(app : express.Application, route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager){
     super(app,route,submissionManager,assignmentManager);
     this.setupRoutes();
   }
 
+  /**
+   * Binds routes to the express router
+   */
   setupRoutes() {
     this.router.post("/",this.createAssignmentFn);
     this.router.get("/",this.getAssignmentsFn);
@@ -20,10 +25,14 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     this.router.delete("/:id",this.deleteAssignmentFn);
   }
 
-  //POST /assignments: Create a new assignment
+  /**
+   * POST /assignments: Create a new assignment
+   * @param req must have a body with property name
+   * @param res 200 and JSON body if assignment is created, otherwise 400
+   */
   createAssignmentFn = async(req : express.Request,res : express.Response) => {
 
-  //TODO: Add checks to esnure submission ids exist before update
+  //TODO: Add checks to ensure submission ids exist before creating 
     var assignmentName = req.body.name;
 
     if(assignmentName == undefined) {
@@ -43,7 +52,11 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     }
   }
 
-  //GET /assignments: Get all assignments
+  /**
+   * GET /assignments: Get all assignments
+   * @param req
+   * @param res 200 and list of JSON bodies if assignments are found, otherwise 400 
+   */
   getAssignmentsFn = async(req : express.Request,res : express.Response) => {
       
     this.assignmentManager.getAssignments()
@@ -56,8 +69,12 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
           res.send({"response":err.message});
         });
   };
-  
-  //GET /assignments/{id} : Get assignment with {id}
+ 
+  /**
+   * GET/assignments/{id}: Get a specific assignment by assignmentId
+   * @param req must have id parameter
+   * @param res 200 and JSON body if assignment is found, otherwise 400
+   */
   getAssignmentFn = async(req : express.Request,res : express.Response) => {
     
     var assignmentId = req.params.id;
@@ -70,10 +87,14 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
       res.send({"response":err.message});
     });
 }
-  //PUT /assignments : Update an assignment
-  //TODO: Add checks to ensure submission ids exist before update
+  /**
+   * PUT /assignments: Update an assignment's metadata
+   * @param req must have a body with id,submissionIds properties
+   * @param res 200 and JSON body if assignment is updated, otherwise 400
+   */
   updateAssignmentFn = async(req : express.Request,res : express.Response) => {
 
+  //TODO: Add checks to ensure submission ids exist before update
     var assignmentId = req.params.id;
     
     if(!req.body.name || !req.body.submissionIds) {
@@ -93,7 +114,11 @@ class AssignmentRouter extends AbstractRouter implements IRouter {
     }
   }
 
-  //DELETE /assignments/{id} : Delete assignment with {id}
+  /**
+   * DELETE /assignments/{id}: Delete the assignment with the specified assignmentId
+   * @param req must have id parameter
+   * @param res 200 and JSON response if assignment is deleted, otherwise 400
+   */
   deleteAssignmentFn = async(req : express.Request,res : express.Response) => {
 
     var assignmentId = req.params.id;

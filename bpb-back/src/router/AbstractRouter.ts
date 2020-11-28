@@ -1,11 +1,13 @@
 import express, { Router } from "express"
 import { IAssignmentManager } from "../manager/AssignmentManager";
 import { ISubmissionManager } from "../manager/SubmissionManager";
+import IRouter from "./IRouter";
 
 /**
- * Used to consolidate use of Express (all routers will register via express)
+ * Router abstraction
+ * Allows for development of multiple router types
  */
-abstract class AbstractRouter {
+abstract class AbstractRouter implements IRouter {
     
     protected router : Router;
     protected submissionManager : ISubmissionManager;
@@ -19,6 +21,11 @@ abstract class AbstractRouter {
         this.assignmentManager = assignmentManager;
         app.use(route,this.router);
     }
+
+    /**
+     * Initialize routes (i.e. specify routes and bind them to the Express router) 
+     */
+    setupRoutes(){}
 }
 
 export default AbstractRouter;
