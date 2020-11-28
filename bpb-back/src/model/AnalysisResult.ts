@@ -73,7 +73,8 @@ export class AnalysisResult implements IAnalysisResult {
     
     asJSON(): Object {
         return {'similarityScore': this.similarityScore,
-        'matches': this.matches.map((match) => { return [match[0].asJSON() , match[1].asJSON()] })};  
+        'files': [...this.fileNames], // When parsing json object, this can be converted back to a Map with: files = new Map(JSONObject["files"]);
+        'matches': this.matches.map((match) => { return [match[0].asJSON() , match[1].asJSON()] })};
     }
 }
             

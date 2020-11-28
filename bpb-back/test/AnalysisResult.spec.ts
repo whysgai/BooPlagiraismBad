@@ -1,7 +1,9 @@
 import { assert, expect } from "chai";
+import { parse } from "java-ast";
 var chai = require('chai');
 var spies = require('chai-spies');
 import Sinon from "sinon";
+import { mapDefined } from "tslint/lib/utils";
 import { AnalysisResult, IAnalysisResult } from "../src/model/AnalysisResult";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 
@@ -188,13 +190,16 @@ describe("AnalysisResult.ts", () => {
         });
     });
 
-    describe("asJSON", () => { //TODO: add file and submission details to JSON
+    describe("asJSON", () => {
         it("Should return a valid JSON object with the expected properties", () => {
             let are1 = new AnalysisResultEntry("are1", subId1, filename1, "method", 1, 3, 2, 4, "245rr1", "void test() { }");
             let are2 = new AnalysisResultEntry("are2", subId2, filename2, "method", 5, 7, 6, 8, "423qq1", "void similar() { }");
-            let matches = [[are1, are2]]
+            let matches = [[are1, are2]];
+            let files = new Map<string, string>().set(subId1, filename1).set(subId2, filename2)
+            let matchesJSON = [[are1, are2]].map((match) => {return [match[0].asJSON(), match[1].asJSON()]})
             var expectedJSON = {'similarityScore': 5,
-                                'matches': matches.map((match) => {return [match[0].asJSON(), match[1].asJSON()]})} //ARE.asJSON should be tested on its own level, so safe to use here to prevent test break-age down the line
+                                'files': [...files],
+                                'matches': matchesJSON}
             var analysisResult = new AnalysisResult(matches, 5, subId1, subId2, filename1, filename2);
             expect(analysisResult.asJSON()).to.deep.equal(expectedJSON);
         });
