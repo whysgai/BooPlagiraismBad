@@ -145,9 +145,40 @@ describe("AssignmentDAO.ts",() => {
     });
 
     describe("deleteAssignment()",() => {
-        it("Should be able to delete an assignment database object");
-        it("Should throw an appropriate error if {id} is invalid");
-        it("Should throw an appropriate error if database findOne fails");
-        it("Should throw an appropriate error if database findOneAndDelete fails");
+        it("Should be able to delete an assignment database object",() => {
+
+            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+
+                return Assignment.getStaticModel().findOne({_id:createdAssignment.getId()}).then((firstFindRes) => {  
+
+                    expect(firstFindRes).to.have.property("name").which.equals(testAssignment.getName());
+
+                    return AssignmentDAO.deleteAssignment(createdAssignment.getId()).then((deleteRes) => {
+                        
+                        return Assignment.getStaticModel().findOne({_id:createdAssignment.getId()}).then((secondFindRes) => {
+                            expect(secondFindRes).to.be.null;
+                        });                     
+                    });
+                });
+            });
+        });
+
+        it("Should throw an appropriate error if {id} is invalid",() => {
+            var newAssignment= new Assignment.builder().build();
+            return expect(AssignmentDAO.deleteAssignment(newAssignment.getId())).to.eventually.be.rejectedWith("Cannot delete: No assignment with the given id exists in the database");
+        });
+
+        it("Should throw an appropriate error if database findOne fails during deletion",() => {
+            chai.spy.on(Assignment.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(AssignmentDAO.deleteAssignment(testAssignment.getId())).to.eventually.be.rejectedWith("Cannot findOne");
+        });
+
+        it("Should throw an appropriate error if database findOneAndDelete fails during deletion",() => {
+            chai.spy.on(Assignment.getStaticModel(),'findOneAndDelete',() => { return Promise.reject(new Error("Cannot findOneAndDelete"))});
+            
+            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+                return expect(AssignmentDAO.deleteAssignment(createdAssignment.getId())).to.eventually.be.rejectedWith("Cannot findOneAndDelete");
+            });
+        });
     });
 });
