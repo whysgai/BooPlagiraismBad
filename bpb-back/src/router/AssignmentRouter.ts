@@ -1,3 +1,4 @@
+import IRouter from './IRouter';
 import AbstractRouter from './AbstractRouter';
 import express, { Router } from 'express';
 import {IAssignment } from '../model/Assignment'
@@ -7,7 +8,7 @@ import { ISubmissionManager } from '../manager/SubmissionManager';
 /**
  * Router for requests related to Assignments
  */
-class AssignmentRouter extends AbstractRouter {
+class AssignmentRouter extends AbstractRouter implements IRouter {
   
   constructor(app : express.Application, route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager){
     super(app,route,submissionManager,assignmentManager);

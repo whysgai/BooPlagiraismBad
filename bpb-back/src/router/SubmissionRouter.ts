@@ -1,3 +1,4 @@
+import IRouter from './IRouter';
 import express from 'express';
 import AbstractRouter from './AbstractRouter'
 import { AppConfig } from '../AppConfig';
@@ -9,7 +10,7 @@ const mkdirp = require('mkdirp');
 /**
  * Router for requests related to Submissions
  */
-class SubmissionRouter extends AbstractRouter {
+class SubmissionRouter extends AbstractRouter implements IRouter {
     
   constructor(app : any,route : string, submissionManager : ISubmissionManager, assignmentManager : IAssignmentManager) {
     super(app,route, submissionManager, assignmentManager);
