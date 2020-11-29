@@ -101,6 +101,25 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing nothing
      */
     static async deleteAssignment(assignmentId : string): Promise<void> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+        //return new Promise((resolve, reject) => {resolve(undefined)} );
+        return new Promise((resolve,reject) => {
+            return Assignment.getStaticModel().findOne({_id : assignmentId}).then((model) => {                
+                if(model == undefined) {
+                    reject(new Error("Cannot delete: No assignment with the given id exists in the database"));
+                } else {
+                    return Assignment.getStaticModel().findOneAndDelete(
+                        {
+                            _id : assignmentId 
+                        }
+                    ).then((res) => {
+                        resolve();
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                }
+            }).catch((err) => {
+                reject(err);
+            });            
+        });
     }
 }
