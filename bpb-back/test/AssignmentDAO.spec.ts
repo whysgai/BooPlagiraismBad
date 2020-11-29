@@ -43,14 +43,14 @@ describe("AssignmentDAO.ts",() => {
 
     describe("createAssignment()",() => {
         it("Should create an assignment database object if inputs are valid",() => {
-            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((assignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
                 
-                expect(assignment.getName()).to.equal(testAssignment.getName());
-                expect(assignment.getId()).to.not.be.undefined;
+                expect(createdAssignment.getName()).to.equal(testAssignment.getName());
+                expect(createdAssignment.getId()).to.not.be.undefined;
 
-                return Assignment.getStaticModel().findOne({"name":testAssignment.getName()}).then((document) => {
-                    expect(document).to.have.property("name").which.equals(testAssignment.getName());
-                    expect(document.id).to.equal(testAssignment.getId());
+                return Assignment.getStaticModel().findOne({"_id":createdAssignment.getId()}).then((document) => {
+                    expect(document).to.have.property("name").which.equals(createdAssignment.getName());
+                    expect(document).to.have.property("submissionIds").which.deep.equals(createdAssignment.getSubmissionIds());
                 });
             }); 
         });
