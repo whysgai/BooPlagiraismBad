@@ -43,6 +43,23 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing all Assignments in the databse
      */
     static async readAssignments(): Promise<IAssignment[]> {
+        
+        // return new Promise((resolve,reject) => {
+        //     Assignment.getStaticModel().find().then((assignmentModels) => {
+
+        //         Promise.all(
+        //             assignmentModels.map(
+        //                 model => {
+        //                     return new Assignment.builder().buildFromExisting(model);
+        //                 }
+        //             )
+        //         ).then(assignment => {
+        //             resolve(assignment);
+        //         }); //NOTE: Removed catch (should be caught downsteam in chain)
+        //     }).catch((err) => {
+        //         reject(err);
+        //     });
+        // });
         return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 
@@ -51,8 +68,22 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @param AssignmentId Id of the assignment to obtain
      * @returns A Promise containing the requested assignment, if it exists
      */
-    static async readAssignment(AssignmentID: string): Promise<IAssignment> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+    static async readAssignment(assignmentId: string): Promise<IAssignment> {
+        return new Promise((resolve,reject) => {
+            Assignment.getStaticModel().findOne({_id : assignmentId}).then((model) => {
+
+                if(model == undefined) {
+                    reject(new Error("Cannot find: No assignment with the given id exists in the database"));
+                } else {
+                    var builder = new Assignment.builder();
+                    var assignment = builder.buildFromExisting(model);
+                    resolve(assignment);
+                }
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        // return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 
     /**
