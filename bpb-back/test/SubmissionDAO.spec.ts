@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
-import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
+import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
 var mongoose = require('mongoose');
@@ -145,8 +145,9 @@ describe("SubmissionDAO.ts",() => {
             //New values to assign after creation
             var updatedName = "Newer Name";
             var updatedAssignmentId = "Newer Assignment Id";
-            var updatedEntries = [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")];
-            var updatedFiles = ["some_new_file"];
+            var updatedFileName = "some_new_file"
+            var updatedEntries = new Map<string, IAnalysisResultEntry[]>().set(updatedFileName, [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")] )
+            var updatedFiles = [updatedFileName];
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
                 
