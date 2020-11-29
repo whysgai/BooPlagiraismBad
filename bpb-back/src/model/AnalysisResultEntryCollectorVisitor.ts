@@ -106,21 +106,15 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         
         let hashValue = this.getLSHValue(parseTree.toStringTree());
         let submissionId = this.submission.getId();
-        let contextType;
-        let textContent;
-        let lineStart;
-        let lineStop;
-        let charPosStart;
-        let charPosStop;
         if(parseTree instanceof ParserRuleContext) {
         //Cast ParseTree to ParserRuleContext to access certain tokens and properties
             let asParserRuleContext = parseTree as ParserRuleContext;
-            textContent = asParserRuleContext.text;
-            contextType = JavaParser.ruleNames[asParserRuleContext.ruleContext.ruleIndex];
-            lineStart = asParserRuleContext._start.line;
-            lineStop = asParserRuleContext._stop.line;
-            charPosStart = asParserRuleContext._start.charPositionInLine;
-            charPosStop = asParserRuleContext._stop.charPositionInLine;
+            var textContent = asParserRuleContext.text;
+            var contextType = JavaParser.ruleNames[asParserRuleContext.ruleContext.ruleIndex];
+            var lineStart = asParserRuleContext._start.line;
+            var lineStop = asParserRuleContext._stop.line;
+            var charPosStart = asParserRuleContext._start.charPositionInLine;
+            var charPosStop = asParserRuleContext._stop.charPositionInLine;
         }
         return new AnalysisResultEntry("",submissionId, this.fileName, contextType, lineStart, charPosStart, lineStop, charPosStop, hashValue, textContent);
     }
@@ -141,9 +135,9 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
              * we will skip this node, as its content is not viable for us to perform a 
              * LocalitySensitiveHash upon, using the trendmicro/tlsh library.
             */
-            if (err.message.includes("ERROR: length too small -") || 
+            if (err.message.includes("ERROR: length too small -") || //TODO: get this file to 100% coverage
             err.message.includes("ERROR: not enough variation in input - ")) {
-                throw new Error("Cannot perform a LocalitySensitiveHash upon the" +
+                throw new Error("Cannot perform a LocalitySensitiveHash upon the " +
                 "root node of the subtree. The following error was thrown: " + err.message);
             } else {
                 throw err;
@@ -166,8 +160,8 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         let result = this.defaultResult();
         let n = node.childCount;
         for (let i = 0; i < n; i++) {
-            if (!this.shouldVisitNextChild(node, result)) {
-                break;
+            if (!this.shouldVisitNextChild(node, result)) { 
+                break; //TODO get test coverage for this line
             }
             let c = node.getChild(i);
             

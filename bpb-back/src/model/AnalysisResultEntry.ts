@@ -145,7 +145,9 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
             charPosStart:this.charPosStart,
             charPosEnd:this.charPosEnd,
             lineNumberEnd:this.lineNumberEnd,
-            hashValue:this.hashValue
+            hashValue:this.hashValue,
+            submissionId:this.submissionId,
+            text:this.text
          }
     }
 

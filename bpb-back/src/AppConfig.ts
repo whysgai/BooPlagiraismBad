@@ -30,4 +30,8 @@ export class AppConfig {
     public static maxFileUploadSize() : number {
         return Number(process.env.MAXFILEUPLOADSIZE);
     }
+
+    public static getComparisonThreshold() : number {
+        return Number(process.env.COMPARISONTHRESHOLD);
+    }
 }

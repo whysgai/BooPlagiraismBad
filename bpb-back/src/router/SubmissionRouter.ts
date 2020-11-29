@@ -149,9 +149,10 @@ class SubmissionRouter extends AbstractRouter {
     const submissionIdA = req.params.ida;
     const submissionIdB = req.params.idb;
     this.submissionManager.compareSubmissions(submissionIdA, submissionIdB)
-      .then((analysisResult) => {
+      .then((analysisResults) => {
+        let analysisResultsJson = analysisResults.map((result) => result.asJSON());
         res.status(200);
-        res.send(analysisResult.asJSON());
+        res.send(analysisResultsJson);
       }).catch((err) => {
         res.status(400);
         res.send({"response":err.message});

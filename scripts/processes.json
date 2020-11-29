@@ -13,7 +13,8 @@
                 "APIPORT":"8080",
                 "DBCONNECTIONSTRING":"mongodb://127.0.0.1:27017/bpb",
                 "UPLOADDIRECTORY":"/vagrant/bpb-back/uploads/",
-                "MAXFILEUPLOADSIZE":"5000000"
+                "MAXFILEUPLOADSIZE":"5000000",
+                "COMPARISONTHRESHOLD":"100"
             }
         },
         {

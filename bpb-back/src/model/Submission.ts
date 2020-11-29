@@ -1,11 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
-import { IAnalysisResultEntry } from "./AnalysisResultEntry";
+import { AnalysisResultEntry, IAnalysisResultEntry } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
 import {parse} from 'java-ast'; 
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
+import { AppConfig } from "../AppConfig";
 
 /**
  * Represents an Submission database model object
@@ -36,8 +37,7 @@ export interface ISubmission {
     setFiles(files : string[]) : void;
     addFile(content : string, fileName : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
-    compare(otherSubmission : ISubmission) : IAnalysisResult;
-    compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult;
+    compare(otherSubmission : ISubmission) : IAnalysisResult[];
     asJSON() : Object;
 }
 
@@ -287,7 +287,6 @@ export interface ISubmission {
                 visitor.getAnalysisResultEntries().forEach((entry) => { 
                     this.addAnalysisResultEntry(entry);
                  });
-    
                  resolve();
             }
         });
@@ -299,17 +298,46 @@ export interface ISubmission {
      */
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
          this.entries.push(analysisResultEntry);
-         if(!this.files.includes(analysisResultEntry.getFileName())) {
+         if(!(this.files.includes(analysisResultEntry.getFileName()))) {
              this.files.push(analysisResultEntry.getFileName());
          }
     }
 
-    /**
-     * Compare this submission against another submission and obtain the results of the analysis
-     * @param otherSubmission submission to compare to
-     */
-    compare(otherSubmission: ISubmission) : IAnalysisResult {
-        return otherSubmission.compareAnalysisResultEntries(this.entries);
+    compare(otherSubmission: ISubmission) : IAnalysisResult[] {
+        if(this.entries.length == 0 || otherSubmission.getEntries().length == 0) {
+            throw new Error("Cannot compare: One or more comparator submissions has no entries");
+        }
+        let submissionAEntries = new Map<string, Array<IAnalysisResultEntry>>();
+        let submissionBEntries = new Map<string, Array<IAnalysisResultEntry>>();
+        this.getFiles().forEach(fileName => {
+            if(submissionAEntries.get(fileName) == undefined) {
+                submissionAEntries.set(fileName, new Array<IAnalysisResultEntry>());
+            }
+            this.getEntries().forEach(entry => {
+                if(entry.getFileName() === fileName) {
+                    submissionAEntries.get(fileName).push(entry);
+                }                
+            });          
+        });
+        otherSubmission.getFiles().forEach(fileName => {
+            if(submissionBEntries.get(fileName) == undefined) {
+                submissionBEntries.set(fileName, new Array<IAnalysisResultEntry>());
+            }
+            otherSubmission.getEntries().forEach(entry => {
+                if(entry.getFileName() === fileName) {
+                    submissionBEntries.get(fileName).push(entry);
+                }                
+            });          
+        });
+        let subAValues = submissionAEntries.values();
+        let subBValues = submissionBEntries.values();
+        let analysisResults = new Array<IAnalysisResult>();
+        for(let subAFileEntries of subAValues) {
+            for(let subBFileEntries of subBValues) {
+                analysisResults.push(this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries));
+            }
+        }
+        return analysisResults;
     }
 
     /**
@@ -320,27 +348,19 @@ export interface ISubmission {
         return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:entriesJSON};
     }
 
-    /**
-     * Performs direct entry -> entry comparison between submissions
-     * Called by compare()
-     * @param otherEntries entries of other submission to compare to
-     */
-    compareAnalysisResultEntries(otherEntries : IAnalysisResultEntry[]) : IAnalysisResult {
+    private compareAnalysisResultEntries(fileAEntries : IAnalysisResultEntry[], fileBEntries : IAnalysisResultEntry[]) : IAnalysisResult {
         
-        if(this.entries.length <= 0|| otherEntries.length <= 0) {
-            throw new Error("Cannot compare: One or more comparator submissions has no entries");
-        }
 
         
         let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
-        this.entries.forEach((entry) => {
-            otherEntries.forEach((otherEntry) => {
+        fileAEntries.forEach((entry) => {
+            fileBEntries.forEach((otherEntry) => {
 
                 let hashA = entry.getHashValue();
                 let hashB = otherEntry.getHashValue();
 
                 let comparison = this.compareHashValues(hashA, hashB);
-                var threshold = 100; //TODO: determine actual threshold, using 100 for now
+                var threshold = AppConfig.getComparisonThreshold(); //TODO: determine actual threshold, using 100 for now
 
                 if(comparison < threshold) {  //the more similar a comparison, the lower the number
                     matchedEntries.push([entry,otherEntry]);
@@ -349,10 +369,15 @@ export interface ISubmission {
         });
 
         let H = matchedEntries.length;
-        let L = this.entries.length - H;
-        let R = otherEntries.length - H;
+        let L = fileAEntries.length - H;
+        let R = fileBEntries.length - H;
         let similarityScore = (2 * H) / ((2 * H) + R + L); //DECKARD SIMILARITY SCORE ALGORITHM
-        var analysisResult = new AnalysisResult(matchedEntries, similarityScore);
+
+        let submissionIdA = fileAEntries[0].getSubmissionID();
+        let submissionIdB = fileBEntries[0].getSubmissionID();
+        let fileNameA = fileAEntries[0].getFileName();
+        let fileNameB = fileBEntries[0].getFileName();
+        var analysisResult = new AnalysisResult(matchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
         return analysisResult;
     }
 
@@ -365,15 +390,7 @@ export interface ISubmission {
         let tlshA = new Tlsh();
         tlshA.fromTlshStr(hashA);
         let tlshB = new Tlsh();
-        tlshA.fromTlshStr(hashB);
-
-        let lenDiff : boolean;
-        if(hashA.length != hashB.length) {
-            lenDiff = true;
-        } else {
-            false;
-        }
-        
-        return tlshA.totalDiff(tlshB, lenDiff);
+        tlshB.fromTlshStr(hashB);
+        return tlshA.totalDiff(tlshB, false);
     }
 }
