@@ -11,8 +11,6 @@ interface PropsType {
 
 class AssignmentListCard extends React.Component <PropsType,{}> {
 
-//({assignment, createAssignment}:{assignment : Assignment, createAssignment: (arg: String) => void }) 
-
   constructor(props : PropsType) {
     super(props)
     this.state = {
