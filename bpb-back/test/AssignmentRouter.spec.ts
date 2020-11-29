@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import bodyParser from "body-parser";
 import AssignmentRouter from "../src/router/AssignmentRouter"
 import express from "express";
+import fileUpload from 'express-fileupload'
 import IRouter from "../src/router/IRouter";
 import chai = require("chai");
 import chaiHttp = require("chai-http");
@@ -31,7 +31,7 @@ describe('AssignmentRouter.ts',()=> {
     beforeEach(() => {
         app = express();
         app.use(express.json());
-        app.use(bodyParser.json());      
+        app.use(fileUpload());      
         testAssignmentMgr = new AssignmentManager();
         testSubmissionMgr = new SubmissionManager();
         testRouter = new AssignmentRouter(app,"/assignments",testSubmissionMgr,testAssignmentMgr); 
