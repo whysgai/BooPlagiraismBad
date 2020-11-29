@@ -85,8 +85,8 @@ describe("AssignmentDAO.ts",() => {
     
     describe("readAssignments",() => {
         it("should return an empty array of assignments if no assignments exist in the database",() => {
-            return AssignmentDAO.readAssignments().then(submissions => {
-                expect(submissions).to.deep.equal([]);
+            return AssignmentDAO.readAssignments().then(assignments => {
+                expect(assignments).to.deep.equal([]);
             });
         });
 
