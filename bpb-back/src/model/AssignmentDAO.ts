@@ -44,23 +44,23 @@ export const AssignmentDAO : IAssignmentDAO = class {
      */
     static async readAssignments(): Promise<IAssignment[]> {
         
-        // return new Promise((resolve,reject) => {
-        //     Assignment.getStaticModel().find().then((assignmentModels) => {
+        return new Promise((resolve,reject) => {
+            Assignment.getStaticModel().find().then((assignmentModels) => {
 
-        //         Promise.all(
-        //             assignmentModels.map(
-        //                 model => {
-        //                     return new Assignment.builder().buildFromExisting(model);
-        //                 }
-        //             )
-        //         ).then(assignment => {
-        //             resolve(assignment);
-        //         }); //NOTE: Removed catch (should be caught downsteam in chain)
-        //     }).catch((err) => {
-        //         reject(err);
-        //     });
-        // });
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+                Promise.all(
+                    assignmentModels.map(
+                        model => {
+                            return new Assignment.builder().buildFromExisting(model);
+                        }
+                    )
+                ).then(assignment => {
+                    resolve(assignment);
+                }); //NOTE: Removed catch (should be caught downsteam in chain)
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+        //return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 
     /**
@@ -69,6 +69,7 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing the requested assignment, if it exists
      */
     static async readAssignment(assignmentId: string): Promise<IAssignment> {
+
         return new Promise((resolve,reject) => {
             Assignment.getStaticModel().findOne({_id : assignmentId}).then((model) => {
 
@@ -83,7 +84,6 @@ export const AssignmentDAO : IAssignmentDAO = class {
                 reject(err);
             })
         });
-        // return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 
     /**
@@ -92,7 +92,7 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing the updated Assignment
      */
     static async updateAssignment(assignment : IAssignment) : Promise<IAssignment> {
-        //return new Promise((resolve, reject) => {resolve(undefined)} );
+
         return new Promise((resolve,reject) => {
             Assignment.getStaticModel().findOne({_id : assignment.getId()}).then((model) => {
                 
