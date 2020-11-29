@@ -92,7 +92,33 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing the updated Assignment
      */
     static async updateAssignment(assignment : IAssignment) : Promise<IAssignment> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+        //return new Promise((resolve, reject) => {resolve(undefined)} );
+        return new Promise((resolve,reject) => {
+            Assignment.getStaticModel().findOne({_id : assignment.getId()}).then((model) => {
+                
+                if(model == undefined) {
+                    reject(new Error("Cannot update: No assignment with the given id exists in the database"));
+                } else {
+
+                    Assignment.getStaticModel().findOneAndUpdate(
+                        {
+                            _id : assignment.getId() 
+                        },
+                        {
+                            _id : assignment.getId(), 
+                            name : assignment.getName(),
+                            submissionIds : assignment.getSubmissionIds()
+                        }
+                    ).then((res) => {
+                        resolve(assignment);
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                }
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 
     /**
@@ -101,7 +127,7 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing nothing
      */
     static async deleteAssignment(assignmentId : string): Promise<void> {
-        //return new Promise((resolve, reject) => {resolve(undefined)} );
+        
         return new Promise((resolve,reject) => {
             return Assignment.getStaticModel().findOne({_id : assignmentId}).then((model) => {                
                 if(model == undefined) {
