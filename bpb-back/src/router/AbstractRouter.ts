@@ -20,6 +20,7 @@ abstract class AbstractRouter implements IRouter {
         this.submissionManager = submissionManager;
         this.assignmentManager = assignmentManager;
 
+        // Override CORS policy to enable communication from client on different port
         app.use(function (req, res, next) {
             res.header('Access-Control-Allow-Origin', '*');
             res.header('Access-Control-Allow-Headers',
