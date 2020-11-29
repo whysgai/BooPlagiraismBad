@@ -119,7 +119,41 @@ describe("AssignmentDAO.ts",() => {
     });
         
     describe("updateAssignment()",() => {
-        it("Should update an assignment database object if {id} is valid");
+        it("Should update an assignment database object if {id} is valid",() => {
+           
+            //New values to assign after creation
+            var updatedName = "Newer Name";
+            var updatedSubmissionIds = ["5fc2a8b18636ab0ada9a21bb"] //One removed
+
+
+            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+                
+                //Ensure created assignment starts with expected default values
+                expect(createdAssignment.getId()).to.not.be.undefined;
+                expect(createdAssignment.getName()).to.equal(testAssignment.getName());
+                expect(createdAssignment.getSubmissionIds()).to.equal(testAssignment.getSubmissionIds());
+                
+                //Update created assignment
+                createdAssignment.setName(updatedName);
+                createdAssignment.setSubmissionIds(updatedSubmissionIds);
+
+                return AssignmentDAO.updateAssignment(createdAssignment).then((updatedAssignment) => {
+                   
+                    //Expect updates to be returned on pass-through
+                    expect(updatedAssignment.getId()).to.deep.equal(createdAssignment.getId());
+                    expect(updatedAssignment.getName()).to.deep.equal(updatedName);
+                    expect(updatedAssignment.getSubmissionIds()).to.deep.equal(updatedSubmissionIds);
+
+                    return AssignmentDAO.readAssignment(createdAssignment.getId()).then((readUpdatedAssignment) => {
+                        
+                        //Expect updates to be returned on read
+                        expect(readUpdatedAssignment.getId()).to.deep.equal(createdAssignment.getId())
+                        expect(readUpdatedAssignment.getName()).to.deep.equal(updatedName);
+                        expect(readUpdatedAssignment.getSubmissionIds()).to.deep.equal(updatedSubmissionIds);
+                    });
+                });
+            });
+        });
 
         it("Should throw an appropriate error if no assignment exists with the specified {id}",() =>  {
             var newAssignment = new Assignment.builder().build();
