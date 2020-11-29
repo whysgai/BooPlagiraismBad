@@ -30,7 +30,6 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
   } 
 
   callDispatch() {
-    console.log("Files from callDispatch", this.state.files);
     store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.state.name, store.getState().AssignmentReducer.currentAssignment, this.state.files))
   }
 
@@ -40,30 +39,21 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
       multiple: true,
       onChange(info : any) {
         const { status } = info.file;
-        // if (status === 'done') {
-        //   message.success(`${info.file.name} file uploaded successfully.`);
-        // } else if (status === 'error') {
-        //   message.error(`${info.file.name} file upload failed.`);
-        // }
       },
       beforeUpload : (file: any) : boolean => {
-        console.log("Reached before upload. File:", file);
-        //let uploadFiles = [] as any[];
-        // let target = 
         const reader = new FileReader();
+        // Prepares what happens when the reader runs
         reader.onload = (event) => {
           if (!event.target) {
-            console.log("Event target is null, no file to upload.");
             return false;
           }
           file.text = event.target.result;
-          //uploadFiles.push(file);
           let uploadFiles = this.state.files.concat(file);
           this.setState({
             files: uploadFiles
           });
-          console.log("State files after beforeUpload", this.state.files);
         };
+        // Actually runs the reader, invoking the above
         reader.readAsText(file);        
         return false;
       }
