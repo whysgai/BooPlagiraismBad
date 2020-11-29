@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { store } from './store';
-import { createAssignment } from './actions/AssignmentAction';
+import { store } from '../../store';
+import { createAssignment } from '../../actions/AssignmentAction';
 
 interface PropsType {
   name: string

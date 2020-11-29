@@ -1,8 +1,8 @@
 import React, { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { store } from './store';
-import createSubmission from './actions/SubmissionAction';
-import Assignment from './types/Assignment';
+import { store } from '../../store';
+import createSubmission from '../../actions/SubmissionAction';
+import Assignment from '../../types/Assignment';
 import { Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 //import { createSubmission } from './actions/SubmissionAction';

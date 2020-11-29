@@ -1,7 +1,7 @@
 import React from 'react';
 import './css/AssignmentListComponent.css';
 import AssignmentListCard from './AssignmentListCard'
-import Assignment from './types/Assignment'
+import Assignment from '../../types/Assignment'
 import {Link} from 'react-router-dom'
 
 interface PropsType {

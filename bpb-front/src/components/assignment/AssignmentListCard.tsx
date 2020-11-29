@@ -1,8 +1,8 @@
 import React from 'react';
-import Assignment from './types/Assignment'
+import Assignment from '../../types/Assignment'
 import { Link } from 'react-router-dom';
-import { store } from './store';
-import {setCurrentAssignment} from './actions/AssignmentAction'
+import { store } from '../../store';
+import {setCurrentAssignment} from '../../actions/AssignmentAction'
 
 interface PropsType {
   assignment: Assignment

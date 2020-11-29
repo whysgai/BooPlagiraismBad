@@ -1,9 +1,9 @@
 import React from 'react';
 import SubmissionListItemComponent from './SubmissionListItemComponent'
-import Submission from './types/Submission'
+import Submission from '../../types/Submission'
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import {store} from './store'
+import {store} from '../../store'
 
 interface PropTypes {
   submissions: Submission[]

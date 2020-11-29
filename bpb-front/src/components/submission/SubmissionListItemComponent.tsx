@@ -1,7 +1,7 @@
 import React from 'react';
-import Submission from './types/Submission'
-import {addSubmissionComparison, removeSubmissionComparison} from './actions/ComparisonAction';
-import {store} from './store'
+import Submission from '../../types/Submission'
+import {addSubmissionComparison, removeSubmissionComparison} from '../../actions/ComparisonAction';
+import {store} from '../../store'
 
 interface PropsType {
   submission: Submission

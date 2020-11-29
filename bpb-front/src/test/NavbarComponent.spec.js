@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import { act } from "react-dom/test-utils";
-import NavbarComponent from "../NavbarComponent";
+import NavbarComponent from "../components/NavbarComponent";
 import { StaticRouter } from 'react-router'
 
 

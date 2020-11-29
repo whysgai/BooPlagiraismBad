@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import { act } from "react-dom/test-utils";
 import { StaticRouter } from 'react-router'
-import SubmissionListComponent from '../SubmissionListComponent';
+import SubmissionListComponent from '../components/submission/SubmissionListComponent';
 import { mount} from 'enzyme'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16';

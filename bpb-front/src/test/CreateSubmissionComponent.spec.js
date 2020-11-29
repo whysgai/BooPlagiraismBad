@@ -5,7 +5,7 @@ import { StaticRouter } from 'react-router'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16';
 import configureMockStore from 'redux-mock-store'
-import CreateSubmissionComponent from '../CreateSubmissionComponent';
+import CreateSubmissionComponent from '../components/submission/CreateSubmissionComponent';
 
 describe("CreateSubmissionComponent tests:", () => {
     let container;
