@@ -12,18 +12,9 @@ interface PropsType {
   files : JSON[]
 }
 
-const propsUpload = {
-  name: 'file',
-  multiple: true,
-  onChange(info : any) {
-    const { status } = info.file;
-    // if (status === 'done') {
-    //   message.success(`${info.file.name} file uploaded successfully.`);
-    // } else if (status === 'error') {
-    //   message.error(`${info.file.name} file upload failed.`);
-    // }
-  },
-};
+
+
+
 
 class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: JSON[]}> {
     constructor(props : PropsType) {
@@ -42,11 +33,45 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
     });
   }
 
+  
+
   callDispatch() {
     store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.state.name, store.getState().AssignmentReducer.currentAssignment, this.state.files))
   }
 
   render() {
+    const propsUpload = {
+      name: 'file',
+      multiple: true,
+      onChange(info : any) {
+        const { status } = info.file;
+        // if (status === 'done') {
+        //   message.success(`${info.file.name} file uploaded successfully.`);
+        // } else if (status === 'error') {
+        //   message.error(`${info.file.name} file upload failed.`);
+        // }
+      },
+      beforeUpload : (file: any) : boolean => {
+        console.log("Reached before upload. File:", file);
+        let uploadFiles = [] as any[];
+        // let target = 
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (!event.target) {
+            console.log("Event target is null, no file to upload.");
+            return false;
+          }
+          file.text = event.target.result;
+          uploadFiles.push(file);
+          this.setState({
+            files: [...uploadFiles]
+          });
+          console.log("State files after beforeUpload", this.state.files);
+        };
+        return false;
+      }
+    };
+
     return (
         <div style={{ textAlign: 'center', paddingTop: '20px' }}>
             <div style={{textAlign: 'right', paddingRight: '100px', paddingTop: '30px', fontWeight: 'bolder'}}>
@@ -70,7 +95,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                 </Upload>      
                 <br/>
                 <Link className='create-submission-btn btn btn-outline-success mt-2'
-                    to="/"
+                    to="/Submissions"
                     onClick={() => this.callDispatch()}>
                     Upload Submission
                 </Link>
