@@ -20,7 +20,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         mockSubmission = Sinon.createStubInstance(Submission);
         chai.use(spies);
         chai.spy.on(mockSubmission, 'getId', () => exampleSubmissionId);
-        exampleFileName = '/vagrant/bpb-back/test/res/javaExample.java';
+        exampleFileName = '/vagrant/bpb-back/test/res/javaExample.java'; // needs to be full path, so it can be parsed
         let javaStr = readFileSync(exampleFileName).toString();
         exampleTree = parse(javaStr);
     });

@@ -120,8 +120,8 @@ describe("Submission.ts",() => {
         testSubmissionB = builderB.build();
 
         testFileContent = "reallylongstringwithplentyofcontenttoexceedtheminimumlengthrequiredinordertohavesufficientlevelsofdifferencetobemeasurable";
-        testEntryA = new AnalysisResultEntry("are1", testSubmissionA.getId(),"/home/file.java","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
-        testEntryB = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
+        testEntryA = new AnalysisResultEntry("are1", testSubmissionA.getId(),"file.java","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
+        testEntryB = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
     });
 
     describe("getId()",() => {
@@ -165,7 +165,7 @@ describe("Submission.ts",() => {
 
         it("Should return a valid AnalysisResult[] with expected values for submissions who share all identical hashes", () => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
-            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, 
+            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, 
             "1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");//same hash as testEntryA
             testSubmissionB.addAnalysisResultEntry(testEntryC);
             var resultB = testSubmissionB.compare(testSubmissionA);
@@ -180,9 +180,9 @@ describe("Submission.ts",() => {
         });
 
         it("Should return a valid AnalysisResult[] with expected values for submissions that share one identical hash pair, and one non-matching hash pair", () => {
-            let testEntryC = new AnalysisResultEntry("are1", testSubmissionA.getId(),"/home/file.java","method",1, 0, 100, 1,
+            let testEntryC = new AnalysisResultEntry("are1", testSubmissionA.getId(),"file.java","method",1, 0, 100, 1,
             "4567894567894567894567894567894567894567894567894567894567894567894567","void() {}");          
-            let testEntryD = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, 
+            let testEntryD = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, 
             "1234567123456712345671234567123456712345671234567123456712345671234567","void() {}"); //same hash as testEntryA
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
@@ -222,7 +222,7 @@ describe("Submission.ts",() => {
         });
 
         it("Should not throw an error when two similar hashValues are compared.", () => {
-            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, testEntryA.getHashValue(),"void() {}");
+            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, testEntryA.getHashValue(),"void() {}");
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryC);
             let compare = () => testSubmissionB.compare(testSubmissionA);
@@ -243,8 +243,8 @@ describe("Submission.ts",() => {
         });
 
         it("Should not throw an error when a submission contains two entries from two different files.", () => {
-            let testEntryC = new AnalysisResultEntry("are1", testSubmissionA.getId(),"/home/file.javaa","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
-            let testEntryD = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.javab","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
+            let testEntryC = new AnalysisResultEntry("are1", testSubmissionA.getId(),"file.javaa","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
+            let testEntryD = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.javab","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             testSubmissionA.addAnalysisResultEntry(testEntryC);
@@ -256,7 +256,7 @@ describe("Submission.ts",() => {
         });
 
         it("Should recognize a match for two nodes that share an identical hash value", () => {
-            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"/home/filey.java","method",2, 3, 30, 4, "1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
+            let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, "1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryC);
             let analysisResults = testSubmissionA.compare(testSubmissionB);
