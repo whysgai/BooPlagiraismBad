@@ -16,17 +16,11 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
         this.onInputchange = this.onInputchange.bind(this);
   }
 
-  // onInputchange(event : ChangeEvent<HTMLInputElement>) {
   onInputchange(event : ChangeEvent<HTMLInputElement>) {
-    //const name = event.target.name;
     const value = event.target.value;
     this.setState((state) => {
       return {name: value}
     });   
-    // this.setState({
-    //   ...this.state,
-    //     [event.target.name]: event.target.value
-    // });
   }
 
   callDispatch() {
