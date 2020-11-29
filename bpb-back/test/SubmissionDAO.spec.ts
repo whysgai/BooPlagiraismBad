@@ -54,9 +54,9 @@ describe("SubmissionDAO.ts",() => {
                 expect(submission.getName()).to.equal(testSubmission.getName());
                 expect(submission.getId()).to.not.be.undefined;
 
-                return Submission.getStaticModel().findOne({"name":testSubmission.getName()}).then((document) => {
-                    expect(document).to.have.property("name").which.equals(testSubmission.getName());
-                    expect(document.id).to.equal(submission.getId());
+                return Submission.getStaticModel().findOne({"_id":submission.getId()}).then((document) => {
+                    expect(document).to.have.property("name").which.equals(submission.getName());
+                    expect(document).to.have.property("assignment_id").which.deep.equals(submission.getAssignmentId());
                 });
             });
         });
