@@ -27,7 +27,7 @@ describe("AssignmentDAO.ts",() => {
         //Restore global prototype mocks
         chai.spy.restore(Assignment.getStaticModel());
 
-        mongoose.connection.collections.submissions.drop(() => {
+        mongoose.connection.collections.assignments.drop(() => {
             var testAssignmentBuilder = new Assignment.builder();
             testAssignmentBuilder.setName(testAssignmentName);
             testAssignmentBuilder.setSubmissionIds(testAssignmentSubmissionIds);
@@ -98,11 +98,11 @@ describe("AssignmentDAO.ts",() => {
                     return AssignmentDAO.readAssignments().then((assignments) => {
                         expect(assignments[0].getId()).to.equal(createdAssignment.getId());
                         expect(assignments[0].getName()).to.equal(createdAssignment.getName());
-                        expect(assignments[0].getSubmissionIds()).to.equal(createdAssignment.getSubmissionIds());
+                        expect(assignments[0].getSubmissionIds()).to.deep.equal(createdAssignment.getSubmissionIds());
 
                         expect(assignments[1].getId()).to.equal(createdAssignment2.getId());
                         expect(assignments[1].getName()).to.equal(createdAssignment2.getName());
-                        expect(assignments[1].getSubmissionIds()).to.equal(createdAssignment2.getSubmissionIds());
+                        expect(assignments[1].getSubmissionIds()).to.deep.equal(createdAssignment2.getSubmissionIds());
                     });
                 });
             });
