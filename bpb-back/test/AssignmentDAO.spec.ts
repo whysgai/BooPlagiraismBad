@@ -2,6 +2,7 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import mongoose from 'mongoose';
 import {IAssignment, Assignment} from '../src/model/Assignment'
+import { AssignmentDAO } from '../src/model/AssignmentDAO'
 
 describe("AssignmentDAO.ts",() => {
 
@@ -41,9 +42,24 @@ describe("AssignmentDAO.ts",() => {
     });
 
     describe("createAssignment()",() => {
-        it("Should create an assignment database object if inputs are valid");
-        it("Should throw an appropriate error if inputs are invalid");
-        it("Should throw an appropriate error if assignment can't be saved");
+        it("Should create an assignment database object if inputs are valid",() => {
+            return .then((assignment) => {
+                
+                expect(assignment.getName()).to.equal(testAssignment.getName());
+                expect(assignment.getId()).to.not.be.undefined;
+
+                return Assignment.getStaticModel().findOne({"name":testAssignment.getName()}).then((document) => {
+                    expect(document).to.have.property("name").which.equals(testAssignment.getName());
+                    expect(document.id).to.equal(testAssignment.getId());
+                });
+            }); 
+        });
+
+        it("Should throw an appropriate error if assignment can't be saved",() => {
+            chai.spy.on(Assignment.getStaticModel().prototype,'save',() => {return Promise.reject(new Error("Cannot save"))});
+
+            return expect(AssignmentDAO.createAssignment(testAssignment.getName(),testAssignment.getSubmissionIds())).to.eventually.be.rejectedWith("Cannot save");
+        });
     });
 
     describe("readAssignment()",() => {
