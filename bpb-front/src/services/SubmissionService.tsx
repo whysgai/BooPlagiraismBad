@@ -5,7 +5,6 @@ const vagrantURL = 'http://192.168.33.10:8080/'
 
 
 export function postSubmission(name : string, assignment: Assignment, files: string[]) : void {
-    console.log("Name:", name, "assignment", assignment, "Files:", files);
     fetch(`${vagrantURL}submissions`, {
         method: 'POST',
         body: JSON.stringify({"name": name, "assignment_id": assignment._id}),
@@ -14,7 +13,6 @@ export function postSubmission(name : string, assignment: Assignment, files: str
 }
 
 export function postFiles(submission: Submission, files: string[]) : void { 
-    console.log("Now sending files...", files);   
     for (let file in files) {
         //convert string to formData
         let formData = new FormData();

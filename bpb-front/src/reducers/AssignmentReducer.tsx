@@ -9,7 +9,6 @@ const initialState = {
 const AssignmentReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case 'SET_CURRENT_ASSIGNMENT':
-            console.log(action.assignment)
             return {
                 ...state,
                 currentAssignment: action.assignment
