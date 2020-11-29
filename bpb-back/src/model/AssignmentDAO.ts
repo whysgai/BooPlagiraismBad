@@ -1,4 +1,4 @@
-import {IAssignment} from './Assignment'
+import {IAssignment, Assignment } from './Assignment'
 
 export interface IAssignmentDAO {
     createAssignment(name : string, submissionIds : string[]) : Promise<IAssignment>; 
@@ -19,7 +19,23 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing the created Assignment
      */
     static async createAssignment(name : string, submissionIds : string[]): Promise<IAssignment> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+
+        return new Promise((resolve,reject) => {
+            
+            var assignmentBuilder = new Assignment.builder();
+            assignmentBuilder.setName(name);
+            assignmentBuilder.setSubmissionIds(submissionIds);
+            
+            var assignment = assignmentBuilder.build();
+
+            var assignmentModel = assignment.getModelInstance();
+
+            assignmentModel.save().then(() => {
+                resolve(assignment);
+            }).catch((err) => {
+                reject(err);
+            });
+       });
     }
     
     /**
@@ -27,7 +43,23 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing all Assignments in the databse
      */
     static async readAssignments(): Promise<IAssignment[]> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+        
+        return new Promise((resolve,reject) => {
+            Assignment.getStaticModel().find().then((assignmentModels) => {
+
+                Promise.all(
+                    assignmentModels.map(
+                        model => {
+                            return new Assignment.builder().buildFromExisting(model);
+                        }
+                    )
+                ).then(assignment => {
+                    resolve(assignment);
+                }); //NOTE: Removed catch (should be caught downsteam in chain)
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 
     /**
@@ -35,8 +67,22 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @param AssignmentId Id of the assignment to obtain
      * @returns A Promise containing the requested assignment, if it exists
      */
-    static async readAssignment(AssignmentID: string): Promise<IAssignment> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+    static async readAssignment(assignmentId: string): Promise<IAssignment> {
+
+        return new Promise((resolve,reject) => {
+            Assignment.getStaticModel().findOne({_id : assignmentId}).then((model) => {
+
+                if(model == undefined) {
+                    reject(new Error("Cannot find: No assignment with the given id exists in the database"));
+                } else {
+                    var builder = new Assignment.builder();
+                    var assignment = builder.buildFromExisting(model);
+                    resolve(assignment);
+                }
+            }).catch((err) => {
+                reject(err);
+            })
+        });
     }
 
     /**
@@ -45,7 +91,33 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing the updated Assignment
      */
     static async updateAssignment(assignment : IAssignment) : Promise<IAssignment> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+
+        return new Promise((resolve,reject) => {
+            Assignment.getStaticModel().findOne({_id : assignment.getId()}).then((model) => {
+                
+                if(model == undefined) {
+                    reject(new Error("Cannot update: No assignment with the given id exists in the database"));
+                } else {
+
+                    Assignment.getStaticModel().findOneAndUpdate(
+                        {
+                            _id : assignment.getId() 
+                        },
+                        {
+                            _id : assignment.getId(), 
+                            name : assignment.getName(),
+                            submissionIds : assignment.getSubmissionIds()
+                        }
+                    ).then((res) => {
+                        resolve(assignment);
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                }
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 
     /**
@@ -54,6 +126,25 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing nothing
      */
     static async deleteAssignment(assignmentId : string): Promise<void> {
-        return new Promise((resolve, reject) => {resolve(undefined)} );
+        
+        return new Promise((resolve,reject) => {
+            return Assignment.getStaticModel().findOne({_id : assignmentId}).then((model) => {                
+                if(model == undefined) {
+                    reject(new Error("Cannot delete: No assignment with the given id exists in the database"));
+                } else {
+                    return Assignment.getStaticModel().findOneAndDelete(
+                        {
+                            _id : assignmentId 
+                        }
+                    ).then((res) => {
+                        resolve();
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                }
+            }).catch((err) => {
+                reject(err);
+            });            
+        });
     }
 }

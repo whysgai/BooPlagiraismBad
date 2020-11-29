@@ -84,7 +84,6 @@ describe("Assignment.ts",() => {
 
     describe("getSubmissionIds()",() => {
         it("Should return an empty collection if assignment has no submissions ",() => {
-            console.log(assignment.getSubmissionIds());
             expect(assignment.getSubmissionIds()).to.be.empty;
         });
         
