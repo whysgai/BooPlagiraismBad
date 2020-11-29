@@ -43,7 +43,7 @@ describe("AssignmentDAO.ts",() => {
 
     describe("createAssignment()",() => {
         it("Should create an assignment database object if inputs are valid",() => {
-            return .then((assignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((assignment) => {
                 
                 expect(assignment.getName()).to.equal(testAssignment.getName());
                 expect(assignment.getId()).to.not.be.undefined;
@@ -63,9 +63,24 @@ describe("AssignmentDAO.ts",() => {
     });
 
     describe("readAssignment()",() => {
-        it("Should read an assignment database object if {id} is valid");
-        it("Should throw an appropriate error when trying to update a nonexistent database object");
-        it("Should throw an appropriate error if assignment can't be found");
+        it("Should read an assignment database object if {id} is valid",() => {
+            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((assignment) => {
+                return AssignmentDAO.readAssignment(assignment.getId()).then((readAssignment) => {
+                    expect(readAssignment.getName()).to.equal(assignment.getName());
+                    expect(readAssignment.getId()).to.equal(assignment.getId());
+                });
+            });
+        });
+
+        it("Should throw an appropriate error when trying to update a nonexistent database object",() => {
+            var nonPersistedAssignment = new Assignment.builder().build(); 
+            return expect(AssignmentDAO.readAssignment(nonPersistedAssignment.getId())).to.eventually.be.rejectedWith("Cannot find: No assignment with the given id exists in the database");
+        });
+
+        it("Should throw an appropriate error if assignment can't be found",() => {
+            chai.spy.on(Assignment.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(AssignmentDAO.readAssignment(testAssignment.getId())).to.eventually.be.rejectedWith("Cannot findOne");
+        });
     });   
         
     describe("updateAssignment()",() => {
