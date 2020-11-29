@@ -24,12 +24,10 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
   }
 
   callDispatch() {
-    console.log("Component:", this.state.name);
     store.dispatch(createAssignment('CREATE_ASSIGNMENT', this.state.name));
   }
 
   render() {
-    console.log(this.state.name)
     return (
         <div style={{ textAlign: 'center', paddingTop: '20px' }}>
             <div style={{textAlign: 'right', paddingRight: '100px', paddingTop: '30px', fontWeight: 'bolder'}}>
@@ -50,7 +48,7 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
                 <br/>
                 <Link className='create-assignment-btn btn btn-outline-success mt-2'
                     to="/"
-                    onClick={() => {console.log("OnCLick:", this.state.name); this.callDispatch()}}>
+                    onClick={() => this.callDispatch()}>
                     Create Assignment
                 </Link>
             </span>
