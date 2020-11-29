@@ -53,8 +53,8 @@ describe('SubmissionRouter.ts',()=> {
         testSubmission = builder.build();
 
         testAssignment.addSubmission(testSubmission.getId());
-        testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"/vagrant/bpb-back/uploads/test.java","method",1,3,7,9,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
-        testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","/vagrant/bpb-back/uploads/testing.java","method",2,4,6,8,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
+        testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"test.java","method",1,3,7,9,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
+        testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","testing.java","method",2,4,6,8,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
         testSubmission.addAnalysisResultEntry(testAre1);
         testSubmission.addAnalysisResultEntry(testAre2);
         
