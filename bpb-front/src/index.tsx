@@ -24,7 +24,10 @@ ReactDOM.render(
       <NavbarComponent />
       <Route exact path="/"><AssignmentListComponent assignments={
         [
-          {_id:"5fc2d80a71eebe34b794da35", name:"Mikayla", submissionIds:['1','2','3']},
+          // Mikayla's vagrant assignment ID
+          // {_id:"5fc2d80a71eebe34b794da35", name:"Mikayla", submissionIds:['1','2','3']},
+          // Will's vagrant assignment ID
+          {_id:"5fc2fe10c5beec1cabd409bf", name:"Mikayla", submissionIds:['1','2','3']},
           {_id:"02", name:"Ture", submissionIds:['2']}
         ]
       }/></Route>
