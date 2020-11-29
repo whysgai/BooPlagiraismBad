@@ -26,7 +26,7 @@ describe("CreateSubmissionComponent tests:", () => {
         act(() =>{
             render(<StaticRouter location='/' context={{}}><CreateSubmissionComponent/></StaticRouter>, container);
         });
-        expect(container.querySelector('.create-submission-btn').getAttribute('href')).toBe('/');
+        expect(container.querySelector('.create-submission-btn').getAttribute('href')).toBe('/Submissions');
     });
     it('Should display Upload Files drag and drop section', () =>{
         act(() =>{
