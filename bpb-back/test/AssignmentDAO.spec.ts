@@ -55,7 +55,7 @@ describe("AssignmentDAO.ts",() => {
             }); 
         });
 
-        it("Should throw an appropriate error if assignment can't be saved",() => {
+        it("Should throw an appropriate error if saving fails during creation",() => {
             chai.spy.on(Assignment.getStaticModel().prototype,'save',() => {return Promise.reject(new Error("Cannot save"))});
 
             return expect(AssignmentDAO.createAssignment(testAssignment.getName(),testAssignment.getSubmissionIds())).to.eventually.be.rejectedWith("Cannot save");
@@ -72,12 +72,12 @@ describe("AssignmentDAO.ts",() => {
             });
         });
 
-        it("Should throw an appropriate error when trying to update a nonexistent database object",() => {
+        it("Should throw an appropriate error when trying to read a nonexistent assignment",() => {
             var nonPersistedAssignment = new Assignment.builder().build(); 
             return expect(AssignmentDAO.readAssignment(nonPersistedAssignment.getId())).to.eventually.be.rejectedWith("Cannot find: No assignment with the given id exists in the database");
         });
 
-        it("Should throw an appropriate error if assignment can't be found",() => {
+        it("Should throw an appropriate error if assignment can't be found during read",() => {
             chai.spy.on(Assignment.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
             return expect(AssignmentDAO.readAssignment(testAssignment.getId())).to.eventually.be.rejectedWith("Cannot findOne");
         });
@@ -108,7 +108,7 @@ describe("AssignmentDAO.ts",() => {
             });
         });
 
-        it("Should throw an appropriate error if database find fails",() => {
+        it("Should throw an appropriate error if database find fails during read",() => {
             chai.spy.on(Assignment.getStaticModel(),'find',() => { return Promise.reject(new Error("Cannot find"))});
             return expect(AssignmentDAO.readAssignments()).to.eventually.be.rejectedWith("Cannot find"); 
         });
@@ -130,12 +130,12 @@ describe("AssignmentDAO.ts",() => {
             });
         });
 
-        it("Should throw an appropriate error if database findOne fails",() => {
+        it("Should throw an appropriate error if database findOne fails during update",() => {
             chai.spy.on(Assignment.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
             return expect(AssignmentDAO.updateAssignment(testAssignment)).to.eventually.be.rejectedWith("Cannot findOne");
         });
 
-        it("Should throw an appropriate error if database findOneAndUpdate fails",()  => {
+        it("Should throw an appropriate error if database findOneAndUpdate fails during update",()  => {
             chai.spy.on(Assignment.getStaticModel(),'findOneAndUpdate',() => { return Promise.reject(new Error("Cannot findOneAndUpdate"))});
             
             return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
