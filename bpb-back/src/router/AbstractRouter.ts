@@ -19,13 +19,19 @@ abstract class AbstractRouter implements IRouter {
         this.route = route;
         this.submissionManager = submissionManager;
         this.assignmentManager = assignmentManager;
+
+        // Override CORS policy to enable communication from client on different port
+        app.use(function (req, res, next) {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers',
+                'Content-Type, X-Requested-With, Origin');
+            res.header('Access-Control-Allow-Methods',
+                'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+            next();
+        });
+
         app.use(route,this.router);
     }
-
-    /**
-     * Initialize routes (i.e. specify routes and bind them to the Express router) 
-     */
-    setupRoutes(){}
 }
 
 export default AbstractRouter;

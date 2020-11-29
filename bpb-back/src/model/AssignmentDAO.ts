@@ -19,7 +19,6 @@ export const AssignmentDAO : IAssignmentDAO = class {
      * @returns A Promise containing the created Assignment
      */
     static async createAssignment(name : string, submissionIds : string[]): Promise<IAssignment> {
-
         return new Promise((resolve,reject) => {
             
             var assignmentBuilder = new Assignment.builder();

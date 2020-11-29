@@ -1,13 +1,13 @@
 import React, { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { store } from './store';
-import { createAssignment } from './actions/AssignmentAction';
+import { store } from '../../store';
+import { createAssignment } from '../../actions/AssignmentAction';
 
 interface PropsType {
   name: string
 }
 
-class CreateAssignmentComponent extends React.Component <PropsType, {}> {
+class CreateAssignmentComponent extends React.Component <PropsType, {name: string}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
@@ -17,13 +17,14 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
   }
 
   onInputchange(event : ChangeEvent<HTMLInputElement>) {
-    this.setState({
-        [event.target.name]: event.target.value,
-    });
+    const value = event.target.value;
+    this.setState((state) => {
+      return {name: value}
+    });   
   }
 
   callDispatch() {
-    store.dispatch(createAssignment('ADD_ASSIGNMENT', this.props.name));
+    store.dispatch(createAssignment('CREATE_ASSIGNMENT', this.state.name));
   }
 
   render() {
@@ -38,7 +39,12 @@ class CreateAssignmentComponent extends React.Component <PropsType, {}> {
             <br/>
             <span text-align="center">
                 <h5>Assignment Name:</h5>
-                <input name="name" className='assignment-name-input' type="text" value={this.props.name} onChange={this.onInputchange}/>
+                <input 
+                  name="name" 
+                  className='assignment-name-input' 
+                  type="text" 
+                  onChange={this.onInputchange}
+                />
                 <br/>
                 <Link className='create-assignment-btn btn btn-outline-success mt-2'
                     to="/"

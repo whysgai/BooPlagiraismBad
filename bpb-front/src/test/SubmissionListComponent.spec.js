@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import { act } from "react-dom/test-utils";
 import { StaticRouter } from 'react-router'
-import SubmissionListComponent from '../SubmissionListComponent';
+import SubmissionListComponent from '../components/submission/SubmissionListComponent';
 import { mount} from 'enzyme'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16';
@@ -71,7 +71,7 @@ describe("SubmissionListComponent tests:", () => {
         });
         expect(container.getElementsByClassName('submission-list').length).toBe(1);
         expect(container.getElementsByClassName('submission-list-item').length).toBe(4);
-        expect(document.querySelector("a").getAttribute("href")).toBe("/CreateSubmissionComponent")
+        expect(document.querySelector("a").getAttribute("href")).toBe("/CreateSubmission")
     });
     it('Should display SubmissionCompareButton', () => {
         let container = document.createElement('div');

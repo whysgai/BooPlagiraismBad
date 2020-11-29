@@ -1,8 +1,8 @@
 import React from 'react';
-import AssignmentListComponent from '../AssignmentListComponent';
+import AssignmentListComponent from '../components/assignment/AssignmentListComponent';
 import renderer from 'react-test-renderer';
 import { StaticRouter } from 'react-router'
-import HelpComponent from '../HelpComponent';
+import HelpComponent from '../components/HelpComponent';
 
 
 describe('index.js', () => {

@@ -1,5 +1,5 @@
+import express from 'express';
 import AbstractRouter from './AbstractRouter';
-import express, { Router } from 'express';
 import {IAssignment } from '../model/Assignment'
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmissionManager } from '../manager/SubmissionManager';

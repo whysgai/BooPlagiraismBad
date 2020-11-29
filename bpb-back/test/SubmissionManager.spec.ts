@@ -227,7 +227,7 @@ describe("SubmissionManager.ts",() => {
             var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
-            chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(mockSubmission)}); //Required
+            var mockUpdateSubmission = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(mockSubmission)}); //Required
 
             var mockAddFile = chai.spy.on(mockSubmission,'addFile',() => { return Promise.resolve() });
             
@@ -238,6 +238,7 @@ describe("SubmissionManager.ts",() => {
                         
                         testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName).then(() => {
                             expect(mockAddFile).to.have.been.called.with(expectedContent,testFileName);
+                            expect(mockUpdateSubmission).to.have.been.called.with(mockSubmission);
                         });
                     });
                 });

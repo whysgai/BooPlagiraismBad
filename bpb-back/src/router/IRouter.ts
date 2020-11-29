@@ -1,9 +1,6 @@
 /**
  * Interface for Router implementations
  */
-interface IRouter {
-    setupRoutes() : void;
-}
-
+interface IRouter {}
 
 export default IRouter;

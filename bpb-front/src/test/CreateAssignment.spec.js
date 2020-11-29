@@ -2,13 +2,13 @@ import React from 'react';
 import {render} from 'react-dom';
 import { act } from "react-dom/test-utils";
 import { StaticRouter } from 'react-router'
-import SubmissionListComponent from '../SubmissionListComponent';
+import SubmissionListComponent from '../components/submission/SubmissionListComponent';
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16';
 import configureMockStore from 'redux-mock-store'
-import CreateAssignmentComponent from '../CreateAssignmentComponent';
+import CreateAssignmentComponent from '../components/assignment/CreateAssignmentComponent';
 
-describe("SubmissionListComponent tests:", () => {
+describe("CreateAssignmentComponent tests:", () => {
     let container;
     let mockStore;
     beforeEach(() => {

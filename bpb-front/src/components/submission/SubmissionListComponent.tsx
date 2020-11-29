@@ -1,9 +1,9 @@
 import React from 'react';
 import SubmissionListItemComponent from './SubmissionListItemComponent'
-import Submission from './types/Submission'
+import Submission from '../../types/Submission'
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import {store} from './store'
+import {store} from '../../store'
 
 interface PropTypes {
   submissions: Submission[]
@@ -32,8 +32,8 @@ class SubmissionListComponent extends React.Component <PropTypes, {}> {
   render() {
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
-        <h3>Assignment</h3>
-        <Link to='/CreateSubmissionComponent'>Upload Submission</Link>
+        <h3>{store.getState().AssignmentReducer.currentAssignment.name}</h3>
+        <Link className='btn btn-outline-success' to='/CreateSubmission'>Upload Submission</Link>
         <ul>
           {this.props.submissions.map((submission, index) => 
             <li key={index}><SubmissionListItemComponent checkboxOn={false} submission={submission} createSubmission={(arg: String) => null}/></li>
@@ -42,19 +42,19 @@ class SubmissionListComponent extends React.Component <PropTypes, {}> {
 
         {
           store.getState().ComparisonReducer.compareSubmissions.length === 0 &&
-            <Link to="/ComparisonComponent" id="zeroCompare" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
+            <Link className='disabledCompareButton btn btn-outline-secondary disabled' to="/ComparisonComponent" id="zeroCompare" onClick={ (event) => event.preventDefault() }>
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         } 
         {
           store.getState().ComparisonReducer.compareSubmissions.length === 1 &&
-            <Link to="/ComparisonComponent" id="oneCompare" className="disabledCompareButton" onClick={ (event) => event.preventDefault() }>
+            <Link className='disabledCompareButton btn btn-outline-secondary disabled' to="/ComparisonComponent" id="oneCompare" onClick={ (event) => event.preventDefault() }>
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         }
         { 
           store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
-            <Link to="/ComparisonComponent" id="twoCompare" className="enabledCompareButton">
+            <Link className='enabledCompareButton btn btn-outline-success' to="/ComparisonComponent" id="twoCompare" >
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         }

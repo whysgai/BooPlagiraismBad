@@ -1,16 +1,16 @@
 import React from 'react';
 //import "font-awesome/css/font-awesome.min";
 import ReactDOM from 'react-dom';
-import './index.css';
+import './css/index.css';
 import { BrowserRouter, Route } from 'react-router-dom';
-import AssignmentListComponent from './AssignmentListComponent';
-import ComparisonComponent from './ComparisonComponent';
-import CreateAssignmentComponent from './CreateAssignmentComponent';
-import CreateSubmissionComponent from './CreateSubmissionComponent';
-import HelpComponent from './HelpComponent';
-import SubmissionListComponent from './SubmissionListComponent';
+import AssignmentListComponent from './components/assignment/AssignmentListComponent';
+import ComparisonComponent from './components/comparison/ComparisonComponent';
+import CreateAssignmentComponent from './components/assignment/CreateAssignmentComponent';
+import CreateSubmissionComponent from './components/submission/CreateSubmissionComponent';
+import HelpComponent from './components/HelpComponent';
+import SubmissionListComponent from './components/submission/SubmissionListComponent';
 import * as serviceWorker from './serviceWorker';
-import NavbarComponent from './NavbarComponent';
+import NavbarComponent from './components/NavbarComponent';
 import {store} from './store'
 import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -24,7 +24,10 @@ ReactDOM.render(
       <NavbarComponent />
       <Route exact path="/"><AssignmentListComponent assignments={
         [
-          {_id:"01", name:"Mikayla", submissionIds:['1','2','3']},
+          // Mikayla's vagrant assignment ID
+          // {_id:"5fc2d80a71eebe34b794da35", name:"Mikayla", submissionIds:['1','2','3']},
+          // Will's vagrant assignment ID
+          {_id:"5fc2fe10c5beec1cabd409bf", name:"Mikayla", submissionIds:['1','2','3']},
           {_id:"02", name:"Ture", submissionIds:['2']}
         ]
       }/></Route>
