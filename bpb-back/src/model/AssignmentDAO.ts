@@ -60,7 +60,6 @@ export const AssignmentDAO : IAssignmentDAO = class {
                 reject(err);
             });
         });
-        //return new Promise((resolve, reject) => {resolve(undefined)} );
     }
 
     /**
