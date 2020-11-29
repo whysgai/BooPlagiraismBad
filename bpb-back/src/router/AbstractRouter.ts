@@ -1,3 +1,4 @@
+const cors = require('cors');
 import express, { Router } from "express"
 import { IAssignmentManager } from "../manager/AssignmentManager";
 import { ISubmissionManager } from "../manager/SubmissionManager";
@@ -19,6 +20,8 @@ abstract class AbstractRouter implements IRouter {
         this.route = route;
         this.submissionManager = submissionManager;
         this.assignmentManager = assignmentManager;
+
+        app.use(cors({origin: false })); //Disable CORS (TODO: enable) 
         app.use(route,this.router);
     }
 
