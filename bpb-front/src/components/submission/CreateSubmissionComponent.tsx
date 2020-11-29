@@ -9,19 +9,15 @@ import { InboxOutlined } from '@ant-design/icons';
 
 interface PropsType {
   name: string
-  files : JSON[]
+  files : string[]
 }
 
-
-
-
-
-class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: JSON[]}> {
+class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: string[]}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
           name: this.props.name,
-          files : this.props.files
+          files : []
         };
         this.onInputchange = this.onInputchange.bind(this);
   }
@@ -31,11 +27,10 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
     this.setState((state) => {
       return {name: value}
     });
-  }
-
-  
+  } 
 
   callDispatch() {
+    console.log("Files from callDispatch", this.state.files);
     store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.state.name, store.getState().AssignmentReducer.currentAssignment, this.state.files))
   }
 
@@ -53,7 +48,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
       },
       beforeUpload : (file: any) : boolean => {
         console.log("Reached before upload. File:", file);
-        let uploadFiles = [] as any[];
+        //let uploadFiles = [] as any[];
         // let target = 
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -62,12 +57,14 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
             return false;
           }
           file.text = event.target.result;
-          uploadFiles.push(file);
+          //uploadFiles.push(file);
+          let uploadFiles = this.state.files.concat(file);
           this.setState({
-            files: [...uploadFiles]
+            files: uploadFiles
           });
           console.log("State files after beforeUpload", this.state.files);
         };
+        reader.readAsText(file);        
         return false;
       }
     };
