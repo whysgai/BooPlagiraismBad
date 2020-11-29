@@ -75,10 +75,8 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                    <p className="ant-upload-hint">
-                      Support for single file upload or bulk upload. 
-                    </p>
+                    <p className="ant-upload-text">Click or drag submission files to this area to upload</p>
+                    <p className="ant-upload-hint">Supported file extensions are: .java</p>
                 </Upload>      
                 <br/>
                 <Link className='create-submission-btn btn btn-outline-success mt-2'
