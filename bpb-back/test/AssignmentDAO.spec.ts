@@ -81,7 +81,41 @@ describe("AssignmentDAO.ts",() => {
             chai.spy.on(Assignment.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
             return expect(AssignmentDAO.readAssignment(testAssignment.getId())).to.eventually.be.rejectedWith("Cannot findOne");
         });
-    });   
+    });
+    
+    describe("readAssignments",() => {
+        it("should return an empty array of assignments if no assignments exist in the database",() => {
+            return AssignmentDAO.readAssignments().then(submissions => {
+                expect(submissions).to.deep.equal([]);
+            });
+        });
+
+        it("should return all assignments if at least one assignment exists in the database", () => {
+            var testAssignment2 = new Assignment.builder().build();
+
+            return AssignmentDAO.createAssignment(testAssignment.getName(),testAssignment.getSubmissionIds()).then((createdAssignment)  => {
+                return AssignmentDAO.createAssignment(testAssignment2.getName(),testAssignment2.getSubmissionIds()).then((createdAssignment2) => {
+                    return AssignmentDAO.readAssignments().then((assignments) => {
+                        expect(assignments[0].getId()).to.equal(createdAssignment.getId());
+                        expect(assignments[0].getName()).to.equal(createdAssignment.getName());
+                        expect(assignments[0].getSubmissionIds()).to.equal(createdAssignment.getSubmissionIds());
+                        expect(assignments[1].getId()).to.equal(createdAssignment2.getId());
+                        expect(assignments[1].getName()).to.equal(createdAssignment2.getName());
+                        expect(assignments[1].getSubmissionIds()).to.equal(createdAssignment2.getSubmissionIds());
+                    });
+                });
+            });
+        });
+
+        it("Should throw an appropriate error if database find fails",() => {
+            chai.spy.on(Assignment.getStaticModel(),'find',() => { return Promise.reject(new Error("Cannot find"))});
+            return expect(AssignmentDAO.readAssignments()).to.eventually.be.rejectedWith("Cannot find"); 
+        });
+        it("Should throw an appropriate error if returned assignments can't be built (can't map model results)",() => {
+            chai.spy.on(Assignment.getStaticModel(),'find',() => { return Promise.resolve([{}])});
+            return expect(AssignmentDAO.readAssignments()).to.eventually.be.rejectedWith("At least one required model property is not present on the provided model");
+        });
+    });
         
     describe("updateAssignment()",() => {
         it("Should update an assignment database object if {id} is valid");
