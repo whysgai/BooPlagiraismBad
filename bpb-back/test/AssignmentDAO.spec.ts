@@ -99,6 +99,7 @@ describe("AssignmentDAO.ts",() => {
                         expect(assignments[0].getId()).to.equal(createdAssignment.getId());
                         expect(assignments[0].getName()).to.equal(createdAssignment.getName());
                         expect(assignments[0].getSubmissionIds()).to.equal(createdAssignment.getSubmissionIds());
+
                         expect(assignments[1].getId()).to.equal(createdAssignment2.getId());
                         expect(assignments[1].getName()).to.equal(createdAssignment2.getName());
                         expect(assignments[1].getSubmissionIds()).to.equal(createdAssignment2.getSubmissionIds());
@@ -119,9 +120,28 @@ describe("AssignmentDAO.ts",() => {
         
     describe("updateAssignment()",() => {
         it("Should update an assignment database object if {id} is valid");
-        it("Should throw an appropriate error if no assignment exists with the specified {id}");
-        it("Should throw an appropriate error if database findOne fails");
-        it("Should throw an appropriate error if database findOneAndUpdate fails");
+
+        it("Should throw an appropriate error if no assignment exists with the specified {id}",() =>  {
+            var newAssignment = new Assignment.builder().build();
+            return AssignmentDAO.updateAssignment(newAssignment).then(updatedAssignment => {
+                expect(true,"updateAssignment should have failed, but it succeeded").to.equal(false);
+            }).catch((err) =>{
+                expect(err).to.have.property("message").which.contains("Cannot update: No assignment with the given id exists in the database");
+            });
+        });
+
+        it("Should throw an appropriate error if database findOne fails",() => {
+            chai.spy.on(Assignment.getStaticModel(),'findOne',() => { return Promise.reject(new Error("Cannot findOne"))});
+            return expect(AssignmentDAO.updateAssignment(testAssignment)).to.eventually.be.rejectedWith("Cannot findOne");
+        });
+
+        it("Should throw an appropriate error if database findOneAndUpdate fails",()  => {
+            chai.spy.on(Assignment.getStaticModel(),'findOneAndUpdate',() => { return Promise.reject(new Error("Cannot findOneAndUpdate"))});
+            
+            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+                return expect(AssignmentDAO.updateAssignment(createdAssignment)).to.eventually.be.rejectedWith("Cannot findOneAndUpdate");
+            });
+        });
     });
 
     describe("deleteAssignment()",() => {
