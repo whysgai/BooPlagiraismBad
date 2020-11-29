@@ -1,12 +1,13 @@
 import express, { Router } from "express"
 import { IAssignmentManager } from "../manager/AssignmentManager";
 import { ISubmissionManager } from "../manager/SubmissionManager";
+import IRouter from "./IRouter";
 
 /**
  * Router abstraction
  * Allows for development of multiple router types
  */
-abstract class AbstractRouter {
+abstract class AbstractRouter implements IRouter {
     
     protected router : Router;
     protected submissionManager : ISubmissionManager;
