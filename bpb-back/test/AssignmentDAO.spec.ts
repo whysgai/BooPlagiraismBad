@@ -114,7 +114,7 @@ describe("AssignmentDAO.ts",() => {
         });
         it("Should throw an appropriate error if returned assignments can't be built (can't map model results)",() => {
             chai.spy.on(Assignment.getStaticModel(),'find',() => { return Promise.resolve([{}])});
-            return expect(AssignmentDAO.readAssignments()).to.eventually.be.rejectedWith("At least one required model property is not present on the provided model");
+            return expect(AssignmentDAO.readAssignments()).to.eventually.be.rejectedWith("At least one required assignment model property is not present on the provided model");
         });
     });
         
