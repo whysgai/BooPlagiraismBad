@@ -4,7 +4,7 @@
   "description": "BPB backend API",
   "main": "_main.ts",
   "scripts": {
-    "test": "export APIPORT=test1;export UPLOADDIRECTORY=/home/vagrant/;export DBCONNECTIONSTRING=test3;export MAXFILEUPLOADSIZE=1000;export COMPARISONTHRESHOLD=100;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
+    "test": "export APIPORT=test1;export UPLOADDIRECTORY=/home/vagrant/;export DBCONNECTIONSTRING=test3;export MAXFILEUPLOADSIZE=1000;export COMPARISONTHRESHOLD=50;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
     "start": "tsc && node dist/src/_main.js"
   },
   "repository": {

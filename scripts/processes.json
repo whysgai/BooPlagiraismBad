@@ -14,7 +14,7 @@
                 "DBCONNECTIONSTRING":"mongodb://127.0.0.1:27017/bpb",
                 "UPLOADDIRECTORY":"/vagrant/bpb-back/uploads/",
                 "MAXFILEUPLOADSIZE":"5000000",
-                "COMPARISONTHRESHOLD":"100"
+                "COMPARISONTHRESHOLD":"50"
             }
         },
         {
