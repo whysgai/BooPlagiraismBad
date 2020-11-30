@@ -40,8 +40,6 @@ describe("SubmissionManager.ts",() => {
         chai.spy.restore(SubmissionDAO,'updateSubmission');
         chai.spy.restore(SubmissionDAO,'deleteSubmission');
 
-        testSubmissionManager = new SubmissionManager();
-        
         var testSubmissionBuilder = new Submission.builder();
         testSubmissionBuilder.setName(testSubmissionName);
         testSubmissionBuilder.setAssignmentId(testSubmissionAssignmentId);
@@ -53,7 +51,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("getSubmission()",() => {
 
-        afterEach(() => {
+        beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
         
@@ -88,7 +86,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("getSubmissions()",() => {
 
-        afterEach(() => {
+        beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
         
@@ -119,7 +117,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("createSubmission()",() => {
 
-        afterEach(() => {
+        beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
         
@@ -150,7 +148,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("updateSubmission()",() => {
 
-        afterEach(() => {
+        beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
         
@@ -238,7 +236,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("processSubmissionFile()",() => {
 
-        afterEach(() => {
+        beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
 
@@ -358,7 +356,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("deleteSubmission({id})",() => {
 
-        afterEach(() => {
+        beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
 
@@ -404,7 +402,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("compareSubmission({id_a},{id_b})",()=> {
 
-        afterEach(() => {
+        beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
 
@@ -497,7 +495,7 @@ describe("SubmissionManager.ts",() => {
 
     describe("getSubmissionFileContent()",() => {
         
-       afterEach(() => {
+       beforeEach(() => {
             testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
         });
 
