@@ -146,7 +146,7 @@ describe("SubmissionDAO.ts",() => {
             var updatedName = "Newer Name";
             var updatedAssignmentId = "Newer Assignment Id";
             var updatedFileName = "some_new_file"
-            var updatedEntries = new Map<string, IAnalysisResultEntry[]>().set(updatedFileName, [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")] )
+            var updatedEntries = new Map<string, IAnalysisResultEntry[]>().set(updatedFileName, [new AnalysisResultEntry("1","2",updatedFileName,"4",5,6,7,8,"9","10")] )
             var updatedFiles = [updatedFileName];
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
