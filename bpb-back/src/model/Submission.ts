@@ -338,24 +338,29 @@ export interface ISubmission {
 
         
         let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
-        fileAEntries.forEach((entry) => {
-            fileBEntries.forEach((otherEntry) => {
-
-                let hashA = entry.getHashValue();
-                let hashB = otherEntry.getHashValue();
+        let fileASimilar : boolean[] = [false];
+        let fileBSimilar : boolean[] = [false];
+        for(let i = 0; i < fileAEntries.length; i++) {
+            for(let j = 0; j < fileBEntries.length; j++) {
+                let hashA = fileAEntries[i].getHashValue();
+                let hashB = fileBEntries[j].getHashValue();
 
                 let comparison = this.compareHashValues(hashA, hashB);
                 var threshold = AppConfig.getComparisonThreshold(); //TODO: determine actual threshold, using 100 for now
 
                 if(comparison < threshold) {  //the more similar a comparison, the lower the number
-                    matchedEntries.push([entry,otherEntry]);
+                    matchedEntries.push([fileAEntries[i],fileBEntries[j]]);
+                    fileASimilar[i] = true;
+                    fileBSimilar[j] = true;
                 }
-            });
-        });
+            }
+        }
+        let numFileASimilar = fileASimilar.filter(val => val == true).length;
+        let numFileBSimilar = fileBSimilar.filter(val => val == true).length;
 
         let H = matchedEntries.length;
-        let L = fileAEntries.length - H;
-        let R = fileBEntries.length - H;
+        let L = fileAEntries.length - numFileASimilar;
+        let R = fileBEntries.length - numFileBSimilar;
         let similarityScore = (2 * H) / ((2 * H) + R + L); //DECKARD SIMILARITY SCORE ALGORITHM
 
         let submissionIdA = fileAEntries[0].getSubmissionID();
