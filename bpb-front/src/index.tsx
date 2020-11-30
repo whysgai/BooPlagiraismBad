@@ -24,10 +24,7 @@ ReactDOM.render(
       <NavbarComponent />
       <Route exact path="/"><AssignmentListComponent assignments={
         [
-          // Mikayla's vagrant assignment ID
-          // {_id:"5fc2d80a71eebe34b794da35", name:"Mikayla", submissionIds:['1','2','3']},
-          // Will's vagrant assignment ID
-          {_id:"5fc2fe10c5beec1cabd409bf", name:"Mikayla", submissionIds:['1','2','3']},
+          {_id:"5fc56eacd8cd521ccd735826", name:"Mikayla", submissionIds:['1','2','3']},
           {_id:"02", name:"Ture", submissionIds:['2']}
         ]
       }/></Route>
@@ -36,8 +33,8 @@ ReactDOM.render(
 
       <Route exact path="/Submissions"><SubmissionListComponent submissions={
         [
-          {_id:"01", name:"Mikayla", assignment:'Assignment1', files:[]},
-          {_id:"02", name:"Will", assignment:'Assignment1', files:[]},
+          {_id:"5fc57130611f8324889ca46d", name:"Chris", assignment:'Assignment1', files:[]},
+          {_id:"5fc57148611f8324889ca46e", name:"Will", assignment:'Assignment1', files:[]},
         ] 
       } compareEnabled={0}/></Route>
       {/* <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/> */}
