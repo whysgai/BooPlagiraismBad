@@ -40,8 +40,6 @@ describe("SubmissionManager.ts",() => {
         chai.spy.restore(SubmissionDAO,'updateSubmission');
         chai.spy.restore(SubmissionDAO,'deleteSubmission');
 
-        testSubmissionManager = new SubmissionManager();
-        
         var testSubmissionBuilder = new Submission.builder();
         testSubmissionBuilder.setName(testSubmissionName);
         testSubmissionBuilder.setAssignmentId(testSubmissionAssignmentId);
@@ -52,6 +50,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("getSubmission()",() => {
+
+        beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should return submission if the provided ID is valid",()=> {
             var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
@@ -81,7 +83,12 @@ describe("SubmissionManager.ts",() => {
             });
         });
     });
+
     describe("getSubmissions()",() => {
+
+        beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should return submissions of the given assignment if there are some",()=> {
             var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
@@ -109,6 +116,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("createSubmission()",() => {
+
+        beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
             
@@ -136,6 +147,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("updateSubmission()",() => {
+
+        beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should properly update a submission if body parameters are included and submission exists with id",() => {
                         
@@ -219,7 +234,11 @@ describe("SubmissionManager.ts",() => {
         });
     });
 
-    describe("processSubmissionFile()",() =>{
+    describe("processSubmissionFile()",() => {
+
+        beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
 
         it("Should save and add a file into the submission specified by the client",() => {
 
@@ -335,7 +354,11 @@ describe("SubmissionManager.ts",() => {
         });
     });
 
-    describe("deleteSubmission({id})",() =>{
+    describe("deleteSubmission({id})",() => {
+
+        beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
 
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
             
@@ -378,6 +401,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("compareSubmission({id_a},{id_b})",()=> {
+
+        beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
             
@@ -467,6 +494,11 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("getSubmissionFileContent()",() => {
+        
+       beforeEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
+
         it("Should obtain the content of the specified file if it exists",()=> {
             
             var mockSubmission = new Submission.builder().build();
@@ -474,13 +506,57 @@ describe("SubmissionManager.ts",() => {
 
             var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
             
-            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
             return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
                 return copyFile(testFilePath,submissionFilePath).then(() => {                    
                     return readFileContent(submissionFilePath).then((buffer) => {
                         var expectedContent = buffer.toString();
+                        // First query does not use cache, calls getSubmission
                         return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
                             expect(content).to.deep.equal(expectedContent);
+                            expect(mockGetSubmission).to.have.been.called.once.with(mockSubmission.getId());
+                            
+                            // Second query uses cache, does not call getSubmission
+                            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(), testFileName).then((content) => {
+                                expect(content).to.deep.equal(expectedContent);
+                                expect(mockGetSubmission).to.have.been.called.once; 
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        it("Should not use cache if a fileContent of a submission has been cached, but a different file's content from the same submission is requested.", () => {
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
+
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+            
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testFilePath,submissionFilePath).then(() => {                    
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        var expectedContent = buffer.toString();
+                        // First query does not use cache, calls getSubmission
+                        return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+                            expect(content).to.deep.equal(expectedContent);
+                            expect(mockGetSubmission).to.have.been.called.once.with(mockSubmission.getId());
+                            
+                            var NEW_FILE_NAME = 'SOME_OTHER_FILE_NAME';
+                            submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + NEW_FILE_NAME;
+                            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                                return copyFile(testFilePath,submissionFilePath).then(() => {                    
+                                    return readFileContent(submissionFilePath).then((buffer) => {
+                                        var expectedContent = buffer.toString();
+                                        // This query does not use cache, since the file being requested has not been cached, so getSubmission is called again
+                                        return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),NEW_FILE_NAME).then((content) => {
+                                            expect(content).to.deep.equal(expectedContent);
+                                            expect(mockGetSubmission).to.have.been.called.twice.with(mockSubmission.getId());
+                                        });
+                                    }); 
+                                });
+                            });
                         });
                     });
                 });

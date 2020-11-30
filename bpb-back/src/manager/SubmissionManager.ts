@@ -26,9 +26,11 @@ export interface ISubmissionManager {
 export class SubmissionManager implements ISubmissionManager {
 
     private submissionCache : Map<string,ISubmission>;
+    private fileContentsCache : Map<string, Map<string, string>>; // <submissionId, <fileName, fileContent>>
     
     constructor() {
         this.submissionCache = new Map<string,ISubmission>();
+        this.fileContentsCache = new Map<string, Map<string, string>>();
     }
 
     /**
@@ -210,17 +212,25 @@ export class SubmissionManager implements ISubmissionManager {
     getSubmissionFileContent = async(submissionId : string, fileName : string) : Promise<string> => {
         
         return new Promise((resolve,reject) => {
-
-            this.getSubmission(submissionId).then((submission) => {
-                readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
-                    var content = buffer.toString();
-                    resolve(content);
+            if(this.fileContentsCache.get(submissionId) != undefined 
+            && this.fileContentsCache.get(submissionId).get(fileName) != undefined) {
+                resolve(this.fileContentsCache.get(submissionId).get(fileName));
+            } else {
+                this.getSubmission(submissionId).then((submission) => {
+                    readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
+                        var content = buffer.toString();
+                        if(this.fileContentsCache.get(submissionId) == undefined) {
+                            this.fileContentsCache.set(submissionId, new Map<string, string>());
+                        }
+                        this.fileContentsCache.get(submissionId).set(fileName, content);
+                        resolve(content);
+                    }).catch((err) => {
+                        reject(err);
+                    });
                 }).catch((err) => {
                     reject(err);
                 });
-            }).catch((err) => {
-                reject(err);
-            });
+            }
         });
     }
 }
