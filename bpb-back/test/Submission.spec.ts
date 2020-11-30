@@ -80,7 +80,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
             testSubmissionBuilder.setName(newName);
             testSubmissionBuilder.setAssignmentId(newAssignmentId);
             testSubmissionBuilder.setFiles(["some","files"]);
-            testSubmissionBuilder.setEntries(new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]));
+            testSubmissionBuilder.setEntries(new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","someFileName","4",5,6,7,8,"9","10")]));
             testSubmission = testSubmissionBuilder.build();
             var testExistingModel = testSubmission.getModelInstance();
 
@@ -89,6 +89,8 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmissionExisting.getId()).to.deep.equal(testSubmission.getId());
             expect(testSubmissionExisting.getName()).to.deep.equal(testSubmission.getName());
             expect(testSubmissionExisting.getAssignmentId()).to.deep.equal(testSubmission.getAssignmentId());
+            console.log(testSubmission.getEntries());
+            console.log(testSubmissionExisting.getEntries());
             expect(testSubmissionExisting.getEntries()).to.deep.equal(testSubmission.getEntries());
             expect(testSubmissionExisting.getFiles()).to.deep.equal(testSubmission.getFiles());
         });

@@ -135,7 +135,6 @@ export interface ISubmission {
              submission.setAssignmentId(model.assignment_id);
              let resultEntries = new Map<string,IAnalysisResultEntry[]>();
              model.entries.forEach(objectEntries => {
-
                 let fileName = (objectEntries[0] as object as IAnalysisResultEntryModel).fileName;
                 let entryModels =  new Array<IAnalysisResultEntry>();
 
@@ -145,7 +144,7 @@ export interface ISubmission {
                  
                  resultEntries.set(fileName,entryModels);
              });
-             
+
              submission.setEntries(resultEntries);
              submission.setFiles(model.files);
              submission.setModelInstance(model);
