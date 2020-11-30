@@ -3,6 +3,7 @@ import Submission from "../types/Submission";
 
 const initialState = {
     compareSubmissions: [] as Submission[],
+    comparison: [] as JSON[],
 }
 
 const ComparisonReducer = (state = initialState, action: Action) => {
@@ -24,7 +25,10 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 return state
             }
         case 'COMPARE':
-            return //TODO;
+            return {
+                ...state,
+                comparison: action.comparison,
+            }
         default:
             return state;
     }
