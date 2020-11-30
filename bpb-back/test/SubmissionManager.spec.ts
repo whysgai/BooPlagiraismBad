@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { assert, expect } from "chai";
 import chai = require("chai");
 import chaiSpies = require("chai-spies");
 import chaiAsPromised = require("chai-as-promised");
@@ -93,10 +93,18 @@ describe("SubmissionManager.ts",() => {
         it("Should return submissions of the given assignment if there are some",()=> {
             var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
 
+            //First call pulls from database, since cache is empty
             return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
                 expect(submissions[0]).to.deep.equal(testSubmission);
                 expect(mockReadSubmission).to.have.been.called.with(testSubmissionAssignmentId);
-            })
+                expect(mockReadSubmission).to.have.been.called.once;
+                
+                //submissions should be cached, so second call should not call readSubmission again
+                return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
+                    expect(submissions[0]).to.deep.equal(testSubmission);
+                    expect(mockReadSubmission).to.have.been.called.once;
+                });
+            });
         });
 
         it("Should return no submissions if there are none",() =>{
