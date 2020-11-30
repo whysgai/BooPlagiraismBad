@@ -134,17 +134,13 @@ export interface ISubmission {
              submission.setName(model.name);
              submission.setAssignmentId(model.assignment_id);
              let resultEntries = new Map<string,IAnalysisResultEntry[]>();
-             model.entries.forEach(objectEntries => {
-                let fileName = (objectEntries[0] as object as IAnalysisResultEntryModel).fileName;
-                let entryModels =  new Array<IAnalysisResultEntry>();
-
-                objectEntries.forEach(objectEntry  => {
-                    entryModels.push(AnalysisResultEntry.buildFromModel(objectEntry as object as IAnalysisResultEntryModel));
-                });
-                 
-                 resultEntries.set(fileName,entryModels);
-             });
-
+             let objectEntries = new Map(model.entries);
+             for(let fileName of objectEntries.keys()) {
+                 resultEntries.set(fileName, []);
+                 for(let entryObject of objectEntries.get(fileName)) {
+                     resultEntries.get(fileName).push(AnalysisResultEntry.buildFromModel(entryObject as object as IAnalysisResultEntryModel));
+                 }
+             }
              submission.setEntries(resultEntries);
              submission.setFiles(model.files);
              submission.setModelInstance(model);
