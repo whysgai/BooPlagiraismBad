@@ -6,9 +6,13 @@
 
 # Getting Started (Manually)
 * Install MongoDB
-* Export the following environment variables: APIPORT, DBCONNECTIONSTRING, MAXFILEUPLOADSIZE, COMPARISONTHRESHOLD
-* in `bpb-back/`, run `npm run start`
-* in `bpb-front/`, run `npm run start`
+* Export the following environment variables: 
+`APIPORT`
+`DBCONNECTIONSTRING`
+`MAXFILEUPLOADSIZE`
+`COMPARISONTHRESHOLD`
+* Navigate to `bpb-back/`, run `npm run start`
+* Navigate to `bpb-front/`, run `npm run start`
 
 # Required Environment Variables
 *APIPORT*
