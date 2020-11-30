@@ -29,7 +29,7 @@ describe("App (Integration)",() =>  {
         done();
     });
 
-    it('should correctly create a submission (end-to-end)',async () => {
+    it('should correctly create and compare two submissions of a submitted assignment in order to determine if a given submission was plagiarized',async () => {
 
         let fileContentA = await readFileContent("test/res/javaExample.java");
         let fileContentB = await readFileContent("test/res/javaExample2.java");
@@ -66,7 +66,7 @@ describe("App (Integration)",() =>  {
                                     
                                     return chai.request(baseURI).get("/Submissions/compare/" + submissionIdA + "/" + submissionIdB).then((comparisonRes) => {
                                         expect(comparisonRes.status).to.equal(200);
-                                        console.log(comparisonRes.body);
+                                        expect(comparisonRes.body).to.not.be.undefined;
                                     });
                                 });
                             });
