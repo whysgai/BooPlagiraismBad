@@ -12,5 +12,10 @@ describe("App (Integration)",() =>  {
         app = new App(AppConfig.dbConnectionString(),AppConfig.port());
         done();
     });
+
+    after((done) => {
+        app.shutDown();
+        done();
+    });
     it('should correctly create a submission (end-to-end)');
 });
