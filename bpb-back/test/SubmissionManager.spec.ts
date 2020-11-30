@@ -474,13 +474,57 @@ describe("SubmissionManager.ts",() => {
 
             var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
             
-            chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
             return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
                 return copyFile(testFilePath,submissionFilePath).then(() => {                    
                     return readFileContent(submissionFilePath).then((buffer) => {
                         var expectedContent = buffer.toString();
+                        // First query does not use cache, calls getSubmission
                         return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
                             expect(content).to.deep.equal(expectedContent);
+                            expect(mockGetSubmission).to.have.been.called.once.with(mockSubmission.getId());
+                            
+                            // Second query uses cache, does not call getSubmission
+                            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(), testFileName).then((content) => {
+                                expect(content).to.deep.equal(expectedContent);
+                                expect(mockGetSubmission).to.have.been.called.once; 
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        it("Should not use cache if a fileContent of a submission has been cached, but a different file's content from the same submission is requested.", () => {
+            var mockSubmission = new Submission.builder().build();
+            mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
+
+            var submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + testFileName;
+            
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                return copyFile(testFilePath,submissionFilePath).then(() => {                    
+                    return readFileContent(submissionFilePath).then((buffer) => {
+                        var expectedContent = buffer.toString();
+                        // First query does not use cache, calls getSubmission
+                        return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+                            expect(content).to.deep.equal(expectedContent);
+                            expect(mockGetSubmission).to.have.been.called.once.with(mockSubmission.getId());
+                            
+                            var NEW_FILE_NAME = 'SOME_OTHER_FILE_NAME';
+                            submissionFilePath = AppConfig.submissionFileUploadDirectory() + mockSubmission.getId() + "/" + NEW_FILE_NAME;
+                            return mkdirp(AppConfig.submissionFileUploadDirectory() + mockSubmission.getId()).then(() => {
+                                return copyFile(testFilePath,submissionFilePath).then(() => {                    
+                                    return readFileContent(submissionFilePath).then((buffer) => {
+                                        var expectedContent = buffer.toString();
+                                        // This query does not use cache, since the file being requested has not been cached, so getSubmission is called again
+                                        return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),NEW_FILE_NAME).then((content) => {
+                                            expect(content).to.deep.equal(expectedContent);
+                                            expect(mockGetSubmission).to.have.been.called.twice.with(mockSubmission.getId());
+                                        });
+                                    }); 
+                                });
+                            });
                         });
                     });
                 });
