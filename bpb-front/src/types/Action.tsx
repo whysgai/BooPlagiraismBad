@@ -6,6 +6,7 @@ type Action = {
  addSubmission: Submission;
  removeSubmission: Submission;
  assignment: Assignment;
+ comparison: JSON[]
 }
  
 export default Action
