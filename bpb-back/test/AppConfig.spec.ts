@@ -1,13 +1,12 @@
 import { expect } from "chai";
 import { AppConfig } from "../src/AppConfig";
 
-//NOTE: test env variables are specified in package.json test script due to scope
-//Additionally, maxFileUploadSize test env value is referenced (indirectly) in SubmissionRouter.spec
+//NOTE: test env variables are specified in test scripts (scripts/test_*) due to scope
 describe("AppConfig",() => {
     
     describe("port()",() => {
         it("returns the expected environment variable",() => {
-            expect(AppConfig.port()).to.equal("test1");
+            expect(AppConfig.port()).to.equal("8081");
         });
     });
 
@@ -19,7 +18,7 @@ describe("AppConfig",() => {
 
     describe("dbConnectionString()",() => {
         it("returns the expected environment variable",() =>  {
-            expect(AppConfig.dbConnectionString()).to.equal("test3");
+            expect(AppConfig.dbConnectionString()).to.equal("mongodb://127.0.0.1:27017/bpbtest");
         });
      });
 

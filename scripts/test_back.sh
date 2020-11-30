@@ -9,3 +9,4 @@ vagrant ssh -c '''
     export MAXFILEUPLOADSIZE=1000;
     export COMPARISONTHRESHOLD=50;
     npm run test --prefix /vagrant/bpb-back/
+'''
