@@ -52,6 +52,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("getSubmission()",() => {
+
+        afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should return submission if the provided ID is valid",()=> {
             var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
@@ -81,7 +85,12 @@ describe("SubmissionManager.ts",() => {
             });
         });
     });
+
     describe("getSubmissions()",() => {
+
+        afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should return submissions of the given assignment if there are some",()=> {
             var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
@@ -109,6 +118,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("createSubmission()",() => {
+
+        afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
             
@@ -136,6 +149,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("updateSubmission()",() => {
+
+        afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
         
         it("Should properly update a submission if body parameters are included and submission exists with id",() => {
                         
@@ -219,7 +236,11 @@ describe("SubmissionManager.ts",() => {
         });
     });
 
-    describe("processSubmissionFile()",() =>{
+    describe("processSubmissionFile()",() => {
+
+        afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
 
         it("Should save and add a file into the submission specified by the client",() => {
 
@@ -335,7 +356,11 @@ describe("SubmissionManager.ts",() => {
         });
     });
 
-    describe("deleteSubmission({id})",() =>{
+    describe("deleteSubmission({id})",() => {
+
+        afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
 
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
             
@@ -378,6 +403,10 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("compareSubmission({id_a},{id_b})",()=> {
+
+        afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
             
@@ -467,6 +496,11 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("getSubmissionFileContent()",() => {
+        
+       afterEach(() => {
+            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+        });
+
         it("Should obtain the content of the specified file if it exists",()=> {
             
             var mockSubmission = new Submission.builder().build();
