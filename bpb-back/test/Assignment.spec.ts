@@ -12,7 +12,6 @@ describe("Assignment.ts",() => {
         const assignmentBuilder = new Assignment.builder();
         assignmentBuilder.setName(assignmentName);        
         assignment = assignmentBuilder.build();
-        //console.log(assignment.getSubmissionIds());
     });
 
     describe('AssignmentBuilder', () => {

@@ -89,8 +89,6 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmissionExisting.getId()).to.deep.equal(testSubmission.getId());
             expect(testSubmissionExisting.getName()).to.deep.equal(testSubmission.getName());
             expect(testSubmissionExisting.getAssignmentId()).to.deep.equal(testSubmission.getAssignmentId());
-            console.log(testSubmission.getEntries());
-            console.log(testSubmissionExisting.getEntries());
             expect(testSubmissionExisting.getEntries()).to.deep.equal(testSubmission.getEntries());
             expect(testSubmissionExisting.getFiles()).to.deep.equal(testSubmission.getFiles());
         });
