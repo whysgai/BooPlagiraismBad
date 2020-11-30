@@ -1,9 +1,11 @@
 import Submission from '../types/Submission'
+import { getComparison } from '../services/ComparisonService'
 
 export function compareSubmissions(compareSubmissions : Submission[]) {
     return {
         type: 'COMPARE',
         compareSubmissions: compareSubmissions,
+        comparison: getComparison(compareSubmissions)
     }
 };
 
