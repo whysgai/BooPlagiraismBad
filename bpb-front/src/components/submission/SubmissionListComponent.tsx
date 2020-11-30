@@ -4,6 +4,7 @@ import Submission from '../../types/Submission'
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {store} from '../../store'
+import { compareSubmissions } from '../../actions/ComparisonAction';
 
 interface PropTypes {
   submissions: Submission[]
@@ -27,6 +28,10 @@ class SubmissionListComponent extends React.Component <PropTypes, {}> {
         compareEnabled: newNum
       })
     } 
+  }
+
+  requestComparison() {
+    store.dispatch(compareSubmissions(store.getState().ComparisonReducer.compareSubmissions));
   }
 
   render() {
@@ -54,7 +59,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {}> {
         }
         { 
           store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
-            <Link className='enabledCompareButton btn btn-outline-success' to="/ComparisonComponent" id="twoCompare" >
+            <Link className='enabledCompareButton btn btn-outline-success' to="/ComparisonComponent" id="twoCompare" onClick={() => this.requestComparison()}>
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         }
