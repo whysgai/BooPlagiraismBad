@@ -4,8 +4,8 @@
   "description": "BPB backend API",
   "main": "_main.ts",
   "scripts": {
-    "test": "export APIPORT=8081;export UPLOADDIRECTORY=/home/vagrant/;export DBCONNECTIONSTRING=mongodb://127.0.0.1:27017/bpbtest;export MAXFILEUPLOADSIZE=1000;export COMPARISONTHRESHOLD=50;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
-    "test integration": "export APIPORT=8081;export UPLOADDIRECTORY=/home/vagrant/;export DBCONNECTIONSTRING=mongodb://127.0.0.1:27017/bpbtest;export MAXFILEUPLOADSIZE=1000;export COMPARISONTHRESHOLD=50;nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
+    "test": "nyc --reporter=json-summary --reporter=text mocha --require ts-node/register test/*.spec.ts",
+    "integration-test": "ts-mocha test/IntegrationTests.ts",
     "start": "tsc && node dist/src/_main.js"
   },
   "repository": {
