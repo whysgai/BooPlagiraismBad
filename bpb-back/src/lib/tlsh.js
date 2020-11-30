@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 /**
  * File source: https://github.com/trendmicro/tlsh/blob/master/js_ext/tlsh.js
  * 
