@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IAnalysisResult, AnalysisResult } from "./AnalysisResult";
-import { AnalysisResultEntry, IAnalysisResultEntry } from "./AnalysisResultEntry";
+import { AnalysisResultEntry, IAnalysisResultEntry, IAnalysisResultEntryModel } from "./AnalysisResultEntry";
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
 import {parse} from 'java-ast'; 
@@ -133,7 +133,11 @@ export interface ISubmission {
              submission.setId(model.id);
              submission.setName(model.name);
              submission.setAssignmentId(model.assignment_id);
-             submission.setEntries(model.entries);
+             let resultEntries : IAnalysisResultEntry[] = [];
+             model.entries.forEach(objectEntry => {
+                 resultEntries.push(AnalysisResultEntry.buildFromModel(objectEntry as object as IAnalysisResultEntryModel));
+             });
+             submission.setEntries(resultEntries);
              submission.setFiles(model.files);
              submission.setModelInstance(model);
 

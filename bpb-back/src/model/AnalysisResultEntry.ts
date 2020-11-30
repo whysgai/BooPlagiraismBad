@@ -4,12 +4,14 @@ import mongoose, { Document, Schema } from "mongoose";
  * Represents an Analysis database model object
  */
 export interface IAnalysisResultEntryModel extends Document {
-    _id: string,
+    id: string,
     submissionId : string, 
-    filePath : string, 
+    fileName : string, 
     contextType : string, 
-    lineNumberStart : Number, 
-    lineNumberEnd : Number,
+    lineNumberStart : number, 
+    charPosStart : number,
+    lineNumberEnd : number,
+    charPosEnd : number,
     hashValue : string, 
     text : string
 }
@@ -174,5 +176,14 @@ export class AnalysisResultEntry implements IAnalysisResultEntry {
             "hashValue":this.hashValue,
             "text":this.text
         });
+    }
+
+    /**
+     * Returns a new AnalysisResultEntry object, using the information contained in model
+     * @param model Mongoose document model instance
+     */
+    static buildFromModel(model : IAnalysisResultEntryModel) : IAnalysisResultEntry {
+        return new AnalysisResultEntry(model.id, model.submissionId, model.fileName, model.contextType, 
+            model.lineNumberStart, model.charPosStart, model.lineNumberEnd, model.charPosEnd, model.hashValue, model.text);
     }
 }
