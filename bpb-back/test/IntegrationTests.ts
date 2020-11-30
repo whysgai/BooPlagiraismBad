@@ -1,4 +1,4 @@
-import chai, { expect } from 'chai';
+import chai, { assert, expect } from 'chai';
 import App from "../src/App";
 import { AppConfig } from "../src/AppConfig";
 import chaiHttp from 'chai-http';
@@ -6,6 +6,7 @@ import fs from 'fs';
 import util from 'util';
 const readFileContent = util.promisify(fs.readFile);
 import mongoose from 'mongoose';
+import { forEachChild } from 'typescript';
 
 /**
  * App Integration Tests
@@ -75,7 +76,12 @@ describe("App (Integration)",() =>  {
                                     
                                     return chai.request(baseURI).get("/Submissions/compare/" + submissionIdA + "/" + submissionIdB).then((comparisonRes) => {
                                         expect(comparisonRes.status).to.equal(200);
-                                        expect(comparisonRes.body).to.not.be.undefined;
+                                        expect(comparisonRes.body).to.have.length.greaterThan(0);
+
+                                        comparisonRes.body.forEach((element : any) => {
+                                            expect(element.similarityScore).to.not.be.undefined;
+                                            expect(element.matches).to.have.length.greaterThan(0);
+                                        });
                                     });
                                 });
                             });
