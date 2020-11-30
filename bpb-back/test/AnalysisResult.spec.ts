@@ -116,13 +116,6 @@ describe("AnalysisResult.ts", () => {
             let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], -1, subId1, subId2, filename1, filename2);
             expect(badConstructor).to.throw(Error, "Bad Constructor: param 'similarityScore' must be <= 0.");
         });
-        
-        it("Should throw an error if matches[*][0] and matches[*][1] have the same filename.", async () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filename1, filename2);
-            filename2 = 'path1';
-            expect(badConstructor).to.throw(Error, "Bad Constructor: entries in 'matches[*][0]' and matches[*][1] must not have the same filename.");
-
-        });
 
         it("Should throw an error if matches[*][0] has an inconsistent submissionId.", async () => {
             let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2], [mockEntry3, mockEntry4]], testSimilarityScore, subId1, subId2, filename1, filename2);
