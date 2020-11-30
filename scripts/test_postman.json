@@ -8,7 +8,57 @@
 	},
 	"item": [
 		{
-			"name": "POST submissions/ (Create Submission)",
+			"name": "Create Assignment",
+			"request": {
+				"url": {
+					"raw": "http://192.168.33.10:8080/assignments",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"33",
+						"10"
+					],
+					"port": "8080",
+					"path": [
+						"assignments"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "",
+							"equals": false,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "test",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "submissionIds",
+							"value": "[]",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": "TEST"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Submission",
 			"request": {
 				"url": {
 					"raw": "http://192.168.33.10:8080/submissions",
@@ -47,7 +97,7 @@
 						},
 						{
 							"key": "assignment_id",
-							"value": "some_id_which_is_currently_ignored",
+							"value": "5fc53701ac1341218f61312f",
 							"description": "",
 							"type": "text"
 						}
@@ -58,47 +108,9 @@
 			"response": []
 		},
 		{
-			"name": "(Placeholder) GET submissions/sub1/files (fake output, outdated)",
+			"name": "Get Submission by ID",
 			"request": {
-				"url": "http://192.168.33.10:8080/submissions/sub1/files",
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "GET submission/{id} (Get Submission by ID)",
-			"request": {
-				"url": "http://192.168.33.10:8080/submissions/your_submission_id_here",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "",
-							"value": "",
-							"description": "",
-							"type": "text"
-						}
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "GET submissions/{assignment_id} (Get Submissions of Assignment)",
-			"request": {
-				"url": "http://192.168.33.10:8080/submissions/someaid",
+				"url": "http://192.168.33.10:8080/submissions/5fc5370aac1341218f613131",
 				"method": "GET",
 				"header": [
 					{
@@ -123,9 +135,90 @@
 			"response": []
 		},
 		{
-			"name": "POST submission/{id}/files (Upload File to Submission)",
+			"name": "Get Assignment by ID",
 			"request": {
-				"url": "http://192.168.33.10:8080/submissions/5fb83962aeaf8d15957412cd/files",
+				"url": "http://192.168.33.10:8080/assignments/5fc5370aac1341218f613131",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"value": "C:\\",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Assignments",
+			"request": {
+				"url": "http://192.168.33.10:8080/assignments",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"value": "C:\\",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Submissions of Assignment by ID",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/ofAssignment/5fc53701ac1341218f61312f",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"value": "C:\\",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Submission File",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/5fc5370aac1341218f613131/files",
 				"method": "POST",
 				"header": [
 					{
@@ -142,7 +235,46 @@
 							"key": "submissionFile",
 							"description": "",
 							"type": "file",
-							"src": "README.md"
+							"src": "javaExample.java"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Submission File Content by Index",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/5fc5370aac1341218f613131/files/0",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Compare two Submissions",
+			"request": {
+				"url": "http://192.168.33.10:8080/submissions/compare/5fb83962aeaf8d15957412cd/5fb83962aeaf8d15957412cd/",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "submissionFile",
+							"value": "",
+							"description": "",
+							"type": "file"
 						}
 					]
 				},

@@ -16,7 +16,7 @@ export interface ISubmissionModel extends Document {
     assignment_id : string
     name : string
     files : string[]
-    entries : IAnalysisResultEntry[]
+    entries : Map<string, IAnalysisResultEntry[]>
 }
 
 /**
@@ -30,8 +30,8 @@ export interface ISubmission {
     setAssignmentId(newId : string) : void;
     getName() : string;
     setName(newName : string) : void;
-    getEntries() : IAnalysisResultEntry[];
-    setEntries(entries: IAnalysisResultEntry[]) :void;
+    getEntries() : Map<string, IAnalysisResultEntry[]>;
+    setEntries(entries: Map<string, IAnalysisResultEntry[]>) :void;
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
     setFiles(files : string[]) : void;
@@ -57,13 +57,13 @@ export interface ISubmission {
         private assignment_id : string;
         private name : string;
         private files : string[];
-        private entries : IAnalysisResultEntry[];
+        private entries : Map<string, IAnalysisResultEntry[]>;
     
         constructor() {
             this.name = "Name Not Defined";
             this.assignment_id = "id_not_defined"
             this.files = [];
-            this.entries = [];
+            this.entries = new Map<string, IAnalysisResultEntry[]>();
         }
        
         /**
@@ -94,7 +94,7 @@ export interface ISubmission {
          * Sets the AnalysisResultEntries associated with the submission
          * @param entries 
          */
-        setEntries(entries : IAnalysisResultEntry[]) : void {
+        setEntries(entries : Map<string, IAnalysisResultEntry[]>) : void {
             this.entries = entries;
         }
     
@@ -148,7 +148,7 @@ export interface ISubmission {
         assignment_id: String,
         name: String,
         files: [],
-        entries: [Object]
+        entries: Map
       });
 
     /**
@@ -160,7 +160,7 @@ export interface ISubmission {
     private assignment_id : string;
     private name : string;
     private files : string[];
-    private entries : IAnalysisResultEntry[];
+    private entries : Map<string, IAnalysisResultEntry[]>
     private modelInstance : ISubmissionModel;
 
     protected constructor(){}
@@ -204,7 +204,7 @@ export interface ISubmission {
     /**
      * Returns all entries associated with the submission
      */
-    getEntries() : IAnalysisResultEntry[] {
+    getEntries() : Map<string, IAnalysisResultEntry[]> {
         return this.entries;
     }
 
@@ -236,7 +236,7 @@ export interface ISubmission {
      * Sets the entries associated with the submission
      * @param entries AnalysisResultEntries associated with the submission
      */
-    setEntries(entries : IAnalysisResultEntry[]) : void {
+    setEntries(entries : Map<string, IAnalysisResultEntry[]>) : void {
         this.entries = entries;
     }
     
@@ -297,43 +297,24 @@ export interface ISubmission {
      * @param analysisResultEntry entry to add
      */
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry): void {
-         this.entries.push(analysisResultEntry);
-         if(!(this.files.includes(analysisResultEntry.getFileName()))) {
-             this.files.push(analysisResultEntry.getFileName());
-         }
+        let entryArray = this.entries.get(analysisResultEntry.getFileName());
+        if(entryArray == undefined) {
+            this.entries.set(analysisResultEntry.getFileName(), []);
+            entryArray = this.entries.get(analysisResultEntry.getFileName());
+        }
+        entryArray.push(analysisResultEntry);
+        if(!(this.files.includes(analysisResultEntry.getFileName()))) {
+            this.files.push(analysisResultEntry.getFileName());
+        }
     }
 
     compare(otherSubmission: ISubmission) : IAnalysisResult[] {
-        if(this.entries.length == 0 || otherSubmission.getEntries().length == 0) {
+        if(this.entries.values().next().value == undefined || otherSubmission.getEntries().values().next().value == undefined) {
             throw new Error("Cannot compare: One or more comparator submissions has no entries");
         }
-        let submissionAEntries = new Map<string, Array<IAnalysisResultEntry>>();
-        let submissionBEntries = new Map<string, Array<IAnalysisResultEntry>>();
-        this.getFiles().forEach(fileName => {
-            if(submissionAEntries.get(fileName) == undefined) {
-                submissionAEntries.set(fileName, new Array<IAnalysisResultEntry>());
-            }
-            this.getEntries().forEach(entry => {
-                if(entry.getFileName() === fileName) {
-                    submissionAEntries.get(fileName).push(entry);
-                }                
-            });          
-        });
-        otherSubmission.getFiles().forEach(fileName => {
-            if(submissionBEntries.get(fileName) == undefined) {
-                submissionBEntries.set(fileName, new Array<IAnalysisResultEntry>());
-            }
-            otherSubmission.getEntries().forEach(entry => {
-                if(entry.getFileName() === fileName) {
-                    submissionBEntries.get(fileName).push(entry);
-                }                
-            });          
-        });
-        let subAValues = submissionAEntries.values();
-        let subBValues = submissionBEntries.values();
         let analysisResults = new Array<IAnalysisResult>();
-        for(let subAFileEntries of subAValues) {
-            for(let subBFileEntries of subBValues) {
+        for(let subAFileEntries of this.entries.values()) {
+            for(let subBFileEntries of otherSubmission.getEntries().values()) {
                 analysisResults.push(this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries));
             }
         }
@@ -344,8 +325,12 @@ export interface ISubmission {
      * Returns the submission as a JSON object
      */
     asJSON() : Object {
-        var entriesJSON = this.entries.map(entry => entry.asJSON());
-        return {_id:this.id,assignment_id:this.assignment_id, name:this.name, files:this.files,entries:entriesJSON};
+        return {_id:this.id,
+            assignment_id:this.assignment_id,
+            name:this.name,
+            files:this.files,
+            entries:[...this.entries] // When parsing json object, this can be converted back to a Map with: entries = new Map(JSONObject["entries"]);
+        };
     }
 
     private compareAnalysisResultEntries(fileAEntries : IAnalysisResultEntry[], fileBEntries : IAnalysisResultEntry[]) : IAnalysisResult {

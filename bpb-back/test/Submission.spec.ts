@@ -42,9 +42,8 @@ describe("Submission.ts.SubmissionBuilder",() => {
     describe("setEntries()",() => {
         it("Should correctly set submission's entries",() => {
             var testSubmissionNoEntries = testSubmissionBuilder.build();
-            expect(testSubmission.getEntries()).to.deep.equal([]);
-
-            var entries = [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")];
+            expect(testSubmissionNoEntries.getEntries()).to.deep.equal(new Map<string, IAnalysisResultEntry>());
+            var entries = new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]);
             testSubmissionBuilder.setEntries(entries);
             testSubmission = testSubmissionBuilder.build();
             expect(testSubmission.getEntries()).to.equal(entries);
@@ -80,7 +79,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
             testSubmissionBuilder.setName(newName);
             testSubmissionBuilder.setAssignmentId(newAssignmentId);
             testSubmissionBuilder.setFiles(["some","files"]);
-            testSubmissionBuilder.setEntries([new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]);
+            testSubmissionBuilder.setEntries(new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]));
             testSubmission = testSubmissionBuilder.build();
             var testExistingModel = testSubmission.getModelInstance();
 
@@ -269,7 +268,7 @@ describe("Submission.ts",() => {
         
         it("Should successfully add new file contents to the submission if input is valid",() => {
             return testSubmissionA.addFile(testFileContent,testEntryA.getFileName()).then(() => {
-                expect(testSubmissionA.getEntries().length).to.be.greaterThan(0);
+                expect(testSubmissionA.getEntries()).to.not.be.deep.equal(new Map<string, IAnalysisResultEntry[]>());
             });
         });
 
@@ -288,9 +287,9 @@ describe("Submission.ts",() => {
 
     describe("addAnalysisResultEntry()",() => {
         it("Should add an AnalysisResultEntry to the submission",() => {
-            expect(testSubmissionA.getEntries()).to.deep.equal([]);
+            expect(testSubmissionA.getEntries()).to.deep.equal(new Map<string, IAnalysisResultEntry[]>());
             testSubmissionA.addAnalysisResultEntry(testEntryA);
-            expect(testSubmissionA.getEntries()).to.deep.equal([testEntryA]);
+            expect(testSubmissionA.getEntries()).to.deep.equal(new Map<string, IAnalysisResultEntry[]>().set(testEntryA.getFileName(), [testEntryA]));
         });;
     });
 
@@ -300,11 +299,10 @@ describe("Submission.ts",() => {
             var expectedJSON = {
                 "_id": testSubmissionA.getId(),
                 "assignment_id": testSubmissionA.getAssignmentId(),
-                "entries": [testEntryA.asJSON(),testEntryB.asJSON()],
+                "entries": [...new Map().set(testEntryA.getFileName(), [testEntryA]).set(testEntryB.getFileName(), [testEntryB])],
                 "files": [testEntryA.getFileName(),testEntryB.getFileName()],
                 "name": testSubmissionA.getName() 
-            }
-            
+            }            
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionA.addAnalysisResultEntry(testEntryB);
             expect(testSubmissionA.asJSON()).to.deep.equal(expectedJSON);
