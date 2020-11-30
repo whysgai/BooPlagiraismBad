@@ -6,8 +6,12 @@
 
 # Getting Started (Manually)
 * Install MongoDB
-* Export the following environment variables:
-* * APIPORT
+* Export the following environment variables: APIPORT, DBCONNECTIONSTRING, MAXFILEUPLOADSIZE, COMPARISONTHRESHOLD
+* in `bpb-back/`, run `npm run start`
+* in `bpb-front/`, run `npm run start`
+
+# Required Environment Variables
+*APIPORT*
 
 Specifies the port that bpb-back will serve API requests on
 
@@ -39,9 +43,6 @@ Determines similarity sensitivity for individual subtree element comparisons
 Comparison information is used to calculate overall sensitivity using the Deckard algorithm.
 
 Example Value: 50 (default)
-
-* in `bpb-back/`, run `npm run  start`
-* in `bpb-front/`  run `npm run start`
 
 # Scripts
 * Run `scripts/reload.sh` to resync files and restart app components in Vagrant
