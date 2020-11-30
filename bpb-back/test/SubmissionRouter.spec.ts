@@ -18,8 +18,9 @@ import fileUpload = require("express-fileupload");
 import { AppConfig } from '../src/AppConfig';
 const readFileContent = util.promisify(fs.readFile);
 
+//Note: these tests depend on environment variables set in scripts/test_* (MAXFILEUPLOADSIZE)
 describe('SubmissionRouter.ts',()=> {
-    
+
     var app : express.Application;
     var testServer : any;
     var testRouter : IRouter;

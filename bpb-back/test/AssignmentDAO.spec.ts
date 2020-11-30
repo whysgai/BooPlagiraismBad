@@ -1,6 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import mongoose from 'mongoose';
+import { AppConfig } from '../src/AppConfig';
 import {IAssignment, Assignment} from '../src/model/Assignment'
 import { AssignmentDAO } from '../src/model/AssignmentDAO'
 
@@ -17,7 +18,7 @@ describe("AssignmentDAO.ts",() => {
 
         //TODO: Replace this (and beforeEach) with database mock (or something more elegant)
         //This is really fragile!
-        mongoose.connect("mongodb://127.0.0.1:27017/bpbtest", {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
+        mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
             done();
         });
     });
@@ -27,6 +28,7 @@ describe("AssignmentDAO.ts",() => {
         //Restore global prototype mocks
         chai.spy.restore(Assignment.getStaticModel());
 
+        //Drop assignment collection
         mongoose.connection.collections.assignments.drop(() => {
             var testAssignmentBuilder = new Assignment.builder();
             testAssignmentBuilder.setName(testAssignmentName);

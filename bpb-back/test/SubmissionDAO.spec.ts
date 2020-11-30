@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
+import { AppConfig } from "../src/AppConfig";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
@@ -21,7 +22,7 @@ describe("SubmissionDAO.ts",() => {
 
         //TODO: Replace this (and beforeEach) with database mock (or something more elegant)
         //This is really fragile!
-        mongoose.connect("mongodb://127.0.0.1:27017/bpbtest", {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
+        mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
             done();
         });
     });
