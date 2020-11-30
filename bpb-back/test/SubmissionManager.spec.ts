@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { assert, expect } from "chai";
 import chai = require("chai");
 import chaiSpies = require("chai-spies");
 import chaiAsPromised = require("chai-as-promised");
@@ -83,7 +83,6 @@ describe("SubmissionManager.ts",() => {
             });
         });
     });
-
     describe("getSubmissions()",() => {
 
         beforeEach(() => {
@@ -91,12 +90,41 @@ describe("SubmissionManager.ts",() => {
         });
         
         it("Should return submissions of the given assignment if there are some",()=> {
-            var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
+            var mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
 
+            //First call pulls from database, since cache is empty
             return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
                 expect(submissions[0]).to.deep.equal(testSubmission);
-                expect(mockReadSubmission).to.have.been.called.with(testSubmissionAssignmentId);
-            })
+                expect(mockReadSubmissions).to.have.been.called.with(testSubmissionAssignmentId);
+                expect(mockReadSubmissions).to.have.been.called.once;
+
+                //submissions should be cached, so second call should not call readSubmission again
+                return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
+                    expect(submissions[0]).to.deep.equal(testSubmission);
+                    expect(mockReadSubmissions).to.have.been.called.once;
+                });
+            });
+        });
+
+        it("Should populate submissionCache.get(submissionId) after pulling from database.", () => {
+            testSubmissionManager = new SubmissionManager();
+            let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
+            let mockReadSubmission = chai.spy.on(SubmissionDAO, 'readSubmission', () =>{return Promise.resolve(testSubmission)});
+
+            //First call pulls from database, since cache is empty
+            return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
+                expect(submissions[0]).to.deep.equal(testSubmission);
+                expect(mockReadSubmissions).to.have.been.called.with(testSubmissionAssignmentId);
+                expect(mockReadSubmissions).to.have.been.called.once;
+                expect(mockReadSubmission).to.not.have.been.called;
+                
+                //Since getSubmissions(assignmentId) should populate both cache's, this should not call readSubmission(submissionId)
+                return testSubmissionManager.getSubmission(testSubmission.getId()).then((submission) => {
+                    expect(submission).to.deep.equal(testSubmission);
+                    expect(mockReadSubmission).to.not.have.been.called;
+                    expect(mockReadSubmissions).to.have.been.called.once;
+                });
+            });
         });
 
         it("Should return no submissions if there are none",() =>{
