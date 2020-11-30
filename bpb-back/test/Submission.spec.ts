@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
+import { readFileSync } from 'fs';
 
 describe("Submission.ts.SubmissionBuilder",() => {
 
@@ -262,6 +263,14 @@ describe("Submission.ts",() => {
             expect(analysisResults.length).to.equal(1);
             expect(analysisResults[0].getMatches()).to.deep.equal([[testEntryA, testEntryC]]);
         });
+
+        it("Should return a similarity score of 1 for two identical files.", () => {
+            let filePath = '/vagrant/bpb-back/test/res/javaExample.java';
+            testSubmissionA.addFile(readFileSync(filePath).toString(), 'javaExample.java');
+            testSubmissionB.addFile(readFileSync(filePath).toString(), 'javaExample.java');
+            let analysisResults = testSubmissionA.compare(testSubmissionB);
+            expect(analysisResults[0].getSimilarityScore()).to.equal(1);
+        })
     });
     
     describe("addFile()",() => {
