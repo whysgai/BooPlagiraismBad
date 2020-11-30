@@ -5,6 +5,7 @@ import chaiHttp from 'chai-http';
 import fs from 'fs';
 import util from 'util';
 const readFileContent = util.promisify(fs.readFile);
+import mongoose from 'mongoose';
 
 /**
  * App Integration Tests
@@ -27,6 +28,14 @@ describe("App (Integration)",() =>  {
     after((done) => {
         app.shutDown();
         done();
+    });
+
+    afterEach((done) => {
+        mongoose.connection.collections.submissions.drop(() => {
+            mongoose.connection.collections.assignments.drop(() => { 
+                done();
+            });
+        });
     });
 
     it('should correctly create and compare two submissions of a submitted assignment in order to determine if a given submission was plagiarized',async () => {
