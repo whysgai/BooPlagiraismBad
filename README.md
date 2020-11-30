@@ -21,11 +21,12 @@ This directory must exist on the filesystem.
 Example Value: "/vagrant/bpb-back/uploads/"
 
 * * MAXFILEUPLOADSIZE
-Indicates the maximum allowable size for a single submission file upload
+Indicates the maximum allowable size for a single submission file upload (in bytes)
 Example Value: 5000000
 
 * * COMPARISONTHRESHOLD
 Determines similarity sensitivity for individual subtree element comparisons
+Comparison information is used to calculate overall sensitivity using the Deckard algorithm.
 Example Value: 50 (default)
 
 * in `bpb-back/`, run `npm run  start`
