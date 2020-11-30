@@ -1,11 +1,12 @@
 import { expect } from "chai";
 import App from "../src/App";
+import { AppConfig } from "../src/AppConfig";
 
 describe('App.ts',()=> {
 
     it('Should run, not explode, and shut down gracefully', () => {
         
-        var app = new App("mongodb://127.0.0.1:27017/bpbapptest","8081");
+        var app = new App(AppConfig.dbConnectionString(),AppConfig.port());
         
         expect(app).to.not.be.undefined;
         
