@@ -106,6 +106,9 @@ export const AssignmentDAO : IAssignmentDAO = class {
                             _id : assignment.getId(), 
                             name : assignment.getName(),
                             submissionIds : assignment.getSubmissionIds()
+                        },
+                        {
+                            new:true
                         }
                     ).then((res) => {
                         resolve(assignment);
