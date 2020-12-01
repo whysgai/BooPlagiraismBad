@@ -1,7 +1,8 @@
 import Assignment from '../types/Assignment'
-import { postSubmission } from '../services/SubmissionService'
+import Submission from '../types/Submission'
+import { postSubmission, getSubmissionIds, getSubmission } from '../services/SubmissionService'
 
-export default function createSubmission(type : string, name : string, assignment : Assignment, files : string[]) {
+export function createSubmission(type : string, name : string, assignment : Assignment, files : string[]) {
     return {
         type: 'UPLOAD_SUBMISSION',
         name: name,
@@ -10,3 +11,17 @@ export default function createSubmission(type : string, name : string, assignmen
         newAssignment: postSubmission(name, assignment, files)
     }
 };
+
+export function readSubmissions(assignment : Assignment) {
+    return getSubmissionIds(assignment).then(async (submissionIds) => {
+        let submissions = [] as Submission[]
+        for (let submissionId of submissionIds) {
+            submissions.push(await getSubmission(submissionId))
+            console.log('submissions so far', submissions)
+        }
+        return {
+            type: 'READ_SUBMISSIONS',
+            submissions: submissions
+        }
+    });
+}
