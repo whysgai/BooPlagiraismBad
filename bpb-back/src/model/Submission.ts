@@ -16,7 +16,7 @@ export interface ISubmissionModel extends Document {
     assignment_id : string
     name : string
     files : string[]
-    entries : Map<string, IAnalysisResultEntry[]>
+    entries : [string, IAnalysisResultEntry[]][]
 }
 
 /**
@@ -106,7 +106,7 @@ export interface ISubmission {
             var submission = new Submission();
             
             var submissionModel = Submission.getStaticModel();
-            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":this.entries});
+            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":[...this.entries]});
             
             submission.setId(modelInstance.id);
             submission.setName(this.name);
@@ -134,7 +134,7 @@ export interface ISubmission {
              submission.setName(model.name);
              submission.setAssignmentId(model.assignment_id);
              let resultEntries = new Map<string,IAnalysisResultEntry[]>();
-             let objectEntries = new Map(model.entries);
+             let objectEntries = new Map([...model.entries]);
              for(let fileName of objectEntries.keys()) {
                  resultEntries.set(fileName, []);
                  for(let entryObject of objectEntries.get(fileName)) {
@@ -156,7 +156,7 @@ export interface ISubmission {
         assignment_id: String,
         name: String,
         files: [String],
-        entries: Map
+        entries: []
       });
 
     /**
@@ -246,6 +246,7 @@ export interface ISubmission {
      */
     setEntries(entries : Map<string, IAnalysisResultEntry[]>) : void {
         this.entries = entries;
+        this.modelInstance
     }
     
     /**

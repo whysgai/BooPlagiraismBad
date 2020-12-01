@@ -101,7 +101,10 @@ export const SubmissionDAO : ISubmissionDAO = class {
                             name: submission.getName(),
                             assignment_id: submission.getAssignmentId(),
                             files: submission.getFiles(),
-                            entries: submission.getEntries()
+                            entries: [...submission.getEntries()]
+                        },
+                        {
+                            new:true
                         }
                     ).then((res) => {
                         resolve(submission);
