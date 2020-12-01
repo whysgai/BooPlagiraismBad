@@ -26,10 +26,16 @@ class AssignmentListComponent extends React.Component <PropsType, {assignments: 
     //   });
     // });    
 
-    readAssignments().then((thing) => store.dispatch(thing))
-    this.setState({
-      assignments : store.getState().AssignmentReducer.assignments
-    })
+    readAssignments()
+      .then((thing) => store.dispatch(thing))
+      .then(() => {
+        this.setState({
+          assignments : store.getState().AssignmentReducer.assignments
+        })
+      })
+    // this.setState({
+    //   assignments : store.getState().AssignmentReducer.assignments
+    // })
   }
 
 
