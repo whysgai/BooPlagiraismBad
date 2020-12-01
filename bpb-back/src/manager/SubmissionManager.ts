@@ -221,7 +221,24 @@ export class SubmissionManager implements ISubmissionManager {
                     var content = buffer.toString();
                     submission.addFile(content,fileName).then(() => {
                         SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                            //submissionCache
                             this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
+                            //fileContentsCache
+                            if(this.fileContentsCache.get(submissionId) != undefined) {
+                                this.fileContentsCache.get(submissionId).set(fileName, content);
+                            } else {
+                                this.fileContentsCache.set(submissionId, new Map<string, string>().set(fileName, content));
+                            }
+                            //comparisonCache
+                            this.comparisonCache.delete(submissionId); //Since a new file has been introduced, need to re-compare
+                            //submissionCacheByAssignment
+                            if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
+                                for(let subInCache of this.submissionCacheByAssignment.get(submission.getAssignmentId())) {
+                                    if(subInCache.getId() === submissionId) {
+                                        subInCache = updatedSubmission;
+                                    }
+                                }
+                            }
                             resolve();
                         }).catch((err) => {
                             reject(err);
