@@ -31,10 +31,7 @@ class AssignmentListComponent extends React.Component <PropsType, {assignments: 
   render () {
     return (        
       <div className='assignment-list pl-2'>
-        <Link to="/CreateAssignment" className="new-assignment-btn btn btn-outline-info ml-2">Create New Assignment</Link> 
-          {
-            console.log("Assignments in component", this.state.assignments)
-          }       
+        <Link to="/CreateAssignment" className="new-assignment-btn btn btn-outline-info ml-2">Create New Assignment</Link>      
           {
             this.state.assignments.length > 0 &&
               <ul className='nav'>

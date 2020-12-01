@@ -15,7 +15,6 @@ const AssignmentReducer = (state = initialState, action: Action) => {
                 currentAssignment: action.assignment
             }
         case 'READ_ASSIGNMENTS':
-            console.log("Read assignments in reducer", action.assignments);
             return {
                 ...state,
                 assignments: action.assignments
