@@ -37,12 +37,7 @@ ReactDOM.render(
       {/* <Route exact path="/"><AssignmentListComponent assignments={[]}/></Route> */}
       <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
 
-      <Route exact path="/Submissions"><SubmissionListComponent submissions={
-        [
-          {_id:"5fc57130611f8324889ca46d", name:"Chris", assignment:'Assignment1', files:[]},
-          {_id:"5fc57148611f8324889ca46e", name:"Will", assignment:'Assignment1', files:[]},
-        ] 
-      } compareEnabled={0}/></Route>
+      <Route exact path="/Submissions"><SubmissionListComponent /></Route>
       {/* <Route path="/Assignment/:AssignmentID" component={SubmissionListComponent}/> */}
       <Route path="/CreateSubmission" component={CreateSubmissionComponent}/>
       <Route path="/Help" component={HelpComponent}/>
