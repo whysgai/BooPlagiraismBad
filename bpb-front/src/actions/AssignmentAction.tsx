@@ -18,12 +18,18 @@ export function setCurrentAssignment(type : string, assignment : Assignment) {
 };
 
 export function readAssignments() {
-    let assignments = getAssignments().then((result) => result);
-    console.log("From Action:", assignments);
-    return {
-        type: 'READ_ASSIGNMENTS',
-        assignments: assignments
-    }
+    return getAssignments().then((result) => {
+        console.log("From Action:", result);
+        return {
+            type: 'READ_ASSIGNMENTS',
+            assignments: result
+        }
+    });
+    // console.log("From Action:", assignments);
+    // return {
+    //     type: 'READ_ASSIGNMENTS',
+    //     assignments: assignments
+    // }
 }
 
 // export function readAssignments() : Promise<JSON> {
