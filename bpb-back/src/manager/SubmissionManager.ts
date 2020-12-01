@@ -262,6 +262,18 @@ export class SubmissionManager implements ISubmissionManager {
                 if(this.submissionCache.get(submissionId) != undefined) {
                     this.submissionCache.delete(submissionId);
                 }
+
+                if(this.fileContentsCache.get(submissionId) != undefined) {
+                    this.fileContentsCache.delete(submissionId);
+                }
+
+                if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
+                    this.submissionCacheByAssignment.set(submission.getAssignmentId(), 
+                        this.submissionCacheByAssignment.get(submission.getAssignmentId())
+                            .filter((submission) => submission.getId() != submissionId));
+                }
+                
+                this.comparisonCache.delete(submissionId);
         
                 SubmissionDAO.deleteSubmission(submissionId).then((submission) => {
                     resolve();
