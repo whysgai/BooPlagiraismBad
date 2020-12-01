@@ -60,7 +60,7 @@ describe("SubmissionDAO.ts",() => {
                 return Submission.getStaticModel().findOne({"_id":submission.getId()}).then((document) => {
                     expect(document).to.have.property("name").which.equals(submission.getName());
                     expect(document).to.have.property("assignment_id").which.deep.equals(submission.getAssignmentId());
-                    expect(document).to.have.property("entries").which.deep.equals(submission.getEntries());
+                    expect(document).to.have.property("entries").which.deep.equals([...submission.getEntries()]);
                     expect(document).to.have.property("files").which.deep.equals(submission.getFiles());
                 });
             });

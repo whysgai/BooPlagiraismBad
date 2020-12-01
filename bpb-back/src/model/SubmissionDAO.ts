@@ -1,5 +1,4 @@
 import {ISubmission, Submission} from './Submission'
-import { AnalysisResultEntry, IAnalysisResultEntry } from './AnalysisResultEntry'
 
 export interface ISubmissionDAO {
     createSubmission(name : string, assignment_id : string) : Promise<ISubmission>; 
@@ -93,11 +92,6 @@ export const SubmissionDAO : ISubmissionDAO = class {
                     reject(new Error("Cannot update: No submission with the given id exists in the database"));
                 } else {
 
-                    //let fakeEntries = new Map<string,IAnalysisResultEntry[]>();
-                    //fakeEntries.set("exampleJava.java",[new AnalysisResultEntry("","1","exampleJava.java","method",1,2,3,4,"5","6")]);
-                    console.log("setting name " + submission.getName());
-                    console.log("setting files: " + submission.getFiles());
-
                     Submission.getStaticModel().findOneAndUpdate(
                         {
                             _id : submission.getId() 
@@ -107,13 +101,12 @@ export const SubmissionDAO : ISubmissionDAO = class {
                             name: submission.getName(),
                             assignment_id: submission.getAssignmentId(),
                             files: submission.getFiles(),
-                            entries: submission.getEntries()
+                            entries: [...submission.getEntries()]
                         },
                         {
                             new:true
                         }
                     ).then((res) => {
-                        console.log(res);
                         resolve(submission);
                     }).catch((err) => {
                         reject(err);
