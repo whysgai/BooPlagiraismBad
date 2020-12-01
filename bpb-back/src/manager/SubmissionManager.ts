@@ -7,6 +7,59 @@ import SubmissionData from "../types/SubmissionData"
 import { AppConfig } from '../AppConfig';
 const readFileContent = util.promisify(fs.readFile); //Promisify readfile  to allow use of Promise chaining
 
+class ComparisonCache {
+    private analysisResultsCache : Map<string, IAnalysisResult[]>;
+    
+    constructor() {
+        this.analysisResultsCache = new Map<string, IAnalysisResult[]>();
+    }
+
+    /**
+     * Returns the cached IAnalysisResult[] representing a comparison of the two given submission Id's.
+     * Returns undefined if one is not found in the cache.
+     * @param subIdA - The Id of one of the relevant submissions.
+     * @param subIdB - The Id of one of the relevant submissions.
+     */
+    get(subIdA : string, subIdB : string) : IAnalysisResult[] {
+        return this.analysisResultsCache.get(this.getKey(subIdA, subIdB))
+    }
+
+    /**
+     * Stores an IAnalysisResult[] representing a comparison of two provided submission Id's in the cache. 
+     * @param subIdA - The Id of one of the relevant submissions.
+     * @param subIdB - The Id of one of the relevant submissions.
+     * @param analysisResults - The IAnalysisResult[] that we are storing in the cache.
+     */
+    set(subIdA : string, subIdB : string, analysisResults : IAnalysisResult[]) {
+        this.analysisResultsCache.set(this.getKey(subIdA, subIdB), analysisResults);
+    }
+
+    /**
+     * Removes all comparisons related to a given submission from the cache.
+     * @param subId - The Id of the relevant submission.
+     */
+    delete(subId : string) {
+        for(let key of this.analysisResultsCache.keys()) {
+            if(key.substr(0, key.length/2) == subId || key.substr(key.length/2, key.length/2) == subId) {
+                this.analysisResultsCache.delete(key);
+            }
+        }
+    }
+
+    /**
+     * Creates a unique key, using the two unique submissionId's provided.
+     * @param subIdA 
+     * @param subIdB 
+     */
+    private getKey(subIdA : string, subIdB : string) : string {
+        if(subIdA < subIdB) {
+            return subIdA + subIdB;
+        } else { //Essentially works out to be subIdA > subIdB, since both id's are unique, they will never be equal
+            return subIdB + subIdA;
+        }
+    }
+}
+
 /**
  * Represents a controller for Submission objects.
  * Is called by SubmissionRouter to access Submission objects
@@ -28,11 +81,13 @@ export class SubmissionManager implements ISubmissionManager {
     private submissionCache : Map<string,ISubmission>;
     private fileContentsCache : Map<string, Map<string, string>>; // <submissionId, <fileName, fileContent>>
     private submissionCacheByAssignment : Map<string, ISubmission[]>;
+    private comparisonCache : ComparisonCache;
     
     constructor() {
         this.submissionCache = new Map<string,ISubmission>();
         this.fileContentsCache = new Map<string, Map<string, string>>();
         this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
+        this.comparisonCache = new ComparisonCache();
     }
 
     /**
@@ -206,18 +261,26 @@ export class SubmissionManager implements ISubmissionManager {
     compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
 
         return new Promise((resolve,reject) => {
-            this.getSubmission(submissionIdA)
-            .then(submissionA => {
-                this.getSubmission(submissionIdB)
-                    .then(submissionB => {
+            if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
+                resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
+            } else {
+                this.getSubmission(submissionIdA)
+                .then(submissionA => {
+                    this.getSubmission(submissionIdB)
+                        .then(submissionB => {
+                            let analysisResults = submissionA.compare(submissionB)
+                            this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
+                            resolve(submissionA.compare(submissionB)); 
                         resolve(submissionA.compare(submissionB)); 
-                    }
-                ).catch((err) => {
+                            resolve(submissionA.compare(submissionB)); 
+                        }
+                    ).catch((err) => {
+                        reject(err);
+                    });
+                }).catch((err) => {
                     reject(err);
                 });
-            }).catch((err) => {
-                reject(err);
-            });
+            }
         });
     }
 
