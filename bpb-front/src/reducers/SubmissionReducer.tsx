@@ -2,7 +2,7 @@ import Submission from '../types/Submission';
 import Action from "../types/Action"
 
 const initialState = {
-    submissions: [] as Submission[],
+    submissions: [] as String[],
     compareSubmissions: [] as Submission[],
     tempAssignment: {
         _id: '123',
@@ -16,6 +16,10 @@ const SubmissionReducer = (state = initialState, action : Action) => {
     switch (action.type) {
 
         case 'READ_SUBMISSIONS':
+            return {
+                ...state,
+                submissions: action.submissions
+            }  
             
         case 'UPLOAD_SUBMISSION':
             return {
