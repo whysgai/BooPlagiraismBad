@@ -8,6 +8,7 @@ type Action = {
  assignment: Assignment;
  assignments: Assignment[];
  comparison: JSON[]
+ submissions: Submission[]
 }
  
 export default Action
