@@ -33,10 +33,12 @@ describe("SubmissionDAO.ts",() => {
         chai.spy.restore(Submission.getStaticModel());
 
         mongoose.connection.collections.submissions.drop(() => {
+
             var builder = new Submission.builder();
             builder.setName(testSubmissionName);
             builder.setAssignmentId(testAssignmentId);
             testSubmission = builder.build();
+          
             done();
         });
     });
@@ -58,6 +60,8 @@ describe("SubmissionDAO.ts",() => {
                 return Submission.getStaticModel().findOne({"_id":submission.getId()}).then((document) => {
                     expect(document).to.have.property("name").which.equals(submission.getName());
                     expect(document).to.have.property("assignment_id").which.deep.equals(submission.getAssignmentId());
+                    expect(document).to.have.property("entries").which.deep.equals(submission.getEntries());
+                    expect(document).to.have.property("files").which.deep.equals(submission.getFiles());
                 });
             });
         });
@@ -75,9 +79,21 @@ describe("SubmissionDAO.ts",() => {
         it("Should read an submission database object if {id} is valid",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
-                return SubmissionDAO.readSubmission(submission.getId()).then((readSubmission) => {
-                    expect(readSubmission.getName()).to.equal(submission.getName());
-                    expect(readSubmission.getId()).to.equal(submission.getId());
+                
+                var entries = new Map<string,IAnalysisResultEntry[]>();
+                entries.set("exampleJava.java",[new AnalysisResultEntry("","1","exampleJava.java","method",1,2,3,4,"5","6")])
+                var files = ["exampleJava.java"];
+                
+                submission.setFiles(files);
+                submission.setEntries(entries);
+
+                return SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                    return SubmissionDAO.readSubmission(submission.getId()).then((readSubmission) => {
+                        expect(readSubmission.getName()).to.equal(submission.getName());
+                        expect(readSubmission.getId()).to.equal(submission.getId());
+                        expect(readSubmission.getFiles()).to.deep.equal(files);
+                        expect(readSubmission.getEntries()).to.deep.equal(entries);
+                    });
                 });
             });
         });
