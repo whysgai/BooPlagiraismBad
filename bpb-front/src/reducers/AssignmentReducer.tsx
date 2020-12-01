@@ -3,7 +3,8 @@ import Assignment from "../types/Assignment";
 
 const initialState = {
     name: '' as string,
-    currentAssignment: {} as Assignment
+    currentAssignment: {} as Assignment,
+    assignments: [] as Assignment[]
 }
 
 const AssignmentReducer = (state = initialState, action: Action) => {
@@ -13,6 +14,11 @@ const AssignmentReducer = (state = initialState, action: Action) => {
                 ...state,
                 currentAssignment: action.assignment
             }
+        case 'READ_ASSIGNMENTS':
+            return {
+                ...state,
+                assignments: action.assignments
+            }  
         case 'CREATE_ASSIGNMENT':
         default:
             return state;

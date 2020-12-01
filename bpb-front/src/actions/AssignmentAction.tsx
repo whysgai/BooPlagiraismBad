@@ -1,8 +1,7 @@
-import {postAssignment} from '../services/AssignmentService'
+import {postAssignment, getAssignments} from '../services/AssignmentService'
 import Assignment from '../types/Assignment'
 
 export function createAssignment(type : string, name : string) {
-    console.log("Action:", name);
     return {
         type: 'CREATE_ASSIGNMENT',
         name: name,
@@ -17,3 +16,12 @@ export function setCurrentAssignment(type : string, assignment : Assignment) {
         assignment: assignment
     }
 };
+
+export function readAssignments() {
+    return getAssignments().then((assignments) => {
+        return {
+            type: 'READ_ASSIGNMENTS',
+            assignments: assignments
+        }
+    });
+}
