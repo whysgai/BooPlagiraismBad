@@ -24,4 +24,17 @@ export function postFiles(submission: Submission, files: string[]) : void {
     }
 }
 
-export default {postSubmission, postFile: postFiles}
+export async function getSubmissionIds(assignment : Assignment) : Promise<String[]> {
+    let response = await fetch(`${vagrantURL}submissions/ofAssignment/${assignment._id}`);
+    let asJson = await response.json();
+    return Promise.resolve(asJson.submissionIds as String[]);
+}
+
+export async function getSubmission(submissionId : String) : Promise<Submission> {
+    let response = await fetch(`${vagrantURL}submissions/${submissionId}`);
+    let asJson = await response.json();
+    console.log('getSubmission asJson', asJson)
+    return Promise.resolve(asJson as Submission)
+}
+
+export default {postSubmission, postFile: postFiles, getSubmissionIds}
