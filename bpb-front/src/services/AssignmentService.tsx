@@ -16,21 +16,4 @@ export async function getAssignments() : Promise<Assignment[]> {
     return Promise.resolve(asJson.assignments as Assignment[]);
 }
 
-// export async function getAssignments() : Promise<any> {
-//     fetch(`${assignmentURL}Assignments`).then((response) => response.json()).then((result) => resolve(result.assignments));
-// }
-
-// export function getAssignments() : Promise<JSON> {
-//     return fetch(`${assignmentURL}Assignments`).then(response => response.json())
-// }
-
-// export function getAssignments() : Promise<any> {
-//     return new Promise((resolve, reject) => {
-//         fetch(`${assignmentURL}Assignments`)
-//             .then((response) => response.json())
-//                 .then((result) => resolve(result.assignments))
-//                     .catch((err) => reject(err))
-//     });    
-// }
-
 export default {postAssignment, getAssignments}

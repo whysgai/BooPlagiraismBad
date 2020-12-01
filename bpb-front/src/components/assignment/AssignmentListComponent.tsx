@@ -6,11 +6,10 @@ import {store} from '../../store'
 import { readAssignments } from '../../actions/AssignmentAction';
 
 interface PropsType {
-  //assignments:Assignment[]
+  
 }
 
 class AssignmentListComponent extends React.Component <PropsType, {assignments: Assignment[]}> {
-  //({assignments = [{_id:"01", name:"Mikayla", submissionIds:[]}]}: {assignments: Assignment[]})
   constructor(props: PropsType) {
     super(props);
     this.state = {
@@ -19,23 +18,13 @@ class AssignmentListComponent extends React.Component <PropsType, {assignments: 
   }
   
   componentDidMount() {
-    console.log("Call readAssignments from mount");
-    // store.dispatch(readAssignments().then(() =>)).then(() => {
-    //   this.setState({
-    //     assignments : store.getState().AssignmentReducer.assignments
-    //   });
-    // });    
-
     readAssignments()
-      .then((thing) => store.dispatch(thing))
+      .then((assignmentAction) => store.dispatch(assignmentAction))
       .then(() => {
         this.setState({
           assignments : store.getState().AssignmentReducer.assignments
         })
       })
-    // this.setState({
-    //   assignments : store.getState().AssignmentReducer.assignments
-    // })
   }
 
 
