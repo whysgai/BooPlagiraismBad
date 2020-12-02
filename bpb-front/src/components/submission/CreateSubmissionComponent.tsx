@@ -71,7 +71,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
     return (
         <div style={{ textAlign: 'center', paddingTop: '20px' }}>
             <div style={{textAlign: 'right', paddingRight: '100px', paddingTop: '30px', fontWeight: 'bolder'}}>
-                <Link className="btn btn-outline-danger mt-2" to="/Submissions">
+                <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
                   x 
                 </Link>
             </div>
