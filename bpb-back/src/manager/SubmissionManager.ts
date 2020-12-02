@@ -99,7 +99,7 @@ export class SubmissionManager implements ISubmissionManager {
         
         return new Promise((resolve,reject) => {
             var name = data.name;
-            var assignmentId = data.assignmentId;
+            var assignmentId = data.assignment_id;
     
             SubmissionDAO.createSubmission(name,assignmentId)
                 .then((submission) => {
@@ -176,7 +176,7 @@ export class SubmissionManager implements ISubmissionManager {
         
         return new Promise((resolve,reject) => {
             var name = data.name;
-            var assignmentId = data.assignmentId;
+            var assignmentId = data.assignment_id;
     
             this.getSubmission(submissionId).then((submission) => {
                 submission.setName(name);
