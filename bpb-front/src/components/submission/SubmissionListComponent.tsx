@@ -7,10 +7,7 @@ import {store} from '../../store'
 import { compareSubmissions } from '../../actions/ComparisonAction';
 import { readSubmissions } from '../../actions/SubmissionAction'
 
-interface PropTypes {
-  //submissions: Submission[]
-  //compareEnabled: number
-}
+interface PropTypes {}
 
 class SubmissionListComponent extends React.Component <PropTypes, {submissions: Submission[], compareEnabled: number}> {
 
