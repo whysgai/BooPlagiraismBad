@@ -49,6 +49,14 @@ export class SubmissionManager implements ISubmissionManager {
             SubmissionDAO.createSubmission(name,assignmentId)
                 .then((submission) => {
                     this.submissionCache.set(submission.getId(),submission);
+                    
+                    if(this.submissionCacheByAssignment.get(assignmentId) == undefined) {
+                        this.submissionCacheByAssignment.set(assignmentId,[submission]);   
+                    } else {
+                        var updatedList = this.submissionCacheByAssignment.get(assignmentId).concat([submission]);
+                        this.submissionCacheByAssignment.set(assignmentId,updatedList);
+                    }
+
                     resolve(submission);
                 }).catch((err) => {
                     reject(err);
