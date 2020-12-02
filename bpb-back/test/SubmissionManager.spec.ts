@@ -152,14 +152,21 @@ describe("SubmissionManager.ts",() => {
         it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
             
             chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
-
-            var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
+            var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
 
             return testSubmissionManager.createSubmission(createBody).then((submission) => {
                 expect(submission.getName()).to.equal(testSubmission.getName());
                 expect(submission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
+
+                //On second create, assignment map cache is hit
+                return testSubmissionManager.createSubmission(createBody).then((submission2) => {
+                    expect(submission2.getName()).to.equal(testSubmission.getName());
+                    expect(submission2.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
+                });
             });
         });
+
+        it
 
         it("Should throw an appropriate error if DAO fails to create a submission",() => {
             chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.reject(new Error("Failed to create"))});
