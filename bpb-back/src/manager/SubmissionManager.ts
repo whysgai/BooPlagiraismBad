@@ -7,7 +7,7 @@ import SubmissionData from "../types/SubmissionData"
 import { AppConfig } from '../AppConfig';
 const readFileContent = util.promisify(fs.readFile); //Promisify readfile  to allow use of Promise chaining
 
-class ComparisonCache {
+export class ComparisonCache {
     private analysisResultsCache : Map<string, IAnalysisResult[]>;
     
     constructor() {
@@ -103,15 +103,13 @@ export class SubmissionManager implements ISubmissionManager {
     
             SubmissionDAO.createSubmission(name,assignmentId)
                 .then((submission) => {
+                    // submissionCache
                     this.submissionCache.set(submission.getId(),submission);
-                    
+                    // submissionCacheByAssignment
                     if(this.submissionCacheByAssignment.get(assignmentId) != undefined) {
-                        var updatedList = this.submissionCacheByAssignment.get(assignmentId)
-                            .filter((cachedSubmission) => cachedSubmission.getId() != submission.getId() )
-                                .concat([submission]);
+                        var updatedList = this.submissionCacheByAssignment.get(assignmentId).concat([submission]);
                         this.submissionCacheByAssignment.set(assignmentId,updatedList);   
                     }
-
                     resolve(submission);
                 }).catch((err) => {
                     reject(err);
@@ -133,6 +131,7 @@ export class SubmissionManager implements ISubmissionManager {
             } else {
                 //Read from database if cache entry does not exist
                 SubmissionDAO.readSubmission(submissionId).then((submission) => {
+                    // submissionCache
                     this.submissionCache.set(submissionId,submission);
                     resolve(submission);
                 }).catch((err) => {
@@ -153,9 +152,10 @@ export class SubmissionManager implements ISubmissionManager {
                 resolve(this.submissionCacheByAssignment.get(assignmentId));
             } else {
                 SubmissionDAO.readSubmissions(assignmentId).then((submissions) => {
+                    // submissionCacheByAssignment
                     this.submissionCacheByAssignment.set(assignmentId, submissions);
+                    // submissionCache
                     submissions.forEach(submission => {
-                        //Populate the other cache as well
                         this.submissionCache.set(submission.getId(), submission);
                     });
                     resolve(submissions);
@@ -181,21 +181,14 @@ export class SubmissionManager implements ISubmissionManager {
             this.getSubmission(submissionId).then((submission) => {
                 submission.setName(name);
                 submission.setAssignmentId(assignmentId);
-                SubmissionDAO.updateSubmission(submission).then((submission) => {
-                    //submisionCache
-                    this.submissionCache.set(submissionId,submission);
-                    //submissionCacheByAssignment
-                    if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
-                        for(let subInCache of this.submissionCacheByAssignment.get(submission.getAssignmentId())) {
-                            if(subInCache.getId() === submissionId) {
-                                subInCache = submission;
-                            }
-                        }
-                    }
-                    //ComparisonCache
-                    this.comparisonCache.delete(submissionId); //TODO: determine if necessary (will a file be deleted?)
-                    //fileContentsCache
-                    if(this.fileContentsCache.get(submissionId) != undefined) {}//TODO: determine if this is necessary (will a file be deleted)
+                SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                    // submisionCache
+                    this.submissionCache.set(submissionId, updatedSubmission);
+                    // submissionCacheByAssignment
+                    if(this.submissionCacheByAssignment.get(updatedSubmission.getAssignmentId()) != undefined) {
+                        this.submissionCacheByAssignment.get(updatedSubmission.getAssignmentId())
+                            .filter((cachedSubmission) => cachedSubmission.getId() === submissionId)[0] = updatedSubmission;
+                    } 
                     resolve(submission);
                 }).catch((err) => {
                    reject(err);
@@ -221,17 +214,17 @@ export class SubmissionManager implements ISubmissionManager {
                     var content = buffer.toString();
                     submission.addFile(content,fileName).then(() => {
                         SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
-                            //submissionCache
+                            // submissionCache
                             this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
-                            //fileContentsCache
+                            // fileContentsCache
                             if(this.fileContentsCache.get(submissionId) != undefined) {
                                 this.fileContentsCache.get(submissionId).set(fileName, content);
                             } else {
                                 this.fileContentsCache.set(submissionId, new Map<string, string>().set(fileName, content));
                             }
-                            //comparisonCache
+                            // comparisonCache
                             this.comparisonCache.delete(submissionId); //Since a new file has been introduced, need to re-compare
-                            //submissionCacheByAssignment
+                            // submissionCacheByAssignment
                             if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
                                 for(let subInCache of this.submissionCacheByAssignment.get(submission.getAssignmentId())) {
                                     if(subInCache.getId() === submissionId) {
@@ -267,22 +260,22 @@ export class SubmissionManager implements ISubmissionManager {
             //Ensure submission exists before deletion
             this.getSubmission(submissionId).then((submission) => {
                 
+                // submissionCache
                 if(this.submissionCache.get(submissionId) != undefined) {
                     this.submissionCache.delete(submissionId);
                 }
-
+                // fileContentsCache
                 if(this.fileContentsCache.get(submissionId) != undefined) {
                     this.fileContentsCache.delete(submissionId);
                 }
-
+                // submissionCacheByAssignment
                 if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
                     this.submissionCacheByAssignment.set(submission.getAssignmentId(), 
                         this.submissionCacheByAssignment.get(submission.getAssignmentId())
-                            .filter((submission) => submission.getId() != submissionId));
+                            .filter((cachedSubmission) => cachedSubmission.getId() != submissionId));
                 }
-                
+                // comparisonCache
                 this.comparisonCache.delete(submissionId);
-        
                 SubmissionDAO.deleteSubmission(submissionId).then((submission) => {
                     resolve();
                 }).catch((err) => {
@@ -342,6 +335,7 @@ export class SubmissionManager implements ISubmissionManager {
                 this.getSubmission(submissionId).then((submission) => {
                     readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
                         var content = buffer.toString();
+                        // update fileContentsCache
                         if(this.fileContentsCache.get(submissionId) == undefined) {
                             this.fileContentsCache.set(submissionId, new Map<string, string>());
                         }
