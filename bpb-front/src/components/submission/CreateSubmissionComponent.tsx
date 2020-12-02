@@ -1,22 +1,24 @@
 import React, { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { store } from '../../store';
+import { RouteComponentProps } from 'react-router';
 import {createSubmission} from '../../actions/SubmissionAction';
-import Assignment from '../../types/Assignment';
-import { Upload, message } from 'antd';
+import { Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 //import { createSubmission } from './actions/SubmissionAction';
 
-interface PropsType {
-  name: string
-  files : string[]
+interface MatchParams {
+  assignmentId: string,
+}
+
+interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
 class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: string[]}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
-          name: this.props.name,
+          name: '',
           files : []
         };
         this.onInputchange = this.onInputchange.bind(this);
@@ -70,7 +72,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
             <br/>
             <span text-align="center">
                 <h5>Submission Name:</h5>
-                <input name="name" className='submission-name-input' type="text" value={this.props.name} onChange={this.onInputchange}/>
+                <input name="name" className='submission-name-input' type="text" value={this.state.name} onChange={this.onInputchange}/>
                 <Upload {...propsUpload} className='submission-file-input'>
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
@@ -80,7 +82,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                 </Upload>      
                 <br/>
                 <Link className='create-submission-btn btn btn-outline-success mt-2'
-                    to="/Submissions"
+                    to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}
                     onClick={() => this.callDispatch()}>
                     Upload Submission
                 </Link>
