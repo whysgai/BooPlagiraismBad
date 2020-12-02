@@ -1,3 +1,4 @@
+import { resolveModuleName } from "typescript";
 import { IAssignment } from "../model/Assignment";
 import { AssignmentDAO } from "../model/AssignmentDAO";
 import AssignmentData from "../types/AssignmentData";
@@ -13,6 +14,7 @@ export interface IAssignmentManager {
     createAssignment(data : AssignmentData) : Promise<IAssignment>;
     updateAssignment(assignmentId : string, data : AssignmentData) : Promise<IAssignment>;
     deleteAssignment(assignmentId : string) : Promise<void>;
+    warmCaches() : Promise<void>;
 }
 
 export class AssignmentManager implements IAssignmentManager {
@@ -24,7 +26,24 @@ export class AssignmentManager implements IAssignmentManager {
         this.assignmentCache = new Map<string,IAssignment>();
         this.cacheCount = 0;
     }   
-    
+   
+    /**
+     * Sets up caches for incoming requests
+     */
+    warmCaches = async(): Promise<void> => {
+
+        return new Promise((resolve, reject) => {
+        
+                this.getAssignments().then((assignments) => {
+                    this.cacheCount = assignments.length;
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                });
+            
+        });
+    }
+
     /**
      * Creates an Assignment with the given AssignmentData
      * @param data AssignmentData to use when creating an Assignment

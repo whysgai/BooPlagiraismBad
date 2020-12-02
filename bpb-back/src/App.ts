@@ -54,19 +54,25 @@ class App {
 
                 // Set up routers
                 this.routers.push(new SubmissionRouter(this.app,'/submissions',submissionManager,assignmentManager));
-                this.routers.push(new AssignmentRouter(this.app,'/assignments',submissionManager,assignmentManager));
+                this.routers.push(new AssignmentRouter(this.app,'/assignments',submissionManager,assignmentManager));                
+                
+                // Warm caches
+                assignmentManager.warmCaches().then(() => {
 
-                // Start listening for traffic
-                this.server = this.app.listen(this.port,() => {
+                    // Start listening for traffic
+                    this.server = this.app.listen(this.port,() => {
 
-                    console.log("bpb-back listening on port " + this.port);
-                    
-                    this.server.on("close",() => {
-                        console.log("bpb-back shutting down...");
-                        mongoose.disconnect();
+                        console.log("bpb-back listening on port " + this.port);
+
+                        this.server.on("close",() => {
+                            console.log("bpb-back shutting down...");
+                            mongoose.disconnect();
+                        });
+
+                        resolve();
                     });
-
-                    resolve();
+                }).catch((err) => {
+                    reject(err);
                 });
             }).catch((err) => {
                 reject(err);
