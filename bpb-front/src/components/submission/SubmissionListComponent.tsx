@@ -1,13 +1,22 @@
 import React from 'react';
-import SubmissionListItemComponent from './SubmissionListItemComponent'
-import Submission from '../../types/Submission'
+import { RouteComponentProps } from 'react-router';
+import SubmissionListItemComponent from './SubmissionListItemComponent';
+import Submission from '../../types/Submission';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import {store} from '../../store'
+import {store} from '../../store';
 import { compareSubmissions } from '../../actions/ComparisonAction';
-import { readSubmissions } from '../../actions/SubmissionAction'
+import { readSubmissions } from '../../actions/SubmissionAction';
+import { Match } from '@testing-library/react';
+import { setCurrentAssignment, setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
 
-interface PropTypes {}
+interface MatchParams {
+  assignmentId: string,
+}
+
+interface PropTypes extends RouteComponentProps<MatchParams> {
+
+}
 
 class SubmissionListComponent extends React.Component <PropTypes, {submissions: Submission[], compareEnabled: number}> {
 
@@ -20,16 +29,17 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
   }
 
   componentDidMount() {
-    console.log('mount')
-    readSubmissions(store.getState().AssignmentReducer.currentAssignment)
+    const assignmentId = this.props.match.params.assignmentId
+    console.log("submission list URL id", assignmentId)
+    setCurrentAssignmentFromId('SET_CURRENT_ASSIGNMENT', assignmentId)
+      .then((assignmentAction) => store.dispatch(assignmentAction))
+    readSubmissions(assignmentId)
       .then((submissionAction) => store.dispatch(submissionAction))
       .then(() => {
-        console.log('inside then did mount')
         this.setState({
           submissions : store.getState().SubmissionReducer.submissions
         })
       })
-      console.log(this.state.submissions)
   }
 
   setDisabled() {
@@ -49,7 +59,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>{store.getState().AssignmentReducer.currentAssignment.name}</h3>
-        <Link className='btn btn-outline-success' to='/CreateSubmission'>Upload Submission</Link>
+        <Link className='btn btn-outline-success' to={`/Assignments/${this.props.match.params.assignmentId}/CreateSubmission`}>Upload Submission</Link>
         {
           this.state.submissions.length > 0 &&
             <ul>

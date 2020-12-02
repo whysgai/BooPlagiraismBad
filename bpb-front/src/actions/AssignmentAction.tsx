@@ -1,4 +1,4 @@
-import {postAssignment, getAssignments} from '../services/AssignmentService'
+import {postAssignment, getAssignments, getAssignment} from '../services/AssignmentService'
 import Assignment from '../types/Assignment'
 
 export function createAssignment(type : string, name : string) {
@@ -15,6 +15,16 @@ export function setCurrentAssignment(type : string, assignment : Assignment) {
         type: 'SET_CURRENT_ASSIGNMENT',
         assignment: assignment
     }
+};
+
+export function setCurrentAssignmentFromId(type : string, assignmentId : String) {
+    return getAssignment(assignmentId).then(async (assignment: Assignment) => {
+        console.log("action set assignment from id", assignment)
+        return {
+            type: type,
+            assignment: assignment
+        }
+    });
 };
 
 export function readAssignments() {
