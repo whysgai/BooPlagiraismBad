@@ -1,5 +1,5 @@
 import React from 'react';
-import Submission from './types/Submission';
+import Submission from '../../types/Submission';
 
 interface PropsType {
   submissions : Submission[]
