@@ -17,6 +17,7 @@ class ComparisonComponent extends React.Component <PropsType, {
   compareSubmissions: Submission[], comparison: JSON[],
   submissionOne: Submission, submissionTwo: Submission
   // submissionOneFile: String, submissionTwoFile: String
+  subOneFileContents: String[], subTwoFileContents: String[]
 }> {
 
   constructor(props : PropsType) {
@@ -27,20 +28,37 @@ class ComparisonComponent extends React.Component <PropsType, {
       compareSubmissions: store.getState().ComparisonReducer.compareSubmissions,
       comparison: store.getState().ComparisonReducer.comparison,
       submissionOne: store.getState().ComparisonReducer.submissionOne,
-      submissionTwo: store.getState().ComparisonReducer.submissionTwo
+      submissionTwo: store.getState().ComparisonReducer.submissionTwo,
       // submissionOneFile: this.state.submissionOne.files[0],
       // submissionTwoFile: this.state.submissionTwo.files[0]
+      subOneFileContents: store.getState().ComparisonReducer.fileOneContents,
+      subTwoFileContents: store.getState().ComparisonReducer.fileTwoContents
       
     };
   }
 
   componentDidMount() {
-    // fetch file contents for sub1F and sub2F?
+    // fetch file contents for sub1 and sub2?
+    readFileContent(this.state.submissionOne, 'GET_SUB_ONE_FILES')
+      .then((comparisonAction) => store.dispatch(comparisonAction))
+      .then(() => this.setState({
+        subOneFileContents: store.getState().ComparisonReducer.fileOneContents
+      }));
+
+    readFileContent(this.state.submissionTwo, 'GET_SUB_TWO_FILES')
+      .then((comparisonAction) => store.dispatch(comparisonAction))
+        .then(() => this.setState({
+          subTwoFileContents: store.getState().ComparisonReducer.fileTwoContents
+        }));
   }
 
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+
+  // }
+
   fetchFileContent(submissionId: String, submissionIndex: Number, fileIndex: Number) {
-    readFileContent(submissionId, submissionIndex, fileIndex)
-      .then((comparisonAction) => store.dispatch(comparisonAction))
+    // readFileContent(submissionId, submissionIndex, fileIndex)
+    //   .then((comparisonAction) => store.dispatch(comparisonAction))
         // .then(() => {
         //   if(submissionIndex === 1) {
         //     this.setState({
@@ -66,7 +84,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                     <ol>
                       {
                         this.state.submissionOne.files.map((file, index) => 
-                          <li key={index} onClick={() => this.fetchFileContent(this.state.submissionOne._id, 1, index)}>{file}</li>
+                          <li key={index} onClick={() => this.fetchFileContent(this.state.submissionOne._id, 1, index)}><a href="#">{file}</a></li>
                         )
                       }
                     </ol>

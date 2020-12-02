@@ -23,19 +23,18 @@ export function removeSubmissionComparison(submission : Submission) {
     }    
 }
 
-export function readFileContent(submissionId: String, subIndex: Number, fileIndex: Number) {
-    return getFileContent(submissionId, fileIndex).then((fileContent) => {
-        if(subIndex === 1) {
-            return {
-                type: 'GET_FILE_ONE',
-                fileContent: fileContent
-            }
-        } else {
-            return {
-                type: 'GET_FILE_TWO',
-                fileContent: fileContent
-            }
-        }
-    })
-
+export async function readFileContent(submission: Submission, type: String) {
+    // for each file in submission.files
+    // request the file contents and add that to an array of strings
+    // then return the object with the type and the array of strings
+    let fileContents : String[] = [];
+    
+    for (let i: number = 0; i < submission.files.length; i++) {
+        fileContents.push(await getFileContent(submission._id, i));
+        console.log("Action: newest file content", fileContents[i]);
+    }
+    return {
+        type: type,
+        fileContents: fileContents
+    }
 }
