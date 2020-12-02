@@ -16,8 +16,8 @@ interface PropsType {
 class ComparisonComponent extends React.Component <PropsType, {
   compareSubmissions: Submission[], comparison: JSON[],
   submissionOne: Submission, submissionTwo: Submission
-  // submissionOneFile: String, submissionTwoFile: String
   subOneFileContents: String[], subTwoFileContents: String[]
+  submissionOneFileContent: String, submissionTwoFileContent: String
 }> {
 
   constructor(props : PropsType) {
@@ -29,11 +29,10 @@ class ComparisonComponent extends React.Component <PropsType, {
       comparison: store.getState().ComparisonReducer.comparison,
       submissionOne: store.getState().ComparisonReducer.submissionOne,
       submissionTwo: store.getState().ComparisonReducer.submissionTwo,
-      // submissionOneFile: this.state.submissionOne.files[0],
-      // submissionTwoFile: this.state.submissionTwo.files[0]
-      subOneFileContents: store.getState().ComparisonReducer.fileOneContents,
-      subTwoFileContents: store.getState().ComparisonReducer.fileTwoContents
-      
+      subOneFileContents: store.getState().ComparisonReducer.subOneFileContents,
+      subTwoFileContents: store.getState().ComparisonReducer.subTwoFileContents,
+      submissionOneFileContent: "",
+      submissionTwoFileContent: ""      
     };
   }
 
@@ -52,11 +51,18 @@ class ComparisonComponent extends React.Component <PropsType, {
         }));
   }
 
-  // componentDidUpdate(prevProps, prevState, snapshot) {
 
-  // }
+  showFileContent(submissionIndex: number, fileIndex: number) {
+    if (submissionIndex === 1) {
+      this.setState({
+        submissionOneFileContent: this.state.subOneFileContents[fileIndex]
+      });
+    } else {
+      this.setState({
+        submissionTwoFileContent: this.state.subTwoFileContents[fileIndex]
+      });
+    }
 
-  fetchFileContent(submissionId: String, submissionIndex: Number, fileIndex: Number) {
     // readFileContent(submissionId, submissionIndex, fileIndex)
     //   .then((comparisonAction) => store.dispatch(comparisonAction))
         // .then(() => {
@@ -84,7 +90,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                     <ol>
                       {
                         this.state.submissionOne.files.map((file, index) => 
-                          <li key={index} onClick={() => this.fetchFileContent(this.state.submissionOne._id, 1, index)}><a href="#">{file}</a></li>
+                          <li key={index} onClick={() => this.showFileContent(1, index)}><a href="#">{file}</a></li>
                         )
                       }
                     </ol>
@@ -92,7 +98,7 @@ class ComparisonComponent extends React.Component <PropsType, {
               </div>
             </div>
             <div className="col-8">
-              <DocumentPaneComponent fileContent={store.getState().ComparisonReducer.fileOneContent}/>
+              <DocumentPaneComponent fileContent={this.state.submissionOneFileContent}/>
             </div>
           </div>
           <div className="col-4">
@@ -101,7 +107,7 @@ class ComparisonComponent extends React.Component <PropsType, {
           <div className="sub2 row col-4">
             <h3 className="col-12">Submission: {this.state.submissionTwo.name}</h3>
             <div className="col-8">
-              <DocumentPaneComponent fileContent={store.getState().ComparisonReducer.fileTwoContent}/>
+              <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent}/>
             </div>
             <div className="col-4">
               <div className="submission-compare-pane border">
@@ -111,7 +117,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                       <ol>
                         {
                           this.state.submissionTwo.files.map((file, index) => 
-                            <li key={index}><a href="#">{file}</a></li>
+                            <li key={index} onClick={() => this.showFileContent(2, index)}><a href="#">{file}</a></li>
                           )
                         }
                       </ol>
