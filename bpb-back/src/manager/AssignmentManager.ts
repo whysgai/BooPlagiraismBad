@@ -30,15 +30,17 @@ export class AssignmentManager implements IAssignmentManager {
     /**
      * Sets up caches for incoming requests
      */
-    warmCaches = async() : Promise<void> => {
+    warmCaches = async(): Promise<void> => {
+
+        return new Promise((resolve, reject) => {
         
-        return new Promise((resolve,reject) => {
-            this.getAssignments().then((assignments) => {
-                this.cacheCount = assignments.length;
-                resolve();
-            }).catch((err) => {
-                reject(err);
-            });
+                this.getAssignments().then((assignments) => {
+                    this.cacheCount = assignments.length;
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                });
+            
         });
     }
 

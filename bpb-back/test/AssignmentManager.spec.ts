@@ -31,8 +31,13 @@ describe("AssignmentManager.ts",() => {
     describe("warmCaches()",() => {
 
         it("Should warm cache",() => {
+
+            var mockReadAssignments = chai.spy.on(AssignmentDAO,'readAssignments',() => { return Promise.resolve([testAssignment])});
+
             return testAssignmentManager.warmCaches().then(() => {
                 
+                expect(mockReadAssignments).to.have.been.called;
+
                 var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
                 
                 return testAssignmentManager.getAssignment(testAssignment.getId()).then(() => {
@@ -41,14 +46,14 @@ describe("AssignmentManager.ts",() => {
             });
         });
 
-        it("Should throw an appropriate error if getAssignments fails when called by warmCaches",() => {
+        it("Should throw an appropriate error if getting assignments fails when called by warmCaches",() => {
             
-            chai.spy.on(AssignmentManager,'getAssignments',() => { return Promise.reject(new Error("GetAssignemnts failed"))});
+            var mockReadAssignments = chai.spy.on(AssignmentDAO,'readAssignments',() => { return Promise.reject(new Error("readAssignments failed"))});
 
             return testAssignmentManager.warmCaches().then(() => {
                expect(true,"expected warmCaches to faul, but it didn't").to.equal(false);
             }).catch((err) => {
-                expect(err).to.have.property("message").which.equals("getAssignments failed");
+                expect(err).to.have.property("message").which.equals("readAssignments failed");
             })
         });
     });
