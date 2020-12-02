@@ -10,7 +10,7 @@ export async function getFileContent(submissionId: String, fileIndex: number) : 
     let response = await fetch(`${URL}submissions/${submissionId}/files/${fileIndex}`);
     let asJson = await response.json();
     console.log("From comparison service", asJson);
-    return Promise.resolve(asJson);
+    return Promise.resolve(asJson.content);
 } 
 
 export default {getComparison, getFileContent }

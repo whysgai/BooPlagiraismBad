@@ -9,8 +9,8 @@ const initialState = {
     submissionTwo: {} as Submission,
     fileOne: "" as String,
     fileTwo: "" as String,
-    fileOneContents: [] as String[],
-    fileTwoContents: [] as String[],
+    subOneFileContents: [] as String[],
+    subTwoFileContents: [] as String[],
 
 }
 
