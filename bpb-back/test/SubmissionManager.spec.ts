@@ -215,6 +215,7 @@ describe("SubmissionManager.ts",() => {
                     return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
                         expect(submission).to.be.equal(submissions[0]);
                         expect(mockReadSubmission).to.not.have.been.called;//Should have been loaded into the cache by getSubmissions
+                    });
                 });
             });
         });
@@ -270,11 +271,52 @@ describe("SubmissionManager.ts",() => {
             return testSubmissionManager.createSubmission(createBody).then((submission) => {
                 expect(submission.getName()).to.equal(testSubmission.getName());
                 expect(submission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
+            });
+        });
 
-                //On second create, assignment map cache is hit
-                return testSubmissionManager.createSubmission(createBody).then((submission2) => {
-                    expect(submission2.getName()).to.equal(testSubmission.getName());
-                    expect(submission2.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
+        describe(" createSubmission/getSubmission Cache tests", () => {
+
+            it("Should properly cache the submission in submissionCache",() => {
+                chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
+                let mockReadSubmission = chai.spy.on(SubmissionDAO, 'readSubmission', () => {return Promise.resolve(testSubmission)});
+                var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+    
+                return testSubmissionManager.createSubmission(createBody).then((submission) => {
+                    return testSubmissionManager.getSubmission(submission.getId()).then((fetchedSubmission) => {
+                        expect(fetchedSubmission).to.be.equal(submission);
+                        expect(mockReadSubmission).to.not.have.been.called; //Should not have been called if retreived from cache.
+                    });
+                });
+            });
+
+            it("Should not update the submissionCacheByAssignment if it is empty", () => {
+                chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
+                let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions',() => {return Promise.resolve([testSubmission])});
+                var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+    
+                return testSubmissionManager.createSubmission(createBody).then((submission) => {
+                    return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((submissionsFromRead) => {
+                        expect(submissionsFromRead[0]).to.deep.equal(submission);
+                        expect(mockReadSubmissions).to.have.been.called.once; //should have been called since the submissionCacheByAssignment was empty
+                    });
+                });
+            });
+
+            it("Should update the submissionCacheByAssignment if it is not empty", () => {
+                chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
+                let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions',() => {return Promise.resolve([testSubmission])});
+                var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+                
+                return testSubmissionManager.createSubmission(createBody).then((submission) => {
+                    return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((submissionsFromRead1) => {
+                        expect(mockReadSubmissions).to.have.been.called.once; //should have been called since the submissionCacheByAssignment was empty
+                        expect(submissionsFromRead1[0]).to.be.deep.equal(submission);
+
+                        return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((submissionsFromRead2) => {
+                            expect(mockReadSubmissions).to.have.been.called.once; //should not have been called again since the submissionCacheByAssignment was not empty
+                            expect(submissionsFromRead2[0]).to.be.equal(submission);
+                        });
+                    });
                 });
             });
         });
@@ -378,6 +420,49 @@ describe("SubmissionManager.ts",() => {
             }).catch((err) => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.contains("updateSubmission failed");
+            });
+        });
+
+        it("Should properly cache a submission",() => {
+            let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() => {return Promise.resolve([testSubmission])});            
+            let mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
+            chai.spy.on(SubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass through
+
+            var expectedNewName = "test";
+            var expectedNewAssnId = "test2";
+
+            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+
+            //initial call to update
+            return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission1) => {
+                expect(submission1.getName()).to.equal(expectedNewName);
+                expect(submission1.getAssignmentId()).to.equal(expectedNewAssnId);
+                expect(submission1.getId()).to.equal(testSubmission.getId());
+                
+                //call to getSubmission should find in cache
+                return testSubmissionManager.getSubmission(submission1.getId()).then((submission2) => {
+                    expect(submission2).to.equal(submission1);
+                    expect(mockReadSubmission).to.not.have.been.called;
+
+                    // submissionCacheByAssignment should not be populated yet, should fetch from database
+                    return testSubmissionManager.getSubmissions(submission2.getId()).then((submission3) => {
+                        expect(submission3[0]).to.deep.equal(submission1);
+                        expect(mockReadSubmissions).to.have.been.called.once;
+
+                        //second call to update
+                        let newExpectedNewName = 'thisIsANewName';
+                        let newUpdateBody = {name:newExpectedNewName,assignment_id:expectedNewAssnId};
+                        return testSubmissionManager.updateSubmission(testSubmission.getId(), newUpdateBody).then((submission4) => {
+                            expect(submission4.getName()).to.equal(newExpectedNewName);
+
+                            // second update call should have updated the submissionCacheByAssignment
+                            return testSubmissionManager.getSubmissions(submission4.getAssignmentId()).then((submission5) => {
+                                expect(submission5[0].getName()).to.equal(newExpectedNewName);
+                                expect(mockReadSubmissions).to.not.have.been.called; // should have pulled from cache
+                            });
+                        });
+                    });
+                });
             });
         });
     });
