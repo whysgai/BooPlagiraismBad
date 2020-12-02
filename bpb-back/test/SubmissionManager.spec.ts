@@ -49,6 +49,112 @@ describe("SubmissionManager.ts",() => {
         done();
     });
 
+    describe("ComparisonCache", () => {
+        var testComparisonCache : ComparisonCache;
+        var submissionIdA : string;
+        var submissionIdB : string;
+        var analysisResults : AnalysisResult[];
+        var analysisResultEntries : IAnalysisResultEntry[][];
+        
+        before(() => {
+            submissionIdA = 'abcd';
+            submissionIdB = 'efgh';
+            let entryA = new AnalysisResultEntry('1', submissionIdA, '3', '4', 5, 6, 7, 8, '9', '10');
+            let entryB = new AnalysisResultEntry('11', submissionIdB, '13', '14', 15, 16, 17, 18, '19', '20');
+            analysisResultEntries = new Array<IAnalysisResultEntry[]>();
+            analysisResultEntries.push([entryA, entryB]);
+            console.log(analysisResultEntries)
+            analysisResults = [new AnalysisResult(analysisResultEntries, 3, submissionIdA, submissionIdB, 'fileA', 'fileB')];
+        });
+
+        beforeEach(() => {
+            testComparisonCache = new ComparisonCache();
+        });
+
+        it("Should be able to load a comparison of two submissions", () => {
+            testComparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(analysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(analysisResults);
+        });
+
+        it("get() should return undefined if no entries have been loaded", () => {
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.undefined;
+        });
+
+        it("get() should return undefined if no entries have been loaded under one of the provided id's", () => {
+            let unloadedId = 'someOtherId';
+            testComparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+            expect(testComparisonCache.get(submissionIdA, unloadedId)).to.be.undefined;
+            expect(testComparisonCache.get(unloadedId, submissionIdA)).to.be.undefined;
+            expect(testComparisonCache.get(submissionIdB, unloadedId)).to.be.undefined;
+            expect(testComparisonCache.get(unloadedId, submissionIdB)).to.be.undefined;            
+        });
+
+        it("Calling set() again with same parameters should replace the initial set.", () => {
+            let newAnalysisResults = [new AnalysisResult(analysisResultEntries, 4, submissionIdA, submissionIdB, 'someFile', 'someOtherFile')];
+            testComparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(analysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(analysisResults);
+            
+            testComparisonCache.set(submissionIdA, submissionIdB, newAnalysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(newAnalysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(newAnalysisResults);
+        });
+
+        it("Calling set() again with parameters flipped should replace the initial set.", () => {
+            let newAnalysisResults = [new AnalysisResult(analysisResultEntries, 4, submissionIdA, submissionIdB, 'someFile', 'someOtherFile')];
+            testComparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(analysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(analysisResults);
+            
+            testComparisonCache.set(submissionIdB, submissionIdA, newAnalysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(newAnalysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(newAnalysisResults);
+        });
+
+        it("delete(submissionIdA) should remove the entry from the cache", () => {
+            testComparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(analysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(analysisResults);
+            testComparisonCache.delete(submissionIdA);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.undefined;
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.undefined;
+        });
+
+        
+        it("delete(submissionIdB) should remove the entry from the cache", () => {
+            testComparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(analysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(analysisResults);
+            testComparisonCache.delete(submissionIdB);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.undefined;
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.undefined;
+        });
+
+        it("delete(submissionId) should remove the entries associated with that Id from the cache", () => {
+            let submissionIdC = 'ijkl';
+            let newAnalysisResultsA = [new AnalysisResult(analysisResultEntries, 4, submissionIdA, submissionIdB, 'someFile', 'someOtherFile')];
+            let newAnalysisResultsB = [new AnalysisResult(analysisResultEntries, 4, submissionIdA, submissionIdB, 'someFile', 'someOtherFile')];
+            testComparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+            testComparisonCache.set(submissionIdA, submissionIdC, newAnalysisResultsA);
+            testComparisonCache.set(submissionIdB, submissionIdC, newAnalysisResultsB);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.equal(analysisResults);
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.equal(analysisResults);
+            expect(testComparisonCache.get(submissionIdA, submissionIdC)).to.be.equal(newAnalysisResultsA);
+            expect(testComparisonCache.get(submissionIdC, submissionIdA)).to.be.equal(newAnalysisResultsA);
+            expect(testComparisonCache.get(submissionIdB, submissionIdC)).to.be.equal(newAnalysisResultsB);
+            expect(testComparisonCache.get(submissionIdC, submissionIdB)).to.be.equal(newAnalysisResultsB);
+            testComparisonCache.delete(submissionIdA);
+            expect(testComparisonCache.get(submissionIdA, submissionIdB)).to.be.undefined;
+            expect(testComparisonCache.get(submissionIdB, submissionIdA)).to.be.undefined;
+            expect(testComparisonCache.get(submissionIdA, submissionIdC)).to.be.undefined;
+            expect(testComparisonCache.get(submissionIdC, submissionIdA)).to.be.undefined;
+            expect(testComparisonCache.get(submissionIdB, submissionIdC)).to.be.equal(newAnalysisResultsB);
+            expect(testComparisonCache.get(submissionIdC, submissionIdB)).to.be.equal(newAnalysisResultsB);
+        });
+        
+    });
+
     describe("getSubmission()",() => {
 
         beforeEach(() => {
