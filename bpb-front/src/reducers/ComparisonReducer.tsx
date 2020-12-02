@@ -9,8 +9,8 @@ const initialState = {
     submissionTwo: {} as Submission,
     fileOne: "" as String,
     fileTwo: "" as String,
-    fileOneContent: "" as String,
-    fileTwoContent: "" as String,
+    fileOneContents: [] as String[],
+    fileTwoContents: [] as String[],
 
 }
 
@@ -39,15 +39,17 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 submissionOne: state.compareSubmissions[0],
                 submissionTwo: state.compareSubmissions[1]
             }
-        case 'GET_FILE_ONE':
+        case 'GET_SUB_ONE_FILES':
+            console.log("Reducer sub one content", action.fileContents);
             return {
                 ...state,
-                fileOneContent: action.fileContent
+                fileOneContents: action.fileContents
             }
-        case 'GET_FILE_TWO':
+        case 'GET_SUB_TWO_FILES':
+            console.log("Reducer sub two content", action.fileContents);
             return {
                 ...state,
-                fileTwoContent: action.fileContent
+                fileTwoContents: action.fileContents
             }       
         default:
             return state;

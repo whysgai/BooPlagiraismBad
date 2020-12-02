@@ -6,7 +6,7 @@ export function getComparison(compareSubmissions : Submission[]) : void {
     fetch(`${URL}submissions/compare/${compareSubmissions[0]._id}/${compareSubmissions[1]._id}`)
 }
 
-export async function getFileContent(submissionId: String, fileIndex: Number) : Promise<String> {
+export async function getFileContent(submissionId: String, fileIndex: number) : Promise<String> {
     let response = await fetch(`${URL}submissions/${submissionId}/files/${fileIndex}`);
     let asJson = await response.json();
     console.log("From comparison service", asJson);
