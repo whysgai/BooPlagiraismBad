@@ -7,8 +7,9 @@ type Action = {
  removeSubmission: Submission;
  assignment: Assignment;
  assignments: Assignment[];
- comparison: JSON[]
- submissions: Submission[]
+ comparison: JSON[];
+ submissions: Submission[];
+ fileContent: String;
 }
  
 export default Action

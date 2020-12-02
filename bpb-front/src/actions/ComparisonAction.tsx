@@ -1,5 +1,5 @@
 import Submission from '../types/Submission'
-import { getComparison } from '../services/ComparisonService'
+import { getComparison, getFileContent } from '../services/ComparisonService'
 
 export function compareSubmissions(compareSubmissions : Submission[]) {
     return {
@@ -20,5 +20,22 @@ export function removeSubmissionComparison(submission : Submission) {
     return {
         type: 'REMOVE_COMPARE',
         removeSubmission: submission,
-    }
+    }    
+}
+
+export function readFileContent(submissionId: String, subIndex: Number, fileIndex: Number) {
+    return getFileContent(submissionId, fileIndex).then((fileContent) => {
+        if(subIndex === 1) {
+            return {
+                type: 'GET_FILE_ONE',
+                fileContent: fileContent
+            }
+        } else {
+            return {
+                type: 'GET_FILE_TWO',
+                fileContent: fileContent
+            }
+        }
+    })
+
 }

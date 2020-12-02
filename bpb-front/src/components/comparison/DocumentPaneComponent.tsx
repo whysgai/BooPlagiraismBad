@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface PropsType {
+  fileContent: "" 
 }
 
 /**
@@ -19,6 +20,7 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
     return (
       <div className="submission-compare-pane">
         DocumentPaneComponent
+        {this.props.fileContent}
       </div>
     );
   }
