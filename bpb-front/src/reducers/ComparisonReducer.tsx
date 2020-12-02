@@ -1,8 +1,11 @@
+import SubmissionListComponent from "../components/submission/SubmissionListComponent";
 import Action from "../types/Action"
 import Submission from "../types/Submission";
 
 const initialState = {
     compareSubmissions: [] as Submission[],
+    submissionOne: {} as Submission,
+    submissionTwo: {} as Submission,
     comparison: [] as JSON[],
 }
 
@@ -28,6 +31,8 @@ const ComparisonReducer = (state = initialState, action: Action) => {
             return {
                 ...state,
                 comparison: action.comparison,
+                submissionOne: action.comparison[0],
+                submissionTwo: action.comparison[1]
             }
         default:
             return state;
