@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import {createSubmission} from '../../actions/SubmissionAction';
 import { Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
+import { setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
 //import { createSubmission } from './actions/SubmissionAction';
 
 interface MatchParams {
@@ -33,6 +34,12 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
 
   callDispatch() {
     store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.state.name, store.getState().AssignmentReducer.currentAssignment, this.state.files))
+  }
+
+  componentDidMount() {
+    const assignmentId = this.props.match.params.assignmentId
+    setCurrentAssignmentFromId('SET_CURRENT_ASSIGNMENT', assignmentId)
+      .then((assignmentAction) => store.dispatch(assignmentAction))
   }
 
   render() {
