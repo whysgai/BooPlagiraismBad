@@ -9,7 +9,7 @@ type Action = {
  assignments: Assignment[];
  comparison: JSON[];
  submissions: Submission[];
- fileContent: String;
+ fileContents: String[];
 }
  
 export default Action
