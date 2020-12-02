@@ -90,7 +90,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
           store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
             <Link className='enabledCompareButton btn btn-outline-success'
               to={
-                `/Assignmet/${this.props.match.params.assignmentId}/CompareSubmissions/${store.getState().ComparisonReducer.compareSubmissions[0]._id}/${store.getState().ComparisonReducer.compareSubmissions[1]._id}`
+                `/Assignments/${this.props.match.params.assignmentId}/CompareSubmissions/${store.getState().ComparisonReducer.compareSubmissions[0]._id}/${store.getState().ComparisonReducer.compareSubmissions[1]._id}`
               }
               id="twoCompare" onClick={() => this.requestComparison()}
               >
