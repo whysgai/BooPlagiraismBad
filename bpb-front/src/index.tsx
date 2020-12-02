@@ -24,7 +24,7 @@ ReactDOM.render(
       <NavbarComponent />
       <Route exact path="/"><AssignmentListComponent /></Route>
       <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
-      <Route exact path="/Assignments/:assignmentId/Submissions"><SubmissionListComponent /></Route>
+      <Route exact path="/Assignments/:assignmentId/Submissions" component={SubmissionListComponent}/>
       <Route path="/Assignments/:assignmentId/CreateSubmission" component={CreateSubmissionComponent}/>
       <Route path="/Help" component={HelpComponent}/>
       <Route path="/Assignments/:assignmentId/CompareSubmissions" component={ComparisonComponent}/>
