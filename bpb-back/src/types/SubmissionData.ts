@@ -4,7 +4,7 @@
  */
 type SubmissionData = {
     name: string,
-    assignmentId: string
+    assignment_id: string
 }
 
 export default SubmissionData
