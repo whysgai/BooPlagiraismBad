@@ -198,6 +198,7 @@ describe("SubmissionManager.ts",() => {
         
         it("Should return submissions of the given assignment if there are some",()=> {
             var mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
+            let mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
             //First call pulls from database, since cache is empty
             return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
@@ -209,6 +210,11 @@ describe("SubmissionManager.ts",() => {
                 return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissions) => {
                     expect(submissions[0]).to.deep.equal(testSubmission);
                     expect(mockReadSubmissions).to.have.been.called.once;
+
+                    //submission contained in array returned by getSubmissions should be cached in submissionCache
+                    return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
+                        expect(submission).to.be.equal(submissions[0]);
+                        expect(mockReadSubmission).to.not.have.been.called;//Should have been loaded into the cache by getSubmissions
                 });
             });
         });
