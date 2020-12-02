@@ -105,11 +105,11 @@ export class SubmissionManager implements ISubmissionManager {
                 .then((submission) => {
                     this.submissionCache.set(submission.getId(),submission);
                     
-                    if(this.submissionCacheByAssignment.get(assignmentId) == undefined) {
-                        this.submissionCacheByAssignment.set(assignmentId,[submission]);   
-                    } else {
-                        var updatedList = this.submissionCacheByAssignment.get(assignmentId).concat([submission]);
-                        this.submissionCacheByAssignment.set(assignmentId,updatedList);
+                    if(this.submissionCacheByAssignment.get(assignmentId) != undefined) {
+                        var updatedList = this.submissionCacheByAssignment.get(assignmentId)
+                            .filter((cachedSubmission) => cachedSubmission.getId() != submission.getId() )
+                                .concat([submission]);
+                        this.submissionCacheByAssignment.set(assignmentId,updatedList);   
                     }
 
                     resolve(submission);
