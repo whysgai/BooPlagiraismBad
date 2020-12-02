@@ -29,9 +29,6 @@ class AssignmentListCard extends React.Component <PropsType,{}> {
           <span className='card-title'>
             {this.props.assignment.name}
           </span>
-          <span className='pl-2'>
-            Number of Submissions: {this.props.assignment.submissionIds.length}
-          </span>
         </Link>
       </div>
     );
