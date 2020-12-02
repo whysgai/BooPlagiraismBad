@@ -5,12 +5,12 @@ import chaiAsPromised = require("chai-as-promised");
 import {AssignmentDAO} from "../src/model/AssignmentDAO";
 import { AssignmentManager, IAssignmentManager } from "../src/manager/AssignmentManager";
 import { IAssignment, Assignment } from "../src/model/Assignment";
-import { ExpressionContext } from "java-ast";
+import { isAssignment } from "tslint";
 
 describe("AssignmentManager.ts",() => {
 
-    var testAssignmentManager : IAssignmentManager;
-    var testAssignment : IAssignment;
+    const testAssignment = new Assignment.builder().build();
+    let testAssignmentManager : AssignmentManager;
 
     before(() => {
         chai.use(chaiSpies);
@@ -23,13 +23,38 @@ describe("AssignmentManager.ts",() => {
         chai.spy.restore(AssignmentDAO,'readAssignments');
         chai.spy.restore(AssignmentDAO,'updateAssignment');
         chai.spy.restore(AssignmentDAO,'deleteAssignment');
-
+        chai.spy.restore(AssignmentManager,'getAssignments');
         testAssignmentManager = new AssignmentManager();
-        testAssignment = new Assignment.builder().build();
         done();
     });
 
+    describe("warmCaches()",() => {
+
+        it("Should warm cache",() => {
+            return testAssignmentManager.warmCaches().then(() => {
+                
+                var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
+                
+                return testAssignmentManager.getAssignment(testAssignment.getId()).then(() => {
+                    expect(mockReadAssignment).to.not.have.been.called;
+                });
+            });
+        });
+
+        it("Should throw an appropriate error if getAssignments fails when called by warmCaches",() => {
+            
+            chai.spy.on(AssignmentManager,'getAssignments',() => { return Promise.reject(new Error("GetAssignemnts failed"))});
+
+            return testAssignmentManager.warmCaches().then(() => {
+               expect(true,"expected warmCaches to faul, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("getAssignments failed");
+            })
+        });
+    });
+
     describe("createAssignment()",()  => {
+        
         it("Should create an assignment if inputs are valid",() => {
 
             chai.spy.on(AssignmentDAO,'createAssignment',() => { return Promise.resolve(testAssignment) });
@@ -53,6 +78,7 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("getAssignment()",() => {
+
         it("Should return the specified assignment if one exists with the given id",() => {
 
             var mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
@@ -79,7 +105,9 @@ describe("AssignmentManager.ts",() => {
             });
         });
     })
+
     describe("getAssignments()",() => {
+
         it("Should not utilise cache to return assignments if assignments exist but are not in cache",() => {
             var mockAssignment = new Assignment.builder().build();
             var expectedAssignments = [testAssignment,mockAssignment];
@@ -124,6 +152,7 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("updateAssignment()",()=> {
+
         it("Should correctly manipulate AssignmentDAO to update the specified assignment if {id} is valid",() => {
             var updatedAssignmentBuilder = new Assignment.builder();
             var expectedName = "Updated Name";
@@ -174,6 +203,7 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("deleteAssignment()",() => {
+
         it("Should correctly manipulate AssignmentDAO to delete the specified assignment if {id} is valid",() => {
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
             var mockDeleteAssignment = chai.spy.on(AssignmentDAO,'deleteAssignment',() => {return Promise.resolve()});
