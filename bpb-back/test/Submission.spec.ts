@@ -157,29 +157,6 @@ describe("Submission.ts",() => {
         });
     });
 
-    describe("setFileContents", () => {
-        it("Should properly set the submission's fileContents map", () => {
-            let newFileContents = new Map<string, string>().set('the man eating', 'bunny rabbit');
-            testSubmissionA.setFileContents(newFileContents);
-            expect(testSubmissionA.getFileContents()).to.be.deep.equal(newFileContents);
-        });
-    });
-
-    describe("setFileContent", () => {
-        it("Should properly add a file's content to fileContents Map", () => {
-            let functionCall = () => testSubmissionA.setFileContent('the knights who', 'say nee!');
-            expect(functionCall).to.not.throw(Error);
-            expect(testSubmissionA.getFileContents().get('the knights who')).to.be.deep.equal('say nee!');
-            expect(testSubmissionA.getFileContents().get('five is')).to.be.deep.equal('right out');
-        });
-
-        it("Should throw the appropriate error if a fileContent already exists at a fileName key", () => {
-            let functionCall = () => testSubmissionA.setFileContent('five is', 'totally plausible')
-            expect(functionCall).to.throw(Error, "Submission fileContent for five is was already added to the submission");
-        });
-
-    });
-
     describe("getFileContents", () => {
         it("Should return the Submission's fileContents Map", () => {
             expect(testSubmissionA.getFileContents()).to.be.deep.equal(testFileContents);

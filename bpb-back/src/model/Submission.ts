@@ -36,8 +36,6 @@ export interface ISubmission {
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
     getFileContents() : Map<string, string>;
-    setFileContent(fileName : string, fileContent : string) : void;
-    setFileContents(fileContents : Map<string, string>) : void;
     deleteFileContent(fileNAme : string) : void; 
     setFiles(files : string[]) : void;
     addFile(content : string, fileName : string) : Promise<void>;
@@ -191,20 +189,18 @@ export interface ISubmission {
     protected constructor(){}
 
     //TODO add comment
-    setFileContents(fileContents: Map<string, string>): void {
+    protected setFileContents(fileContents: Map<string, string>): void {
         this.fileContents = new Map<string, string>([...fileContents]);
     }
 
     //TODO add comment
+    protected setFileContent(fileName: string, fileContent: string): void {
+        this.fileContents.set(fileName, fileContent);
+    }
+    
+    //TODO add comment
     getFileContents(): Map<string, string> {
         return this.fileContents;
-    }
-    //TODO add comment
-    setFileContent(fileName: string, fileContent: string): void {
-        if(this.fileContents.get(fileName) != undefined) {
-            throw new Error("Submission fileContent for " + fileName + " was already added to the submission");
-        }
-        this.fileContents.set(fileName, fileContent);
     }
 
     //TODO add comment
