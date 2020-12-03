@@ -188,22 +188,34 @@ export interface ISubmission {
 
     protected constructor(){}
 
-    //TODO add comment
+    /**
+     * Sets the fileContents of the submission
+     * @param fileContents a map of new fileContents for the submission
+     */
     protected setFileContents(fileContents: Map<string, string>): void {
         this.fileContents = new Map<string, string>([...fileContents]);
     }
 
-    //TODO add comment
-    protected setFileContent(fileName: string, fileContent: string): void {
+    /**
+     * Adds a fileContent to the fileContents map
+     * @param fileName name of file to act as key
+     * @param fileContent content of file to act as value
+     */
+    private setFileContent(fileName: string, fileContent: string): void {
         this.fileContents.set(fileName, fileContent);
     }
     
-    //TODO add comment
+    /**
+     * Returns a Map<fileName, fileContent> for fileContents for this submission
+     */
     getFileContents(): Map<string, string> {
         return this.fileContents;
     }
 
-    //TODO add comment
+    /**
+     * Removes a key-value pair from the fileContents Map
+     * @param fileName the key of the pair to be removed
+     */
     deleteFileContent(fileName : string) {
         this.fileContents.delete(fileName);
     }
