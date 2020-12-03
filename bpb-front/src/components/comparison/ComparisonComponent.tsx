@@ -88,7 +88,9 @@ class ComparisonComponent extends React.Component <PropsType, {
                     <ol>
                       {
                         this.state.submissionOne.files.map((file, index) => 
-                          <li key={index} onClick={() => this.showFileContent(1, index)}><a href="#">{file}</a></li>
+                          <li key={index} onClick={() => this.showFileContent(1, index)}>
+                            <a href="#" className={`${this.state.activeFileOne === file ? "text-secondary" : "text-primary"}`}>{file}</a>
+                          </li>
                         )
                       }
                     </ol>
@@ -115,7 +117,9 @@ class ComparisonComponent extends React.Component <PropsType, {
                       <ol>
                         {
                           this.state.submissionTwo.files.map((file, index) => 
-                            <li key={index} onClick={() => this.showFileContent(2, index)}><a href="#">{file}</a></li>
+                            <li key={index} onClick={() => this.showFileContent(2, index)}>
+                              <a href="#" className={`${this.state.activeFileTwo === file ? "text-secondary" : "text-primary"}`}>{file}</a>
+                            </li>
                           )
                         }
                       </ol>

@@ -2,6 +2,7 @@ import React from 'react';
 
 interface PropsType {
   files: String[];
+  activeFileName: String;
 }
 
 /**
