@@ -6,8 +6,7 @@ import {store} from '../../store'
 import Submission from '../../types/Submission';
 import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
-import MatchListComponent from './MatchListComponent';
-
+import MatchBoxComponent from './MatchBoxComponent';
 
 interface MatchParams {
   assignmentId: string,
@@ -23,7 +22,7 @@ interface PropsType extends RouteComponentProps<MatchParams> {
  * Represents a comparison view between two submissions
  */
 class ComparisonComponent extends React.Component <PropsType, {
-  compareSubmissions: Submission[], comparison: JSON[],
+  compareSubmissions: Submission[], comparisons: JSON[],
   submissionOne: Submission, submissionTwo: Submission
   subOneFileContents: String[], subTwoFileContents: String[]
   submissionOneFileContent: String, submissionTwoFileContent: String,
@@ -36,7 +35,7 @@ class ComparisonComponent extends React.Component <PropsType, {
     this.state = {
       //submissions:this.props.submissions
       compareSubmissions: store.getState().ComparisonReducer.compareSubmissions,
-      comparison: store.getState().ComparisonReducer.comparison,
+      comparisons: store.getState().ComparisonReducer.comparisons,
       submissionOne: store.getState().ComparisonReducer.submissionOne,
       submissionTwo: store.getState().ComparisonReducer.submissionTwo,
       subOneFileContents: store.getState().ComparisonReducer.subOneFileContents,
@@ -95,9 +94,14 @@ class ComparisonComponent extends React.Component <PropsType, {
             </div>
         </div>
         <div className="row col-12">
-          <div className="sub1 row col-4">
-            <h3 className="col-12">Submission: {this.state.submissionOne.name}</h3>
-            <div className="col-4">
+            <h3 className="col-6">Submission: {this.state.submissionOne.name}</h3>
+            <h3 className="col-6">Submission: {this.state.submissionTwo.name}</h3>
+          </div>   
+        <div className="row col-12 align-items-start">
+     
+          <div className="sub1 row col-4 ">
+            
+            <div className="col-3">
               <div className="submission-compare-pane border">
                 DirectoryListComponent
                 {
@@ -114,19 +118,19 @@ class ComparisonComponent extends React.Component <PropsType, {
                 } 
               </div>
             </div>
-            <div className="col-8">
+            <div className="col-9">
               <DocumentPaneComponent fileContent={this.state.submissionOneFileContent}/>
             </div>
           </div>
-          <div className="col-4">
-              <MatchListComponent/>
+          <div className="col-3">
+              <MatchBoxComponent comparisons={this.state.comparisons}/>
           </div>
           <div className="sub2 row col-4">
-            <h3 className="col-12">Submission: {this.state.submissionTwo.name}</h3>
-            <div className="col-8">
+            
+            <div className="col-9">
               <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent}/>
             </div>
-            <div className="col-4">
+            <div className="col-3">
               <div className="submission-compare-pane border">
                   DirectoryListComponent
                   {
