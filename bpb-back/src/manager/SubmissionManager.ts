@@ -70,7 +70,7 @@ export interface ISubmissionManager {
     getSubmissions(assignmentId : string) : Promise<ISubmission[]>;
     getSubmission(submissionId : string) : Promise<ISubmission>;
     updateSubmission(submissionId : string, data : SubmissionData) : Promise<ISubmission>;
-    processSubmissionFile(submissionId : string, fileName : string) : Promise<void>; 
+    processSubmissionFile(submissionId : string, fileName : string, content : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
     compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]>
     getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
@@ -203,37 +203,26 @@ export class SubmissionManager implements ISubmissionManager {
      * @param fileName Name of the file to add (file must exist at AppConfig.submissionFileUploadDirectory/submissionid/filename)
      * @returns An empty Promise
      */
-    processSubmissionFile = async(submissionId : string, fileName : string): Promise<void> => {
+    processSubmissionFile = async(submissionId : string, fileName : string, content : string): Promise<void> => {
 
         return new Promise((resolve,reject) => {
 
             this.getSubmission(submissionId).then((submission) => {
-                readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
-                    var content = buffer.toString();
-                    submission.addFile(content,fileName).then(() => {
-                        SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
-                            // submissionCache
-                            this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
-                            // fileContentsCache
-                            if(this.fileContentsCache.get(submissionId) != undefined) {
-                                this.fileContentsCache.get(submissionId).set(fileName, content);
-                            } else {
-                                this.fileContentsCache.set(submissionId, new Map<string, string>().set(fileName, content));
-                            }
-                            // comparisonCache
-                            this.comparisonCache.delete(submissionId); //Since a new file has been introduced, need to re-compare
-                            // submissionCacheByAssignment
-                            if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
-                                for(let subInCache of this.submissionCacheByAssignment.get(submission.getAssignmentId())) {
-                                    if(subInCache.getId() === submissionId) {
-                                        subInCache = updatedSubmission;
-                                    }
+                submission.addFile(content,fileName).then(() => {
+                    SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                        // submissionCache
+                        this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
+                        // comparisonCache
+                        this.comparisonCache.delete(submissionId); //Since a new file has been introduced, need to re-compare
+                        // submissionCacheByAssignment
+                        if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
+                            for(let subInCache of this.submissionCacheByAssignment.get(submission.getAssignmentId())) {
+                                if(subInCache.getId() === submissionId) {
+                                    subInCache = updatedSubmission;
                                 }
                             }
-                            resolve();
-                        }).catch((err) => {
-                            reject(err);
-                        });
+                        }
+                        resolve();
                     }).catch((err) => {
                         reject(err);
                     });
@@ -262,10 +251,6 @@ export class SubmissionManager implements ISubmissionManager {
                 if(this.submissionCache.get(submissionId) != undefined) {
                     this.submissionCache.delete(submissionId);
                 }
-                // fileContentsCache
-                if(this.fileContentsCache.get(submissionId) != undefined) {
-                    this.fileContentsCache.delete(submissionId);
-                }
                 // submissionCacheByAssignment
                 if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
                     this.submissionCacheByAssignment.set(submission.getAssignmentId(), 
@@ -292,7 +277,6 @@ export class SubmissionManager implements ISubmissionManager {
      * @returns A Promise containing the result of the comparison as an AnalysisResult
      */
     compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
-
         return new Promise((resolve,reject) => {
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
