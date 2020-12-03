@@ -17,7 +17,7 @@ export function readSubmissions(assignmentId : String) {
         let submissions = [] as Submission[]
         for (let submissionId of submissionIds) {
             submissions.push(await getSubmission(submissionId))
-            console.log('submissions so far', submissions)
+            //console.log('submissions so far', submissions)
         }
         return {
             type: 'READ_SUBMISSIONS',
