@@ -17,7 +17,8 @@ class ComparisonComponent extends React.Component <PropsType, {
   compareSubmissions: Submission[], comparison: JSON[],
   submissionOne: Submission, submissionTwo: Submission
   subOneFileContents: String[], subTwoFileContents: String[]
-  submissionOneFileContent: String, submissionTwoFileContent: String
+  submissionOneFileContent: String, submissionTwoFileContent: String,
+  activeFileOne: String, activeFileTwo: String
 }> {
 
   constructor(props : PropsType) {
@@ -32,7 +33,9 @@ class ComparisonComponent extends React.Component <PropsType, {
       subOneFileContents: store.getState().ComparisonReducer.subOneFileContents,
       subTwoFileContents: store.getState().ComparisonReducer.subTwoFileContents,
       submissionOneFileContent: "",
-      submissionTwoFileContent: ""      
+      submissionTwoFileContent: "",
+      activeFileOne: "",
+      activeFileTwo: "",      
     };
   }
 
@@ -55,25 +58,20 @@ class ComparisonComponent extends React.Component <PropsType, {
   showFileContent(submissionIndex: number, fileIndex: number) {
     if (submissionIndex === 1) {
       this.setState({
+        activeFileOne: this.state.submissionOne.files[fileIndex],        
         submissionOneFileContent: this.state.subOneFileContents[fileIndex]
       });
+      console.log("Active file left", this.state.activeFileOne);
     } else {
       this.setState({
+        activeFileTwo: this.state.submissionTwo.files[fileIndex],
         submissionTwoFileContent: this.state.subTwoFileContents[fileIndex]
       });
+      console.log("Active file right", this.state.activeFileTwo);
     }
-
-    // readFileContent(submissionId, submissionIndex, fileIndex)
-    //   .then((comparisonAction) => store.dispatch(comparisonAction))
-        // .then(() => {
-        //   if(submissionIndex === 1) {
-        //     this.setState({
-        //       submissionOneFile: store.getState().ComparisonReducer.fileOne
-        //     });
-        //   }
-
-        // })
   }
+
+  selectComparisonForFiles() {}
 
 
   render() {
