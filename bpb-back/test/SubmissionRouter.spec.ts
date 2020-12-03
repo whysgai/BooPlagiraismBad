@@ -475,6 +475,51 @@ describe('SubmissionRouter.ts',()=> {
                 expect(res.body).to.have.property("response").which.equals("Submission ID not found: " + nonexistentId);
             });
     });
+    it("Should be able to interpret a failed request to PUT /submissions/{id} where name body property is missing", () => { 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
+        const nonexistentId = "drphilbertmd"
+        const putBody = {assignment_id:"testy"};
+        chai.spy.on(
+            testSubmissionManager, 'updateSubmission', () => {return Promise.resolve(undefined)}
+        );
+        chai.request(testServer).put("/submissions/" + nonexistentId)
+            .send(putBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be defined on the request body");
+            });
+    });
+    it("Should be able to interpret a failed request to PUT /submissions/{id} where assignment_id body property is missing", () => { 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+
+        const nonexistentId = "drphilbertmd"
+        const putBody = {name:"testy"};
+        chai.spy.on(
+            testSubmissionManager, 'updateSubmission', () => {return Promise.resolve(undefined)}
+        );
+        chai.request(testServer).put("/submissions/" + nonexistentId)
+            .send(putBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be defined on the request body");
+            });
+    });
+    it("Should be able to interpret a failed request to PUT /submissions/{id} where both body properties are missing", () => { 
+        testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
+        
+        chai.spy.on(
+            testSubmissionManager, 'updateSubmission', () => {return Promise.resolve(undefined)}
+        );
+        const nonexistentId = "drphilbertmd"
+        const putBody = {};
+        chai.request(testServer).put("/submissions/" + nonexistentId)
+            .send(putBody)
+            .then(res => {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property("response").which.equals("name and assignment_id properties must both be defined on the request body");
+            });
+    });
     it("Should be able to interpret a request to DELETE /submissions/{id} where {id} is valid", () => { 
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
