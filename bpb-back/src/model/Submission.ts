@@ -17,6 +17,7 @@ export interface ISubmissionModel extends Document {
     name : string
     files : string[]
     entries : [string, IAnalysisResultEntry[]][]
+    fileContents : [string, string][]
 }
 
 /**
@@ -34,6 +35,10 @@ export interface ISubmission {
     setEntries(entries: Map<string, IAnalysisResultEntry[]>) :void;
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
+    getFileContents() : Map<string, string>;
+    setFileContent(fileName : string, fileContent : string) : void;
+    setFileContents(fileContents : Map<string, string>) : void;
+    deleteFileContent(fileNAme : string) : void; 
     setFiles(files : string[]) : void;
     addFile(content : string, fileName : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
@@ -57,12 +62,14 @@ export interface ISubmission {
         private assignment_id : string;
         private name : string;
         private files : string[];
+        private fileContents : Map<string, string>;
         private entries : Map<string, IAnalysisResultEntry[]>;
     
         constructor() {
             this.name = "Name Not Defined";
             this.assignment_id = "id_not_defined"
             this.files = [];
+            this.fileContents = new Map<string, string>();
             this.entries = new Map<string, IAnalysisResultEntry[]>();
         }
        
@@ -90,6 +97,11 @@ export interface ISubmission {
             this.files = files;
         }
 
+        //TODO: add comment
+        setFileContents(fileContents : Map<string, string>) : void {
+            this.fileContents = fileContents;
+        }
+
         /**
          * Sets the AnalysisResultEntries associated with the submission
          * @param entries 
@@ -106,12 +118,13 @@ export interface ISubmission {
             var submission = new Submission();
             
             var submissionModel = Submission.getStaticModel();
-            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":[...this.entries]});
+            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"fileContents":[...this.fileContents],"entries":[...this.entries]});
             
             submission.setId(modelInstance.id);
             submission.setName(this.name);
             submission.setAssignmentId(this.assignment_id);
             submission.setFiles(this.files);
+            submission.setFileContents(this.fileContents);
             submission.setEntries(this.entries);
             submission.setModelInstance(modelInstance);
             
@@ -126,7 +139,7 @@ export interface ISubmission {
          buildFromExisting(model : ISubmissionModel) : ISubmission {
              var submission = new Submission();
             
-             if(!model.id || !model.name || !model.assignment_id || !model.entries || !model.files) {
+             if(!model.id || !model.name || !model.assignment_id || !model.entries || !model.files || !model.fileContents) {
                 throw new Error("At least one required model property is not present on the provided model");
              }
 
@@ -141,6 +154,8 @@ export interface ISubmission {
                      resultEntries.get(fileName).push(AnalysisResultEntry.buildFromModel(entryObject as object as IAnalysisResultEntryModel));
                  }
              }
+             let fileContents = new Map<string, string>([...model.fileContents]);
+             submission.setFileContents(fileContents);
              submission.setEntries(resultEntries);
              submission.setFiles(model.files);
              submission.setModelInstance(model);
@@ -156,6 +171,7 @@ export interface ISubmission {
         assignment_id: String,
         name: String,
         files: [String],
+        fileContents: [],
         entries: []
       });
 
@@ -168,10 +184,33 @@ export interface ISubmission {
     private assignment_id : string;
     private name : string;
     private files : string[];
-    private entries : Map<string, IAnalysisResultEntry[]>
+    private fileContents : Map<string, string>;
+    private entries : Map<string, IAnalysisResultEntry[]>;
     private modelInstance : ISubmissionModel;
 
     protected constructor(){}
+
+    //TODO add comment
+    setFileContents(fileContents: Map<string, string>): void {
+        this.fileContents = new Map<string, string>([...fileContents]);
+    }
+
+    //TODO add comment
+    getFileContents(): Map<string, string> {
+        return this.fileContents;
+    }
+    //TODO add comment
+    setFileContent(fileName: string, fileContent: string): void {
+        if(this.fileContents.get(fileName) != undefined) {
+            throw new Error("Submission fileContent for " + fileName + " was already added to the submission");
+        }
+        this.fileContents.set(fileName, fileContent);
+    }
+
+    //TODO add comment
+    deleteFileContent(fileName : string) {
+        this.fileContents.delete(fileName);
+    }
 
     /**
      * Returns the static database model for submissions
@@ -246,7 +285,6 @@ export interface ISubmission {
      */
     setEntries(entries : Map<string, IAnalysisResultEntry[]>) : void {
         this.entries = entries;
-        this.modelInstance
     }
     
     /**
@@ -338,6 +376,7 @@ export interface ISubmission {
             assignment_id:this.assignment_id,
             name:this.name,
             files:this.files,
+            fileContents:[...this.fileContents],
             entries:[...this.entries] // When parsing json object, this can be converted back to a Map with: entries = new Map(JSONObject["entries"]);
         };
     }
