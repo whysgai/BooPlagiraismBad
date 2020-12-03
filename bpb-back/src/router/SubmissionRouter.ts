@@ -116,8 +116,6 @@ class SubmissionRouter extends AbstractRouter {
     var name = req.body.name;
     var assignment_id = req.body.assignment_id;
 
-
-
     if(name == undefined || assignment_id == undefined) {
       res.status(400);
       res.send({"response":"name and assignment_id properties must both be defined on the request body"});
