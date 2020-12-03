@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import { compareSubmissions, readFileContent } from '../../actions/ComparisonAction';
+import { compareSubmissions, readComparisonSubmission, readFileContent } from '../../actions/ComparisonAction';
 import {store} from '../../store'
 import Submission from '../../types/Submission';
 import DirectoryListComponent from './DirectoryListComponent';
@@ -36,8 +36,8 @@ class ComparisonComponent extends React.Component <PropsType, {
       //submissions:this.props.submissions
       compareSubmissions: store.getState().ComparisonReducer.compareSubmissions,
       comparisons: store.getState().ComparisonReducer.comparisons,
-      submissionOne: store.getState().ComparisonReducer.submissionOne,
-      submissionTwo: store.getState().ComparisonReducer.submissionTwo,
+      submissionOne: store.getState().ComparisonReducer.compareSubmissions[0],
+      submissionTwo: store.getState().ComparisonReducer.compareSubmissions[1],
       subOneFileContents: store.getState().ComparisonReducer.subOneFileContents,
       subTwoFileContents: store.getState().ComparisonReducer.subTwoFileContents,
       submissionOneFileContent: "",
@@ -49,23 +49,43 @@ class ComparisonComponent extends React.Component <PropsType, {
 
   componentDidMount() {
 
-    compareSubmissions(this.state.compareSubmissions)
-      .then((comparisonAction) => store.dispatch(comparisonAction))
-      .then(() => this.setState({
-        comparisons: store.getState().ComparisonReducer.comparisons
-      }));  
-        
-    // fetch file contents for sub1 and sub2
-    readFileContent(this.state.submissionOne, 'GET_SUB_ONE_FILES')
-      .then((comparisonAction) => store.dispatch(comparisonAction))
-      .then(() => this.setState({
-        subOneFileContents: store.getState().ComparisonReducer.fileOneContents
-      }));
-    readFileContent(this.state.submissionTwo, 'GET_SUB_TWO_FILES')
-      .then((comparisonAction) => store.dispatch(comparisonAction))
-        .then(() => this.setState({
-          subTwoFileContents: store.getState().ComparisonReducer.fileTwoContents
-        }));
+    // Get first submission based on its ID in the url
+    readComparisonSubmission(this.props.match.params.subIdOne)
+      .then((submissionAction) => store.dispatch(submissionAction))
+      .then(() => {
+        this.setState({
+          submissionOne: store.getState().ComparisonReducer.compareSubmissions[0],
+        })
+      }).then(() => {
+        // Get first submission based on its ID in the url
+        readComparisonSubmission(this.props.match.params.subIdTwo)
+        .then((submissionAction) => store.dispatch(submissionAction))
+        .then(() => {
+          this.setState({
+            submissionTwo: store.getState().ComparisonReducer.compareSubmissions[1],
+          })
+        }).then(() => {
+          // now that we have BOTH subs in state, compare them and fetch their files
+          // Promise.all().then(() => {
+            readFileContent(this.state.submissionOne, 'GET_SUB_ONE_FILES')
+              .then((comparisonAction) => store.dispatch(comparisonAction))
+              .then(() => this.setState({
+                subOneFileContents: store.getState().ComparisonReducer.fileOneContents
+              }));
+            readFileContent(this.state.submissionTwo, 'GET_SUB_TWO_FILES')
+              .then((comparisonAction) => store.dispatch(comparisonAction))
+                .then(() => this.setState({
+                  subTwoFileContents: store.getState().ComparisonReducer.fileTwoContents
+                }));
+            compareSubmissions(this.state.compareSubmissions)
+              .then((comparisonAction) => store.dispatch(comparisonAction))
+              .then(() => {
+                  this.setState({
+                    comparisons: store.getState().ComparisonReducer.comparisons
+                  });
+              });          
+        })
+      })
   }
 
 
