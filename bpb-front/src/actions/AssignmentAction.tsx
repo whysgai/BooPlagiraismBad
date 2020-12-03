@@ -19,7 +19,7 @@ export function setCurrentAssignment(type : string, assignment : Assignment) {
 
 export function setCurrentAssignmentFromId(type : string, assignmentId : String) {
     return getAssignment(assignmentId).then(async (assignment: Assignment) => {
-        console.log("action set assignment from id", assignment)
+        //console.log("action set assignment from id", assignment)
         return {
             type: type,
             assignment: assignment
