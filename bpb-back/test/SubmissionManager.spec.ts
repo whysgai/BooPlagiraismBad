@@ -580,6 +580,51 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.equals("Delete failed");
             });
         });
+
+        it("Should properly modify caches as appropriate when a submission is deleted.", () => {
+        let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions', () => {return Promise.resolve([newSubmission, testSubmission])});
+        let mockReadSubmission = chai.spy.on(SubmissionDAO, 'readSubmission', (subId) => {
+            if(subId === testSubmissionId) {
+                return Promise.resolve(testSubmission);
+            } else {
+                return Promise.resolve(newSubmission)}
+            });
+            chai.spy.on(SubmissionDAO, 'deleteSubmission', () => {return Promise.resolve()})
+            
+            let builder = new Submission.builder();
+            builder.setAssignmentId(testSubmissionAssignmentId);
+            builder.setName('pablo escobar');
+            let newSubmission = builder.build();
+            
+            
+            return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissionArray) => {
+                expect(mockReadSubmissions).to.have.been.called.once;
+                expect(mockReadSubmissions).to.have.been.called.with(testSubmissionAssignmentId);
+                expect(submissionArray.length).to.be.equal(2);
+                expect(submissionArray[0].getName()).to.be.deep.equal(newSubmission.getName());
+                expect(submissionArray[1].getName()).to.be.deep.equal(testSubmissionName);
+                
+                return testSubmissionManager.deleteSubmission(testSubmissionId).then(() => {                   
+                    expect(mockReadSubmission).to.have.been.called.once; //delete checks for submission in database before deleting
+
+                   return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissionArray2) => {
+                        expect(mockReadSubmissions).to.have.been.called.once; //should have been cached
+                        expect(submissionArray2.length).to.be.equal(1); //should have removed the testSubmission
+                        expect(submissionArray2[0].getName()).to.be.deep.equal(newSubmission.getName());
+
+                        return testSubmissionManager.getSubmission(newSubmission.getId()).then((submission) => {
+                            expect(mockReadSubmission).to.have.been.called.once; //should have been cached
+                            expect(submission.getName()).to.be.deep.equal(newSubmission.getName());
+
+                            return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
+                                expect(mockReadSubmission).to.have.been.called.twice; //not cached, tries to retrieve
+                                expect(submission).to.be.deep.equal(testSubmission); //we mocked this
+                            });
+                        });
+                    });
+                });
+            });
+        });
     });
 
     describe("compareSubmission({id_a},{id_b})",()=> {
