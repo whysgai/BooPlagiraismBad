@@ -113,14 +113,24 @@ class SubmissionRouter extends AbstractRouter {
    */
   updateSubmissionFn = async(req : express.Request,res : express.Response) => {
     var submissionId = req.params.id; 
-    var submissionData = req.body;
-    this.submissionManager.updateSubmission(submissionId, submissionData) //TODO: Update to shift creation of data object here
+    var name = req.body.name;
+    var assignment_id = req.body.assignment_id;
+
+
+
+    if(name == undefined || assignment_id == undefined) {
+      res.status(400);
+      res.send({"response":"name and assignment_id properties must both be defined on the request body"});
+    } else {
+      var submissionData = {name:name,assignment_id:assignment_id}
+      this.submissionManager.updateSubmission(submissionId, submissionData)
       .then((submission) => {
         res.send(submission.asJSON());  
       }).catch((err) => {
         res.status(400);
         res.send({"response":err.message});
       });
+    }
   }
 
   /**
