@@ -1,4 +1,6 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 import { readFileContent } from '../../actions/ComparisonAction';
 import {store} from '../../store'
 import Submission from '../../types/Submission';
@@ -6,7 +8,14 @@ import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchListComponent from './MatchListComponent';
 
-interface PropsType {
+
+interface MatchParams {
+  assignmentId: string,
+  subIdOne: string,
+  subIdTwo: string
+}
+
+interface PropsType extends RouteComponentProps<MatchParams> {
   //submissions : Submission[]
 }
 
@@ -77,7 +86,15 @@ class ComparisonComponent extends React.Component <PropsType, {
   render() {
     return (
       <div className="submission-compare-pane col-12">
-        <div className="row">
+        <div>
+          <div className="col-10"></div>
+          <div className="col-2 float-right">
+                <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
+                  x 
+                </Link>
+            </div>
+        </div>
+        <div className="row col-12">
           <div className="sub1 row col-4">
             <h3 className="col-12">Submission: {this.state.submissionOne.name}</h3>
             <div className="col-4">

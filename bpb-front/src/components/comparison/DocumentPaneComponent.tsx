@@ -21,9 +21,8 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
       console.log("Document pane file content",this.props.fileContent)
     }
     return (
-      <div className="submission-compare-pane">
-        DocumentPaneComponent
-        {this.props.fileContent}
+      <div className="submission-compare-pane border">
+        <pre>{this.props.fileContent}</pre>
       </div>
     );
   }
