@@ -33,6 +33,7 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 return state
             }
         case 'COMPARE':
+            console.log("Comparisons in reducer", action.comparison)
             return {
                 ...state,
                 comparisons: action.comparison,
