@@ -371,10 +371,38 @@ export interface ISubmission {
         if(this.entries.values().next().value == undefined || otherSubmission.getEntries().values().next().value == undefined) {
             throw new Error("Cannot compare: One or more comparator submissions has no entries");
         }
+
         let analysisResults = new Array<IAnalysisResult>();
+
         for(let subAFileEntries of this.entries.values()) {
             for(let subBFileEntries of otherSubmission.getEntries().values()) {
-                analysisResults.push(this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries));
+                
+                //Generate an AnalysisResult for each file pairing
+                let analysisResult = this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries);
+
+                let similarity = analysisResult.getSimilarityScore();
+
+                let insertIndex = 0;
+                let addToEnd = true;
+
+                //Ensure AnalysisResult array is sorted by similarity (desc)
+                for(let i=0; i < analysisResults.length; i++) {
+                    
+                    insertIndex = i;
+
+                    let itSimilarity = analysisResults[i].getSimilarityScore();
+                    
+                    if(similarity > itSimilarity) {
+                        addToEnd = false;
+                        break;
+                    }
+                }
+
+                if(addToEnd) {
+                    analysisResults.push(analysisResult)
+                } else {
+                    analysisResults.splice(insertIndex,0,analysisResult);
+                }
             }
         }
         return analysisResults;
