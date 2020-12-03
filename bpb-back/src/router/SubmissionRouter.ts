@@ -193,31 +193,23 @@ class SubmissionRouter extends AbstractRouter {
           res.send({"response":"The file specified for upload is too large. The maximum individual file size is " + maxFileSize});
         } else {
 
-          const directoryPath = AppConfig.submissionFileUploadDirectory() + submissionId + "/";
           const fileName = submissionFile.name
-          const filePath = directoryPath + fileName;
-          
-          mkdirp(directoryPath).then(() => {
-
-            submissionFile.mv(filePath).then(() => {
-          
-              this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
-    
-                this.submissionManager.processSubmissionFile(submission.getId(),fileName).then(() => {
-              
-                  res.send({
-                    "response": "File " + fileName + " uploaded to submission successfully."
-                  });
-                }).catch((err) => {
-                  res.status(400);
-                  res.send({"response":err.message});
+          let content = submissionFile.data.toString();
+            this.submissionManager.getSubmission(submissionId).then((submission : ISubmission) => {
+  
+              this.submissionManager.processSubmissionFile(submission.getId(),fileName, content).then(() => {
+            
+                res.send({
+                  "response": "File " + fileName + " uploaded to submission successfully."
                 });
               }).catch((err) => {
-                  res.status(400);
-                  res.send({"response":err.message});
+                res.status(400);
+                res.send({"response":err.message});
               });
+            }).catch((err) => {
+                res.status(400);
+                res.send({"response":err.message});
             });
-          });
         }
       }
     } 

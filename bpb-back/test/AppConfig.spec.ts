@@ -10,12 +10,6 @@ describe("AppConfig",() => {
         });
     });
 
-    describe("submissionFileUploadDirectory()",() => {
-        it("returns the expected environment variable",() => {
-            expect(AppConfig.submissionFileUploadDirectory()).to.equal("/home/vagrant/");
-        });
-    });
-
     describe("dbConnectionString()",() => {
         it("returns the expected environment variable",() =>  {
             expect(AppConfig.dbConnectionString()).to.equal("mongodb://127.0.0.1:27017/bpbtest");
