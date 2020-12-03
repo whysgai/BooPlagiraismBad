@@ -324,6 +324,7 @@ export interface ISubmission {
             if(this.files.includes(fileName)) {
                 reject(new Error("Submission file " + fileName + " was already added to the submission"));
             } else {
+                this.setFileContent(fileName, content);
                 this.files.push(fileName);
     
                 var parseTree = parse(content.toString());
