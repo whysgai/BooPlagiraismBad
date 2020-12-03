@@ -26,12 +26,10 @@ export interface ISubmissionManager {
 export class SubmissionManager implements ISubmissionManager {
 
     private submissionCache : Map<string,ISubmission>;
-    private fileContentsCache : Map<string, Map<string, string>>; // <submissionId, <fileName, fileContent>>
     private submissionCacheByAssignment : Map<string, ISubmission[]>;
     
     constructor() {
         this.submissionCache = new Map<string,ISubmission>();
-        this.fileContentsCache = new Map<string, Map<string, string>>();
         this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
     }
 
@@ -228,27 +226,16 @@ export class SubmissionManager implements ISubmissionManager {
      * @returns a Promise containing the file's content as a string
      */
     getSubmissionFileContent = async(submissionId : string, fileName : string) : Promise<string> => {
-        
-        return new Promise((resolve,reject) => {
-            if(this.fileContentsCache.get(submissionId) != undefined 
-            && this.fileContentsCache.get(submissionId).get(fileName) != undefined) {
-                resolve(this.fileContentsCache.get(submissionId).get(fileName));
-            } else {
-                this.getSubmission(submissionId).then((submission) => {
-                    readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
-                        var content = buffer.toString();
-                        if(this.fileContentsCache.get(submissionId) == undefined) {
-                            this.fileContentsCache.set(submissionId, new Map<string, string>());
-                        }
-                        this.fileContentsCache.get(submissionId).set(fileName, content);
-                        resolve(content);
-                    }).catch((err) => {
-                        reject(err);
-                    });
-                }).catch((err) => {
-                    reject(err);
-                });
-            }
+        return new Promise((resolve,reject) => {       
+            this.getSubmission(submissionId).then((submission) => {
+                let fileContent = submission.getFileContents().get(fileName);
+                if(fileContent == undefined) {
+                    throw new Error('No such file');
+                }
+                resolve(submission.getFileContents().get(fileName));
+            }).catch((err) => {
+                reject(err);
+            });
         });
     }
 }
