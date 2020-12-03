@@ -5,7 +5,7 @@ const URL = 'http://192.168.33.10:8080/'
 export async function getComparison(compareSubmissions : Submission[]) : Promise<JSON[]> {
     let response = await fetch(`${URL}submissions/compare/${compareSubmissions[0]._id}/${compareSubmissions[1]._id}`);
     let asJson = await response.json();
-    console.log("Comparisons from comparison service", asJson);
+    //console.log("Comparisons from comparison service", asJson);
     return Promise.resolve(asJson);
 }
 
