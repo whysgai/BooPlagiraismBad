@@ -33,12 +33,12 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 return state
             }
         case 'COMPARE':
-            console.log("Comparisons in reducer", action.comparison)
+            //console.log("Comparisons in reducer", action.comparison)
             return {
                 ...state,
                 comparisons: action.comparison,
-                submissionOne: state.compareSubmissions[0],
-                submissionTwo: state.compareSubmissions[1]
+                // submissionOne: state.compareSubmissions[0],
+                // submissionTwo: state.compareSubmissions[1]
             }
         case 'GET_SUB_ONE_FILES':
             console.log("Reducer sub one content", action.fileContents);
