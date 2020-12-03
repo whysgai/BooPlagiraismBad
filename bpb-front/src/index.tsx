@@ -27,7 +27,7 @@ ReactDOM.render(
       <Route exact path="/Assignments/:assignmentId/Submissions" component={SubmissionListComponent}/>
       <Route path="/Assignments/:assignmentId/CreateSubmission" component={CreateSubmissionComponent}/>
       <Route path="/Help" component={HelpComponent}/>
-      <Route path="/Assignments/:assignmentId/CompareSubmissions" component={ComparisonComponent}/>
+      <Route path="/Assignments/:assignmentId/CompareSubmissions/:subOneId/:subTwoId" component={ComparisonComponent}/>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

@@ -33,7 +33,7 @@ export async function getSubmissionIds(assignmentId : String) : Promise<String[]
 export async function getSubmission(submissionId : String) : Promise<Submission> {
     let response = await fetch(`${vagrantURL}submissions/${submissionId}`);
     let asJson = await response.json();
-    console.log('getSubmission asJson', asJson)
+    //console.log('getSubmission asJson', asJson)
     return Promise.resolve(asJson as Submission)
 }
 

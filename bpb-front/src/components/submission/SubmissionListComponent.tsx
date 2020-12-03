@@ -59,6 +59,14 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
     return (
       <div className='submission-list' onClick={() => this.setDisabled()}>
         <h3>{store.getState().AssignmentReducer.currentAssignment.name}</h3>
+        <div>
+          <div className="col-10"></div>
+          <div className="col-2 float-right">
+                <Link className="btn btn-outline-danger mt-2" to={`/`}>
+                  Back 
+                </Link>
+            </div>
+        </div>
         <Link className='btn btn-outline-success' to={`/Assignments/${this.props.match.params.assignmentId}/CreateSubmission`}>Upload Submission</Link>
         {
           this.state.submissions.length > 0 &&
@@ -88,7 +96,12 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
         }
         { 
           store.getState().ComparisonReducer.compareSubmissions.length === 2 &&
-            <Link className='enabledCompareButton btn btn-outline-success' to="/ComparisonComponent" id="twoCompare" onClick={() => this.requestComparison()}>
+            <Link className='enabledCompareButton btn btn-outline-success'
+              to={
+                `/Assignments/${this.props.match.params.assignmentId}/CompareSubmissions/${store.getState().ComparisonReducer.compareSubmissions[0]._id}/${store.getState().ComparisonReducer.compareSubmissions[1]._id}`
+              }
+              id="twoCompare" onClick={() => this.requestComparison()}
+              >
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>
         }
