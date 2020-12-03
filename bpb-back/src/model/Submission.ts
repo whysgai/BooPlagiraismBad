@@ -408,19 +408,16 @@ export interface ISubmission {
                 let hashB = fileBEntries[j].getHashValue();
 
                 let comparison = this.compareHashValues(hashA, hashB);
-                var threshold = AppConfig.getComparisonThreshold(); //TODO: determine actual threshold, using 100 for now
+                var threshold = AppConfig.comparisonThreshold();
 
                 if(comparison < threshold) {  //the more similar a comparison, the lower the number
-                    
-                    //Add to original list (Deckard calculation)
-                    //matchedEntries.push();
                     
                     //Get the avg length of the entry
                     let leftLength = fileAEntries[i].getLineNumberEnd() - fileAEntries[i].getLineNumberStart();
                     let rightLength = fileBEntries[j].getLineNumberEnd() - fileBEntries[j].getLineNumberStart();
                     let avgLength = (leftLength + rightLength) / 2; 
 
-                    //Insert the match at the right spot
+                    //Insert the match at the right spot in the array
                     let insertIndex = 0;
                     let addToEnd = true;
 
@@ -439,6 +436,7 @@ export interface ISubmission {
                             break;
                         }
                     }
+
                     if(addToEnd) {
                         matchedEntries.push([fileAEntries[i],fileBEntries[j]])
                     } else {
@@ -463,7 +461,10 @@ export interface ISubmission {
         let fileNameA = fileAEntries[0].getFileName();
         let fileNameB = fileBEntries[0].getFileName();
 
-        var analysisResult = new AnalysisResult(matchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
+        //Add only the first n entries to the AnalysisResult
+        let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());
+
+        var analysisResult = new AnalysisResult(reducedMatchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
         
         return analysisResult;
     }
