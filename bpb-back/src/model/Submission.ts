@@ -7,6 +7,9 @@ import {parse} from 'java-ast';
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
 import { AppConfig } from "../AppConfig";
+import { forEachChild, isJsxFragment } from "typescript";
+import { match } from "sinon";
+import { ConsoleErrorListener } from "antlr4ts";
 
 /**
  * Represents an Submission database model object
@@ -381,6 +384,7 @@ export interface ISubmission {
      * Returns the submission as a JSON object
      */
     asJSON() : Object {
+
         return {_id:this.id,
             assignment_id:this.assignment_id,
             name:this.name,
@@ -395,6 +399,7 @@ export interface ISubmission {
 
         
         let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
+        
         let fileASimilar : boolean[] = [false];
         let fileBSimilar : boolean[] = [false];
         for(let i = 0; i < fileAEntries.length; i++) {
@@ -403,10 +408,41 @@ export interface ISubmission {
                 let hashB = fileBEntries[j].getHashValue();
 
                 let comparison = this.compareHashValues(hashA, hashB);
-                var threshold = AppConfig.getComparisonThreshold(); //TODO: determine actual threshold, using 100 for now
+                var threshold = AppConfig.comparisonThreshold();
 
                 if(comparison < threshold) {  //the more similar a comparison, the lower the number
-                    matchedEntries.push([fileAEntries[i],fileBEntries[j]]);
+                    
+                    //Get the avg length of the entry
+                    let leftLength = fileAEntries[i].getLineNumberEnd() - fileAEntries[i].getLineNumberStart();
+                    let rightLength = fileBEntries[j].getLineNumberEnd() - fileBEntries[j].getLineNumberStart();
+                    let avgLength = (leftLength + rightLength) / 2; 
+
+                    //Insert the match at the right spot in the array
+                    let insertIndex = 0;
+                    let addToEnd = true;
+
+                    for(let i=0; i < matchedEntries.length; i++) {
+                        
+                        insertIndex = i;
+
+                        let entry = matchedEntries[i];
+
+                        let left = entry[0].getLineNumberEnd() - entry[0].getLineNumberStart();
+                        let right = entry[1].getLineNumberEnd() - entry[1].getLineNumberStart();
+                        let avg = (left+ right) / 2; 
+                        
+                        if(avgLength > avg) {
+                            addToEnd = false;
+                            break;
+                        }
+                    }
+
+                    if(addToEnd) {
+                        matchedEntries.push([fileAEntries[i],fileBEntries[j]])
+                    } else {
+                        matchedEntries.splice(insertIndex,0,[fileAEntries[i],fileBEntries[j]]);
+                    }
+
                     fileASimilar[i] = true;
                     fileBSimilar[j] = true;
                 }
@@ -424,7 +460,12 @@ export interface ISubmission {
         let submissionIdB = fileBEntries[0].getSubmissionID();
         let fileNameA = fileAEntries[0].getFileName();
         let fileNameB = fileBEntries[0].getFileName();
-        var analysisResult = new AnalysisResult(matchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
+
+        //Add only the first n entries to the AnalysisResult
+        let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());
+
+        var analysisResult = new AnalysisResult(reducedMatchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
+        
         return analysisResult;
     }
 
