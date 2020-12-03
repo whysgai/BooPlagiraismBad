@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import { readFileContent } from '../../actions/ComparisonAction';
+import { compareSubmissions, readFileContent } from '../../actions/ComparisonAction';
 import {store} from '../../store'
 import Submission from '../../types/Submission';
 import DirectoryListComponent from './DirectoryListComponent';
@@ -48,13 +48,19 @@ class ComparisonComponent extends React.Component <PropsType, {
   }
 
   componentDidMount() {
-    // fetch file contents for sub1 and sub2?
+
+    compareSubmissions(this.state.compareSubmissions)
+      .then((comparisonAction) => store.dispatch(comparisonAction))
+      .then(() => this.setState({
+        comparisons: store.getState().ComparisonReducer.comparisons
+      }));  
+        
+    // fetch file contents for sub1 and sub2
     readFileContent(this.state.submissionOne, 'GET_SUB_ONE_FILES')
       .then((comparisonAction) => store.dispatch(comparisonAction))
       .then(() => this.setState({
         subOneFileContents: store.getState().ComparisonReducer.fileOneContents
       }));
-
     readFileContent(this.state.submissionTwo, 'GET_SUB_TWO_FILES')
       .then((comparisonAction) => store.dispatch(comparisonAction))
         .then(() => this.setState({
