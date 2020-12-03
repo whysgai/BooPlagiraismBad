@@ -62,7 +62,7 @@ describe('SubmissionRouter.ts',()=> {
         testServer = app.listen(8081);      
     });
 
-    after(() => {
+    afterEach(() => {
         testServer.close();
     });
 

@@ -42,6 +42,10 @@ describe('AssignmentRouter.ts',()=> {
         assignmentBuilder.setName(expectedName);
         mockAssignment = assignmentBuilder.build();
     });
+
+    afterEach(() => {
+        testServer.close();
+    });
     
     it("Should be able to interpret a request to POST /assignments to create an assignment",() => {    
 
