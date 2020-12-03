@@ -19,7 +19,7 @@ export async function getAssignments() : Promise<Assignment[]> {
 export async function getAssignment(assignmentId : String) : Promise<Assignment> {
     let response = await fetch(`${assignmentURL}Assignments/${assignmentId}`);
     let asJson = await response.json();
-    console.log("get assignment service", asJson)
+    //console.log("get assignment service", asJson)
     return Promise.resolve(asJson as Assignment);
 }
 

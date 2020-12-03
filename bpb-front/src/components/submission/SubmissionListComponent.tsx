@@ -30,7 +30,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
 
   componentDidMount() {
     const assignmentId = this.props.match.params.assignmentId
-    console.log("submission list URL id", assignmentId)
+    //console.log("submission list URL id", assignmentId)
     setCurrentAssignmentFromId('SET_CURRENT_ASSIGNMENT', assignmentId)
       .then((assignmentAction) => store.dispatch(assignmentAction))
     readSubmissions(assignmentId)
