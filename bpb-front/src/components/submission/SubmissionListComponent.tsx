@@ -52,7 +52,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
   }
 
   requestComparison() {
-    store.dispatch(compareSubmissions(store.getState().ComparisonReducer.compareSubmissions));
+    //store.dispatch(compareSubmissions(store.getState().ComparisonReducer.compareSubmissions));
   }
 
   render() {
