@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
 import { readFileSync } from 'fs';
+import { stringifyConfiguration } from "tslint/lib/configuration";
 
 describe("Submission.ts.SubmissionBuilder",() => {
 
@@ -40,6 +41,18 @@ describe("Submission.ts.SubmissionBuilder",() => {
         });
     });
 
+    describe("setFileConents", () => {
+        it("ShouldCorrectly set submission's fileContents", () => {
+            let fileContents = new Map<string, string>()
+                .set('fileA', 'Your mother was a hamster')
+                    .set('fileB', 'Your father smelled of elderberries');
+            testSubmissionBuilder.setFileContents(fileContents);
+            testSubmission = testSubmissionBuilder.build();
+            expect(testSubmission.getFileContents()).to.deep.equal(fileContents);
+            expect(testSubmission.getFileContents()).to.not.equal(fileContents);
+        });
+    });
+
     describe("setEntries()",() => {
         it("Should correctly set submission's entries",() => {
             var testSubmissionNoEntries = testSubmissionBuilder.build();
@@ -58,6 +71,8 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmission.getName()).to.not.be.undefined;
             expect(testSubmission.getAssignmentId()).to.not.be.undefined;
             expect(testSubmission.getModelInstance()).to.not.be.undefined;
+            expect(testSubmission.getEntries()).to.not.be.undefined;
+            expect(testSubmission.getFileContents()).to.not.be.undefined;
         });
         it("Should correctly build a submission if builder methods are called",() => {
             var newName = "some_other_name";
@@ -70,6 +85,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmission.getAssignmentId()).to.equal(newAssignmentId);
             expect(testSubmission.getFiles()).to.be.empty;
             expect(testSubmission.getEntries()).to.be.empty;
+            expect(testSubmission.getFileContents()).to.be.empty;
         });
     });
 
@@ -81,6 +97,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
             testSubmissionBuilder.setAssignmentId(newAssignmentId);
             testSubmissionBuilder.setFiles(["some","files"]);
             testSubmissionBuilder.setEntries(new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","someFileName","4",5,6,7,8,"9","10")]));
+            testSubmissionBuilder.setFileContents(new Map<string, string>().set('sir', 'lancelot of camelot').set('robin', 'the somewhat brave'));
             testSubmission = testSubmissionBuilder.build();
             var testExistingModel = testSubmission.getModelInstance();
 
@@ -91,6 +108,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmissionExisting.getAssignmentId()).to.deep.equal(testSubmission.getAssignmentId());
             expect(testSubmissionExisting.getEntries()).to.deep.equal(testSubmission.getEntries());
             expect(testSubmissionExisting.getFiles()).to.deep.equal(testSubmission.getFiles());
+            expect(testSubmissionExisting.getFileContents()).to.deep.equal(testSubmission.getFileContents());
         });
 
         it("Should throw an appropriate error message if the provided model is missing one or more properties",() => {
@@ -107,11 +125,14 @@ describe("Submission.ts",() => {
     var testFileContent : string;
     var testEntryA : IAnalysisResultEntry;
     var testEntryB : IAnalysisResultEntry;
+    var testFileContents : Map<string, string>;
 
     beforeEach(()=>{
+        testFileContents = new Map<string, string>().set('five is', 'right out');
         var builderA = new Submission.builder();
         builderA.setName("name_a");
         builderA.setAssignmentId("id_a");
+        builderA.setFileContents(testFileContents);
         testSubmissionA = builderA.build();
 
         var builderB = new Submission.builder();
@@ -129,11 +150,26 @@ describe("Submission.ts",() => {
             expect(testSubmissionA.getId()).to.equal(testSubmissionA.getModelInstance().id);
         });
     });
+
     describe("getName()",() => {
         it("Should return the submission’s name",() => {
             expect(testSubmissionA.getName()).to.equal("name_a");
         });
     });
+
+    describe("getFileContents", () => {
+        it("Should return the Submission's fileContents Map", () => {
+            expect(testSubmissionA.getFileContents()).to.be.deep.equal(testFileContents);
+        });
+    });
+
+    describe("deleteFileContents", () => {
+        it("Should delete the fileContent of a given fileName", () => {
+            expect(testSubmissionA.getFileContents().get('five is')).to.deep.equal('right out');
+            expect(testSubmissionA.deleteFileContent('five is')).to.be.undefined;
+            expect(testSubmissionA.getFileContents().get('five is')).to.be.undefined;
+        });
+    })
 
     describe("compare()",() => {
 
@@ -310,6 +346,7 @@ describe("Submission.ts",() => {
                 "assignment_id": testSubmissionA.getAssignmentId(),
                 "entries": [...new Map().set(testEntryA.getFileName(), [testEntryA]).set(testEntryB.getFileName(), [testEntryB])],
                 "files": [testEntryA.getFileName(),testEntryB.getFileName()],
+                "fileContents": [...testSubmissionA.getFileContents()],
                 "name": testSubmissionA.getName() 
             }            
             testSubmissionA.addAnalysisResultEntry(testEntryA);

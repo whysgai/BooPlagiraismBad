@@ -17,6 +17,7 @@ export interface ISubmissionModel extends Document {
     name : string
     files : string[]
     entries : [string, IAnalysisResultEntry[]][]
+    fileContents : [string, string][]
 }
 
 /**
@@ -34,6 +35,8 @@ export interface ISubmission {
     setEntries(entries: Map<string, IAnalysisResultEntry[]>) :void;
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
+    getFileContents() : Map<string, string>;
+    deleteFileContent(fileNAme : string) : void; 
     setFiles(files : string[]) : void;
     addFile(content : string, fileName : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
@@ -57,12 +60,14 @@ export interface ISubmission {
         private assignment_id : string;
         private name : string;
         private files : string[];
+        private fileContents : Map<string, string>;
         private entries : Map<string, IAnalysisResultEntry[]>;
     
         constructor() {
             this.name = "Name Not Defined";
             this.assignment_id = "id_not_defined"
             this.files = [];
+            this.fileContents = new Map<string, string>();
             this.entries = new Map<string, IAnalysisResultEntry[]>();
         }
        
@@ -90,6 +95,11 @@ export interface ISubmission {
             this.files = files;
         }
 
+        //TODO: add comment
+        setFileContents(fileContents : Map<string, string>) : void {
+            this.fileContents = fileContents;
+        }
+
         /**
          * Sets the AnalysisResultEntries associated with the submission
          * @param entries 
@@ -106,12 +116,13 @@ export interface ISubmission {
             var submission = new Submission();
             
             var submissionModel = Submission.getStaticModel();
-            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"entries":[...this.entries]});
+            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"fileContents":[...this.fileContents],"entries":[...this.entries]});
             
             submission.setId(modelInstance.id);
             submission.setName(this.name);
             submission.setAssignmentId(this.assignment_id);
             submission.setFiles(this.files);
+            submission.setFileContents(this.fileContents);
             submission.setEntries(this.entries);
             submission.setModelInstance(modelInstance);
             
@@ -126,7 +137,7 @@ export interface ISubmission {
          buildFromExisting(model : ISubmissionModel) : ISubmission {
              var submission = new Submission();
             
-             if(!model.id || !model.name || !model.assignment_id || !model.entries || !model.files) {
+             if(!model.id || !model.name || !model.assignment_id || !model.entries || !model.files || !model.fileContents) {
                 throw new Error("At least one required model property is not present on the provided model");
              }
 
@@ -141,6 +152,8 @@ export interface ISubmission {
                      resultEntries.get(fileName).push(AnalysisResultEntry.buildFromModel(entryObject as object as IAnalysisResultEntryModel));
                  }
              }
+             let fileContents = new Map<string, string>([...model.fileContents]);
+             submission.setFileContents(fileContents);
              submission.setEntries(resultEntries);
              submission.setFiles(model.files);
              submission.setModelInstance(model);
@@ -156,6 +169,7 @@ export interface ISubmission {
         assignment_id: String,
         name: String,
         files: [String],
+        fileContents: [],
         entries: []
       });
 
@@ -168,10 +182,43 @@ export interface ISubmission {
     private assignment_id : string;
     private name : string;
     private files : string[];
-    private entries : Map<string, IAnalysisResultEntry[]>
+    private fileContents : Map<string, string>;
+    private entries : Map<string, IAnalysisResultEntry[]>;
     private modelInstance : ISubmissionModel;
 
     protected constructor(){}
+
+    /**
+     * Sets the fileContents of the submission
+     * @param fileContents a map of new fileContents for the submission
+     */
+    protected setFileContents(fileContents: Map<string, string>): void {
+        this.fileContents = new Map<string, string>([...fileContents]);
+    }
+
+    /**
+     * Adds a fileContent to the fileContents map
+     * @param fileName name of file to act as key
+     * @param fileContent content of file to act as value
+     */
+    private setFileContent(fileName: string, fileContent: string): void {
+        this.fileContents.set(fileName, fileContent);
+    }
+    
+    /**
+     * Returns a Map<fileName, fileContent> for fileContents for this submission
+     */
+    getFileContents(): Map<string, string> {
+        return this.fileContents;
+    }
+
+    /**
+     * Removes a key-value pair from the fileContents Map
+     * @param fileName the key of the pair to be removed
+     */
+    deleteFileContent(fileName : string) {
+        this.fileContents.delete(fileName);
+    }
 
     /**
      * Returns the static database model for submissions
@@ -246,7 +293,6 @@ export interface ISubmission {
      */
     setEntries(entries : Map<string, IAnalysisResultEntry[]>) : void {
         this.entries = entries;
-        this.modelInstance
     }
     
     /**
@@ -286,6 +332,7 @@ export interface ISubmission {
             if(this.files.includes(fileName)) {
                 reject(new Error("Submission file " + fileName + " was already added to the submission"));
             } else {
+                this.setFileContent(fileName, content);
                 this.files.push(fileName);
     
                 var parseTree = parse(content.toString());
@@ -338,6 +385,7 @@ export interface ISubmission {
             assignment_id:this.assignment_id,
             name:this.name,
             files:this.files,
+            fileContents:[...this.fileContents],
             entries:[...this.entries] // When parsing json object, this can be converted back to a Map with: entries = new Map(JSONObject["entries"]);
         };
     }
