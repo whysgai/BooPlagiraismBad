@@ -1,4 +1,4 @@
-import { expect, spy } from "chai";
+import { expect } from "chai";
 import SubmissionRouter from "../src/router/SubmissionRouter"
 import express from "express";
 import IRouter from "../src/router/IRouter";
@@ -10,7 +10,7 @@ import chaiSpies = require("chai-spies");
 import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { Submission, ISubmission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
-import { AnalysisResult, IAnalysisResult } from "../src/model/AnalysisResult";
+import { AnalysisResult } from "../src/model/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
 import { AssignmentManager } from "../src/manager/AssignmentManager";
 import { AnalysisResultEntryCollectorVisitor } from "../src/model/AnalysisResultEntryCollectorVisitor";

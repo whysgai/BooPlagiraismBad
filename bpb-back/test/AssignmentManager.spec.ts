@@ -5,7 +5,6 @@ import chaiAsPromised = require("chai-as-promised");
 import {AssignmentDAO} from "../src/model/AssignmentDAO";
 import { AssignmentManager, IAssignmentManager } from "../src/manager/AssignmentManager";
 import { IAssignment, Assignment } from "../src/model/Assignment";
-import { isAssignment } from "tslint";
 
 describe("AssignmentManager.ts",() => {
 

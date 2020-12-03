@@ -1,7 +1,7 @@
 import { parse } from 'java-ast';
 import { ParseTree, RuleNode } from 'antlr4ts/tree';
 import { readFileSync } from 'fs';
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 var chai = require('chai')
 import Sinon from 'sinon';
 import { IAnalysisResultEntryCollectorVisitor, AnalysisResultEntryCollectorVisitor } from 

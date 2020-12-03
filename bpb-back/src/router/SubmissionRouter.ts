@@ -4,7 +4,6 @@ import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmission } from '../model/Submission';
-const mkdirp = require('mkdirp');
 
 /**
  * Router for requests related to Submissions

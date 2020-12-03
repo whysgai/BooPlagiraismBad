@@ -4,7 +4,6 @@ import { AnalysisResultEntry, IAnalysisResultEntry, IAnalysisResultEntryModel } 
 import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollectorVisitor";
 
 import {parse} from 'java-ast'; 
-import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { Tlsh } from '../lib/tlsh';
 import { AppConfig } from "../AppConfig";
 

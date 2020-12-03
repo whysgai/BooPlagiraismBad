@@ -1,4 +1,4 @@
-import chai, { assert, expect } from 'chai';
+import chai, { expect } from 'chai';
 import App from "../src/App";
 import { AppConfig } from "../src/AppConfig";
 import chaiHttp from 'chai-http';
@@ -6,7 +6,6 @@ import fs from 'fs';
 import util from 'util';
 const readFileContent = util.promisify(fs.readFile);
 import mongoose from 'mongoose';
-import { forEachChild } from 'typescript';
 
 /**
  * App Integration Tests

@@ -7,7 +7,6 @@ import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
 import { IAssignmentManager, AssignmentManager } from "../src/manager/AssignmentManager";
-import { IAssignmentDAO, AssignmentDAO } from "../src/model/AssignmentDAO";
 import { Assignment, IAssignment } from "../src/model/Assignment";
 import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 

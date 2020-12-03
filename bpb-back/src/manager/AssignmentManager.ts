@@ -1,4 +1,3 @@
-import { resolveModuleName } from "typescript";
 import { IAssignment } from "../model/Assignment";
 import { AssignmentDAO } from "../model/AssignmentDAO";
 import AssignmentData from "../types/AssignmentData";

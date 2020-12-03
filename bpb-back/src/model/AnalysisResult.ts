@@ -1,4 +1,4 @@
-import { AnalysisResultEntry, IAnalysisResultEntry } from "./AnalysisResultEntry";
+import { IAnalysisResultEntry } from "./AnalysisResultEntry";
 export interface IAnalysisResult {
     asJSON() : Object;
     getSimilarityScore() : number;

@@ -1,19 +1,13 @@
-import { assert, expect } from "chai";
+import { expect } from "chai";
 import chai = require("chai");
 import chaiSpies = require("chai-spies");
 import chaiAsPromised = require("chai-as-promised");
-import { ISubmissionDAO, SubmissionDAO } from "../src/model/SubmissionDAO";
+import { SubmissionDAO } from "../src/model/SubmissionDAO";
 import { ComparisonCache, ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 import { ISubmission, Submission } from "../src/model/Submission";
 import SubmissionData from "../src/types/SubmissionData"
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
-import fs from 'fs';
-import util from 'util';
-import { AppConfig } from "../src/AppConfig";
 import { AnalysisResult } from "../src/model/AnalysisResult";
-const readFileContent = util.promisify(fs.readFile);
-const copyFile = util.promisify(fs.copyFile);
-const mkdirp = require('mkdirp');
 
 describe("SubmissionManager.ts",() => {
 
