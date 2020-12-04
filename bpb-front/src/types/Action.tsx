@@ -1,5 +1,6 @@
 import Submission from "./Submission";
 import Assignment from "./Assignment";
+import Snippet from "./Snippet";
  
 type Action = {
  type: String;
@@ -10,6 +11,7 @@ type Action = {
  comparison: JSON[];
  submissions: Submission[];
  fileContents: String[];
+ snippets: Snippet[]
 }
  
 export default Action
