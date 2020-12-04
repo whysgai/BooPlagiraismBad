@@ -1,7 +1,9 @@
-import { expect } from "chai";
+import chai, { expect } from "chai";
+import chaiSpies from "chai-spies";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
 import { readFileSync } from 'fs';
+import { AnalysisResult } from "../src/model/AnalysisResult";
 
 describe("Submission.ts.SubmissionBuilder",() => {
 
@@ -126,6 +128,10 @@ describe("Submission.ts",() => {
     var testEntryB : IAnalysisResultEntry;
     var testFileContents : Map<string, string>;
 
+    before(() => {
+        chai.use(chaiSpies);
+    });
+
     beforeEach(()=>{
         testFileContents = new Map<string, string>().set('five is', 'right out');
         var builderA = new Submission.builder();
@@ -240,7 +246,21 @@ describe("Submission.ts",() => {
                 expect(asJSON['matches'][0]).to.have.deep.members([testEntryA, testEntryD]);
             });
         });
-    
+        
+        it("Should throw an appropriate error if comparing internal entries fails",() => {
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionB.addAnalysisResultEntry(testEntryB);
+
+            let mockCompareAnalysisResultEntries = chai.spy.on(testSubmissionA,'compareAnalysisResultEntries',() => {return Promise.reject(new Error("Inner compare failed"))});
+
+            return testSubmissionA.compare(testSubmissionB).then(() => {
+                expect(true,"compareAnalysisResultEntries to have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Inner compare failed");
+                expect(mockCompareAnalysisResultEntries).to.have.been.called.once;
+            })
+        });
+
         it("Should throw an appropriate error if comparator submission is invalid (no AREs)",() =>{
             expect(testSubmissionA.compare(testSubmissionB)).to.eventually.be.rejected.with("Cannot compare: One or more comparator submissions has no entries");
         });
