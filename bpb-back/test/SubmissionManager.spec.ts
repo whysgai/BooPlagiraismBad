@@ -840,6 +840,23 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
+        it("Should return an appropriate error if submission compare fails",() => {
+
+            let testSubmission2 = new Submission.builder().build();
+
+            chai.spy.on(testSubmission2,'compare',() =>{ return Promise.reject(new Error("Compare failed"))});
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{ return Promise.resolve(testSubmission2)});
+
+            return testSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (submission.compare failed)").to.be.false;
+            }).catch((err) => {
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.equals("Compare failed");
+            });
+        });
+
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
             var testSubmission2 = new Submission.builder().build();

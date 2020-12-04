@@ -277,6 +277,7 @@ export class SubmissionManager implements ISubmissionManager {
      */
     compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
         return new Promise((resolve,reject) => {
+<<<<<<< HEAD
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
             } else {
@@ -295,6 +296,21 @@ export class SubmissionManager implements ISubmissionManager {
                     reject(err);
                 });
             }
+=======
+            this.getSubmission(submissionIdA).then(submissionA => {
+                this.getSubmission(submissionIdB).then(submissionB => {
+                        submissionA.compare(submissionB).then((analysisResults) => {
+                            resolve(analysisResults);
+                        }).catch((err) => {
+                            reject(err);
+                        });
+                    }).catch((err) => {
+                        reject(err);
+                    });
+            }).catch((err) => {
+                reject(err);
+            });
+>>>>>>> BPB-141 feat: asyncify submission.compare
         });
     }
 

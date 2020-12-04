@@ -175,27 +175,31 @@ describe("Submission.ts",() => {
         it("Should return a valid AnalysisResult[] with expected values if comparator submission is valid (left direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
-            var resultA = testSubmissionA.compare(testSubmissionB);
-            expect(resultA).to.not.be.undefined;
-            let asJSON = resultA[0].asJSON() as any;
-            expect(asJSON['similarityScore']).to.be.equal(0); //the two hashes will not match, so simscore will be 0
-            let files = new Map(asJSON['files']);
-            expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
-            expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
-            expect(asJSON['matches'].length).to.be.equal(0);
+            
+            return testSubmissionA.compare(testSubmissionB).then((resultA) => {
+                expect(resultA).to.not.be.undefined;
+                let asJSON = resultA[0].asJSON() as any;
+                expect(asJSON['similarityScore']).to.be.equal(0); //the two hashes will not match, so simscore will be 0
+                let files = new Map(asJSON['files']);
+                expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
+                expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
+                expect(asJSON['matches'].length).to.be.equal(0);
+            });
+            
         });
         
         it("Should return a valid AnalysisResult[] with expected values if comparator submission is valid (right direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
-            var resultB = testSubmissionB.compare(testSubmissionA);
-            expect(resultB).to.not.be.undefined;
-            let asJSON = resultB[0].asJSON() as any;
-            expect(asJSON['similarityScore']).to.be.equal(0); //the two hashes will not match, so simscore will be 0%
-            let files = new Map(asJSON['files']);
-            expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
-            expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
-            expect(asJSON['matches'].length).to.be.equal(0);
+            return testSubmissionB.compare(testSubmissionA).then((resultB)=> {
+                expect(resultB).to.not.be.undefined;
+                let asJSON = resultB[0].asJSON() as any;
+                expect(asJSON['similarityScore']).to.be.equal(0); //the two hashes will not match, so simscore will be 0%
+                let files = new Map(asJSON['files']);
+                expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
+                expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
+                expect(asJSON['matches'].length).to.be.equal(0);
+            });
         });
 
         it("Should return a valid AnalysisResult[] with expected values for submissions who share all identical hashes", () => {
@@ -203,16 +207,17 @@ describe("Submission.ts",() => {
             let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, 
             "1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");//same hash as testEntryA
             testSubmissionB.addAnalysisResultEntry(testEntryC);
-            var resultB = testSubmissionB.compare(testSubmissionA);
-            expect(resultB).to.not.be.undefined;
-            let asJSON = resultB[0].asJSON() as any;
-            expect(asJSON['similarityScore']).to.be.equal(1); //the two hashes will match, so simscore will be 100%
-            let files = new Map(asJSON['files']);
-            expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
-            expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
-            expect(asJSON['matches'].length).to.be.equal(1);
-            expect(asJSON['matches'][0]).to.have.deep.members([testEntryA, testEntryC]);
-        });
+            return testSubmissionB.compare(testSubmissionA).then((resultB) => { 
+                    expect(resultB).to.not.be.undefined;
+                let asJSON = resultB[0].asJSON() as any;
+                expect(asJSON['similarityScore']).to.be.equal(1); //the two hashes will match, so simscore will be 100%
+                let files = new Map(asJSON['files']);
+                expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
+                expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
+                expect(asJSON['matches'].length).to.be.equal(1);
+                expect(asJSON['matches'][0]).to.have.deep.members([testEntryA, testEntryC]);
+                });
+            });
 
         it("Should return a valid AnalysisResult[] with expected values for submissions that share one identical hash pair, and one non-matching hash pair", () => {
             let testEntryC = new AnalysisResultEntry("are1", testSubmissionA.getId(),"file.java","method",1, 0, 100, 1,
@@ -223,45 +228,47 @@ describe("Submission.ts",() => {
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             testSubmissionA.addAnalysisResultEntry(testEntryC);
             testSubmissionB.addAnalysisResultEntry(testEntryD);//Matches hash of testEntryA
-            var resultB = testSubmissionB.compare(testSubmissionA);
-            expect(resultB).to.not.be.undefined;
-            let asJSON = resultB[0].asJSON() as any;
-            expect(asJSON['similarityScore']).to.be.equal(.5); //one pair of hashes will match, the other will not, so 50% similarity
-            let files = new Map(asJSON['files']);
-            expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
-            expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
-            expect(asJSON['matches'].length).to.be.equal(1);
-            expect(asJSON['matches'][0]).to.have.deep.members([testEntryA, testEntryD]);
+            
+            testSubmissionB.compare(testSubmissionA).then((resultB) => {
+                expect(resultB).to.not.be.undefined;
+                let asJSON = resultB[0].asJSON() as any;
+                expect(asJSON['similarityScore']).to.be.equal(.5); //one pair of hashes will match, the other will not, so 50% similarity
+                let files = new Map(asJSON['files']);
+                expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
+                expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
+                expect(asJSON['matches'].length).to.be.equal(1);
+                expect(asJSON['matches'][0]).to.have.deep.members([testEntryA, testEntryD]);
+            });
         });
-       
+    
         it("Should throw an appropriate error if comparator submission is invalid (no AREs)",() =>{
-            expect(function() {testSubmissionA.compare(testSubmissionB)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
+            expect(testSubmissionA.compare(testSubmissionB)).to.eventually.be.rejected.with("Cannot compare: One or more comparator submissions has no entries");
         });
 
         it("Should throw an appropriate error if comparator submission is invalid (left has no ARE)",() => {
             testSubmissionB.addAnalysisResultEntry(testEntryB);
-            expect(function() { testSubmissionA.compare(testSubmissionB)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
+            expect(testSubmissionA.compare(testSubmissionB)).to.eventually.be.rejected.with("Cannot compare: One or more comparator submissions has no entries");
         });
         
         it("Should throw and appropriate error if comparator submission is invalid (right has no ARE)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
-            expect(function() { testSubmissionB.compare(testSubmissionA)}).to.throw("Cannot compare: One or more comparator submissions has no entries");
+            expect(testSubmissionB.compare(testSubmissionA)).to.eventually.be.rejected.with("Cannot compare: One or more comparator submissions has no entries");
         });
 
         it("Contents of returned array should hold the proper filename mapping.", () => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
-            var results = testSubmissionB.compare(testSubmissionA);
-            expect(results[0].getFiles().get(testSubmissionA.getId())).to.be.equal(testEntryA.getFileName());
-            expect(results[0].getFiles().get(testSubmissionB.getId())).to.be.equal(testEntryB.getFileName());
+            testSubmissionB.compare(testSubmissionA).then((results) => {
+                expect(results[0].getFiles().get(testSubmissionA.getId())).to.be.equal(testEntryA.getFileName());
+                expect(results[0].getFiles().get(testSubmissionB.getId())).to.be.equal(testEntryB.getFileName());
+            });
         });
 
         it("Should not throw an error when two similar hashValues are compared.", () => {
             let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, testEntryA.getHashValue(),"void() {}");
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryC);
-            let compare = () => testSubmissionB.compare(testSubmissionA);
-            expect(compare).to.not.throw(Error);
+            expect(testSubmissionB.compare(testSubmissionA)).to.eventually.be.fulfilled;
         });
 
         it("Should not throw an error when Submission.files contains the same filename twice.", () => {
@@ -271,10 +278,8 @@ describe("Submission.ts",() => {
             let subADuplicateFile = newSubAFiles[0];
             newSubAFiles.push(subADuplicateFile);
             testSubmissionA.setFiles(newSubAFiles);
-            let compare1 = () => testSubmissionB.compare(testSubmissionA);
-            let compare2 = () => testSubmissionA.compare(testSubmissionB);
-            expect(compare1).to.not.throw(Error);
-            expect(compare2).to.not.throw(Error);
+            expect(testSubmissionB.compare(testSubmissionA)).to.eventually.be.fulfilled;
+            expect(testSubmissionA.compare(testSubmissionB)).to.eventually.be.fulfilled;
         });
 
         it("Should not throw an error when a submission contains two entries from two different files.", () => {
@@ -284,27 +289,27 @@ describe("Submission.ts",() => {
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             testSubmissionA.addAnalysisResultEntry(testEntryC);
             testSubmissionB.addAnalysisResultEntry(testEntryD);
-            let compare1 = () => testSubmissionB.compare(testSubmissionA);
-            let compare2 = () => testSubmissionA.compare(testSubmissionB);
-            expect(compare1).to.not.throw(Error);
-            expect(compare2).to.not.throw(Error);
+            expect(testSubmissionB.compare(testSubmissionA)).to.eventually.be.fulfilled;
+            expect(testSubmissionA.compare(testSubmissionB)).to.eventually.be.fulfilled;
         });
 
         it("Should recognize a match for two nodes that share an identical hash value", () => {
             let testEntryC = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, "1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryC);
-            let analysisResults = testSubmissionA.compare(testSubmissionB);
-            expect(analysisResults.length).to.equal(1);
-            expect(analysisResults[0].getMatches()).to.deep.equal([[testEntryA, testEntryC]]);
+            return testSubmissionA.compare(testSubmissionB).then((analysisResults) => {
+                expect(analysisResults.length).to.equal(1);
+                expect(analysisResults[0].getMatches()).to.deep.equal([[testEntryA, testEntryC]]);
+            });
         });
 
         it("Should return a similarity score of 1 for two identical files.", () => {
             let filePath = '/vagrant/bpb-back/test/res/javaExample.java';
             testSubmissionA.addFile(readFileSync(filePath).toString(), 'javaExample.java');
             testSubmissionB.addFile(readFileSync(filePath).toString(), 'javaExample.java');
-            let analysisResults = testSubmissionA.compare(testSubmissionB);
-            expect(analysisResults[0].getSimilarityScore()).to.equal(1);
+            return testSubmissionA.compare(testSubmissionB).then((analysisResults) => {
+                expect(analysisResults[0].getSimilarityScore()).to.equal(1);
+            });
         })
     });
     
