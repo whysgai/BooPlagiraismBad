@@ -8,6 +8,7 @@ import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchBoxComponent from './MatchBoxComponent';
 import Comparison from '../../types/Comparison';
+import ComparisonPendingComponent from './ComparisonPendingComponent';
 
 interface MatchParams {
   assignmentId: string,
@@ -87,11 +88,15 @@ class ComparisonComponent extends React.Component <PropsType, {
                   this.setState({
                     comparisons: store.getState().ComparisonReducer.comparisons
                   });
+                  setTimeout(() => {
+                    this.setState({
+                      comparisonIsReady: true
+                    });
+                  }, 100);
               });          
         })
       })
   }
-
 
   filterMatches() {
     if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
@@ -197,6 +202,10 @@ class ComparisonComponent extends React.Component <PropsType, {
               </div>
             </div>
           </div>  
+        }
+        {
+          !this.state.comparisonIsReady &&
+            <ComparisonPendingComponent submissionOne={this.state.submissionOne} submissionTwo={this.state.submissionTwo}/>
         }
       </div>
                   
