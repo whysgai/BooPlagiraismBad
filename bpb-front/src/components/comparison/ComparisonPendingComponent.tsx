@@ -21,6 +21,11 @@ class ComparisonPendingComponent extends React.Component <PropsType, {}> {
                 <div className="card col-12 text-center">
                     <div className="card-body">
                         <h4 className="card-title">Comparing Submissions</h4>
+                        <div className="row">
+                            <div className="col-3"/>
+                            <div className="card-subtitle">Please be patient, this may take awhile depending on the quantity, size, and complexity of your submissions</div>
+                            <div className="col-3"/>
+                        </div>                        
                         <div className="row justify-content-around">
                             <div className="col-4">
                                 <h5 className="card-subtitle">{this.props.submissionOne.name} files:</h5>
@@ -49,7 +54,6 @@ class ComparisonPendingComponent extends React.Component <PropsType, {}> {
                                 </ul>
                             </div>
                         </div>
-                        <div className="card-subtitle">Please be patient, this may take awhile depending on the quantity, size, and complixity of your submissions</div>
                     </div>  
                 </div>
             </div>
