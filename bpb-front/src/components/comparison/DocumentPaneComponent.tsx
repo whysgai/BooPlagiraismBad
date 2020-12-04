@@ -1,7 +1,9 @@
 import React from 'react';
+import Snippet from '../../types/Snippet';
 
 interface PropsType {
-  fileContent: String 
+  fileContent: String
+  snippet: Snippet
 }
 
 /**
@@ -17,19 +19,19 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
   }
 
   render() {
-    {
-      console.log("Document pane file content",this.props.fileContent)
-    }
     return (
       <div className="submission-compare-pane border">
         <pre>
+
           {
             (this.props.fileContent && this.props.fileContent !== "") &&
               this.props.fileContent.split(/\r?\n/).map((line, index) => 
-                <div>                  
+                <div className={`${
+                    ((this.props.snippet.submissionId === undefined) || (index+1 >= this.props.snippet.lineNumberStart && index+1 <= this.props.snippet.lineNumberEnd))? "" : "d-none"
+                  }`}>
                     <span className="bg-light">{index} </span>
                     <span key={index}>{line}</span>                  
-                </div>              
+                </div>
               )
           }
         </pre>        

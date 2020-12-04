@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import { compareSubmissions, readComparisonSubmission, readFileContent } from '../../actions/ComparisonAction';
 import {store} from '../../store'
 import Submission from '../../types/Submission';
-import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchBoxComponent from './MatchBoxComponent';
 import Comparison from '../../types/Comparison';
 import ComparisonPendingComponent from './ComparisonPendingComponent';
+import Snippet from '../../types/Snippet';
 
 interface MatchParams {
   assignmentId: string,
@@ -29,7 +29,7 @@ class ComparisonComponent extends React.Component <PropsType, {
   subOneFileContents: String[], subTwoFileContents: String[]
   submissionOneFileContent: String, submissionTwoFileContent: String,
   activeFileOne: String, activeFileTwo: String, activeMatches: Comparison,
-  comparisonIsReady: boolean
+  comparisonIsReady: boolean, submissionOneDisplaySnippet: Snippet, submissionTwoDisplaySnippet: Snippet
 }> {
 
   constructor(props : PropsType) {
@@ -48,7 +48,9 @@ class ComparisonComponent extends React.Component <PropsType, {
       activeFileOne: "",
       activeFileTwo: "",
       activeMatches: {} as Comparison,
-      comparisonIsReady: false
+      comparisonIsReady: false,
+      submissionOneDisplaySnippet: {} as Snippet,
+      submissionTwoDisplaySnippet: {} as Snippet,
     };
   }
 
@@ -128,8 +130,19 @@ class ComparisonComponent extends React.Component <PropsType, {
     setTimeout(() => {this.filterMatches()}, 500);
   }
 
-  selectComparisonForFiles() {}
+  selectComparisonForFiles() {
+    this.setState({
+      submissionOneDisplaySnippet: store.getState().ComparisonReducer.snippetFileOne,
+      submissionTwoDisplaySnippet: store.getState().ComparisonReducer.snippetFileTwo
+    })
+  }
 
+  resetCurrentMatch() {
+    this.setState({
+      submissionOneDisplaySnippet: {} as Snippet,
+      submissionTwoDisplaySnippet: {} as Snippet
+    })
+  }
 
   render() {
     return (
@@ -161,7 +174,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                         <ol>
                           {
                             this.state.submissionOne.files.map((file, index) => 
-                              <li key={index} onClick={() => this.showFileContent(1, index)}>
+                              <li key={index} onClick={() => {this.showFileContent(1, index); this.resetCurrentMatch()}}>
                                 <a href="#" className={`${this.state.activeFileOne === file ? "text-secondary" : "text-primary"}`}>{file}</a>
                               </li>
                             )
@@ -171,16 +184,17 @@ class ComparisonComponent extends React.Component <PropsType, {
                   </div>
                 </div>
                 <div className="col-9">
-                  <DocumentPaneComponent fileContent={this.state.submissionOneFileContent}/>
+                  <span></span>
+                  <DocumentPaneComponent fileContent={this.state.submissionOneFileContent} snippet={this.state.submissionOneDisplaySnippet}/>
                 </div>
               </div>
-              <div className="col-3">
-                  <MatchBoxComponent comparison={this.state.activeMatches}/>
+              <div className="col-3" onClick={() => this.selectComparisonForFiles()}>
+                  <MatchBoxComponent comparison={this.state.activeMatches} />
               </div>
               <div className="sub2 row col-4">
                 
                 <div className="col-9">
-                  <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent}/>
+                  <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent} snippet={this.state.submissionTwoDisplaySnippet}/>
                 </div>
                 <div className="col-3">
                   <div className="submission-compare-pane border">
@@ -190,7 +204,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                           <ol>
                             {
                               this.state.submissionTwo.files.map((file, index) => 
-                                <li key={index} onClick={() => this.showFileContent(2, index)}>
+                                <li key={index} onClick={() => {this.showFileContent(2, index); this.resetCurrentMatch()}}>
                                   <a href="#" className={`${this.state.activeFileTwo === file ? "text-secondary" : "text-primary"}`}>{file}</a>
                                 </li>
                               )

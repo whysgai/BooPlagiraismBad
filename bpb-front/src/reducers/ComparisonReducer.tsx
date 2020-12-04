@@ -1,6 +1,7 @@
 import SubmissionListComponent from "../components/submission/SubmissionListComponent";
 import Action from "../types/Action"
 import Submission from "../types/Submission";
+import Snippet from "../types/Snippet";
 
 const initialState = {
     compareSubmissions: [] as Submission[],
@@ -11,18 +12,15 @@ const initialState = {
     fileTwo: "" as String,
     subOneFileContents: [] as String[],
     subTwoFileContents: [] as String[],
-
+    snippetFileOne: {} as Snippet,
+    snippetFileTwo: {} as Snippet
 }
 
 const ComparisonReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case 'ADD_COMPARE':
-
             if (state.compareSubmissions.length < 2) {
                 state.compareSubmissions.push(action.addSubmission)
-            }
-            else {
-                // throw an error?
             }
             return state
         case 'REMOVE_COMPARE':
@@ -41,17 +39,24 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 // submissionTwo: state.compareSubmissions[1]
             }
         case 'GET_SUB_ONE_FILES':
-            console.log("Reducer sub one content", action.fileContents);
+            //console.log("Reducer sub one content", action.fileContents);
             return {
                 ...state,
                 fileOneContents: action.fileContents
             }
         case 'GET_SUB_TWO_FILES':
-            console.log("Reducer sub two content", action.fileContents);
+            //console.log("Reducer sub two content", action.fileContents);
             return {
                 ...state,
                 fileTwoContents: action.fileContents
-            }       
+            }   
+        case 'SET_SNIPPET':
+            console.log("reducer snippets", action.snippets)
+            return {
+                ...state,
+                snippetFileOne: action.snippets[0],
+                snippetFileTwo: action.snippets[1]
+            } 
         default:
             return state;
     }
