@@ -8,6 +8,7 @@ import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchBoxComponent from './MatchBoxComponent';
 import Comparison from '../../types/Comparison';
+import ComparisonPendingComponent from './ComparisonPendingComponent';
 
 interface MatchParams {
   assignmentId: string,
@@ -27,7 +28,8 @@ class ComparisonComponent extends React.Component <PropsType, {
   submissionOne: Submission, submissionTwo: Submission
   subOneFileContents: String[], subTwoFileContents: String[]
   submissionOneFileContent: String, submissionTwoFileContent: String,
-  activeFileOne: String, activeFileTwo: String, activeMatches: Comparison
+  activeFileOne: String, activeFileTwo: String, activeMatches: Comparison,
+  comparisonIsReady: boolean
 }> {
 
   constructor(props : PropsType) {
@@ -45,7 +47,8 @@ class ComparisonComponent extends React.Component <PropsType, {
       submissionTwoFileContent: "",
       activeFileOne: "",
       activeFileTwo: "",
-      activeMatches: {} as Comparison
+      activeMatches: {} as Comparison,
+      comparisonIsReady: false
     };
   }
 
@@ -85,11 +88,15 @@ class ComparisonComponent extends React.Component <PropsType, {
                   this.setState({
                     comparisons: store.getState().ComparisonReducer.comparisons
                   });
+                  setTimeout(() => {
+                    this.setState({
+                      comparisonIsReady: true
+                    });
+                  }, 100);
               });          
         })
       })
   }
-
 
   filterMatches() {
     if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
@@ -126,72 +133,82 @@ class ComparisonComponent extends React.Component <PropsType, {
 
   render() {
     return (
-      <div className="submission-compare-pane col-12">
-        <div>
-          <div className="col-10"></div>
-          <div className="col-2 float-right">
-                <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
-                  x 
-                </Link>
-            </div>
-        </div>
-        <div className="row col-12">
-            <h3 className="col-6">Submission: {this.state.submissionOne.name}</h3>
-            <h3 className="col-6">Submission: {this.state.submissionTwo.name}</h3>
-          </div>   
-        <div className="row col-12 align-items-start">
-     
-          <div className="sub1 row col-4 ">
-            
-            <div className="col-3">
-              <div className="submission-compare-pane border">
-                DirectoryListComponent
-                {
-                  (this.state.submissionOne.files && this.state.submissionOne.files.length > 0) &&
-                    <ol>
-                      {
-                        this.state.submissionOne.files.map((file, index) => 
-                          <li key={index} onClick={() => this.showFileContent(1, index)}>
-                            <a href="#" className={`${this.state.activeFileOne === file ? "text-secondary" : "text-primary"}`}>{file}</a>
-                          </li>
-                        )
-                      }
-                    </ol>
-                } 
-              </div>
-            </div>
-            <div className="col-9">
-              <DocumentPaneComponent fileContent={this.state.submissionOneFileContent}/>
-            </div>
-          </div>
-          <div className="col-3">
-              <MatchBoxComponent comparison={this.state.activeMatches}/>
-          </div>
-          <div className="sub2 row col-4">
-            
-            <div className="col-9">
-              <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent}/>
-            </div>
-            <div className="col-3">
-              <div className="submission-compare-pane border">
-                  DirectoryListComponent
-                  {
-                    (this.state.submissionTwo.files && this.state.submissionTwo.files.length > 0) &&
-                      <ol>
-                        {
-                          this.state.submissionTwo.files.map((file, index) => 
-                            <li key={index} onClick={() => this.showFileContent(2, index)}>
-                              <a href="#" className={`${this.state.activeFileTwo === file ? "text-secondary" : "text-primary"}`}>{file}</a>
-                            </li>
-                          )
-                        }
-                      </ol>
-                  } 
+      <div>
+        {          
+          this.state.comparisonIsReady &&
+          <div className="submission-compare-pane col-12">
+            <div>
+              <div className="col-10"></div>
+              <div className="col-2 float-right">
+                    <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
+                      x 
+                    </Link>
                 </div>
             </div>
-          </div>
-        </div>
+            <div className="row col-12">
+                <h3 className="col-6">Submission: {this.state.submissionOne.name}</h3>
+                <h3 className="col-6">Submission: {this.state.submissionTwo.name}</h3>
+              </div>   
+            <div className="row col-12 align-items-start">
+        
+              <div className="sub1 row col-4 ">
+                
+                <div className="col-3">
+                  <div className="submission-compare-pane border">
+                    DirectoryListComponent
+                    {
+                      (this.state.submissionOne.files && this.state.submissionOne.files.length > 0) &&
+                        <ol>
+                          {
+                            this.state.submissionOne.files.map((file, index) => 
+                              <li key={index} onClick={() => this.showFileContent(1, index)}>
+                                <a href="#" className={`${this.state.activeFileOne === file ? "text-secondary" : "text-primary"}`}>{file}</a>
+                              </li>
+                            )
+                          }
+                        </ol>
+                    } 
+                  </div>
+                </div>
+                <div className="col-9">
+                  <DocumentPaneComponent fileContent={this.state.submissionOneFileContent}/>
+                </div>
+              </div>
+              <div className="col-3">
+                  <MatchBoxComponent comparison={this.state.activeMatches}/>
+              </div>
+              <div className="sub2 row col-4">
+                
+                <div className="col-9">
+                  <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent}/>
+                </div>
+                <div className="col-3">
+                  <div className="submission-compare-pane border">
+                      DirectoryListComponent
+                      {
+                        (this.state.submissionTwo.files && this.state.submissionTwo.files.length > 0) &&
+                          <ol>
+                            {
+                              this.state.submissionTwo.files.map((file, index) => 
+                                <li key={index} onClick={() => this.showFileContent(2, index)}>
+                                  <a href="#" className={`${this.state.activeFileTwo === file ? "text-secondary" : "text-primary"}`}>{file}</a>
+                                </li>
+                              )
+                            }
+                          </ol>
+                      } 
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>  
+        }
+        {
+          !this.state.comparisonIsReady &&
+            <ComparisonPendingComponent submissionOne={this.state.submissionOne} submissionTwo={this.state.submissionTwo}/>
+        }
       </div>
+                  
     );
   }
 }
