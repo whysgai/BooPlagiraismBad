@@ -19,20 +19,19 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
   }
 
   render() {
-    {
-      console.log("Document pane file snippet",this.props.snippet)
-    }
     return (
       <div className="submission-compare-pane border">
-        <span>{this.props.snippet? this.props.snippet.fileName:''}</span>
         <pre>
+
           {
             (this.props.fileContent && this.props.fileContent !== "") &&
               this.props.fileContent.split(/\r?\n/).map((line, index) => 
-                <div>                  
+                <div className={`${
+                    ((this.props.snippet.submissionId === undefined) || (index+1 >= this.props.snippet.lineNumberStart && index+1 <= this.props.snippet.lineNumberEnd))? "" : "d-none"
+                  }`}>
                     <span className="bg-light">{index} </span>
                     <span key={index}>{line}</span>                  
-                </div>              
+                </div>
               )
           }
         </pre>        
