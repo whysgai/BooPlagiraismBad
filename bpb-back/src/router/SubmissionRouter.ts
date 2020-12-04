@@ -4,6 +4,7 @@ import { AppConfig } from '../AppConfig';
 import { ISubmissionManager } from '../manager/SubmissionManager';
 import { IAssignmentManager } from '../manager/AssignmentManager';
 import { ISubmission } from '../model/Submission';
+import { Worker } from 'worker_threads';
 
 /**
  * Router for requests related to Submissions
@@ -146,7 +147,7 @@ class SubmissionRouter extends AbstractRouter {
         res.send({"response":err.message});
       });
   }
-
+  
   /**
    * GET /compare/{id_a}/{id_b} : Compare two submissions 
    * @param req must have parameters ida and idb
@@ -155,15 +156,16 @@ class SubmissionRouter extends AbstractRouter {
   compareSubmissionsFn = async(req : express.Request,res : express.Response) => {
     const submissionIdA = req.params.ida;
     const submissionIdB = req.params.idb;
-    this.submissionManager.compareSubmissions(submissionIdA, submissionIdB)
-      .then((analysisResults) => {
-        let analysisResultsJson = analysisResults.map((result) => result.asJSON());
+
+    const worker = new Worker('./CompareWorker.js', { 
+        workerData: [this.submissionManager,submissionIdA,submissionIdB]
+    });
+  
+    worker.once('message', (analysisResultsJson) => {
+      console.log("Comparison complete");
         res.status(200);
         res.send(analysisResultsJson);
-      }).catch((err) => {
-        res.status(400);
-        res.send({"response":err.message});
-      });
+    });
   }
 
   /**
