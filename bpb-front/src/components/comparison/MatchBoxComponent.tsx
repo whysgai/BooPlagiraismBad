@@ -1,6 +1,8 @@
 import React from 'react';
 import Comparison from '../../types/Comparison';
 import Snippet from '../../types/Snippet';
+import { selectSnippets } from '../../actions/ComparisonAction';
+import { store } from '../../store';
 
 interface PropsType {
   comparison: Comparison
@@ -14,21 +16,22 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
   constructor(props : PropsType) {
     super(props);
     
-    this.state = { };
+    this.state = {
+
+    };
   }
 
   clickMatch(match: Snippet[]) {
+    console.log("match clicked", match)
     // Use this to make things happen when you click matches
-    console.log("This is a match between files" + match[0].fileName + " and " + match[1].fileName + " on " + match[0].text + " and " + match[1].text)
+    store.dispatch(selectSnippets(match));
+    //console.log("This is a match between files" + match[0].fileName + " and " + match[1].fileName + " on " + match[0].text + " and " + match[1].text)
   }
 
   render() {
     return (
       <div className="submission-compare-pane border">
-        {
-          console.log("Logging matches from component", this.props.comparison)
-        }
-        HighlightsForProfessors
+        Matches
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0) &&
             <ul className="nav flex-column">
