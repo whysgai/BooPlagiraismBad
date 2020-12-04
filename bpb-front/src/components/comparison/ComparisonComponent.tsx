@@ -7,6 +7,7 @@ import Submission from '../../types/Submission';
 import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchBoxComponent from './MatchBoxComponent';
+import Match from '../../types/Match';
 
 interface MatchParams {
   assignmentId: string,
@@ -26,7 +27,7 @@ class ComparisonComponent extends React.Component <PropsType, {
   submissionOne: Submission, submissionTwo: Submission
   subOneFileContents: String[], subTwoFileContents: String[]
   submissionOneFileContent: String, submissionTwoFileContent: String,
-  activeFileOne: String, activeFileTwo: String
+  activeFileOne: String, activeFileTwo: String, activeMatches: Match
 }> {
 
   constructor(props : PropsType) {
@@ -43,7 +44,8 @@ class ComparisonComponent extends React.Component <PropsType, {
       submissionOneFileContent: "",
       submissionTwoFileContent: "",
       activeFileOne: "",
-      activeFileTwo: "",      
+      activeFileTwo: "",
+      activeMatches: {} as Match
     };
   }
 
@@ -95,14 +97,24 @@ class ComparisonComponent extends React.Component <PropsType, {
         activeFileOne: this.state.submissionOne.files[fileIndex],        
         submissionOneFileContent: this.state.subOneFileContents[fileIndex]
       });
-      console.log("Active file left", this.state.activeFileOne);
     } else {
       this.setState({
         activeFileTwo: this.state.submissionTwo.files[fileIndex],
         submissionTwoFileContent: this.state.subTwoFileContents[fileIndex]
       });
-      console.log("Active file right", this.state.activeFileTwo);
     }
+    if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
+      let parseObjects = this.state.comparisons as any as any[] as Match[]
+      console.log("Parse Objects", parseObjects)
+      this.setState({
+        activeMatches: parseObjects.filter((arrayMatch) => {
+          let match = arrayMatch as any as Match
+          return (match.files[0][1] === this.state.activeFileOne || match.files[1][1] === this.state.activeFileOne) &&
+          (match.files[0][1] === this.state.activeFileTwo || match.files[1][1] === this.state.activeFileTwo)
+        })[0] as any as any as Match
+      })
+    }
+    console.log("Active Matches", this.state.activeMatches)
   }
 
   selectComparisonForFiles() {}
