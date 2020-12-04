@@ -22,10 +22,8 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
   }
 
   clickMatch(match: Snippet[]) {
-    console.log("match clicked", match)
     // Use this to make things happen when you click matches
     store.dispatch(selectSnippets(match));
-    //console.log("This is a match between files" + match[0].fileName + " and " + match[1].fileName + " on " + match[0].text + " and " + match[1].text)
   }
 
   render() {
