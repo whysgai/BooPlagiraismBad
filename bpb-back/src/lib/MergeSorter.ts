@@ -13,16 +13,16 @@ export default class MergeSorter<E> implements ISorter<E> {
     
     private merge(arrA : E[], arrB : E[], compareFun: (e1: E, e2: E) => number) {
    
-        var merged = [];
-        var indexA = 0;
-        var indexB = 0;
+        let merged = [];
+        let indexA = 0;
+        let indexB = 0;
         
         //Add lowest of first index until one list runs out
         while(indexA < arrA.length && indexB < arrB.length) {
 
-            var a = arrA[indexA];
-            var b = arrB[indexB];
-            var comparison = compareFun(a,b);
+            let a = arrA[indexA];
+            let b = arrB[indexB];
+            let comparison = compareFun(a,b);
 
             if(comparison < 0) { 
                 merged.push(a);
@@ -57,16 +57,16 @@ export default class MergeSorter<E> implements ISorter<E> {
             return arr;
         }
     
-        var mid = arr.length / 2;
-        var leftArray = this.mergeSortRec(arr.slice(0,mid),compareFun);
-        var rightArray = this.mergeSortRec(arr.slice(mid,arr.length),compareFun);
+        let mid = arr.length / 2;
+        let leftArray = this.mergeSortRec(arr.slice(0,mid),compareFun);
+        let rightArray = this.mergeSortRec(arr.slice(mid,arr.length),compareFun);
     
         return this.merge(leftArray,rightArray,compareFun);
     }
 
     public sort(list: E[], compareFun: (e1: E, e2: E) => number) : void {
-        var newList = this.mergeSortRec(list,compareFun);
-        var index = 0;
+        let newList = this.mergeSortRec(list,compareFun);
+        let index = 0;
         newList.forEach( entry => {
             list[index] = entry;
             index++;
