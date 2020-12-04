@@ -1,7 +1,9 @@
 import React from 'react';
+import Snippet from '../../types/Snippet';
 
 interface PropsType {
-  fileContent: String 
+  fileContent: String
+  snippet: Snippet
 }
 
 /**
@@ -18,10 +20,11 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
 
   render() {
     {
-      console.log("Document pane file content",this.props.fileContent)
+      console.log("Document pane file snippet",this.props.snippet)
     }
     return (
       <div className="submission-compare-pane border">
+        <span>{this.props.snippet? this.props.snippet.fileName:''}</span>
         <pre>
           {
             (this.props.fileContent && this.props.fileContent !== "") &&
