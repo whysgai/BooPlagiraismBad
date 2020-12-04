@@ -24,6 +24,7 @@
     "java-ast": "^0.3.0",
     "mkdirp": "^1.0.4",
     "mongoose": "^5.10.13",
+    "promise-worker": "^2.0.1",
     "tslint": "^6.1.3",
     "typescript": "^3.9.6"
   },

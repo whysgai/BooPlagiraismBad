@@ -1,7 +1,8 @@
-import { IAnalysisResult } from '../model/AnalysisResult';
+import { AnalysisResult, IAnalysisResult } from '../model/AnalysisResult';
 import {ISubmission } from '../model/Submission';
 import { SubmissionDAO } from '../model/SubmissionDAO';
 import SubmissionData from "../types/SubmissionData"
+import { Worker } from 'worker_threads';
 
 export class ComparisonCache {
     private analysisResultsCache : Map<string, IAnalysisResult[]>;
@@ -282,13 +283,28 @@ export class SubmissionManager implements ISubmissionManager {
             } else {
                 this.getSubmission(submissionIdA).then(submissionA => {
                     this.getSubmission(submissionIdB).then(submissionB => {
-                            submissionA.compare(submissionB).then((analysisResults) => {
-                                this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
-                                resolve(analysisResults);
-                            }).catch((err) => {
-                                reject(err);
-                            });
-                        }).catch((err) => {
+                        
+                        let worker = new Worker('./src/lib/CompareWorker.js', { 
+                            workerData: [submissionA,submissionB]
+                        });
+
+                        worker.once('message', (analysisResultsStr) => {
+                            
+                            let analysisResults = analysisResultsStr as IAnalysisResult[];
+                            
+                            console.log("All done!!!");
+                            console.log("Data is " + analysisResults);
+
+                            let fakeARL = [] as IAnalysisResult[];
+                            fakeARL.push(new AnalysisResult([],0,"test","test","test","test")); //TODO: remove fake
+                            
+                            resolve(analysisResults);
+                        });
+
+                        worker.once('error',(err) => {
+                            reject(err);
+                        });
+                    }).catch((err) => {
                         reject(err);
                     });
                 }).catch((err) => {
