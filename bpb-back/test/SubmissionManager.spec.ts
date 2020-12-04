@@ -837,7 +837,6 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
-        afterEach(() =>{ sinon.reset() })
         it("Should return an appropriate error if submission compare fails",() => {
 
             let newTestSubmissionManager = new SubmissionManager("./test/res/TestCompareWorker.js");
@@ -845,8 +844,6 @@ describe("SubmissionManager.ts",() => {
             let testSubmission2 = new Submission.builder().build();
              
             let mockGetSubmission = chai.spy.on(newTestSubmissionManager,'getSubmission',() =>{ return Promise.resolve(testSubmission2)});
-
-            //sinon.stub(Submission.prototype,'compare').throws("Some error!");
 
             return newTestSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
                 expect(true,"compareSubmission is succeeding where it should fail (submission.compare failed)").to.be.false;
