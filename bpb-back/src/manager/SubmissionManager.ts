@@ -1,13 +1,14 @@
-import { IAnalysisResult } from '../model/AnalysisResult';
+import { AnalysisResult, IAnalysisResult } from '../model/AnalysisResult';
 import {ISubmission } from '../model/Submission';
 import { SubmissionDAO } from '../model/SubmissionDAO';
 import SubmissionData from "../types/SubmissionData"
+import { Worker } from 'worker_threads';
 
 export class ComparisonCache {
-    private analysisResultsCache : Map<string, IAnalysisResult[]>;
+    private analysisResultsCache : Map<string, string>;
     
     constructor() {
-        this.analysisResultsCache = new Map<string, IAnalysisResult[]>();
+        this.analysisResultsCache = new Map<string, string>();
     }
 
     /**
@@ -16,7 +17,7 @@ export class ComparisonCache {
      * @param subIdA - The Id of one of the relevant submissions.
      * @param subIdB - The Id of one of the relevant submissions.
      */
-    get(subIdA : string, subIdB : string) : IAnalysisResult[] {
+    get(subIdA : string, subIdB : string) : string {
         return this.analysisResultsCache.get(this.getKey(subIdA, subIdB))
     }
 
@@ -26,7 +27,7 @@ export class ComparisonCache {
      * @param subIdB - The Id of one of the relevant submissions.
      * @param analysisResults - The IAnalysisResult[] that we are storing in the cache.
      */
-    set(subIdA : string, subIdB : string, analysisResults : IAnalysisResult[]) {
+    set(subIdA : string, subIdB : string, analysisResults : string) {
         this.analysisResultsCache.set(this.getKey(subIdA, subIdB), analysisResults);
     }
 
@@ -68,8 +69,9 @@ export interface ISubmissionManager {
     updateSubmission(submissionId : string, data : SubmissionData) : Promise<ISubmission>;
     processSubmissionFile(submissionId : string, fileName : string, content : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
-    compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]>
+    compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<string>
     getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
+    getComparisonCache() : ComparisonCache;
 }
 
 export class SubmissionManager implements ISubmissionManager {
@@ -77,13 +79,23 @@ export class SubmissionManager implements ISubmissionManager {
     private submissionCache : Map<string,ISubmission>;
     private submissionCacheByAssignment : Map<string, ISubmission[]>;
     private comparisonCache : ComparisonCache;
+    private workerFilePath : string;
     
-    constructor() {
+    constructor(workerFilePath : string) {
         this.submissionCache = new Map<string,ISubmission>();
         this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
         this.comparisonCache = new ComparisonCache();
+        this.workerFilePath = workerFilePath;
     }
 
+    /**
+     * For testing
+     *  
+     */
+    getComparisonCache() : ComparisonCache {
+        return this.comparisonCache;
+    }
+     
     /**
      * Creates a submission with the given SubmissionData
      * @param data 
@@ -275,20 +287,27 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionIdB Submission B's Id
      * @returns A Promise containing the result of the comparison as an AnalysisResult
      */
-    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
+    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<string> => {
         return new Promise((resolve,reject) => {
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
             } else {
                 this.getSubmission(submissionIdA).then(submissionA => {
                     this.getSubmission(submissionIdB).then(submissionB => {
-                            submissionA.compare(submissionB).then((analysisResults) => {
-                                this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
-                                resolve(analysisResults);
-                            }).catch((err) => {
-                                reject(err);
-                            });
-                        }).catch((err) => {
+                        
+                        let worker = new Worker(this.workerFilePath, { 
+                            workerData: [submissionA.asJSON(),submissionB.asJSON()]
+                        });
+
+                        worker.once('message', (analysisResults) => {
+                            this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
+                            resolve(analysisResults);
+                        });
+
+                        worker.once('error',(err) => {
+                            reject(err);
+                        });
+                    }).catch((err) => {
                         reject(err);
                     });
                 }).catch((err) => {

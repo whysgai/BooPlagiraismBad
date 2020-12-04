@@ -37,5 +37,6 @@ export class AppConfig {
      */
     public static maxMatchesPerFile() : number {
         return Number(process.env.MAXMATCHESPERFILE);
+    
     }
 }
