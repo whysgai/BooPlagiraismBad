@@ -5,10 +5,10 @@ import SubmissionData from "../types/SubmissionData"
 import { Worker } from 'worker_threads';
 
 export class ComparisonCache {
-    private analysisResultsCache : Map<string, IAnalysisResult[]>;
+    private analysisResultsCache : Map<string, string>;
     
     constructor() {
-        this.analysisResultsCache = new Map<string, IAnalysisResult[]>();
+        this.analysisResultsCache = new Map<string, string>();
     }
 
     /**
@@ -17,7 +17,7 @@ export class ComparisonCache {
      * @param subIdA - The Id of one of the relevant submissions.
      * @param subIdB - The Id of one of the relevant submissions.
      */
-    get(subIdA : string, subIdB : string) : IAnalysisResult[] {
+    get(subIdA : string, subIdB : string) : string {
         return this.analysisResultsCache.get(this.getKey(subIdA, subIdB))
     }
 
@@ -27,7 +27,7 @@ export class ComparisonCache {
      * @param subIdB - The Id of one of the relevant submissions.
      * @param analysisResults - The IAnalysisResult[] that we are storing in the cache.
      */
-    set(subIdA : string, subIdB : string, analysisResults : IAnalysisResult[]) {
+    set(subIdA : string, subIdB : string, analysisResults : string) {
         this.analysisResultsCache.set(this.getKey(subIdA, subIdB), analysisResults);
     }
 
@@ -69,7 +69,7 @@ export interface ISubmissionManager {
     updateSubmission(submissionId : string, data : SubmissionData) : Promise<ISubmission>;
     processSubmissionFile(submissionId : string, fileName : string, content : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
-    compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]>
+    compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<string>
     getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
 }
 
@@ -276,7 +276,7 @@ export class SubmissionManager implements ISubmissionManager {
      * @param submissionIdB Submission B's Id
      * @returns A Promise containing the result of the comparison as an AnalysisResult
      */
-    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
+    compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<string> => {
         return new Promise((resolve,reject) => {
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
@@ -285,19 +285,10 @@ export class SubmissionManager implements ISubmissionManager {
                     this.getSubmission(submissionIdB).then(submissionB => {
                         
                         let worker = new Worker('./src/lib/CompareWorker.js', { 
-                            workerData: [submissionA,submissionB]
+                            workerData: [submissionA.asJSON(),submissionB.asJSON()]
                         });
 
-                        worker.once('message', (analysisResultsStr) => {
-                            
-                            let analysisResults = analysisResultsStr as IAnalysisResult[];
-                            
-                            console.log("All done!!!");
-                            console.log("Data is " + analysisResults);
-
-                            let fakeARL = [] as IAnalysisResult[];
-                            fakeARL.push(new AnalysisResult([],0,"test","test","test","test")); //TODO: remove fake
-                            
+                        worker.once('message', (analysisResults) => {
                             resolve(analysisResults);
                         });
 

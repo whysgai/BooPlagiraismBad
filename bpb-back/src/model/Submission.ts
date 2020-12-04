@@ -10,6 +10,7 @@ import { forEachChild, isJsxFragment, resolveProjectReferencePath } from "typesc
 import { match } from "sinon";
 import { ConsoleErrorListener } from "antlr4ts";
 import MergeSorter from "../lib/MergeSorter";
+import { SubmissionManager } from "../manager/SubmissionManager";
 
 /**
  * Represents an Submission database model object
@@ -129,6 +130,50 @@ export interface ISubmission {
             submission.setEntries(this.entries);
             submission.setModelInstance(modelInstance);
             
+            return submission;
+         }
+
+         /**
+          * Builds a Submission from a squashed JSON object (used in Worker)
+          * @param object 
+          */
+         buildFromJson(object : any): ISubmission {
+
+            var submission = new Submission();
+
+            var entryObjects = object.entries as Array<Array<any>>;
+
+            for(let entry of entryObjects) {
+
+                let ens = [] as IAnalysisResultEntry[];
+
+                for(let entryValue of entry[1]) {
+                    ens.push(
+                        new AnalysisResultEntry(
+                        entryValue.id,
+                        entryValue.submissionId,
+                        entryValue.fileName,
+                        entryValue.contextType,
+                        entryValue.lineNumberStart,
+                        entryValue.charPosStart,
+                        entryValue.lineNumberEnd,
+                        entryValue.charPosEnd,
+                        entryValue.hashValue,
+                        entryValue.text
+                    ));
+                }
+
+                this.entries.set(entry[0],ens);
+            }
+
+            submission.setId(object.id);
+            submission.setName(object.name);
+            submission.setAssignmentId(object.assignment_id);
+            submission.setModelInstance(undefined);
+            submission.setFiles(object.files);
+            submission.setFileContents(object.fileContents);
+            submission.setEntries(this.entries); 
+
             return submission;
          }
 
