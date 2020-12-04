@@ -1,11 +1,60 @@
 import { IAnalysisResult } from '../model/AnalysisResult';
-import {ISubmission, Submission} from '../model/Submission';
+import {ISubmission } from '../model/Submission';
 import { SubmissionDAO } from '../model/SubmissionDAO';
-import fs from 'fs';
-import util from 'util';
 import SubmissionData from "../types/SubmissionData"
-import { AppConfig } from '../AppConfig';
-const readFileContent = util.promisify(fs.readFile); //Promisify readfile  to allow use of Promise chaining
+
+export class ComparisonCache {
+    private analysisResultsCache : Map<string, IAnalysisResult[]>;
+    
+    constructor() {
+        this.analysisResultsCache = new Map<string, IAnalysisResult[]>();
+    }
+
+    /**
+     * Returns the cached IAnalysisResult[] representing a comparison of the two given submission Id's.
+     * Returns undefined if one is not found in the cache.
+     * @param subIdA - The Id of one of the relevant submissions.
+     * @param subIdB - The Id of one of the relevant submissions.
+     */
+    get(subIdA : string, subIdB : string) : IAnalysisResult[] {
+        return this.analysisResultsCache.get(this.getKey(subIdA, subIdB))
+    }
+
+    /**
+     * Stores an IAnalysisResult[] representing a comparison of two provided submission Id's in the cache. 
+     * @param subIdA - The Id of one of the relevant submissions.
+     * @param subIdB - The Id of one of the relevant submissions.
+     * @param analysisResults - The IAnalysisResult[] that we are storing in the cache.
+     */
+    set(subIdA : string, subIdB : string, analysisResults : IAnalysisResult[]) {
+        this.analysisResultsCache.set(this.getKey(subIdA, subIdB), analysisResults);
+    }
+
+    /**
+     * Removes all comparisons related to a given submission from the cache.
+     * @param subId - The Id of the relevant submission.
+     */
+    delete(subId : string) {
+        for(let key of this.analysisResultsCache.keys()) {
+            if(key.substr(0, key.length/2) == subId || key.substr(key.length/2, key.length/2) == subId) {
+                this.analysisResultsCache.delete(key);
+            }
+        }
+    }
+
+    /**
+     * Creates a unique key, using the two unique submissionId's provided.
+     * @param subIdA 
+     * @param subIdB 
+     */
+    private getKey(subIdA : string, subIdB : string) : string {
+        if(subIdA < subIdB) {
+            return subIdA + subIdB;
+        } else { //Essentially works out to be subIdA > subIdB, since both id's are unique, they will never be equal
+            return subIdB + subIdA;
+        }
+    }
+}
 
 /**
  * Represents a controller for Submission objects.
@@ -17,7 +66,7 @@ export interface ISubmissionManager {
     getSubmissions(assignmentId : string) : Promise<ISubmission[]>;
     getSubmission(submissionId : string) : Promise<ISubmission>;
     updateSubmission(submissionId : string, data : SubmissionData) : Promise<ISubmission>;
-    processSubmissionFile(submissionId : string, fileName : string) : Promise<void>; 
+    processSubmissionFile(submissionId : string, fileName : string, content : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
     compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]>
     getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
@@ -27,10 +76,12 @@ export class SubmissionManager implements ISubmissionManager {
 
     private submissionCache : Map<string,ISubmission>;
     private submissionCacheByAssignment : Map<string, ISubmission[]>;
+    private comparisonCache : ComparisonCache;
     
     constructor() {
         this.submissionCache = new Map<string,ISubmission>();
         this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
+        this.comparisonCache = new ComparisonCache();
     }
 
     /**
@@ -46,15 +97,13 @@ export class SubmissionManager implements ISubmissionManager {
     
             SubmissionDAO.createSubmission(name,assignmentId)
                 .then((submission) => {
+                    // submissionCache
                     this.submissionCache.set(submission.getId(),submission);
-                    
-                    if(this.submissionCacheByAssignment.get(assignmentId) == undefined) {
-                        this.submissionCacheByAssignment.set(assignmentId,[submission]);   
-                    } else {
+                    // submissionCacheByAssignment
+                    if(this.submissionCacheByAssignment.get(assignmentId) != undefined) {
                         var updatedList = this.submissionCacheByAssignment.get(assignmentId).concat([submission]);
-                        this.submissionCacheByAssignment.set(assignmentId,updatedList);
+                        this.submissionCacheByAssignment.set(assignmentId,updatedList);   
                     }
-
                     resolve(submission);
                 }).catch((err) => {
                     reject(err);
@@ -76,6 +125,7 @@ export class SubmissionManager implements ISubmissionManager {
             } else {
                 //Read from database if cache entry does not exist
                 SubmissionDAO.readSubmission(submissionId).then((submission) => {
+                    // submissionCache
                     this.submissionCache.set(submissionId,submission);
                     resolve(submission);
                 }).catch((err) => {
@@ -96,9 +146,10 @@ export class SubmissionManager implements ISubmissionManager {
                 resolve(this.submissionCacheByAssignment.get(assignmentId));
             } else {
                 SubmissionDAO.readSubmissions(assignmentId).then((submissions) => {
+                    // submissionCacheByAssignment
                     this.submissionCacheByAssignment.set(assignmentId, submissions);
+                    // submissionCache
                     submissions.forEach(submission => {
-                        //Populate the other cache as well
                         this.submissionCache.set(submission.getId(), submission);
                     });
                     resolve(submissions);
@@ -124,8 +175,18 @@ export class SubmissionManager implements ISubmissionManager {
             this.getSubmission(submissionId).then((submission) => {
                 submission.setName(name);
                 submission.setAssignmentId(assignmentId);
-                SubmissionDAO.updateSubmission(submission).then((submission) => {
-                    this.submissionCache.set(submission.getId(),submission);
+                SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                    // submisionCache
+                    this.submissionCache.set(submissionId, updatedSubmission);
+                    // submissionCacheByAssignment
+                    if(this.submissionCacheByAssignment.get(updatedSubmission.getAssignmentId()) != undefined) {
+                        let submissionsList = this.submissionCacheByAssignment.get(updatedSubmission.getAssignmentId())
+                        submissionsList.push(updatedSubmission);
+                    } 
+                    if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
+                        let submissionsList = this.submissionCacheByAssignment.get(submission.getAssignmentId())
+                        submissionsList  = submissionsList.filter((submissionInList) => submissionInList.getId() !== updatedSubmission.getId())
+                    }
                     resolve(submission);
                 }).catch((err) => {
                    reject(err);
@@ -142,20 +203,24 @@ export class SubmissionManager implements ISubmissionManager {
      * @param fileName Name of the file to add (file must exist at AppConfig.submissionFileUploadDirectory/submissionid/filename)
      * @returns An empty Promise
      */
-    processSubmissionFile = async(submissionId : string, fileName : string): Promise<void> => {
+    processSubmissionFile = async(submissionId : string, fileName : string, content : string): Promise<void> => {
 
         return new Promise((resolve,reject) => {
 
             this.getSubmission(submissionId).then((submission) => {
-                readFileContent(AppConfig.submissionFileUploadDirectory() + submissionId + "/" + fileName).then((buffer) => {
-                    var content = buffer.toString();
-                    submission.addFile(content,fileName).then(() => {
-                        SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
-                            this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
-                            resolve();
-                        }).catch((err) => {
-                            reject(err);
-                        });
+                submission.addFile(content,fileName).then(() => {
+                    SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
+                        // submissionCache
+                        this.submissionCache.set(updatedSubmission.getId(),updatedSubmission); 
+                        // comparisonCache
+                        this.comparisonCache.delete(submissionId); //Since a new file has been introduced, need to re-compare 
+                        // submissionCacheByAssignment
+                        if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
+                            let cacheList = this.submissionCacheByAssignment.get(submission.getAssignmentId())
+                                .filter((subInCache) => subInCache.getId() !== submissionId);
+                            cacheList.push(updatedSubmission);
+                        }
+                        resolve();
                     }).catch((err) => {
                         reject(err);
                     });
@@ -180,10 +245,19 @@ export class SubmissionManager implements ISubmissionManager {
             //Ensure submission exists before deletion
             this.getSubmission(submissionId).then((submission) => {
                 
+                // submissionCache
                 if(this.submissionCache.get(submissionId) != undefined) {
                     this.submissionCache.delete(submissionId);
                 }
-        
+                // submissionCacheByAssignment
+                if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
+                    let currentCache = this.submissionCacheByAssignment.get(submission.getAssignmentId());
+                    let updatedCache = currentCache.filter((cachedSubmission) => cachedSubmission.getId() !== submission.getId())
+                    this.submissionCacheByAssignment.set(submission.getAssignmentId(), updatedCache);
+                }
+                // comparisonCache
+                this.comparisonCache.delete(submissionId);//TODO test
+                
                 SubmissionDAO.deleteSubmission(submissionId).then((submission) => {
                     resolve();
                 }).catch((err) => {
@@ -202,20 +276,25 @@ export class SubmissionManager implements ISubmissionManager {
      * @returns A Promise containing the result of the comparison as an AnalysisResult
      */
     compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
-
         return new Promise((resolve,reject) => {
-            this.getSubmission(submissionIdA)
-            .then(submissionA => {
-                this.getSubmission(submissionIdB)
-                    .then(submissionB => {
-                        resolve(submissionA.compare(submissionB)); 
-                    }
-                ).catch((err) => {
+            if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
+                resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
+            } else {
+                this.getSubmission(submissionIdA) //caches the submission cache downstream for us
+                .then(submissionA => {
+                    this.getSubmission(submissionIdB)
+                        .then(submissionB => {
+                            let analysisResults = submissionA.compare(submissionB)
+                            this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
+                            resolve(analysisResults);
+                        }
+                    ).catch((err) => {
+                        reject(err);
+                    });
+                }).catch((err) => {
                     reject(err);
                 });
-            }).catch((err) => {
-                reject(err);
-            });
+            }
         });
     }
 

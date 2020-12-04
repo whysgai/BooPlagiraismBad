@@ -1,9 +1,7 @@
-import { assert, expect } from "chai";
-import { parse } from "java-ast";
+import { expect } from "chai";
 var chai = require('chai');
 var spies = require('chai-spies');
 import Sinon from "sinon";
-import { mapDefined } from "tslint/lib/utils";
 import { AnalysisResult, IAnalysisResult } from "../src/model/AnalysisResult";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 

@@ -9,13 +9,6 @@ export class AppConfig {
     public static port() : string {
         return process.env.APIPORT;
     }
-    
-    /**
-     * Returns the configured application file upload directory for submission files
-     */
-    public static submissionFileUploadDirectory() : string {
-        return process.env.UPLOADDIRECTORY;
-    }
 
     /**
      * Returns the configured database connection string for the app database

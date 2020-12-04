@@ -1,5 +1,4 @@
-import chai from 'chai';
-const expect = require('chai').expect;
+import { expect } from 'chai';
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 
 describe("AnalysisResultEntry",() => {

@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
 import { readFileSync } from 'fs';
-import { stringifyConfiguration } from "tslint/lib/configuration";
 
 describe("Submission.ts.SubmissionBuilder",() => {
 
