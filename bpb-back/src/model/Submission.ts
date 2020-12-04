@@ -169,7 +169,7 @@ export interface ISubmission {
             submission.setId(object.id);
             submission.setName(object.name);
             submission.setAssignmentId(object.assignment_id);
-            submission.setModelInstance(undefined);
+            submission.setModelInstance(undefined); //NOTE: this is undefined, should not matter
             submission.setFiles(object.files);
             submission.setFileContents(object.fileContents);
             submission.setEntries(this.entries); 
