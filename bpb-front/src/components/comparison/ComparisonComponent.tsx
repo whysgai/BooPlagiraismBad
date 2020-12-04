@@ -29,7 +29,7 @@ class ComparisonComponent extends React.Component <PropsType, {
   subOneFileContents: String[], subTwoFileContents: String[]
   submissionOneFileContent: String, submissionTwoFileContent: String,
   activeFileOne: String, activeFileTwo: String, activeMatches: Comparison,
-  comparisonIsReady: boolean
+  comparisonIsReady: boolean, submissionOneDisplaySnippet: String[], submissionTwoDisplaySnippet: String[]
 }> {
 
   constructor(props : PropsType) {
@@ -48,7 +48,9 @@ class ComparisonComponent extends React.Component <PropsType, {
       activeFileOne: "",
       activeFileTwo: "",
       activeMatches: {} as Comparison,
-      comparisonIsReady: false
+      comparisonIsReady: false,
+      submissionOneDisplaySnippet: [],
+      submissionTwoDisplaySnippet: [],
     };
   }
 
@@ -171,7 +173,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                   </div>
                 </div>
                 <div className="col-9">
-                  <DocumentPaneComponent fileContent={this.state.submissionOneFileContent}/>
+                  <DocumentPaneComponent fileContent={this.state.submissionOneFileContent} displayLines={this.state.submissionOneDisplaySnippet}/>
                 </div>
               </div>
               <div className="col-3">
@@ -180,7 +182,7 @@ class ComparisonComponent extends React.Component <PropsType, {
               <div className="sub2 row col-4">
                 
                 <div className="col-9">
-                  <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent}/>
+                  <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent} displayLines={this.state.submissionTwoDisplaySnippet}/>
                 </div>
                 <div className="col-3">
                   <div className="submission-compare-pane border">
