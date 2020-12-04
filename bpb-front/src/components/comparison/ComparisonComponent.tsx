@@ -7,7 +7,7 @@ import Submission from '../../types/Submission';
 import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchBoxComponent from './MatchBoxComponent';
-import Matches from '../../types/Matches';
+import Comparison from '../../types/Comparison';
 
 interface MatchParams {
   assignmentId: string,
@@ -27,7 +27,7 @@ class ComparisonComponent extends React.Component <PropsType, {
   submissionOne: Submission, submissionTwo: Submission
   subOneFileContents: String[], subTwoFileContents: String[]
   submissionOneFileContent: String, submissionTwoFileContent: String,
-  activeFileOne: String, activeFileTwo: String, activeMatches: Matches
+  activeFileOne: String, activeFileTwo: String, activeMatches: Comparison
 }> {
 
   constructor(props : PropsType) {
@@ -45,7 +45,7 @@ class ComparisonComponent extends React.Component <PropsType, {
       submissionTwoFileContent: "",
       activeFileOne: "",
       activeFileTwo: "",
-      activeMatches: {} as Matches
+      activeMatches: {} as Comparison
     };
   }
 
@@ -93,14 +93,14 @@ class ComparisonComponent extends React.Component <PropsType, {
 
   filterMatches() {
     if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
-      let parseObjects = this.state.comparisons as any as any[] as Matches[]
+      let parseObjects = this.state.comparisons as any as any[] as Comparison[]
       console.log("Parse Objects", parseObjects)
       this.setState({
         activeMatches: parseObjects.filter((arrayMatch) => {
-          let match = arrayMatch as any as Matches
+          let match = arrayMatch as any as Comparison
           return (match.files[0][1] === this.state.activeFileOne || match.files[1][1] === this.state.activeFileOne) &&
           (match.files[0][1] === this.state.activeFileTwo || match.files[1][1] === this.state.activeFileTwo)
-        })[0] as any as any as Matches
+        })[0] as any as any as Comparison
       })
     }
     console.log("Active Matches", this.state.activeMatches)
@@ -165,7 +165,7 @@ class ComparisonComponent extends React.Component <PropsType, {
             </div>
           </div>
           <div className="col-3">
-              <MatchBoxComponent matches={this.state.activeMatches}/>
+              <MatchBoxComponent comparison={this.state.activeMatches}/>
           </div>
           <div className="sub2 row col-4">
             
