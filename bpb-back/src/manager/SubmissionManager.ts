@@ -289,6 +289,7 @@ export class SubmissionManager implements ISubmissionManager {
                         });
 
                         worker.once('message', (analysisResults) => {
+                            this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
                             resolve(analysisResults);
                         });
 
