@@ -666,7 +666,7 @@ describe("SubmissionManager.ts",() => {
             let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions', () => {return Promise.resolve([testSubmission])});
             let mockUpdateSubmissions = chai.spy.on(SubmissionDAO, 'updateSubmission', () => {return Promise.resolve(updatedTestSubmission)});
             let mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission');
-            var mockCompare = chai.spy.on(testSubmission,'compare', () => {return new Array<AnalysisResult>()});
+            var mockCompare = chai.spy.on(testSubmission,'compare', () => {return Promise.resolve(new Array<AnalysisResult>() ) });
 
             return testSubmissionManager.compareSubmissions(testSubmission.getId(), testSubmission2.getId()).then((analysisResults) => {
                 expect(mockCompare).to.have.been.called.once; //cache is empty
