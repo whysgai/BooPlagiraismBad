@@ -280,15 +280,15 @@ export class SubmissionManager implements ISubmissionManager {
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
             } else {
-                this.getSubmission(submissionIdA) //caches the submission cache downstream for us
-                .then(submissionA => {
-                    this.getSubmission(submissionIdB)
-                        .then(submissionB => {
-                            let analysisResults = submissionA.compare(submissionB)
-                            this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
-                            resolve(analysisResults);
-                        }
-                    ).catch((err) => {
+                this.getSubmission(submissionIdA).then(submissionA => {
+                    this.getSubmission(submissionIdB).then(submissionB => {
+                            submissionA.compare(submissionB).then((analysisResults) => {
+                                this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
+                                resolve(analysisResults);
+                            }).catch((err) => {
+                                reject(err);
+                            });
+                        }).catch((err) => {
                         reject(err);
                     });
                 }).catch((err) => {

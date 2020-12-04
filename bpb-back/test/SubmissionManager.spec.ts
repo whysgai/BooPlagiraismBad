@@ -666,7 +666,7 @@ describe("SubmissionManager.ts",() => {
             let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions', () => {return Promise.resolve([testSubmission])});
             let mockUpdateSubmissions = chai.spy.on(SubmissionDAO, 'updateSubmission', () => {return Promise.resolve(updatedTestSubmission)});
             let mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission');
-            var mockCompare = chai.spy.on(testSubmission,'compare', () => {return new Array<AnalysisResult>()});
+            var mockCompare = chai.spy.on(testSubmission,'compare', () => {return Promise.resolve(new Array<AnalysisResult>() ) });
 
             return testSubmissionManager.compareSubmissions(testSubmission.getId(), testSubmission2.getId()).then((analysisResults) => {
                 expect(mockCompare).to.have.been.called.once; //cache is empty
@@ -837,6 +837,23 @@ describe("SubmissionManager.ts",() => {
                     expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
                     expect(mockGetSubmission).to.have.been.called.twice;
                 });
+            });
+        });
+
+        it("Should return an appropriate error if submission compare fails",() => {
+
+            let testSubmission2 = new Submission.builder().build();
+
+            chai.spy.on(testSubmission2,'compare',() =>{ return Promise.reject(new Error("Compare failed"))});
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{ return Promise.resolve(testSubmission2)});
+
+            return testSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (submission.compare failed)").to.be.false;
+            }).catch((err) => {
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(err).to.not.be.undefined;
+                expect(err).to.have.property("message").which.equals("Compare failed");
             });
         });
 

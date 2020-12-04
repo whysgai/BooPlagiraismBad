@@ -6,9 +6,10 @@ import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollec
 import {parse} from 'java-ast'; 
 import { Tlsh } from '../lib/tlsh';
 import { AppConfig } from "../AppConfig";
-import { forEachChild, isJsxFragment } from "typescript";
+import { forEachChild, isJsxFragment, resolveProjectReferencePath } from "typescript";
 import { match } from "sinon";
 import { ConsoleErrorListener } from "antlr4ts";
+import MergeSorter from "../lib/MergeSorter";
 
 /**
  * Represents an Submission database model object
@@ -42,7 +43,7 @@ export interface ISubmission {
     setFiles(files : string[]) : void;
     addFile(content : string, fileName : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
-    compare(otherSubmission : ISubmission) : IAnalysisResult[];
+    compare(otherSubmission : ISubmission) : Promise<IAnalysisResult[]>;
     asJSON() : Object;
 }
 
@@ -366,47 +367,51 @@ export interface ISubmission {
         }
     }
 
-    compare(otherSubmission: ISubmission) : IAnalysisResult[] {
-        if(this.entries.values().next().value == undefined || otherSubmission.getEntries().values().next().value == undefined) {
-            throw new Error("Cannot compare: One or more comparator submissions has no entries");
-        }
+    /**
+     * Compare two submissions
+     * @param otherSubmission comparator submission
+     * @returns a Promise containing the AnalysisResult
+     */
+    async compare(otherSubmission: ISubmission) : Promise<IAnalysisResult[]> {
 
-        let analysisResults = new Array<IAnalysisResult>();
-
-        for(let subAFileEntries of this.entries.values()) {
-            for(let subBFileEntries of otherSubmission.getEntries().values()) {
-                
-                //Generate an AnalysisResult for each file pairing
-                let analysisResult = this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries);
-
-                let similarity = analysisResult.getSimilarityScore();
-
-                let insertIndex = 0;
-                let addToEnd = true;
-
-                //Ensure AnalysisResult array is sorted by similarity (desc)
-                for(let i=0; i < analysisResults.length; i++) {
-                    
-                    insertIndex = i;
-
-                    let itSimilarity = analysisResults[i].getSimilarityScore();
-                    
-                    if(similarity > itSimilarity) {
-                        addToEnd = false;
-                        break;
-                    }
-                }
-
-                if(addToEnd) {
-                    analysisResults.push(analysisResult)
-                } else {
-                    analysisResults.splice(insertIndex,0,analysisResult);
+        return new Promise((resolve,reject) => {
+            
+            if(this.entries.values().next().value == undefined || otherSubmission.getEntries().values().next().value == undefined) {
+                reject(new Error("Cannot compare: One or more comparator submissions has no entries"));
+            }
+    
+            let analysisResults = new Array<Promise<IAnalysisResult>>();
+    
+            for(let subAFileEntries of this.entries.values()) {
+                for(let subBFileEntries of otherSubmission.getEntries().values()) {
+                    analysisResults.push(this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries));
                 }
             }
-        }
-        return analysisResults;
-    }
 
+            //After all results are analysed, sort and return sorted results (ordered by similarity, descending)
+            Promise.all(analysisResults).then((analysisResults) => {
+
+                let mergeSorter = new MergeSorter<IAnalysisResult>();
+                
+                const compareFunction = (s1: IAnalysisResult, s2: IAnalysisResult) : number => { 
+                    if(s1.getSimilarityScore() > s2.getSimilarityScore()) { 
+                        return -1; 
+                    } else if(s2.getSimilarityScore() > s1.getSimilarityScore()){ 
+                        return 1; 
+                    } else { 
+                        return 0
+                    } 
+                }
+
+                //Apply sort
+                mergeSorter.sort(analysisResults,compareFunction);
+
+                resolve(analysisResults);
+
+            }).catch((err) => reject(err));
+        });
+    }
+    
     /**
      * Returns the submission as a JSON object
      */
@@ -417,83 +422,84 @@ export interface ISubmission {
             name:this.name,
             files:this.files,
             fileContents:[...this.fileContents],
-            entries:[...this.entries] // When parsing json object, this can be converted back to a Map with: entries = new Map(JSONObject["entries"]);
+            entries:[...this.entries] 
         };
     }
 
-    private compareAnalysisResultEntries(fileAEntries : IAnalysisResultEntry[], fileBEntries : IAnalysisResultEntry[]) : IAnalysisResult {
-        
+    private async compareAnalysisResultEntries(fileAEntries : IAnalysisResultEntry[], fileBEntries : IAnalysisResultEntry[]) : Promise<IAnalysisResult> {
+       
+        return new Promise((resolve,reject) => {
 
-        
-        let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
-        
-        let fileASimilar : boolean[] = [false];
-        let fileBSimilar : boolean[] = [false];
-        for(let i = 0; i < fileAEntries.length; i++) {
-            for(let j = 0; j < fileBEntries.length; j++) {
-                let hashA = fileAEntries[i].getHashValue();
-                let hashB = fileBEntries[j].getHashValue();
+            let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
 
-                let comparison = this.compareHashValues(hashA, hashB);
-                var threshold = AppConfig.comparisonThreshold();
+            let submissionIdA = fileAEntries[0].getSubmissionID();
+            let submissionIdB = fileBEntries[0].getSubmissionID();
 
-                if(comparison < threshold) {  //the more similar a comparison, the lower the number
+            let fileNameA = fileAEntries[0].getFileName();
+            let fileNameB = fileBEntries[0].getFileName();
+
+            let fileASimilar : boolean[] = [false];
+            let fileBSimilar : boolean[] = [false];
+            
+            for(let i = 0; i < fileAEntries.length; i++) {
+                
+                for(let j = 0; j < fileBEntries.length; j++) {
                     
-                    //Get the avg length of the entry
-                    let leftLength = fileAEntries[i].getLineNumberEnd() - fileAEntries[i].getLineNumberStart();
-                    let rightLength = fileBEntries[j].getLineNumberEnd() - fileBEntries[j].getLineNumberStart();
-                    let avgLength = (leftLength + rightLength) / 2; 
+                    let hashA = fileAEntries[i].getHashValue();
+                    let hashB = fileBEntries[j].getHashValue();
 
-                    //Insert the match at the right spot in the array
-                    let insertIndex = 0;
-                    let addToEnd = true;
+                    let comparison = this.compareHashValues(hashA, hashB);
+                    var threshold = AppConfig.comparisonThreshold();
 
-                    for(let i=0; i < matchedEntries.length; i++) {
-                        
-                        insertIndex = i;
-
-                        let entry = matchedEntries[i];
-
-                        let left = entry[0].getLineNumberEnd() - entry[0].getLineNumberStart();
-                        let right = entry[1].getLineNumberEnd() - entry[1].getLineNumberStart();
-                        let avg = (left+ right) / 2; 
-                        
-                        if(avgLength > avg) {
-                            addToEnd = false;
-                            break;
-                        }
-                    }
-
-                    if(addToEnd) {
+                    if(comparison < threshold) {  
                         matchedEntries.push([fileAEntries[i],fileBEntries[j]])
-                    } else {
-                        matchedEntries.splice(insertIndex,0,[fileAEntries[i],fileBEntries[j]]);
+                        fileASimilar[i] = true;
+                        fileBSimilar[j] = true;
                     }
-
-                    fileASimilar[i] = true;
-                    fileBSimilar[j] = true;
                 }
             }
-        }
-        let numFileASimilar = fileASimilar.filter(val => val == true).length;
-        let numFileBSimilar = fileBSimilar.filter(val => val == true).length;
 
-        let H = matchedEntries.length;
-        let L = fileAEntries.length - numFileASimilar;
-        let R = fileBEntries.length - numFileBSimilar;
-        let similarityScore = (2 * H) / ((2 * H) + R + L); //DECKARD SIMILARITY SCORE ALGORITHM
+            //Generate a similarity score for the AnalysisResult
+            let numFileASimilar = fileASimilar.filter(val => val == true).length;
+            let numFileBSimilar = fileBSimilar.filter(val => val == true).length;
+            let H = matchedEntries.length;
+            let L = fileAEntries.length - numFileASimilar;
+            let R = fileBEntries.length - numFileBSimilar;
+            let similarityScore = (2 * H) / ((2 * H) + R + L);
 
-        let submissionIdA = fileAEntries[0].getSubmissionID();
-        let submissionIdB = fileBEntries[0].getSubmissionID();
-        let fileNameA = fileAEntries[0].getFileName();
-        let fileNameB = fileBEntries[0].getFileName();
+            //Sort the matched entries (by longest, descending)
+            let mergeSorter = new MergeSorter<IAnalysisResultEntry[]>();
 
-        //Add only the first n entries to the AnalysisResult
-        let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());
+            const compareFunction = (s1: IAnalysisResultEntry[], s2: IAnalysisResultEntry[]) : number => { 
+                
+                let leftOne = s1[0].getLineNumberEnd() - s1[0].getLineNumberStart();
+                let rightOne = s1[1].getLineNumberEnd() - s1[1].getLineNumberStart();
+                let avgOne = (leftOne+ rightOne) / 2;
 
-        var analysisResult = new AnalysisResult(reducedMatchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
-        
-        return analysisResult;
+                let leftTwo = s2[0].getLineNumberEnd() - s2[0].getLineNumberStart();
+                let rightTwo = s2[1].getLineNumberEnd() - s2[1].getLineNumberStart();
+                let avgTwo = (leftTwo+ rightTwo) / 2; 
+                
+                if(avgOne > avgTwo){ 
+                    return -1; 
+                } else if(avgTwo > avgOne){ 
+                    return 1; 
+                } else { 
+                    return 0
+                } 
+            }
+
+            //Apply sort
+            mergeSorter.sort(matchedEntries,compareFunction);
+
+            //Add only the first n entries to the AnalysisResult
+            let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());
+
+            //Log that analysis was completed
+            console.log("[BPB] [" + submissionIdA + "][" + submissionIdB + "] Analyzed " + fileNameA + " -> " + fileNameB);
+
+            resolve(new AnalysisResult(reducedMatchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB));
+        });
     }
 
     /**
