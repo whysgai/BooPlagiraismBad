@@ -395,9 +395,9 @@ export interface ISubmission {
                 
                 const compareFunction = (s1: IAnalysisResult, s2: IAnalysisResult) : number => { 
                     if(s1.getSimilarityScore() > s2.getSimilarityScore()) { 
-                        return 1; 
-                    } else if(s2.getSimilarityScore() > s1.getSimilarityScore()){ 
                         return -1; 
+                    } else if(s2.getSimilarityScore() > s1.getSimilarityScore()){ 
+                        return 1; 
                     } else { 
                         return 0
                     } 
@@ -481,9 +481,9 @@ export interface ISubmission {
                 let avgTwo = (leftTwo+ rightTwo) / 2; 
                 
                 if(avgOne > avgTwo){ 
-                    return 1; 
-                } else if(avgTwo > avgOne){ 
                     return -1; 
+                } else if(avgTwo > avgOne){ 
+                    return 1; 
                 } else { 
                     return 0
                 } 
