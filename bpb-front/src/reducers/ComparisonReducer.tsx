@@ -4,7 +4,7 @@ import Submission from "../types/Submission";
 
 const initialState = {
     compareSubmissions: [] as Submission[],
-    comparison: [] as JSON[],
+    comparisons: [] as JSON[],
     submissionOne: {} as Submission,
     submissionTwo: {} as Submission,
     fileOne: "" as String,
@@ -33,11 +33,12 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 return state
             }
         case 'COMPARE':
+            //console.log("Comparisons in reducer", action.comparison)
             return {
                 ...state,
-                comparison: action.comparison,
-                submissionOne: state.compareSubmissions[0],
-                submissionTwo: state.compareSubmissions[1]
+                comparisons: action.comparison,
+                // submissionOne: state.compareSubmissions[0],
+                // submissionTwo: state.compareSubmissions[1]
             }
         case 'GET_SUB_ONE_FILES':
             console.log("Reducer sub one content", action.fileContents);

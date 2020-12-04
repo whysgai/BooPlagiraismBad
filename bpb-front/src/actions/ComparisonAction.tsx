@@ -1,11 +1,12 @@
 import Submission from '../types/Submission'
 import { getComparison, getFileContent } from '../services/ComparisonService'
+import { getSubmission } from '../services/SubmissionService'
 
-export function compareSubmissions(compareSubmissions : Submission[]) {
+export async function compareSubmissions(compareSubmissions : Submission[]) {
     return {
         type: 'COMPARE',
         compareSubmissions: compareSubmissions,
-        comparison: getComparison(compareSubmissions)
+        comparison: await getComparison(compareSubmissions)
     }
 };
 
@@ -23,10 +24,20 @@ export function removeSubmissionComparison(submission : Submission) {
     }    
 }
 
+export async function readComparisonSubmission(submissionId: String) {
+    let submission = await getSubmission(submissionId);
+    return {
+        type: 'ADD_COMPARE',
+        addSubmission: submission
+    }
+}
+
 export async function readFileContent(submission: Submission, type: String) {
     // for each file in submission.files
     // request the file contents and add that to an array of strings
     // then return the object with the type and the array of strings
+    console.log("Action getting files for submission", submission.name, "file names are", submission.files)
+
     let fileContents : String[] = [];
     
     for (let i: number = 0; i < submission.files.length; i++) {
