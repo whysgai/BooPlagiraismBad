@@ -32,7 +32,7 @@ describe('AssignmentRouter.ts',()=> {
         app.use(express.json());
         app.use(fileUpload());      
         testAssignmentMgr = new AssignmentManager();
-        testSubmissionMgr = new SubmissionManager("./src/lib/CompareWorker.js");
+        testSubmissionMgr = new SubmissionManager("./src/worker/CompareWorker.js");
         testRouter = new AssignmentRouter(app,"/assignments",testSubmissionMgr,testAssignmentMgr); 
         testServer = app.listen(8081);
 

@@ -156,7 +156,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js") //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js") //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should return submission if the provided ID is valid",()=> {
@@ -190,7 +190,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmissions()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should return submissions of the given assignment if there are some",()=> {
@@ -218,7 +218,7 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should populate submissionCache.get(submissionId) after pulling from database.", () => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
             let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
             let mockReadSubmission = chai.spy.on(SubmissionDAO, 'readSubmission', () =>{return Promise.resolve(testSubmission)});
 
@@ -257,7 +257,7 @@ describe("SubmissionManager.ts",() => {
     describe("createSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
@@ -274,7 +274,7 @@ describe("SubmissionManager.ts",() => {
         describe(" createSubmission/getSubmission Cache tests", () => {
 
             before(() => {
-                testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
+                testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
             })
 
             it("Should properly cache the submission in submissionCache",() => {
@@ -363,7 +363,7 @@ describe("SubmissionManager.ts",() => {
     describe("updateSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should properly update a submission if body parameters are included and submission exists with id",() => {
@@ -571,7 +571,7 @@ describe("SubmissionManager.ts",() => {
     describe("processSubmissionFile()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should save and add a file into the submission specified by the client",() => {
@@ -709,7 +709,7 @@ describe("SubmissionManager.ts",() => {
     describe("deleteSubmission({id})",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
@@ -800,7 +800,7 @@ describe("SubmissionManager.ts",() => {
     describe("compareSubmission({id_a},{id_b})",()=> {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
@@ -920,7 +920,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmissionFileContent()",() => {
         
        beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should obtain the content of the specified file if it exists",()=> {

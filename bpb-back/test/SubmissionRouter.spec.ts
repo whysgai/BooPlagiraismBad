@@ -43,7 +43,7 @@ describe('SubmissionRouter.ts',()=> {
         app.use(express.json());
         app.use(fileUpload()); //Need to use for multipart data, rather than bodyparser.json()
 
-        testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
+        testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
         testAssignmentManager = new AssignmentManager();
         
         testAssignment = new Assignment.builder().build();
