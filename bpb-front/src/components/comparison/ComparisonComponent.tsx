@@ -7,7 +7,7 @@ import Submission from '../../types/Submission';
 import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchBoxComponent from './MatchBoxComponent';
-import Match from '../../types/Match';
+import Matches from '../../types/Matches';
 
 interface MatchParams {
   assignmentId: string,
@@ -27,7 +27,7 @@ class ComparisonComponent extends React.Component <PropsType, {
   submissionOne: Submission, submissionTwo: Submission
   subOneFileContents: String[], subTwoFileContents: String[]
   submissionOneFileContent: String, submissionTwoFileContent: String,
-  activeFileOne: String, activeFileTwo: String, activeMatches: Match
+  activeFileOne: String, activeFileTwo: String, activeMatches: Matches
 }> {
 
   constructor(props : PropsType) {
@@ -45,12 +45,12 @@ class ComparisonComponent extends React.Component <PropsType, {
       submissionTwoFileContent: "",
       activeFileOne: "",
       activeFileTwo: "",
-      activeMatches: {} as Match
+      activeMatches: {} as Matches
     };
   }
 
   componentDidMount() {
-
+    console.log("Did mount");
     // Get first submission based on its ID in the url
     readComparisonSubmission(this.props.match.params.subIdOne)
       .then((submissionAction) => store.dispatch(submissionAction))
@@ -91,6 +91,21 @@ class ComparisonComponent extends React.Component <PropsType, {
   }
 
 
+  filterMatches() {
+    if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
+      let parseObjects = this.state.comparisons as any as any[] as Matches[]
+      console.log("Parse Objects", parseObjects)
+      this.setState({
+        activeMatches: parseObjects.filter((arrayMatch) => {
+          let match = arrayMatch as any as Matches
+          return (match.files[0][1] === this.state.activeFileOne || match.files[1][1] === this.state.activeFileOne) &&
+          (match.files[0][1] === this.state.activeFileTwo || match.files[1][1] === this.state.activeFileTwo)
+        })[0] as any as any as Matches
+      })
+    }
+    console.log("Active Matches", this.state.activeMatches)
+  }
+
   showFileContent(submissionIndex: number, fileIndex: number) {
     if (submissionIndex === 1) {
       this.setState({
@@ -103,18 +118,7 @@ class ComparisonComponent extends React.Component <PropsType, {
         submissionTwoFileContent: this.state.subTwoFileContents[fileIndex]
       });
     }
-    if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
-      let parseObjects = this.state.comparisons as any as any[] as Match[]
-      console.log("Parse Objects", parseObjects)
-      this.setState({
-        activeMatches: parseObjects.filter((arrayMatch) => {
-          let match = arrayMatch as any as Match
-          return (match.files[0][1] === this.state.activeFileOne || match.files[1][1] === this.state.activeFileOne) &&
-          (match.files[0][1] === this.state.activeFileTwo || match.files[1][1] === this.state.activeFileTwo)
-        })[0] as any as any as Match
-      })
-    }
-    console.log("Active Matches", this.state.activeMatches)
+    setTimeout(() => {this.filterMatches()}, 500);
   }
 
   selectComparisonForFiles() {}
@@ -161,7 +165,7 @@ class ComparisonComponent extends React.Component <PropsType, {
             </div>
           </div>
           <div className="col-3">
-              <MatchBoxComponent comparisons={this.state.comparisons}/>
+              <MatchBoxComponent matches={this.state.activeMatches}/>
           </div>
           <div className="sub2 row col-4">
             
