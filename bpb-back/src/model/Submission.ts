@@ -367,6 +367,11 @@ export interface ISubmission {
         }
     }
 
+    /**
+     * Compare two submissions
+     * @param otherSubmission comparator submission
+     * @returns a Promise containing the AnalysisResult
+     */
     async compare(otherSubmission: ISubmission) : Promise<IAnalysisResult[]> {
 
         return new Promise((resolve,reject) => {
@@ -379,11 +384,11 @@ export interface ISubmission {
     
             for(let subAFileEntries of this.entries.values()) {
                 for(let subBFileEntries of otherSubmission.getEntries().values()) {
-                    //Generate an AnalysisResult for each file pairing
                     analysisResults.push(this.compareAnalysisResultEntries(subAFileEntries, subBFileEntries));
                 }
             }
 
+            //After all results are analysed, sort and return sorted results (ordered by similarity, descending)
             Promise.all(analysisResults).then((analysisResults) => {
 
                 let mergeSorter = new MergeSorter<IAnalysisResult>();
@@ -403,7 +408,7 @@ export interface ISubmission {
                 resolve(analysisResults);
 
             }).catch((err) => reject(err));
-        }
+        });
     }
     
     /**
@@ -425,7 +430,13 @@ export interface ISubmission {
         return new Promise((resolve,reject) => {
 
             let matchedEntries = new Array<Array<IAnalysisResultEntry>>();
-            
+
+            let submissionIdA = fileAEntries[0].getSubmissionID();
+            let submissionIdB = fileBEntries[0].getSubmissionID();
+
+            let fileNameA = fileAEntries[0].getFileName();
+            let fileNameB = fileBEntries[0].getFileName();
+
             let fileASimilar : boolean[] = [false];
             let fileBSimilar : boolean[] = [false];
             
@@ -439,7 +450,7 @@ export interface ISubmission {
                     let comparison = this.compareHashValues(hashA, hashB);
                     var threshold = AppConfig.comparisonThreshold();
 
-                    if(comparison < threshold) {  //the more similar a comparison, the lower the number
+                    if(comparison < threshold) {  
                         matchedEntries.push([fileAEntries[i],fileBEntries[j]])
                         fileASimilar[i] = true;
                         fileBSimilar[j] = true;
@@ -447,18 +458,13 @@ export interface ISubmission {
                 }
             }
 
+            //Generate a similarity score for the AnalysisResult
             let numFileASimilar = fileASimilar.filter(val => val == true).length;
             let numFileBSimilar = fileBSimilar.filter(val => val == true).length;
-
             let H = matchedEntries.length;
             let L = fileAEntries.length - numFileASimilar;
             let R = fileBEntries.length - numFileBSimilar;
-            let similarityScore = (2 * H) / ((2 * H) + R + L); //DECKARD SIMILARITY SCORE ALGORITHM
-
-            let submissionIdA = fileAEntries[0].getSubmissionID();
-            let submissionIdB = fileBEntries[0].getSubmissionID();
-            let fileNameA = fileAEntries[0].getFileName();
-            let fileNameB = fileBEntries[0].getFileName();
+            let similarityScore = (2 * H) / ((2 * H) + R + L);
 
             //Sort the matched entries (by longest, descending)
             let mergeSorter = new MergeSorter<IAnalysisResultEntry[]>();
@@ -487,9 +493,7 @@ export interface ISubmission {
             //Add only the first n entries to the AnalysisResult
             let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());
 
-            let analysisResult = new AnalysisResult(reducedMatchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB);
-            
-            resolve(analysisResult);
+            resolve(new AnalysisResult(reducedMatchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB));
         });
     }
 

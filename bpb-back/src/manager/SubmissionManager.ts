@@ -277,40 +277,24 @@ export class SubmissionManager implements ISubmissionManager {
      */
     compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<IAnalysisResult[]> => {
         return new Promise((resolve,reject) => {
-<<<<<<< HEAD
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
             } else {
-                this.getSubmission(submissionIdA) //caches the submission cache downstream for us
-                .then(submissionA => {
-                    this.getSubmission(submissionIdB)
-                        .then(submissionB => {
-                            let analysisResults = submissionA.compare(submissionB)
-                            this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
-                            resolve(analysisResults);
-                        }
-                    ).catch((err) => {
+                this.getSubmission(submissionIdA).then(submissionA => {
+                    this.getSubmission(submissionIdB).then(submissionB => {
+                            submissionA.compare(submissionB).then((analysisResults) => {
+                                this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
+                                resolve(analysisResults);
+                            }).catch((err) => {
+                                reject(err);
+                            });
+                        }).catch((err) => {
                         reject(err);
                     });
                 }).catch((err) => {
                     reject(err);
                 });
             }
-=======
-            this.getSubmission(submissionIdA).then(submissionA => {
-                this.getSubmission(submissionIdB).then(submissionB => {
-                        submissionA.compare(submissionB).then((analysisResults) => {
-                            resolve(analysisResults);
-                        }).catch((err) => {
-                            reject(err);
-                        });
-                    }).catch((err) => {
-                        reject(err);
-                    });
-            }).catch((err) => {
-                reject(err);
-            });
->>>>>>> BPB-141 feat: asyncify submission.compare
         });
     }
 
