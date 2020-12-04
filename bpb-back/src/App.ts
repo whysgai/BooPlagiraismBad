@@ -50,7 +50,7 @@ class App {
                 var assignmentManager = new AssignmentManager();
 
                 // Set up SubmissionManager
-                var submissionManager = new SubmissionManager();
+                var submissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
 
                 // Set up routers
                 this.routers.push(new SubmissionRouter(this.app,'/submissions',submissionManager,assignmentManager));
