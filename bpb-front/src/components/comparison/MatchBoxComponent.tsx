@@ -29,23 +29,31 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
   render() {
     return (
       <div className="submission-compare-pane border">
-        Matches
+        {
+          (this.props.comparison.matches && this.props.comparison.matches.length <= 0) &&
+            <span>No matches found.</span>            
+        }        
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0) &&
-            <ul className="nav flex-column">
-              {
-                this.props.comparison.matches.map((match, index) => 
-                  <li className="nav-item" key={index} onClick={() => this.clickMatch(match)}>
-                    <ul>
-                      <li className="nav-item-link">Match {index+1}</li>
-                      <li>Context {match[0].contextType}</li>
-                      <li>{match[0].fileName} lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</li>
-                      <li>{match[1].fileName} lines {match[1].lineNumberStart} - {match[1].lineNumberEnd}</li>
-                    </ul>
-                  </li>
-                )
-              }
-            </ul>
+            <div>
+              <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
+              <div className="col-12 text-align-center">Matches:</div>
+              <ul className="nav flex-column col-12">
+                {
+                  this.props.comparison.matches.map((match, index) => 
+                    <li className="nav-item" key={index} onClick={() => this.clickMatch(match)}>
+                      <ul>
+                        <li className="nav-item-link">Match {index+1}</li>
+                        <li>Context {match[0].contextType}</li>
+                        <li>{match[0].fileName} lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</li>
+                        <li>{match[1].fileName} lines {match[1].lineNumberStart} - {match[1].lineNumberEnd}</li>
+                      </ul>
+                    </li>
+                  )
+                }
+              </ul> 
+            </div>
+            
         }
       </div>
     );
