@@ -58,7 +58,6 @@ describe("SubmissionManager.ts",() => {
             let entryB = new AnalysisResultEntry('11', submissionIdB, '13', '14', 15, 16, 17, 18, '19', '20');
             analysisResultEntries = new Array<IAnalysisResultEntry[]>();
             analysisResultEntries.push([entryA, entryB]);
-            console.log(analysisResultEntries)
             analysisResults = [new AnalysisResult(analysisResultEntries, 3, submissionIdA, submissionIdB, 'fileA', 'fileB')];
         });
 
