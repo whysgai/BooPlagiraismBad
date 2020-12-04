@@ -23,7 +23,7 @@ class ComparisonPendingComponent extends React.Component <PropsType, {}> {
                         <h4 className="card-title">Comparing Submissions</h4>
                         <div className="row">
                             <div className="col-3"/>
-                            <div className="card-subtitle">Please be patient, this may take awhile depending on the quantity, size, and complexity of your submissions</div>
+                            <div className="card-subtitle col-6">Please be patient, this may take Some time. It depends on the quantity, size, and complexity of your submission files.</div>
                             <div className="col-3"/>
                         </div>                        
                         <div className="row justify-content-around">
