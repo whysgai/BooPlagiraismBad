@@ -180,9 +180,13 @@ export class SubmissionManager implements ISubmissionManager {
                     this.submissionCache.set(submissionId, updatedSubmission);
                     // submissionCacheByAssignment
                     if(this.submissionCacheByAssignment.get(updatedSubmission.getAssignmentId()) != undefined) {
-                        this.submissionCacheByAssignment.get(updatedSubmission.getAssignmentId())
-                            .filter((cachedSubmission) => cachedSubmission.getId() === submissionId)[0] = updatedSubmission;
+                        let submissionsList = this.submissionCacheByAssignment.get(updatedSubmission.getAssignmentId())
+                        submissionsList.push(updatedSubmission);
                     } 
+                    if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
+                        let submissionsList = this.submissionCacheByAssignment.get(submission.getAssignmentId())
+                        submissionsList  = submissionsList.filter((submissionInList) => submissionInList.getId() !== updatedSubmission.getId())
+                    }
                     resolve(submission);
                 }).catch((err) => {
                    reject(err);
@@ -207,16 +211,14 @@ export class SubmissionManager implements ISubmissionManager {
                 submission.addFile(content,fileName).then(() => {
                     SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
                         // submissionCache
-                        this.submissionCache.set(updatedSubmission.getId(),updatedSubmission);
+                        this.submissionCache.set(updatedSubmission.getId(),updatedSubmission); 
                         // comparisonCache
-                        this.comparisonCache.delete(submissionId); //Since a new file has been introduced, need to re-compare
+                        this.comparisonCache.delete(submissionId); //Since a new file has been introduced, need to re-compare 
                         // submissionCacheByAssignment
                         if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
-                            for(let subInCache of this.submissionCacheByAssignment.get(submission.getAssignmentId())) {
-                                if(subInCache.getId() === submissionId) {
-                                    subInCache = updatedSubmission;
-                                }
-                            }
+                            let cacheList = this.submissionCacheByAssignment.get(submission.getAssignmentId())
+                                .filter((subInCache) => subInCache.getId() !== submissionId);
+                            cacheList.push(updatedSubmission);
                         }
                         resolve();
                     }).catch((err) => {
@@ -249,12 +251,13 @@ export class SubmissionManager implements ISubmissionManager {
                 }
                 // submissionCacheByAssignment
                 if(this.submissionCacheByAssignment.get(submission.getAssignmentId()) != undefined) {
-                    this.submissionCacheByAssignment.set(submission.getAssignmentId(), 
-                        this.submissionCacheByAssignment.get(submission.getAssignmentId())
-                            .filter((cachedSubmission) => cachedSubmission.getId() != submissionId));
+                    let currentCache = this.submissionCacheByAssignment.get(submission.getAssignmentId());
+                    let updatedCache = currentCache.filter((cachedSubmission) => cachedSubmission.getId() !== submission.getId())
+                    this.submissionCacheByAssignment.set(submission.getAssignmentId(), updatedCache);
                 }
                 // comparisonCache
-                this.comparisonCache.delete(submissionId);
+                this.comparisonCache.delete(submissionId);//TODO test
+                
                 SubmissionDAO.deleteSubmission(submissionId).then((submission) => {
                     resolve();
                 }).catch((err) => {
@@ -277,15 +280,13 @@ export class SubmissionManager implements ISubmissionManager {
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
             } else {
-                this.getSubmission(submissionIdA)
+                this.getSubmission(submissionIdA) //caches the submission cache downstream for us
                 .then(submissionA => {
                     this.getSubmission(submissionIdB)
                         .then(submissionB => {
                             let analysisResults = submissionA.compare(submissionB)
                             this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
-                            resolve(submissionA.compare(submissionB)); 
-                        resolve(submissionA.compare(submissionB)); 
-                            resolve(submissionA.compare(submissionB)); 
+                            resolve(analysisResults);
                         }
                     ).catch((err) => {
                         reject(err);
