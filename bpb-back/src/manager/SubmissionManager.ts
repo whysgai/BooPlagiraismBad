@@ -71,6 +71,7 @@ export interface ISubmissionManager {
     deleteSubmission(submissionId : string) : Promise<void>;
     compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<string>
     getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
+    getComparisonCache() : ComparisonCache;
 }
 
 export class SubmissionManager implements ISubmissionManager {
@@ -78,13 +79,23 @@ export class SubmissionManager implements ISubmissionManager {
     private submissionCache : Map<string,ISubmission>;
     private submissionCacheByAssignment : Map<string, ISubmission[]>;
     private comparisonCache : ComparisonCache;
+    private workerFilePath : string;
     
-    constructor() {
+    constructor(workerFilePath : string) {
         this.submissionCache = new Map<string,ISubmission>();
         this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
         this.comparisonCache = new ComparisonCache();
+        this.workerFilePath = workerFilePath;
     }
 
+    /**
+     * For testing
+     *  
+     */
+    getComparisonCache() : ComparisonCache {
+        return this.comparisonCache;
+    }
+     
     /**
      * Creates a submission with the given SubmissionData
      * @param data 
@@ -284,7 +295,7 @@ export class SubmissionManager implements ISubmissionManager {
                 this.getSubmission(submissionIdA).then(submissionA => {
                     this.getSubmission(submissionIdB).then(submissionB => {
                         
-                        let worker = new Worker('./src/lib/CompareWorker.js', { 
+                        let worker = new Worker(this.workerFilePath, { 
                             workerData: [submissionA.asJSON(),submissionB.asJSON()]
                         });
 

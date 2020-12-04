@@ -16,6 +16,5 @@ submissionA.compare(submissionB).then((analysisResults) => {
     parentPort.postMessage(results);
     process.exit();
 }).catch((err) => {
-    parentPort.postMessage(err);
-    process.exit();
+    throw new Error(err);
 });

@@ -1,4 +1,5 @@
-import { assert, expect } from "chai";
+import { MessagePort } from 'worker_threads';
+import { expect } from "chai";
 import chai = require("chai");
 import chaiSpies = require("chai-spies");
 import chaiAsPromised = require("chai-as-promised");
@@ -9,7 +10,8 @@ import SubmissionData from "../src/types/SubmissionData"
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { AnalysisResult } from "../src/model/AnalysisResult";
 import fs from 'fs';
-import { mock } from "sinon";
+import sinon from "sinon";
+import { AppConfig } from '../src/AppConfig';
 
 describe("SubmissionManager.ts",() => {
 
@@ -154,7 +156,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js") //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should return submission if the provided ID is valid",()=> {
@@ -188,7 +190,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmissions()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should return submissions of the given assignment if there are some",()=> {
@@ -216,7 +218,7 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should populate submissionCache.get(submissionId) after pulling from database.", () => {
-            testSubmissionManager = new SubmissionManager();
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
             let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
             let mockReadSubmission = chai.spy.on(SubmissionDAO, 'readSubmission', () =>{return Promise.resolve(testSubmission)});
 
@@ -255,7 +257,7 @@ describe("SubmissionManager.ts",() => {
     describe("createSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
@@ -272,7 +274,7 @@ describe("SubmissionManager.ts",() => {
         describe(" createSubmission/getSubmission Cache tests", () => {
 
             before(() => {
-                testSubmissionManager = new SubmissionManager();
+                testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
             })
 
             it("Should properly cache the submission in submissionCache",() => {
@@ -361,7 +363,7 @@ describe("SubmissionManager.ts",() => {
     describe("updateSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should properly update a submission if body parameters are included and submission exists with id",() => {
@@ -569,7 +571,7 @@ describe("SubmissionManager.ts",() => {
     describe("processSubmissionFile()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should save and add a file into the submission specified by the client",() => {
@@ -665,40 +667,35 @@ describe("SubmissionManager.ts",() => {
             
             let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions', () => {return Promise.resolve([testSubmission])});
             let mockUpdateSubmissions = chai.spy.on(SubmissionDAO, 'updateSubmission', () => {return Promise.resolve(updatedTestSubmission)});
-            let mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission');
-            var mockCompare = chai.spy.on(testSubmission,'compare', () => {return Promise.resolve(new Array<AnalysisResult>() ) });
+            let mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission',() => {return Promise.resolve(testSubmission)});
+
+            let cache = testSubmissionManager.getComparisonCache();
+            var cacheGet = chai.spy.on(cache,'get',()=>{return "some string"});
 
             return testSubmissionManager.compareSubmissions(testSubmission.getId(), testSubmission2.getId()).then((analysisResults) => {
-                expect(mockCompare).to.have.been.called.once; //cache is empty
-                expect(mockGetSubmission).to.have.been.called.twice;
 
                 return testSubmissionManager.compareSubmissions(testSubmission.getId(), testSubmission2.getId()).then((analysisResults) => {
-                    expect(mockCompare).to.have.been.called.once; //cache is loaded, no compare made again
                     
                     return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissionArray) => { //should cache testSubmission
-                        expect(mockReadSubmissions).to.have.been.called.once;
+                        expect(cacheGet).to.not.have.been.called;
                         expect(submissionArray.length).to.be.equal(1);
                         expect(submissionArray[0].getName()).to.be.equal(testSubmissionName);
                         expect(submissionArray[0].getFileContents()).to.be.deep.equal(new Map<string, string>());
 
                         return testSubmissionManager.processSubmissionFile(testSubmissionId, testFileName, newContent).then(() => {
-                            expect(mockReadSubmission).to.have.been.called.twice; // called by update submission in proccess call
-                            expect(mockUpdateSubmissions).to.have.been.called.once;
                             expect(testSubmission.getFileContents()).to.be.deep.equal(updatedFileContents);
 
                             return testSubmissionManager.getSubmission(testSubmissionId).then((modifiedSubmission) => {
-                                expect(mockReadSubmission).to.have.been.called.twice; //should still be cached
                                 expect(modifiedSubmission.getFileContents()).to.be.deep.equal(updatedFileContents);
                                 expect(modifiedSubmission.getFileContents().get(testFileName)).to.be.deep.equal(newContent);
                                 
                                 return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((modifiedSubArray) => {
-                                    expect(mockReadSubmissions).to.have.been.called.once; //Should still be cached
                                     expect(modifiedSubArray[0].getFileContents()).to.be.deep.equal(updatedFileContents);
                                     expect(modifiedSubArray[0].getFileContents().get(testFileName)).to.be.deep.equal(newContent);
                                     
                                     return testSubmissionManager.compareSubmissions(testSubmission.getId(), testSubmission2.getId()).then((analysisResults) => { 
-                                        expect(mockCompare).to.have.been.called.once; //cache should have been cleared, should need to call compare again
-                                        //TODO: add assertion back
+                                        expect(cacheGet).to.have.been.called;
+                                        expect(analysisResults).to.equal("some string"); //Cache is used
                                     });
                                 });
                             });
@@ -712,7 +709,7 @@ describe("SubmissionManager.ts",() => {
     describe("deleteSubmission({id})",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
@@ -803,7 +800,7 @@ describe("SubmissionManager.ts",() => {
     describe("compareSubmission({id_a},{id_b})",()=> {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
@@ -840,20 +837,23 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
+        afterEach(() =>{ sinon.reset() })
         it("Should return an appropriate error if submission compare fails",() => {
 
+            let newTestSubmissionManager = new SubmissionManager("./test/res/TestCompareWorker.js");
+
             let testSubmission2 = new Submission.builder().build();
+             
+            let mockGetSubmission = chai.spy.on(newTestSubmissionManager,'getSubmission',() =>{ return Promise.resolve(testSubmission2)});
 
-            chai.spy.on(testSubmission2,'compare',() =>{ return Promise.reject(new Error("Compare failed"))});
-            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{ return Promise.resolve(testSubmission2)});
+            //sinon.stub(Submission.prototype,'compare').throws("Some error!");
 
-            return testSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
+            return newTestSubmissionManager.compareSubmissions(testSubmission.getId(),testSubmission2.getId()).then(res => {
                 expect(true,"compareSubmission is succeeding where it should fail (submission.compare failed)").to.be.false;
             }).catch((err) => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
-                expect(err).to.not.be.undefined;
-                expect(err).to.have.property("message").which.equals("Compare failed");
+                expect(err).to.have.property("message").which.equals("Some error!");
             });
         });
 
@@ -923,7 +923,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmissionFileContent()",() => {
         
        beforeEach(() => {
-            testSubmissionManager = new SubmissionManager(); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should obtain the content of the specified file if it exists",()=> {
