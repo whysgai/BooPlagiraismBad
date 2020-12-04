@@ -1,6 +1,7 @@
 import Submission from '../types/Submission'
 import { getComparison, getFileContent } from '../services/ComparisonService'
 import { getSubmission } from '../services/SubmissionService'
+import Snippet from '../types/Snippet'
 
 export async function compareSubmissions(compareSubmissions : Submission[]) {
     return {
@@ -47,5 +48,12 @@ export async function readFileContent(submission: Submission, type: String) {
     return {
         type: type,
         fileContents: fileContents
+    }
+}
+
+export function selectSnippets(snippets : Snippet[]) {
+    return {
+        type: "SET_SNIPPET",
+        snippets: snippets
     }
 }
