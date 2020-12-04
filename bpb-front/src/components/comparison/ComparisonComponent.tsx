@@ -4,12 +4,10 @@ import { Link } from 'react-router-dom';
 import { compareSubmissions, readComparisonSubmission, readFileContent } from '../../actions/ComparisonAction';
 import {store} from '../../store'
 import Submission from '../../types/Submission';
-import DirectoryListComponent from './DirectoryListComponent';
 import DocumentPaneComponent from './DocumentPaneComponent';
 import MatchBoxComponent from './MatchBoxComponent';
 import Comparison from '../../types/Comparison';
 import ComparisonPendingComponent from './ComparisonPendingComponent';
-import { Match } from '@testing-library/react';
 import Snippet from '../../types/Snippet';
 
 interface MatchParams {
@@ -139,6 +137,12 @@ class ComparisonComponent extends React.Component <PropsType, {
     })
   }
 
+  resetCurrentMatch() {
+    this.setState({
+      submissionOneDisplaySnippet: {} as Snippet,
+      submissionTwoDisplaySnippet: {} as Snippet
+    })
+  }
 
   render() {
     return (
@@ -170,7 +174,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                         <ol>
                           {
                             this.state.submissionOne.files.map((file, index) => 
-                              <li key={index} onClick={() => this.showFileContent(1, index)}>
+                              <li key={index} onClick={() => {this.showFileContent(1, index); this.resetCurrentMatch()}}>
                                 <a href="#" className={`${this.state.activeFileOne === file ? "text-secondary" : "text-primary"}`}>{file}</a>
                               </li>
                             )
@@ -200,7 +204,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                           <ol>
                             {
                               this.state.submissionTwo.files.map((file, index) => 
-                                <li key={index} onClick={() => this.showFileContent(2, index)}>
+                                <li key={index} onClick={() => {this.showFileContent(2, index); this.resetCurrentMatch()}}>
                                   <a href="#" className={`${this.state.activeFileTwo === file ? "text-secondary" : "text-primary"}`}>{file}</a>
                                 </li>
                               )
