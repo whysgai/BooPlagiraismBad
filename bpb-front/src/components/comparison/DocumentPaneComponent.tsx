@@ -18,11 +18,22 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
 
   render() {
     {
-      // console.log("Document pane file content",this.props.fileContent)
+      console.log("Document pane file content",this.props.fileContent)
     }
     return (
       <div className="submission-compare-pane border">
-        <pre>{this.props.fileContent}</pre>
+        {
+          (this.props.fileContent && this.props.fileContent !== "") &&
+            this.props.fileContent.split(/\r?\n/).map((line, index) => 
+              <div>
+                <pre>
+                  <span className="bg-light">{index} </span>
+                  <span key={index}>{line}</span>
+                </pre>
+              </div>              
+            )
+        }
+        
       </div>
     );
   }
