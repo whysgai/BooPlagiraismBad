@@ -35,11 +35,12 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
               {
                 this.props.comparison.matches.map((match, index) => 
                   <li className="nav-item" key={index} onClick={() => this.clickMatch(match)}>
-                    <span className="nav-item-link">Match {index+1}</span>
-                    <span>Context {match[0].contextType}</span>
-                    <span>{match[0].fileName} lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</span>
-                    <span>{match[1].fileName} lines {match[1].lineNumberStart} - {match[1].lineNumberEnd}</span>
-
+                    <ul>
+                      <li className="nav-item-link">Match {index+1}</li>
+                      <li>Context {match[0].contextType}</li>
+                      <li>{match[0].fileName} lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</li>
+                      <li>{match[1].fileName} lines {match[1].lineNumberStart} - {match[1].lineNumberEnd}</li>
+                    </ul>
                   </li>
                 )
               }
