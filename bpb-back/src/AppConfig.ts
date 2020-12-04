@@ -24,7 +24,18 @@ export class AppConfig {
         return Number(process.env.MAXFILEUPLOADSIZE);
     }
 
-    public static getComparisonThreshold() : number {
+    /**
+     * Returns the configured comparison threshold for individual subtree element comparisons
+     */
+    public static comparisonThreshold() : number {
         return Number(process.env.COMPARISONTHRESHOLD);
+    }
+
+    /**
+     * Returns the configured maximum number of matches to be shown in the comparison view at a given time
+     * Note: The n largest (longest) matches will be returned
+     */
+    public static maxMatchesPerFile() : number {
+        return Number(process.env.MAXMATCHESPERFILE);
     }
 }

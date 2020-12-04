@@ -11,9 +11,11 @@
             "env_vagrant":{
                 "NODE_ENV":"vagrant",
                 "APIPORT":"8080",
+                "UPLOADDIRECTORY":"/home/vagrant/",
                 "DBCONNECTIONSTRING":"mongodb://127.0.0.1:27017/bpb",
                 "MAXFILEUPLOADSIZE":"5000000",
-                "COMPARISONTHRESHOLD":"50"
+                "COMPARISONTHRESHOLD":"50",
+                "MAXMATCHESPERFILE":"10"
             }
         },
         {

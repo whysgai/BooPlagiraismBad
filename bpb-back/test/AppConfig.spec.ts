@@ -21,4 +21,16 @@ describe("AppConfig",() => {
              expect(AppConfig.maxFileUploadSize()).to.equal(1000);
          })
      })
+
+     describe("comparisonThreshold()",() => {
+        it("returns the expected comparison threshold",() => {
+            expect(AppConfig.comparisonThreshold()).to.equal(60);
+        });
+     });
+
+     describe("maxMatchesPerFile",() => {
+        it("returns the expected max matches value",() => {
+            expect(AppConfig.maxMatchesPerFile()).to.equal(50);
+        });
+     });
 });
