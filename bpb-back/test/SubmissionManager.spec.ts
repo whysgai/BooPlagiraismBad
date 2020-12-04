@@ -535,7 +535,7 @@ describe("SubmissionManager.ts",() => {
             
             return testSubmissionManager.updateSubmission(testSubmissionId, updateBody).then((updatedSubmission) => {
                 return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((fromCacheArr) => {
-                    expect(mockReadSubmissions).to.have.been.called.exactly(3); //should come from cache
+                    expect(mockReadSubmissions).to.have.been.called.exactly(1); //should come from cache
                     expect(fromCacheArr[0].getName()).to.be.deep.equal(expectedNewName);
                 });
             });
