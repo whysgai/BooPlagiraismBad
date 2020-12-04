@@ -1,7 +1,8 @@
 import React from 'react';
+import Matches from '../../types/Matches';
 
 interface PropsType {
-  comparisons: JSON[]
+  matches: Matches
 }
 
 /**
@@ -19,7 +20,7 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
     return (
       <div className="submission-compare-pane border">
         {
-          console.log("Logging matches from component", this.props.comparisons)
+          console.log("Logging matches from component", this.props.matches)
         }
         HighlightsForProfessors
       </div>

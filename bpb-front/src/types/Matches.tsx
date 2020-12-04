@@ -1,7 +1,7 @@
-type Match = {
+type Matches = {
     files: String[][],
     matches: Object[][],
     similarityScore: number
 }
 
-export default Match
+export default Matches
