@@ -38,15 +38,15 @@ describe("Submission.ts.SubmissionBuilder",() => {
             var files = ["some","test","files"];
             testSubmissionBuilder.setFiles(files);
             testSubmission = testSubmissionBuilder.build();
-            expect(testSubmission.getFiles()).to.equal(files);
+            expect(testSubmission.getFiles()).to.deep.equal(files);
+            expect(testSubmission.getFiles()).to.not.equal(files);
         });
     });
 
     describe("setFileConents", () => {
-        it("ShouldCorrectly set submission's fileContents", () => {
-            let fileContents = new Map<string, string>()
-                .set('fileA', 'Your mother was a hamster')
-                    .set('fileB', 'Your father smelled of elderberries');
+        it("Should correctly set submission's fileContents", () => {
+            let fileContents = ["your father was an elderberry","your mother smelt of hamsters"];
+
             testSubmissionBuilder.setFileContents(fileContents);
             testSubmission = testSubmissionBuilder.build();
             expect(testSubmission.getFileContents()).to.deep.equal(fileContents);
@@ -98,7 +98,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
             testSubmissionBuilder.setAssignmentId(newAssignmentId);
             testSubmissionBuilder.setFiles(["some","files"]);
             testSubmissionBuilder.setEntries(new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","someFileName","4",5,6,7,8,"9","10")]));
-            testSubmissionBuilder.setFileContents(new Map<string, string>().set('sir', 'lancelot of camelot').set('robin', 'the somewhat brave'));
+            testSubmissionBuilder.setFileContents(["sir lancelot of camelot","robin the somewhat brave"]);
             testSubmission = testSubmissionBuilder.build();
             var testExistingModel = testSubmission.getModelInstance();
 
@@ -126,14 +126,17 @@ describe("Submission.ts",() => {
     var testFileContent : string;
     var testEntryA : IAnalysisResultEntry;
     var testEntryB : IAnalysisResultEntry;
-    var testFileContents : Map<string, string>;
+    var testFileContents : string[];
 
     before(() => {
         chai.use(chaiSpies);
     });
 
-    beforeEach(()=>{
-        testFileContents = new Map<string, string>().set('five is', 'right out');
+    beforeEach(() => {
+
+        testFileContent = "reallylongstringwithplentyofcontenttoexceedtheminimumlengthrequiredinordertohavesufficientlevelsofdifferencetobemeasurable";
+        testFileContents = ["five is","right out!"]
+
         var builderA = new Submission.builder();
         builderA.setName("name_a");
         builderA.setAssignmentId("id_a");
@@ -145,9 +148,9 @@ describe("Submission.ts",() => {
         builderB.setAssignmentId("id_b");
         testSubmissionB = builderB.build();
 
-        testFileContent = "reallylongstringwithplentyofcontenttoexceedtheminimumlengthrequiredinordertohavesufficientlevelsofdifferencetobemeasurable";
         testEntryA = new AnalysisResultEntry("are1", testSubmissionA.getId(),"file.java","method",1, 0, 100, 1,"1234567123456712345671234567123456712345671234567123456712345671234567","void() {}");
         testEntryB = new AnalysisResultEntry("are2", testSubmissionB.getId(),"filey.java","method",2, 3, 30, 4, "890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","void() {}");
+        
     });
 
     describe("getId()",() => {
@@ -164,18 +167,10 @@ describe("Submission.ts",() => {
 
     describe("getFileContents", () => {
         it("Should return the Submission's fileContents Map", () => {
-            expect(testSubmissionA.getFileContents()).to.be.deep.equal(testFileContents);
+            expect(testSubmissionA.getFileContents()).to.deep.equal(testFileContents);
         });
     });
-
-    describe("deleteFileContents", () => {
-        it("Should delete the fileContent of a given fileName", () => {
-            expect(testSubmissionA.getFileContents().get('five is')).to.deep.equal('right out');
-            expect(testSubmissionA.deleteFileContent('five is')).to.be.undefined;
-            expect(testSubmissionA.getFileContents().get('five is')).to.be.undefined;
-        });
-    })
-
+    
     describe("compare()",() => {
 
         it("Should return a valid AnalysisResult[] with expected values if comparator submission is valid (left direction)",() => {

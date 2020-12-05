@@ -2,6 +2,7 @@ import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
 import { AppConfig } from "../src/AppConfig";
+import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
@@ -62,6 +63,7 @@ describe("SubmissionDAO.ts",() => {
                     expect(document).to.have.property("assignment_id").which.deep.equals(submission.getAssignmentId());
                     expect(document).to.have.property("entries").which.deep.equals([...submission.getEntries()]);
                     expect(document).to.have.property("files").which.deep.equals(submission.getFiles());
+                    expect(document).to.have.property("fileContents").which.deep.equals(submission.getFileContents());
                 });
             });
         });
@@ -80,11 +82,13 @@ describe("SubmissionDAO.ts",() => {
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((submission) => {
                 
-                var entries = new Map<string,IAnalysisResultEntry[]>();
+                let entries = new Map<string,IAnalysisResultEntry[]>();
                 entries.set("exampleJava.java",[new AnalysisResultEntry("","1","exampleJava.java","method",1,2,3,4,"5","6")])
-                var files = ["exampleJava.java"];
+                let files = ["exampleJava.java"];
+                let fileContents = ["void test(){}"];
                 
                 submission.setFiles(files);
+                submission.setFileContents(fileContents);
                 submission.setEntries(entries);
 
                 return SubmissionDAO.updateSubmission(submission).then((updatedSubmission) => {
@@ -93,6 +97,7 @@ describe("SubmissionDAO.ts",() => {
                         expect(readSubmission.getId()).to.equal(submission.getId());
                         expect(readSubmission.getFiles()).to.deep.equal(files);
                         expect(readSubmission.getEntries()).to.deep.equal(entries);
+                        expect(readSubmission.getFileContents()).to.deep.equal(fileContents);
                     });
                 });
             });
@@ -133,12 +138,14 @@ describe("SubmissionDAO.ts",() => {
                         expect(submissions[0].getAssignmentId()).to.deep.equal(createdSubmission.getAssignmentId());
                         expect(submissions[0].getEntries()).to.deep.equal(createdSubmission.getEntries());
                         expect(submissions[0].getFiles()).to.deep.equal(createdSubmission.getFiles());
+                        expect(submissions[0].getFileContents()).to.deep.equal(createdSubmission.getFileContents());
 
                         expect(submissions[1].getId()).to.deep.equal(createdSubmission2.getId());
                         expect(submissions[1].getName()).to.deep.equal(createdSubmission2.getName());
                         expect(submissions[1].getAssignmentId()).to.deep.equal(createdSubmission2.getAssignmentId());
                         expect(submissions[1].getEntries()).to.deep.equal(createdSubmission2.getEntries());
                         expect(submissions[1].getFiles()).to.deep.equal(createdSubmission2.getFiles());
+                        expect(submissions[1].getFileContents()).to.deep.equal(createdSubmission2.getFileContents());
                     });
                 });
             });
@@ -160,11 +167,12 @@ describe("SubmissionDAO.ts",() => {
         it("Should update an submission database object if {id} is valid",() => {
             
             //New values to assign after creation
-            var updatedName = "Newer Name";
-            var updatedAssignmentId = "Newer Assignment Id";
-            var updatedFileName = "some_new_file"
-            var updatedEntries = new Map<string, IAnalysisResultEntry[]>().set(updatedFileName, [new AnalysisResultEntry("1","2",updatedFileName,"4",5,6,7,8,"9","10")] )
-            var updatedFiles = [updatedFileName];
+            let updatedName = "Newer Name";
+            let updatedAssignmentId = "Newer Assignment Id";
+            let updatedFileName = "some_new_file"
+            let updatedEntries = new Map<string, IAnalysisResultEntry[]>().set(updatedFileName, [new AnalysisResultEntry("1","2",updatedFileName,"4",5,6,7,8,"9","10")] )
+            let updatedFiles = [updatedFileName];
+            let updatedFileContents = ["void testy(){}"];
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
                 
@@ -174,12 +182,14 @@ describe("SubmissionDAO.ts",() => {
                 expect(createdSubmission.getAssignmentId()).to.equal(testSubmission.getAssignmentId());
                 expect(createdSubmission.getFiles()).to.be.empty;
                 expect(createdSubmission.getEntries()).to.be.empty;
+                expect(createdSubmission.getFileContents()).to.be.empty;
                 
                 //Update created Submission
                 createdSubmission.setName(updatedName);
                 createdSubmission.setAssignmentId(updatedAssignmentId);
                 createdSubmission.setFiles(updatedFiles)
                 createdSubmission.setEntries(updatedEntries);
+                createdSubmission.setFileContents(updatedFileContents)
 
                 return SubmissionDAO.updateSubmission(createdSubmission).then((updatedSubmission) => {
                    
@@ -189,6 +199,7 @@ describe("SubmissionDAO.ts",() => {
                     expect(updatedSubmission.getAssignmentId()).to.deep.equal(updatedAssignmentId)
                     expect(updatedSubmission.getFiles()).to.deep.equal(updatedFiles);
                     expect(updatedSubmission.getEntries()).to.deep.equal(updatedEntries);
+                    expect(updatedSubmission.getFileContents()).to.deep.equal(updatedFileContents);
 
                     return SubmissionDAO.readSubmission(createdSubmission.getId()).then((readUpdatedSubmission) => {
                         
@@ -198,6 +209,7 @@ describe("SubmissionDAO.ts",() => {
                         expect(readUpdatedSubmission.getAssignmentId()).to.deep.equal(updatedAssignmentId)
                         expect(readUpdatedSubmission.getFiles()).to.deep.equal(updatedFiles);
                         expect(readUpdatedSubmission.getEntries()).to.deep.equal(updatedEntries);
+                        expect(readUpdatedSubmission.getFileContents()).to.deep.equal(updatedFileContents);
                     });
                 });
             });
