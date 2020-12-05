@@ -15,12 +15,13 @@ interface MatchParams {
 interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
-class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: string[]}> {
+class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: string[], count: number}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
           name: '',
-          files : []
+          files : [],
+          count: 0
         };
         this.onInputchange = this.onInputchange.bind(this);
   }
@@ -40,6 +41,24 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
     const assignmentId = this.props.match.params.assignmentId
     setCurrentAssignmentFromId('SET_CURRENT_ASSIGNMENT', assignmentId)
       .then((assignmentAction) => store.dispatch(assignmentAction))
+  }
+
+  alertClick() {
+    alert("Please provide a submission name and files.")
+  }
+
+  javaFileExtensions() {
+    let javaFileCount = 0;
+    for (let file of this.state.files) {
+      console.log(file)
+    }
+    return false
+  }
+
+  count() {
+    this.setState({
+      count: this.state.count + 1
+    })
   }
 
   render() {
@@ -79,7 +98,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
             <br/>
             <span text-align="center">
                 <h5>Submission Name:</h5>
-                <input name="name" className='submission-name-input' type="text" value={this.state.name} onChange={this.onInputchange}/>
+                <input id="submission-name-input" name="name" className='submission-name-input' type="text" value={this.state.name} onChange={this.onInputchange}/>
                 <Upload {...propsUpload} className='submission-file-input'>
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
@@ -88,11 +107,22 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                     <p className="ant-upload-hint">Supported file extensions are: .java</p>
                 </Upload>      
                 <br/>
-                <Link className='create-submission-btn btn btn-outline-success mt-2'
-                    to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}
-                    onClick={() => this.callDispatch()}>
-                    Upload Submission
-                </Link>
+                  {console.log("name", this.state.name, "files", this.state.files)}
+                  {
+                    (this.state.files === [] || document.getElementById('submission-name-input')) && //|| this.state.files === [] || this.javaFileExtensions()
+                    <Link className='create-submission-btn btn btn-outline-secondary disabled mt-2' 
+                      onClick={ (event) => {event.preventDefault(); this.alertClick() }} to='#'>
+                        Upload Submission
+                    </Link>
+                  }
+                  {/* {
+                    (this.state.name != '' && this.state.files != []) &&
+                    <Link className='create-submission-btn btn btn-outline-success mt-2'
+                        to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}
+                        onClick={() => this.callDispatch()}>
+                        Upload Submission
+                    </Link>
+                  } */}
             </span>
         </div>
     );
