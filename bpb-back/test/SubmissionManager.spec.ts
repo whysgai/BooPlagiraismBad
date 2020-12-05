@@ -851,29 +851,19 @@ describe("SubmissionManager.ts",() => {
                         } else {
                             resolve(testSubmission2);
                         }
-
                     },1000);
                 });
             });
 
             //Do a bad thing
-            return Promise.all([
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
-                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId())
-                
-            ]).then((res) => {
-                console.log(res); 
+            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).catch((err) => {  });
+            
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((res) => {
                 expect(true,"to have failed, but it didn't").to.equal(false);
             }).catch((err) => {
                 expect(err).to.have.property("message").which.equals("Comparison between " + testSubmission2.getId() + " and " + testSubmission.getId() +" is already in progress, please wait!");
             });
-        }).timeout(5000); //Inc
+        });
 
         it("Should return an appropriate error if submission compare fails",() => {
 
