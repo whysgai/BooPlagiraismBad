@@ -110,9 +110,9 @@ class ComparisonComponent extends React.Component <PropsType, {
       this.setState({
         activeMatches: parseObjects.filter((arrayMatch) => {
           let match = arrayMatch as any as Comparison
-          return (match.files[0][1] === this.state.activeFileOne || match.files[1][1] === this.state.activeFileOne) &&
-          (match.files[0][1] === this.state.activeFileTwo || match.files[1][1] === this.state.activeFileTwo)
-        })[0] as any as any as Comparison
+          return (match.files[0][1] === this.state.activeFileOne) &&
+          (match.files[1][1] === this.state.activeFileTwo)
+        })[0] as any as any as Comparison //TODO too many anys?
       })
     }
     console.log("Active Matches", this.state.activeMatches)
@@ -203,7 +203,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                   </div>
                   <div className="col-9">
                     <span></span>
-                    <DocumentPaneComponent fileContent={this.state.submissionOneFileContent} snippet={this.state.submissionOneDisplaySnippet}/>
+                    <DocumentPaneComponent fileContent={this.state.submissionOneFileContent} snippet={this.state.submissionOneDisplaySnippet} side={0} highlights={this.state.activeMatches} />
                   </div>
                 </div>
                 <div className="col-3" onClick={() => this.selectComparisonForFiles()}>
@@ -212,7 +212,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                 <div className="sub2 row col-4">
                   
                   <div className="col-9">
-                    <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent} snippet={this.state.submissionTwoDisplaySnippet}/>
+                    <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent} snippet={this.state.submissionTwoDisplaySnippet} side={1} highlights={this.state.activeMatches}/>
                   </div>
                   <div className="col-3">
                     <div className="submission-compare-pane border">
