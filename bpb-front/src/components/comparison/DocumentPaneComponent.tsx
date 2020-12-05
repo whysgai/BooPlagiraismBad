@@ -30,10 +30,9 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
         for (match of this.props.highlights.matches) {
           if (lineNumber+1 >= match[this.props.side].lineNumberStart && lineNumber+1 <= match[this.props.side].lineNumberEnd) {
             return true;
-          } else {
-            return false
           }
         }
+        return false;
       } else {
         return false;
       }
