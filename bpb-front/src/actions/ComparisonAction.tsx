@@ -25,6 +25,12 @@ export function removeSubmissionComparison(submission : Submission) {
     }    
 }
 
+export function clearComparisonSubmissions() {
+    return {
+        type: 'CLEAR_COMPARE',
+    }
+}
+
 export async function readComparisonSubmission(submissionId: String) {
     let submission = await getSubmission(submissionId);
     return {
