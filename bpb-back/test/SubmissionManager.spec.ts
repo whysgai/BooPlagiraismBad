@@ -156,7 +156,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js") //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js") //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should return submission if the provided ID is valid",()=> {
@@ -190,7 +190,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmissions()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should return submissions of the given assignment if there are some",()=> {
@@ -218,7 +218,7 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should populate submissionCache.get(submissionId) after pulling from database.", () => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
             let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
             let mockReadSubmission = chai.spy.on(SubmissionDAO, 'readSubmission', () =>{return Promise.resolve(testSubmission)});
 
@@ -257,7 +257,7 @@ describe("SubmissionManager.ts",() => {
     describe("createSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
@@ -274,7 +274,7 @@ describe("SubmissionManager.ts",() => {
         describe(" createSubmission/getSubmission Cache tests", () => {
 
             before(() => {
-                testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js");
+                testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
             })
 
             it("Should properly cache the submission in submissionCache",() => {
@@ -363,7 +363,7 @@ describe("SubmissionManager.ts",() => {
     describe("updateSubmission()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
         
         it("Should properly update a submission if body parameters are included and submission exists with id",() => {
@@ -571,7 +571,7 @@ describe("SubmissionManager.ts",() => {
     describe("processSubmissionFile()",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should save and add a file into the submission specified by the client",() => {
@@ -709,7 +709,7 @@ describe("SubmissionManager.ts",() => {
     describe("deleteSubmission({id})",() => {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should properly instruct SubmissionDAO to delete a submission if the specified {id} is valid",() =>{
@@ -800,17 +800,18 @@ describe("SubmissionManager.ts",() => {
     describe("compareSubmission({id_a},{id_b})",()=> {
 
         beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
             
             var testSubmission2 = new Submission.builder().build(); 
 
-            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
-            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test2","test2",1,2,1,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
-            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test3","test3",1,1,2,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
-            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test4","test4",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"977365D9D3264C4874F181D4B5BF388F7E6CBA8D69BD2965DBF9C00010A8EF2D4A6C94","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission.getId(),"test2","test2",1,2,1,2,"4FA0029B4085EC515EE16451073904145553E520460994D545522AB121555C5E6A450C","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are3",testSubmission.getId(),"test3","test3",1,2,1,2,"31F0F22AC52741875BE37CCC39BCB11281F6375862425EA9C7C052A226F9CB18DB516A","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are4",testSubmission2.getId(),"test4","test4",1,1,2,2,"656354D9D3265C4874F182D4B57F388F7E6CBA8D69BD2965CBF9C00010A8EF2D4A6C94","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are5",testSubmission2.getId(),"test5","test5",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
             
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
@@ -835,7 +836,66 @@ describe("SubmissionManager.ts",() => {
                     expect(mockGetSubmission).to.have.been.called.twice;
                 });
             });
-        });
+        }).timeout(5000);
+
+        it("Should return a valid AnalysisResult if both submissions are valid (2, sorter coverage)",() => {
+            
+            var testSubmission2 = new Submission.builder().build(); 
+
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"977365D9D3264C4874F181D4B5BF388F7E6CBA8D69BD2965DBF9C00010A8EF2D4A6C94","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test2","test2",1,2,1,2,"4FA0029B4085EC515EE16451073904145553E520460994D545522AB121555C5E6A450C","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are3",testSubmission.getId(),"test3","test3",1,2,1,2,"31F0F22AC52741875BE37CCC39BCB11281F6375862425EA9C7C052A226F9CB18DB516A","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are4",testSubmission2.getId(),"test4","test4",1,1,2,2,"656354D9D3265C4874F182D4B57F388F7E6CBA8D69BD2965CBF9C00010A8EF2D4A6C94","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are5",testSubmission.getId(),"test5","test5",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
+            
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+                return new Promise((resolve,reject) => {
+                    if(submissionId === testSubmission.getId()) {
+                        resolve(testSubmission);
+                    } else {
+                        resolve(testSubmission2);
+                    }
+                });
+            });
+
+            //Performs Comparison
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
+                expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(mockGetSubmission).to.have.been.called.twice;
+            });
+        }).timeout(5000);
+
+        it("Should return an appropriate error message if comparison is in progress already",() => {
+            
+            var testSubmission2 = new Submission.builder().build(); 
+
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test4","test4",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
+            
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+                return new Promise((resolve,reject) => {
+                    setTimeout(()=>{
+
+                        if(submissionId === testSubmission.getId()) {
+                            resolve(testSubmission);
+                        } else {
+                            resolve(testSubmission2);
+                        }
+                    },1000);
+                });
+            });
+
+            //Do a bad thing
+            testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).catch((err) => {  });
+            
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((res) => {
+                expect(true,"to have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Comparison between " + testSubmission2.getId() + " and " + testSubmission.getId() +" is already in progress, please wait!");
+            });
+        }).timeout(5000);
 
         it("Should return an appropriate error if submission compare fails",() => {
 
@@ -852,7 +912,7 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(err).to.have.property("message").which.equals("Some error!");
             });
-        });
+        }).timeout(5000);
 
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
@@ -876,7 +936,7 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
             });
-        });
+        }).timeout(5000);
         
         it("Should return an appropriate error if {id_b} is valid and {id_a} does not exist",() => {
 
@@ -920,7 +980,7 @@ describe("SubmissionManager.ts",() => {
     describe("getSubmissionFileContent()",() => {
         
        beforeEach(() => {
-            testSubmissionManager = new SubmissionManager("./src/lib/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
+            testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js"); //NECESSARY TO CLEAR THE CACHE
         });
 
         it("Should obtain the content of the specified file if it exists",()=> {

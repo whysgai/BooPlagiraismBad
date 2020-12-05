@@ -450,7 +450,7 @@ export interface ISubmission {
 
                 //Apply sort
                 mergeSorter.sort(analysisResults,compareFunction);
-
+                
                 resolve(analysisResults);
 
             }).catch((err) => reject(err));
@@ -541,7 +541,7 @@ export interface ISubmission {
             let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());
 
             //Log that analysis was completed
-            console.log("[BPB] [" + submissionIdA + "][" + submissionIdB + "] Analyzed " + fileNameA + " -> " + fileNameB);
+            //console.log("[BPB] [" + submissionIdA + "][" + submissionIdB + "] Analyzed " + fileNameA + " -> " + fileNameB);
 
             resolve(new AnalysisResult(reducedMatchedEntries, similarityScore, submissionIdA, submissionIdB, fileNameA, fileNameB));
         });
