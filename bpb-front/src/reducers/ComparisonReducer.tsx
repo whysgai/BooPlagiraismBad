@@ -2,10 +2,11 @@ import SubmissionListComponent from "../components/submission/SubmissionListComp
 import Action from "../types/Action"
 import Submission from "../types/Submission";
 import Snippet from "../types/Snippet";
+import Comparison from "../types/Comparison";
 
 const initialState = {
     compareSubmissions: [] as Submission[],
-    comparisons: [] as JSON[],
+    comparisons: [] as Comparison[],
     submissionOne: {} as Submission,
     submissionTwo: {} as Submission,
     fileOne: "" as String,
