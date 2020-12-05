@@ -6,11 +6,7 @@ import { AnalysisResultEntryCollectorVisitor } from "./AnalysisResultEntryCollec
 import {parse} from 'java-ast'; 
 import { Tlsh } from '../lib/tlsh';
 import { AppConfig } from "../AppConfig";
-import { forEachChild, isJsxFragment, resolveProjectReferencePath } from "typescript";
-import { match } from "sinon";
-import { ConsoleErrorListener } from "antlr4ts";
 import MergeSorter from "../lib/MergeSorter";
-import { SubmissionManager } from "../manager/SubmissionManager";
 
 /**
  * Represents an Submission database model object
@@ -20,8 +16,8 @@ export interface ISubmissionModel extends Document {
     assignment_id : string
     name : string
     files : string[]
+    fileContents : string[] 
     entries : [string, IAnalysisResultEntry[]][]
-    fileContents : [string, string][]
 }
 
 /**
@@ -39,8 +35,8 @@ export interface ISubmission {
     setEntries(entries: Map<string, IAnalysisResultEntry[]>) :void;
     getModelInstance() : ISubmissionModel;
     getFiles() : string[];
-    getFileContents() : Map<string, string>;
-    deleteFileContent(fileNAme : string) : void; 
+    getFileContents() : string[];
+    setFileContents(fileContents : string[]) : void;
     setFiles(files : string[]) : void;
     addFile(content : string, fileName : string) : Promise<void>;
     addAnalysisResultEntry(analysisResultEntry : IAnalysisResultEntry) : void;
@@ -64,14 +60,14 @@ export interface ISubmission {
         private assignment_id : string;
         private name : string;
         private files : string[];
-        private fileContents : Map<string, string>;
+        private fileContents : string[];
         private entries : Map<string, IAnalysisResultEntry[]>;
     
         constructor() {
             this.name = "Name Not Defined";
             this.assignment_id = "id_not_defined"
             this.files = [];
-            this.fileContents = new Map<string, string>();
+            this.fileContents = [];
             this.entries = new Map<string, IAnalysisResultEntry[]>();
         }
        
@@ -96,12 +92,25 @@ export interface ISubmission {
          * @param files 
          */
         setFiles(files : string[]) : void {
-            this.files = files;
-        }
+           
+            this.files= [];
 
-        //TODO: add comment
-        setFileContents(fileContents : Map<string, string>) : void {
-            this.fileContents = fileContents;
+            for(let file of files) {
+                this.files.push(file);
+            }
+        }
+        
+        /**
+         * Setsthe file contents of the submission 
+         * @param fileContents 
+         */
+        setFileContents(fileContents : string[]) : void {
+            
+            this.fileContents = [];
+            
+            for(let fileContent of fileContents) {
+                this.fileContents.push(fileContent);
+            }
         }
 
         /**
@@ -120,7 +129,7 @@ export interface ISubmission {
             var submission = new Submission();
             
             var submissionModel = Submission.getStaticModel();
-            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"fileContents":[...this.fileContents],"entries":[...this.entries]});
+            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"fileContents":this.fileContents,"entries":[...this.entries]});
             
             submission.setId(modelInstance.id);
             submission.setName(this.name);
@@ -145,10 +154,10 @@ export interface ISubmission {
 
             for(let entry of entryObjects) {
 
-                let ens = [] as IAnalysisResultEntry[];
+                let entries = [] as IAnalysisResultEntry[];
 
                 for(let entryValue of entry[1]) {
-                    ens.push(
+                    entries.push(
                         new AnalysisResultEntry(
                         entryValue.id,
                         entryValue.submissionId,
@@ -163,7 +172,7 @@ export interface ISubmission {
                     ));
                 }
 
-                this.entries.set(entry[0],ens);
+                this.entries.set(entry[0],entries);
             }
 
             submission.setId(object.id);
@@ -192,16 +201,18 @@ export interface ISubmission {
              submission.setId(model.id);
              submission.setName(model.name);
              submission.setAssignmentId(model.assignment_id);
+             
              let resultEntries = new Map<string,IAnalysisResultEntry[]>();
              let objectEntries = new Map([...model.entries]);
+             
              for(let fileName of objectEntries.keys()) {
                  resultEntries.set(fileName, []);
                  for(let entryObject of objectEntries.get(fileName)) {
                      resultEntries.get(fileName).push(AnalysisResultEntry.buildFromModel(entryObject as object as IAnalysisResultEntryModel));
                  }
              }
-             let fileContents = new Map<string, string>([...model.fileContents]);
-             submission.setFileContents(fileContents);
+             
+             submission.setFileContents(model.fileContents);
              submission.setEntries(resultEntries);
              submission.setFiles(model.files);
              submission.setModelInstance(model);
@@ -217,7 +228,7 @@ export interface ISubmission {
         assignment_id: String,
         name: String,
         files: [String],
-        fileContents: [],
+        fileContents: [String],
         entries: []
       });
 
@@ -230,7 +241,7 @@ export interface ISubmission {
     private assignment_id : string;
     private name : string;
     private files : string[];
-    private fileContents : Map<string, string>;
+    private fileContents : string[];
     private entries : Map<string, IAnalysisResultEntry[]>;
     private modelInstance : ISubmissionModel;
 
@@ -238,34 +249,24 @@ export interface ISubmission {
 
     /**
      * Sets the fileContents of the submission
-     * @param fileContents a map of new fileContents for the submission
+     * @param fileContents new fileContents for the submission
      */
-    protected setFileContents(fileContents: Map<string, string>): void {
-        this.fileContents = new Map<string, string>([...fileContents]);
+    setFileContents(fileContents: string[]): void {
+        this.fileContents = fileContents;
     }
 
     /**
-     * Adds a fileContent to the fileContents map
-     * @param fileName name of file to act as key
-     * @param fileContent content of file to act as value
-     */
-    private setFileContent(fileName: string, fileContent: string): void {
-        this.fileContents.set(fileName, fileContent);
-    }
-    
-    /**
      * Returns a Map<fileName, fileContent> for fileContents for this submission
      */
-    getFileContents(): Map<string, string> {
+    getFileContents(): string[] {
         return this.fileContents;
     }
 
     /**
-     * Removes a key-value pair from the fileContents Map
-     * @param fileName the key of the pair to be removed
+     * Removes a fileContent at index
      */
-    deleteFileContent(fileName : string) {
-        this.fileContents.delete(fileName);
+    deleteFileContent(index : number) {
+        this.fileContents = this.fileContents.splice(index,1);
     }
 
     /**
@@ -380,8 +381,8 @@ export interface ISubmission {
             if(this.files.includes(fileName)) {
                 reject(new Error("Submission file " + fileName + " was already added to the submission"));
             } else {
-                this.setFileContent(fileName, content);
                 this.files.push(fileName);
+                this.fileContents.push(content); 
     
                 var parseTree = parse(content.toString());
                 var visitor = new AnalysisResultEntryCollectorVisitor(fileName,this); 

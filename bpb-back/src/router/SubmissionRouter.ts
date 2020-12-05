@@ -235,7 +235,7 @@ class SubmissionRouter extends AbstractRouter {
           res.status(400);
           res.send({"response":"The provided file index is out of bounds"});
         } else {
-          this.submissionManager.getSubmissionFileContent(submissionId,fileNames[fileIndex]).then((fileContent) => {
+          this.submissionManager.getSubmissionFileContent(submissionId,fileIndex).then((fileContent) => {
             res.status(200);
             res.send({"content":fileContent});
           }).catch((err) => {
