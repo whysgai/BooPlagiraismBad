@@ -292,15 +292,17 @@ export class SubmissionManager implements ISubmissionManager {
         
         return new Promise((resolve,reject) => {
 
+            let key = submissionIdA + submissionIdB;
+            
             //Try cache first
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
+                console.log("[BPB] Resolved Comparison [" + key + "] (cache)");
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
             } else {
                 
-                let key = submissionIdA + submissionIdB;
-
                 //If semaphore is set, skip this comparison (it will be resolved by cache later on rerequest)
                 if(this.submissionComparisonSemaphores.get(key) != undefined) {
+                    console.log("[BPB] Rejected Comparison [" + key + "] (in progress)");
                     reject(new Error("Comparison between " + submissionIdA + " and " + submissionIdB +  " is already in progress, please wait!"));
                 } else {
                     //Set semaphore that comparison is occurring
@@ -308,12 +310,15 @@ export class SubmissionManager implements ISubmissionManager {
                      
                     this.getSubmission(submissionIdA).then(submissionA => {
                         this.getSubmission(submissionIdB).then(submissionB => {
-                            
+                           
+                            console.log("[BPB] Started processing " + key);
+
                             let worker = new Worker(this.workerFilePath, { 
                                 workerData: [submissionA.asJSON(),submissionB.asJSON()]
                             });
                             
                             worker.once('message', (analysisResults) => {
+                                console.log("[BPB] Resolved Comparison " + "[" + key + "]");
                                 this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults);
                                 resolve(analysisResults);
                             });
