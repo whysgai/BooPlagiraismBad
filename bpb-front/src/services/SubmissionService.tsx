@@ -4,7 +4,7 @@ import Submission from "../types/Submission"
 const vagrantURL = 'http://192.168.33.10:8080/'
 
 
-export function postSubmission(name : string, assignment: Assignment, files: string[]) : void {
+export function postSubmission(name : string, assignment: Assignment, files: File[]) : void {
     fetch(`${vagrantURL}submissions`, {
         method: 'POST',
         body: JSON.stringify({"name": name, "assignment_id": assignment._id}),
@@ -12,11 +12,12 @@ export function postSubmission(name : string, assignment: Assignment, files: str
     }).then(response => response.json()).then(newSubmission => postFiles(newSubmission, files))
 }
 
-export function postFiles(submission: Submission, files: string[]) : void { 
-    for (let file in files) {
+export function postFiles(submission: Submission, files: File[]) : void { 
+    let file : File
+    for (file of files) {
         //convert string to formData
         let formData = new FormData();
-        formData.append("submissionFile", files[file]);
+        formData.append("submissionFile", file);
         fetch(`${vagrantURL}submissions/${submission._id}/files`, {
             method: 'POST',
             body: formData
