@@ -311,7 +311,7 @@ export class SubmissionManager implements ISubmissionManager {
                     this.getSubmission(submissionIdA).then(submissionA => {
                         this.getSubmission(submissionIdB).then(submissionB => {
                            
-                            console.log("[BPB] Started processing " + key);
+                            console.log("[BPB] Started processing Comparison " + key);
 
                             let worker = new Worker(this.workerFilePath, { 
                                 workerData: [submissionA.asJSON(),submissionB.asJSON()]
