@@ -61,6 +61,13 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
     })
   }
 
+  submissionNameIsEntered() {
+    if (this.state.name.length > 0) {
+      return true
+    }
+    return false
+  }
+
   render() {
     const propsUpload = {
       name: 'file',
@@ -109,7 +116,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                 <br/>
                   {console.log("name", this.state.name, "files", this.state.files)}
                   {
-                    (this.state.files === [] || document.getElementById('submission-name-input')) && //|| this.state.files === [] || this.javaFileExtensions()
+                    (this.state.files === [] && this.submissionNameIsEntered() === false ) && //|| this.state.files === [] || this.javaFileExtensions()
                     <Link className='create-submission-btn btn btn-outline-secondary disabled mt-2' 
                       onClick={ (event) => {event.preventDefault(); this.alertClick() }} to='#'>
                         Upload Submission
