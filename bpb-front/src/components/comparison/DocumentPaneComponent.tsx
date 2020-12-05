@@ -49,7 +49,7 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
               this.props.fileContent.split(/\r?\n/).map((line, index) => 
                 <div className={`${
                     ((this.props.snippet.submissionId === undefined) || (index+1 >= this.props.snippet.lineNumberStart && index+1 <= this.props.snippet.lineNumberEnd))? "" : "d-none"
-                  }`}>
+                  }`} key={index}>
                     <span className="bg-light">{index} </span>
                     <span key={index} className={`${this.isHighlight(index)? "highlight":""}`}>{line}</span>                  
                 </div>
