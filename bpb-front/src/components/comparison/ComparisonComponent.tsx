@@ -110,8 +110,8 @@ class ComparisonComponent extends React.Component <PropsType, {
       this.setState({
         activeMatches: parseObjects.filter((arrayMatch) => {
           let match = arrayMatch as any as Comparison
-          return (match.files[0][1] === this.state.activeFileOne || match.files[1][1] === this.state.activeFileOne) &&
-          (match.files[0][1] === this.state.activeFileTwo || match.files[1][1] === this.state.activeFileTwo)
+          return (match.files[0][1] === this.state.activeFileOne) &&
+          (match.files[1][1] === this.state.activeFileTwo)
         })[0] as any as any as Comparison //TODO too many anys?
       })
     }
