@@ -807,8 +807,11 @@ describe("SubmissionManager.ts",() => {
             
             var testSubmission2 = new Submission.builder().build(); 
 
-            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
-            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test4","test4",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"977365D9D3264C4874F181D4B5BF388F7E6CBA8D69BD2965DBF9C00010A8EF2D4A6C94","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission.getId(),"test2","test2",1,2,1,2,"4FA0029B4085EC515EE16451073904145553E520460994D545522AB121555C5E6A450C","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are3",testSubmission.getId(),"test3","test3",1,2,1,2,"31F0F22AC52741875BE37CCC39BCB11281F6375862425EA9C7C052A226F9CB18DB516A","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are4",testSubmission2.getId(),"test4","test4",1,1,2,2,"656354D9D3265C4874F182D4B57F388F7E6CBA8D69BD2965CBF9C00010A8EF2D4A6C94","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are5",testSubmission2.getId(),"test5","test5",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
             
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
@@ -835,6 +838,34 @@ describe("SubmissionManager.ts",() => {
             });
         });
 
+        it("Should return a valid AnalysisResult if both submissions are valid (2, sorter coverage)",() => {
+            
+            var testSubmission2 = new Submission.builder().build(); 
+
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"977365D9D3264C4874F181D4B5BF388F7E6CBA8D69BD2965DBF9C00010A8EF2D4A6C94","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test2","test2",1,2,1,2,"4FA0029B4085EC515EE16451073904145553E520460994D545522AB121555C5E6A450C","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are3",testSubmission.getId(),"test3","test3",1,2,1,2,"31F0F22AC52741875BE37CCC39BCB11281F6375862425EA9C7C052A226F9CB18DB516A","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are4",testSubmission2.getId(),"test4","test4",1,1,2,2,"656354D9D3265C4874F182D4B57F388F7E6CBA8D69BD2965CBF9C00010A8EF2D4A6C94","e"));
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are5",testSubmission.getId(),"test5","test5",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
+            
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+                return new Promise((resolve,reject) => {
+                    if(submissionId === testSubmission.getId()) {
+                        resolve(testSubmission);
+                    } else {
+                        resolve(testSubmission2);
+                    }
+                });
+            });
+
+            //Performs Comparison
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
+                expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(mockGetSubmission).to.have.been.called.twice;
+            });
+        });
         it("Should return an appropriate error message if comparison is in progress already",() => {
             
             var testSubmission2 = new Submission.builder().build(); 
