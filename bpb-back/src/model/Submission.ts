@@ -263,13 +263,6 @@ export interface ISubmission {
     }
 
     /**
-     * Removes a fileContent at index
-     */
-    deleteFileContent(index : number) {
-        this.fileContents = this.fileContents.splice(index,1);
-    }
-
-    /**
      * Returns the static database model for submissions
      * @returns static database model
      */
