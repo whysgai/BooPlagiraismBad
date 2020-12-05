@@ -1,4 +1,3 @@
-import { AnalysisResult, IAnalysisResult } from '../model/AnalysisResult';
 import {ISubmission } from '../model/Submission';
 import { SubmissionDAO } from '../model/SubmissionDAO';
 import SubmissionData from "../types/SubmissionData"
@@ -78,12 +77,14 @@ export class SubmissionManager implements ISubmissionManager {
 
     private submissionCache : Map<string,ISubmission>;
     private submissionCacheByAssignment : Map<string, ISubmission[]>;
+    private submissionComparisonSemaphores : Map<string, boolean>;
     private comparisonCache : ComparisonCache;
     private workerFilePath : string;
     
     constructor(workerFilePath : string) {
         this.submissionCache = new Map<string,ISubmission>();
         this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
+        this.submissionComparisonSemaphores = new Map<string,boolean>();
         this.comparisonCache = new ComparisonCache();
         this.workerFilePath = workerFilePath;
     }
@@ -280,7 +281,7 @@ export class SubmissionManager implements ISubmissionManager {
             })
         });
     }
-    
+
     /**
      * Compares two submissions and returns the result of the comparative analysis
      * @param submissionIdA Submission A's Id
@@ -288,31 +289,45 @@ export class SubmissionManager implements ISubmissionManager {
      * @returns A Promise containing the result of the comparison as an AnalysisResult
      */
     compareSubmissions = async(submissionIdA : string, submissionIdB : string) : Promise<string> => {
+        
         return new Promise((resolve,reject) => {
+
+            //Try cache first
             if(this.comparisonCache.get(submissionIdA, submissionIdB) != undefined) {
                 resolve(this.comparisonCache.get(submissionIdA, submissionIdB));
             } else {
-                this.getSubmission(submissionIdA).then(submissionA => {
-                    this.getSubmission(submissionIdB).then(submissionB => {
-                        
-                        let worker = new Worker(this.workerFilePath, { 
-                            workerData: [submissionA.asJSON(),submissionB.asJSON()]
-                        });
+                
+                let key = submissionIdA + submissionIdB;
 
-                        worker.once('message', (analysisResults) => {
-                            this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults)
-                            resolve(analysisResults);
-                        });
-
-                        worker.once('error',(err) => {
+                //If semaphore is set, skip this comparison (it will be resolved by cache later on rerequest)
+                if(this.submissionComparisonSemaphores.get(key) != undefined) {
+                    reject(new Error("Comparison between " + submissionIdA + " and " + submissionIdB +  " is already in progress, please wait!"));
+                } else {
+                    //Set semaphore that comparison is occurring
+                    this.submissionComparisonSemaphores.set(key,true);
+                     
+                    this.getSubmission(submissionIdA).then(submissionA => {
+                        this.getSubmission(submissionIdB).then(submissionB => {
+                            
+                            let worker = new Worker(this.workerFilePath, { 
+                                workerData: [submissionA.asJSON(),submissionB.asJSON()]
+                            });
+                            
+                            worker.once('message', (analysisResults) => {
+                                this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults);
+                                resolve(analysisResults);
+                            });
+    
+                            worker.once('error',(err) => {
+                                reject(err);
+                            });
+                        }).catch((err) => {
                             reject(err);
                         });
                     }).catch((err) => {
                         reject(err);
                     });
-                }).catch((err) => {
-                    reject(err);
-                });
+                }
             }
         });
     }

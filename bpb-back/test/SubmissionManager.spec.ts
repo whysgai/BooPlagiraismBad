@@ -808,8 +808,6 @@ describe("SubmissionManager.ts",() => {
             var testSubmission2 = new Submission.builder().build(); 
 
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
-            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test2","test2",1,2,1,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
-            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test3","test3",1,1,2,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test4","test4",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
             
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
@@ -836,6 +834,46 @@ describe("SubmissionManager.ts",() => {
                 });
             });
         });
+
+        it("Should return an appropriate error message if comparison is in progress already",() => {
+            
+            var testSubmission2 = new Submission.builder().build(); 
+
+            testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
+            testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test4","test4",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
+            
+            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+                return new Promise((resolve,reject) => {
+                    setTimeout(()=>{
+
+                        if(submissionId === testSubmission.getId()) {
+                            resolve(testSubmission);
+                        } else {
+                            resolve(testSubmission2);
+                        }
+
+                    },1000);
+                });
+            });
+
+            //Do a bad thing
+            return Promise.all([
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()),
+                testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId())
+                
+            ]).then((res) => {
+                console.log(res); 
+                expect(true,"to have failed, but it didn't").to.equal(false);
+            }).catch((err) => {
+                expect(err).to.have.property("message").which.equals("Comparison between " + testSubmission2.getId() + " and " + testSubmission.getId() +" is already in progress, please wait!");
+            });
+        }).timeout(5000); //Inc
 
         it("Should return an appropriate error if submission compare fails",() => {
 
