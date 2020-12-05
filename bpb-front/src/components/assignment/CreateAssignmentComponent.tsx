@@ -4,14 +4,14 @@ import { store } from '../../store';
 import { createAssignment } from '../../actions/AssignmentAction';
 
 interface PropsType {
-  name: string
+
 }
 
 class CreateAssignmentComponent extends React.Component <PropsType, {name: string}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
-          name: this.props.name
+          name: ''
         };
         this.onInputchange = this.onInputchange.bind(this);
   }
@@ -25,6 +25,13 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
 
   callDispatch() {
     store.dispatch(createAssignment('CREATE_ASSIGNMENT', this.state.name));
+  }
+
+  assignmentInfoIsEntered() {
+    if (this.state.name.length > 0) {
+      return true
+    }
+    return false
   }
 
   render() {
@@ -46,11 +53,22 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
                   onChange={this.onInputchange}
                 />
                 <br/>
-                <Link className='create-assignment-btn btn btn-outline-success mt-2'
-                    to="/"
-                    onClick={() => this.callDispatch()}>
-                    Create Assignment
-                </Link>
+                  {
+                    !this.assignmentInfoIsEntered() &&
+                    <Link className='create-assignment-btn btn btn-outline-secondary disabled mt-2'
+                        to="/"
+                        onClick={(event) => event.preventDefault()}>
+                        Create Assignment
+                    </Link>
+                  }
+                  {
+                    this.assignmentInfoIsEntered() &&
+                    <Link className='create-assignment-btn btn btn-outline-success mt-2'
+                        to="/"
+                        onClick={() => this.callDispatch()}>
+                        Create Assignment
+                    </Link>
+                  }
             </span>
         </div>
     );
