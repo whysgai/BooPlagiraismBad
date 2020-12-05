@@ -6,7 +6,7 @@ import {createSubmission} from '../../actions/SubmissionAction';
 import { Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
-//import { createSubmission } from './actions/SubmissionAction';
+
 
 interface MatchParams {
   assignmentId: string,
@@ -15,12 +15,12 @@ interface MatchParams {
 interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
-class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: string[], count: number}> {
+class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: File[], count: number}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
           name: '',
-          files : [],
+          files : [] as File[],
           count: 0
         };
         this.onInputchange = this.onInputchange.bind(this);
@@ -47,22 +47,20 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
     alert("Please provide a submission name and files.")
   }
 
-  javaFileExtensions() {
-    let javaFileCount = 0;
-    for (let file of this.state.files) {
-      console.log(file)
-    }
-    return false
-  }
-
   count() {
     this.setState({
       count: this.state.count + 1
     })
   }
 
-  submissionNameIsEntered() {
-    if (this.state.name.length > 0) {
+  submissionInfoIsEntered() {
+    if (this.state.files.length > 0 && this.state.name.length > 0) {
+      for (let file of this.state.files) {
+        if (!file.name.includes('.java')) {
+          return false
+        }
+        console.log('here are our files',file)
+      }
       return true
     }
     return false
@@ -116,20 +114,23 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                 <br/>
                   {console.log("name", this.state.name, "files", this.state.files)}
                   {
-                    (this.state.files === [] && this.submissionNameIsEntered() === false ) && //|| this.state.files === [] || this.javaFileExtensions()
-                    <Link className='create-submission-btn btn btn-outline-secondary disabled mt-2' 
-                      onClick={ (event) => {event.preventDefault(); this.alertClick() }} to='#'>
-                        Upload Submission
-                    </Link>
+                    (!this.submissionInfoIsEntered()) &&
+                    <div>
+                      Please enter a name and files. All files must be of the form .java to continue.<br/>
+                      <Link className='create-submission-btn btn btn-outline-secondary disabled mt-2' 
+                        onClick={ (event) => {event.preventDefault(); this.alertClick() }} to='#'>
+                          Upload Submission
+                      </Link>
+                    </div>
                   }
-                  {/* {
-                    (this.state.name != '' && this.state.files != []) &&
+                  {
+                    (this.submissionInfoIsEntered()) &&
                     <Link className='create-submission-btn btn btn-outline-success mt-2'
                         to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}
                         onClick={() => this.callDispatch()}>
                         Upload Submission
                     </Link>
-                  } */}
+                  }
             </span>
         </div>
     );
