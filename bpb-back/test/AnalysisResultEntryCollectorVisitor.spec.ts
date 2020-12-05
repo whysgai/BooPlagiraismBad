@@ -9,6 +9,7 @@ import { IAnalysisResultEntryCollectorVisitor, AnalysisResultEntryCollectorVisit
 var spies = require('chai-spies');
 import { ISubmission, Submission } from '../src/model/Submission';
 import { AnalysisResultEntry } from '../src/model/AnalysisResultEntry';
+import { doesIntersect } from 'tslint';
 
 describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     var exampleTree : ParseTree;
@@ -16,13 +17,14 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     var exampleSubmissionId = '8675309';
     var mockSubmission : ISubmission;
 
-    before(() => {
+    before((done) => {
         mockSubmission = Sinon.createStubInstance(Submission);
         chai.use(spies);
         chai.spy.on(mockSubmission, 'getId', () => exampleSubmissionId);
         exampleFileName = '/vagrant/bpb-back/test/res/javaExample.java'; // needs to be full path, so it can be parsed
         let javaStr = readFileSync(exampleFileName).toString();
         exampleTree = parse(javaStr);
+        done();
     });
 
     describe("constructor()", () => {

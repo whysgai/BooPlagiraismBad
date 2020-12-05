@@ -69,7 +69,7 @@ export interface ISubmissionManager {
     processSubmissionFile(submissionId : string, fileName : string, content : string) : Promise<void>; 
     deleteSubmission(submissionId : string) : Promise<void>;
     compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<string>
-    getSubmissionFileContent(submissionId : string, fileName : string) : Promise<string>
+    getSubmissionFileContent(submissionId : string, index : number) : Promise<string>
     getComparisonCache() : ComparisonCache;
 }
 
@@ -340,17 +340,21 @@ export class SubmissionManager implements ISubmissionManager {
     /**
      * Obtains and returns the content of the specified submission file as a string
      * @param submissionId Submission to check
-     * @param fileName Name of the submission file to retrieve content from
+     * @param index Number of the file
      * @returns a Promise containing the file's content as a string
      */
-    getSubmissionFileContent = async(submissionId : string, fileName : string) : Promise<string> => {
+    getSubmissionFileContent = async(submissionId : string, index : number) : Promise<string> => {
         return new Promise((resolve,reject) => {       
             this.getSubmission(submissionId).then((submission) => {
-                let fileContent = submission.getFileContents().get(fileName);
-                if(fileContent == undefined) {
+
+                let fileContent = submission.getFileContents();
+                
+                if(fileContent[index] == undefined) {
                     throw new Error('No such file');
                 }
-                resolve(submission.getFileContents().get(fileName));
+
+                resolve(fileContent[index]);
+
             }).catch((err) => {
                 reject(err);
             });

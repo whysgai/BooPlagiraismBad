@@ -653,13 +653,15 @@ describe("SubmissionManager.ts",() => {
                 }
             });
             
-            //Load AnalysisEntries so we can run compare
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),'fileName',"test",1,2,1,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
+           
+            //Create an updated model for comparison
             let updatedModel = testSubmission.getModelInstance()
-            let updatedFileContents = new Map<string, string>().set(testFileName, newContent);
-            updatedModel.fileContents = [...updatedFileContents];
+            let updatedFileContents = [newContent];
+            updatedModel.fileContents = updatedFileContents;
             updatedModel._id = testSubmissionId;
             updatedModel.entries = [['fileName', [new AnalysisResultEntry("are1",testSubmission.getId(),'fileName',"test",1,2,1,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e")]]];
+            
             let updatedTestSubmission = new Submission.builder().buildFromExisting(updatedModel);
             var testSubmission2 = new Submission.builder().build(); 
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),'anotherFileName',"test2",1,1,2,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
@@ -679,19 +681,18 @@ describe("SubmissionManager.ts",() => {
                     return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissionArray) => { //should cache testSubmission
                         expect(cacheGet).to.not.have.been.called;
                         expect(submissionArray.length).to.be.equal(1);
-                        expect(submissionArray[0].getName()).to.be.equal(testSubmissionName);
-                        expect(submissionArray[0].getFileContents()).to.be.deep.equal(new Map<string, string>());
+                        expect(submissionArray[0].getName()).to.equal(testSubmissionName);
 
                         return testSubmissionManager.processSubmissionFile(testSubmissionId, testFileName, newContent).then(() => {
-                            expect(testSubmission.getFileContents()).to.be.deep.equal(updatedFileContents);
+                            expect(testSubmission.getFileContents()).to.deep.equal(updatedFileContents);
 
                             return testSubmissionManager.getSubmission(testSubmissionId).then((modifiedSubmission) => {
-                                expect(modifiedSubmission.getFileContents()).to.be.deep.equal(updatedFileContents);
-                                expect(modifiedSubmission.getFileContents().get(testFileName)).to.be.deep.equal(newContent);
+                                expect(modifiedSubmission.getFileContents()).to.deep.equal(updatedFileContents);
+                                expect(modifiedSubmission.getFileContents()[0]).to.deep.equal(newContent);
                                 
                                 return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((modifiedSubArray) => {
-                                    expect(modifiedSubArray[0].getFileContents()).to.be.deep.equal(updatedFileContents);
-                                    expect(modifiedSubArray[0].getFileContents().get(testFileName)).to.be.deep.equal(newContent);
+                                    expect(modifiedSubArray[0].getFileContents()).to.deep.equal(updatedFileContents);
+                                    expect(modifiedSubArray[0].getFileContents()[0]).to.deep.equal(newContent);
                                     
                                     return testSubmissionManager.compareSubmissions(testSubmission.getId(), testSubmission2.getId()).then((analysisResults) => { 
                                         expect(cacheGet).to.have.been.called;
@@ -984,17 +985,25 @@ describe("SubmissionManager.ts",() => {
         });
 
         it("Should obtain the content of the specified file if it exists",()=> {
-            let testFileContent = 'HOT YOUTUBE CONTENT';
             
             let builder = new Submission.builder();
-            builder.setFileContents(new Map<string, string>().set(testFileName, testFileContent));
+
+            let testContent = "HOT YOUTUBE CONTENT"
+            let files = ["somefile.java"];
+            let fileContents = [testContent];
+
+            builder.setFiles(files);
+            builder.setFileContents(fileContents);
             let mockSubmission = builder.build();
+
+            expect(mockSubmission.getFiles()).to.deep.equal(files);
+            expect(mockSubmission.getFileContents()).to.deep.equal(fileContents)
 
             mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
             var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
     
-            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
-                expect(content).to.deep.equal(testFileContent);
+            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),0).then((content) => {
+                expect(content).to.deep.equal(testContent);
                 expect(mockGetSubmission).to.have.been.called.once.with(mockSubmission.getId());
             });
         });
@@ -1006,7 +1015,7 @@ describe("SubmissionManager.ts",() => {
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("Submission does not exist"))});
             
-            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),0).then((content) => {
                 expect(true,"Expected getSubmissionFileContent to fail (no submission) but it succeeded").to.equal(false);
             }).catch((err) => {
                 expect(err).to.have.property("message").which.equals("Submission does not exist");
@@ -1019,7 +1028,7 @@ describe("SubmissionManager.ts",() => {
             mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
-            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),testFileName).then((content) => {
+            return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),0).then((content) => {
                 expect(true,"Expected getSubmissionFileContent to fail (no file) but it succeeded").to.equal(false);
             }).catch((err) => {
                 expect(err).to.have.property("message").which.contains("No such file");

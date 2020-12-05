@@ -128,13 +128,7 @@ describe("AnalysisResult.ts", () => {
             expect(badConstructor).to.throw(Error, "Bad Constructor: all entries in param 'matches[*][1]' must have the same submissionId.");
 
         });
-
-        it("Should throw an error if matches[*][0] and matches[*][1] have the same submissionId.", async () => {
-            let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry2]], testSimilarityScore, subId1, subId2, filename1, filename2);
-            subId2 = 'id1';
-            expect(badConstructor).to.throw(Error, "Bad Constructor: entries in 'matches[*][0]' and matches[*][1] must not have the same submissionId.");
-        });
-
+        
         it("Should throw an error if matches[*][0] and matches[*][1] are the same AnalysisResultEntry object instance.", async () => {
             let badConstructor = () => new AnalysisResult([[mockEntry1, mockEntry1]], testSimilarityScore, subId1, subId2, filename1, filename2);
             expect(badConstructor).to.throw(Error, "Bad Constructor: the two entries in a match at 'match[*]' must not be the same AnalysisResultEntry object instance.");

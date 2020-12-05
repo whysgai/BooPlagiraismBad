@@ -101,6 +101,7 @@ export const SubmissionDAO : ISubmissionDAO = class {
                             name: submission.getName(),
                             assignment_id: submission.getAssignmentId(),
                             files: submission.getFiles(),
+                            fileContents: submission.getFileContents(),
                             entries: [...submission.getEntries()]
                         },
                         {
