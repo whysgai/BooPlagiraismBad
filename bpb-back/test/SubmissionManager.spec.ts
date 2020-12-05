@@ -836,7 +836,7 @@ describe("SubmissionManager.ts",() => {
                     expect(mockGetSubmission).to.have.been.called.twice;
                 });
             });
-        });
+        }).timeout(5000);
 
         it("Should return a valid AnalysisResult if both submissions are valid (2, sorter coverage)",() => {
             
@@ -865,7 +865,8 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(mockGetSubmission).to.have.been.called.twice;
             });
-        });
+        }).timeout(5000);
+
         it("Should return an appropriate error message if comparison is in progress already",() => {
             
             var testSubmission2 = new Submission.builder().build(); 
@@ -894,7 +895,7 @@ describe("SubmissionManager.ts",() => {
             }).catch((err) => {
                 expect(err).to.have.property("message").which.equals("Comparison between " + testSubmission2.getId() + " and " + testSubmission.getId() +" is already in progress, please wait!");
             });
-        });
+        }).timeout(5000);
 
         it("Should return an appropriate error if submission compare fails",() => {
 
@@ -911,7 +912,7 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(err).to.have.property("message").which.equals("Some error!");
             });
-        });
+        }).timeout(5000);
 
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
@@ -935,7 +936,7 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
             });
-        });
+        }).timeout(5000);
         
         it("Should return an appropriate error if {id_b} is valid and {id_a} does not exist",() => {
 

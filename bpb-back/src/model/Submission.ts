@@ -450,7 +450,7 @@ export interface ISubmission {
 
                 //Apply sort
                 mergeSorter.sort(analysisResults,compareFunction);
-console.log(analysisResults.map(it => it.getSimilarityScore()));
+                
                 resolve(analysisResults);
 
             }).catch((err) => reject(err));
