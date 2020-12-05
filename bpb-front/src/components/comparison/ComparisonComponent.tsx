@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import { compareSubmissions, readComparisonSubmission, readFileContent } from '../../actions/ComparisonAction';
+import { clearComparisonSubmissions, compareSubmissions, readComparisonSubmission, readFileContent } from '../../actions/ComparisonAction';
 import {store} from '../../store'
 import Submission from '../../types/Submission';
 import DocumentPaneComponent from './DocumentPaneComponent';
@@ -56,6 +56,9 @@ class ComparisonComponent extends React.Component <PropsType, {
 
   componentDidMount() {
     console.log("Did mount");
+    // First, clear the store of the compareSubmissions array, in case user navigated here
+    // Using foward/back after filling the store with different comparisons
+    store.dispatch(clearComparisonSubmissions());
     // Get first submission based on its ID in the url
     readComparisonSubmission(this.props.match.params.subIdOne)
       .then((submissionAction) => store.dispatch(submissionAction))
