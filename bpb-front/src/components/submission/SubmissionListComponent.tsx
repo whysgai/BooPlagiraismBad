@@ -5,7 +5,7 @@ import Submission from '../../types/Submission';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {store} from '../../store';
-import { compareSubmissions } from '../../actions/ComparisonAction';
+import { clearComparisonSubmissions, compareSubmissions } from '../../actions/ComparisonAction';
 import { readSubmissions } from '../../actions/SubmissionAction';
 import { Match } from '@testing-library/react';
 import { setCurrentAssignment, setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
@@ -29,10 +29,13 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
   }
 
   componentDidMount() {
+    // Clear the store of lingering compareSubmissions values
+    store.dispatch(clearComparisonSubmissions());
+    // Now set the current assignment from the URL param
     const assignmentId = this.props.match.params.assignmentId
-    //console.log("submission list URL id", assignmentId)
     setCurrentAssignmentFromId('SET_CURRENT_ASSIGNMENT', assignmentId)
       .then((assignmentAction) => store.dispatch(assignmentAction))
+    // Finally, fetch associated submissions based on URL param  
     readSubmissions(assignmentId)
       .then((submissionAction) => store.dispatch(submissionAction))
       .then(() => {
@@ -49,10 +52,6 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
         compareEnabled: newNum
       })
     } 
-  }
-
-  requestComparison() {
-    //store.dispatch(compareSubmissions(store.getState().ComparisonReducer.compareSubmissions));
   }
 
   render() {
@@ -100,7 +99,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
               to={
                 `/Assignments/${this.props.match.params.assignmentId}/CompareSubmissions/${store.getState().ComparisonReducer.compareSubmissions[0]._id}/${store.getState().ComparisonReducer.compareSubmissions[1]._id}`
               }
-              id="twoCompare" onClick={() => this.requestComparison()}
+              id="twoCompare" 
               >
               Compare Submissions {store.getState().ComparisonReducer.compareSubmissions.length}/2
             </Link>

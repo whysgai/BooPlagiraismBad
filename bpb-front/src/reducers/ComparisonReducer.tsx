@@ -31,22 +31,22 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 state.compareSubmissions = state.compareSubmissions.filter(subIndex => subIndex !== action.removeSubmission)
                 return state
             }
+        case 'CLEAR_COMPARE':
+            return {
+                ...state,
+                compareSubmissions: []
+            }
         case 'COMPARE':
-            //console.log("Comparisons in reducer", action.comparison)
             return {
                 ...state,
                 comparisons: action.comparison,
-                // submissionOne: state.compareSubmissions[0],
-                // submissionTwo: state.compareSubmissions[1]
             }
         case 'GET_SUB_ONE_FILES':
-            //console.log("Reducer sub one content", action.fileContents);
             return {
                 ...state,
                 fileOneContents: action.fileContents
             }
         case 'GET_SUB_TWO_FILES':
-            //console.log("Reducer sub two content", action.fileContents);
             return {
                 ...state,
                 fileTwoContents: action.fileContents
