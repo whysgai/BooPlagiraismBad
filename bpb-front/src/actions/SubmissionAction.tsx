@@ -2,13 +2,13 @@ import Assignment from '../types/Assignment'
 import Submission from '../types/Submission'
 import { postSubmission, getSubmissionIds, getSubmission } from '../services/SubmissionService'
 
-export function createSubmission(type : string, name : string, assignment : Assignment, files : string[]) {
+export function createSubmission(type : string, name : string, assignment : Assignment, files : File[]) {
     return {
         type: 'UPLOAD_SUBMISSION',
         name: name,
         assignment: assignment,
         files: files,
-        newAssignment: postSubmission(name, assignment, files)
+        newSubmission: postSubmission(name, assignment, files)
     }
 };
 

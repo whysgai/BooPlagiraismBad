@@ -6,7 +6,7 @@ import {createSubmission} from '../../actions/SubmissionAction';
 import { Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
-//import { createSubmission } from './actions/SubmissionAction';
+
 
 interface MatchParams {
   assignmentId: string,
@@ -15,12 +15,13 @@ interface MatchParams {
 interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
-class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: string[]}> {
+class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: File[], count: number}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
           name: '',
-          files : []
+          files : [] as File[],
+          count: 0
         };
         this.onInputchange = this.onInputchange.bind(this);
   }
@@ -40,6 +41,28 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
     const assignmentId = this.props.match.params.assignmentId
     setCurrentAssignmentFromId('SET_CURRENT_ASSIGNMENT', assignmentId)
       .then((assignmentAction) => store.dispatch(assignmentAction))
+  }
+
+  alertClick() {
+    alert("Please provide a submission name and files.")
+  }
+
+  count() {
+    this.setState({
+      count: this.state.count + 1
+    })
+  }
+
+  submissionInfoIsEntered() {
+    if (this.state.files.length > 0 && this.state.name.length > 0) {
+      for (let file of this.state.files) {
+        if (!file.name.includes('.java')) {
+          return false
+        }
+      }
+      return true
+    }
+    return false
   }
 
   render() {
@@ -79,7 +102,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
             <br/>
             <span text-align="center">
                 <h5>Submission Name:</h5>
-                <input name="name" className='submission-name-input' type="text" value={this.state.name} onChange={this.onInputchange}/>
+                <input id="submission-name-input" name="name" className='submission-name-input' type="text" value={this.state.name} onChange={this.onInputchange}/>
                 <Upload {...propsUpload} className='submission-file-input'>
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
@@ -88,11 +111,24 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                     <p className="ant-upload-hint">Supported file extensions are: .java</p>
                 </Upload>      
                 <br/>
-                <Link className='create-submission-btn btn btn-outline-success mt-2'
-                    to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}
-                    onClick={() => this.callDispatch()}>
-                    Upload Submission
-                </Link>
+                  {
+                    (!this.submissionInfoIsEntered()) &&
+                    <div>
+                      Please enter a name and files. All files must be of the form .java to continue.<br/>
+                      <Link className='create-submission-btn btn btn-outline-secondary disabled mt-2' 
+                        onClick={ (event) => {event.preventDefault(); this.alertClick() }} to='#'>
+                          Upload Submission
+                      </Link>
+                    </div>
+                  }
+                  {
+                    (this.submissionInfoIsEntered()) &&
+                    <Link className='create-submission-btn btn btn-outline-success mt-2'
+                        to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}
+                        onClick={() => this.callDispatch()}>
+                        Upload Submission
+                    </Link>
+                  }
             </span>
         </div>
     );
