@@ -59,7 +59,6 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
         if (!file.name.includes('.java')) {
           return false
         }
-        console.log('here are our files',file)
       }
       return true
     }
@@ -112,7 +111,6 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                     <p className="ant-upload-hint">Supported file extensions are: .java</p>
                 </Upload>      
                 <br/>
-                  {console.log("name", this.state.name, "files", this.state.files)}
                   {
                     (!this.submissionInfoIsEntered()) &&
                     <div>
