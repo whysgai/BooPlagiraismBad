@@ -12,8 +12,8 @@ export function postSubmission(name : string, assignment: Assignment, files: Fil
     }).then(response => response.json()).then(newSubmission => postFiles(newSubmission, files))
 }
 
-export function deleteSubmission(submission: Submission) : void {
-    fetch(`${vagrantURL}submissions/${submission._id}`, {
+export function deleteSubmission(submissionId: String) : void {
+    fetch(`${vagrantURL}submissions/${submissionId}`, {
         method: 'DELETE',
         headers: {'content-type': 'application/json'}
     }).then(response =>

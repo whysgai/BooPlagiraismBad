@@ -27,7 +27,7 @@ export function readSubmissions(assignmentId : String) {
 }
 
 export function removeSubmission(removeSubmission: Submission) : any {
-    deleteSubmission(removeSubmission)
+    deleteSubmission(removeSubmission._id)
     return {
         type: 'DELETE_SUBMISSION',
         removeSubmission: removeSubmission,
