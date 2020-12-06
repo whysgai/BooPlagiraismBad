@@ -19,6 +19,18 @@ const AssignmentReducer = (state = initialState, action: Action) => {
                 ...state,
                 assignments: action.assignments
             }  
+        case 'DELETE_ASSIGNMENT':
+            let newAssignments : Assignment[] = [];
+            let assignment : Assignment;
+            for (assignment of state.assignments) {
+                if (assignment != action.assignment) {
+                    newAssignments.push(assignment)
+                }
+            }
+            return {
+                ...state,
+                assignments: newAssignments
+            }
         case 'CREATE_ASSIGNMENT':
         default:
             return state;
