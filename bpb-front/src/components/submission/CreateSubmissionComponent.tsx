@@ -15,13 +15,14 @@ interface MatchParams {
 interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
-class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: File[], count: number}> {
+class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: File[], count: number, uploaded: boolean}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
           name: '',
           files : [] as File[],
-          count: 0
+          count: 0,
+          uploaded: false
         };
         this.onInputchange = this.onInputchange.bind(this);
   }
@@ -35,6 +36,12 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
 
   callDispatch() {
     store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.state.name, store.getState().AssignmentReducer.currentAssignment, this.state.files))
+    this.setState((state) => {
+      return {
+        ...this.state,
+        uploaded: true
+      }
+    })
   }
 
   componentDidMount() {
@@ -120,7 +127,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                 </Upload>      
                 <br/>
                   {
-                    (!this.submissionInfoIsEntered()) &&
+                    (!this.submissionInfoIsEntered() && !this.state.uploaded) &&
                     <div>
                       Please enter a name and files. All files must be of the form .java to continue.<br/>
                       <Link className='create-submission-btn btn btn-outline-secondary disabled mt-2' 
@@ -130,11 +137,18 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
                     </div>
                   }
                   {
-                    (this.submissionInfoIsEntered()) &&
+                    (this.submissionInfoIsEntered() && !this.state.uploaded) &&
                     <Link className='create-submission-btn btn btn-outline-success mt-2'
-                        to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}
-                        onClick={() => this.callDispatch()}>
+                        to='#'
+                        onClick={(event) => {event.preventDefault(); this.callDispatch()}}>
                         Upload Submission
+                    </Link>
+                  }
+                  {
+                    (this.submissionInfoIsEntered() && this.state.uploaded) &&
+                    <Link className='create-submission-btn btn btn-outline-success mt-2'
+                        to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
+                        Success! Return to assignment
                     </Link>
                   }
             </span>
