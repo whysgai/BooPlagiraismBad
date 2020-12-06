@@ -26,10 +26,10 @@ export function readSubmissions(assignmentId : String) {
     });
 }
 
-export function removeSubmission(submission: Submission) : any {
+export function removeSubmission(removeSubmission: Submission) : any {
+    deleteSubmission(removeSubmission)
     return {
-        type: 'DELTE_SUBMISSION',
-        submission: submission,
-        deleteSubmission: deleteSubmission(submission)
+        type: 'DELETE_SUBMISSION',
+        removeSubmission: removeSubmission,
     }
 };
