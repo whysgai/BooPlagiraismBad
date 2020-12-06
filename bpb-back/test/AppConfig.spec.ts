@@ -24,7 +24,7 @@ describe("AppConfig",() => {
 
      describe("comparisonThreshold()",() => {
         it("returns the expected comparison threshold",() => {
-            expect(AppConfig.comparisonThreshold()).to.equal(60);
+            expect(AppConfig.comparisonThreshold()).to.equal(200);
         });
      });
 

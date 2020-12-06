@@ -64,7 +64,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
 
         it("Should return an AnalysisResultEntry[] of expected length.", () => {
             newVisitor.visit(exampleTree);
-            expect(newVisitor.getAnalysisResultEntries().length).to.equal(58);
+            expect(newVisitor.getAnalysisResultEntries().length).to.equal(11);
         });
     });
 

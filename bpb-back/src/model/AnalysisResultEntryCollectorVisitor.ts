@@ -119,6 +119,13 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         return new AnalysisResultEntry("",submissionId, this.fileName, contextType, lineStart, charPosStart, lineStop, charPosStop, hashValue, textContent);
     }
 
+    private addAnalysisResultEntry(entry : AnalysisResultEntry) {
+        //Ensure that severely overlapping entries aren't returned
+        if(!this.analysisResultEntries.find(it=> it.getLineNumberStart() === entry.getLineNumberStart() && it.getLineNumberEnd() === it.getLineNumberEnd())) {
+            this.analysisResultEntries.push(entry);
+        }
+    }
+
     /**
      * Modification of inherited method from {@abstract}
      * See {@inheritdoc}
@@ -128,7 +135,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
      */
     visit(parseTree : ParseTree) {
         try {
-            this.analysisResultEntries.push(this.createAnalysisResultEntry(parseTree)); //Collect our AnalysisResultEntry for the root node
+            this.addAnalysisResultEntry(this.createAnalysisResultEntry(parseTree)); //Collect ARE for root node
         } catch (err) {
         /**If the length of node.text is < 50 chars, or if node.text is lacking a certain ammount 
              * of variation, then tlsh.hash() will throw an error. If one of these errors are thrown, 
@@ -161,13 +168,13 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         let n = node.childCount;
         for (let i = 0; i < n; i++) {
             if (!this.shouldVisitNextChild(node, result)) { 
-                break; //TODO get test coverage for this line
+                break; 
             }
             let c = node.getChild(i);
             
             try {
                 //Collect our AnalysisResultEntry for the child node
-                this.analysisResultEntries.push(this.createAnalysisResultEntry(c)); 
+                this.addAnalysisResultEntry(this.createAnalysisResultEntry(c));
                 let childResult = c.accept(this); //If an error is caught, no further nodes in this subtree will be visited.
                 result = this.aggregateResult(result, childResult);
             } catch (err) {
