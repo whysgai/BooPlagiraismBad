@@ -35,8 +35,8 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore < 1) &&
             <div>
-              <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
-              <div className="col-12 text-align-center">Matches:</div>
+              <div className="col-12 text-align-center">Similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
+              <div className="col-12 text-align-center">Prominent Matches:</div>
               <ul className="nav flex-column col-12">
                 {
                   this.props.comparison.matches.slice(0, 10).map((match, index) => 
