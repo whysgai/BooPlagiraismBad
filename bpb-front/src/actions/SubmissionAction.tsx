@@ -1,6 +1,6 @@
 import Assignment from '../types/Assignment'
 import Submission from '../types/Submission'
-import { postSubmission, getSubmissionIds, getSubmission } from '../services/SubmissionService'
+import { postSubmission, getSubmissionIds, getSubmission, deleteSubmission } from '../services/SubmissionService'
 
 export function createSubmission(type : string, name : string, assignment : Assignment, files : File[]) {
     return {
@@ -25,3 +25,11 @@ export function readSubmissions(assignmentId : String) {
         }
     });
 }
+
+export function removeSubmission(submission: Submission) : any {
+    return {
+        type: 'DELTE_SUBMISSION',
+        submission: submission,
+        deleteSubmission: deleteSubmission(submission)
+    }
+};
