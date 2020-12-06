@@ -444,7 +444,7 @@ export interface ISubmission {
 
                 //Apply sort
                 mergeSorter.sort(analysisResults,compareFunction);
-                
+               
                 resolve(analysisResults);
 
             }).catch((err) => reject(err));
@@ -465,6 +465,24 @@ export interface ISubmission {
         };
     }
 
+    //Used to filter matches
+    //Returns false if match is already present in current list
+    private includeMatch(currentEntries : Array<Array<IAnalysisResultEntry>>,entryA : IAnalysisResultEntry, entryB : IAnalysisResultEntry) : boolean {
+       
+        let include = currentEntries.find(it =>
+            
+                it[0].getLineNumberStart() === entryA.getLineNumberStart() &&
+
+                it[1].getLineNumberStart() === entryB.getLineNumberStart()
+            );
+       
+       if(include !== undefined) {
+           return false;
+       } else {
+           return true;
+       }
+    }
+
     private async compareAnalysisResultEntries(fileAEntries : IAnalysisResultEntry[], fileBEntries : IAnalysisResultEntry[]) : Promise<IAnalysisResult> {
        
         return new Promise((resolve,reject) => {
@@ -480,6 +498,8 @@ export interface ISubmission {
             let fileASimilar : boolean[] = [false];
             let fileBSimilar : boolean[] = [false];
             
+            let totalMatchedEntries = 0;
+            
             for(let i = 0; i < fileAEntries.length; i++) {
                 
                 for(let j = 0; j < fileBEntries.length; j++) {
@@ -490,8 +510,15 @@ export interface ISubmission {
                     let comparison = this.compareHashValues(hashA, hashB);
                     var threshold = AppConfig.comparisonThreshold();
 
-                    if(comparison < threshold) {  
-                        matchedEntries.push([fileAEntries[i],fileBEntries[j]])
+                    if(comparison < threshold) {
+
+                        //Increment total regardless of returned entries
+                        totalMatchedEntries++;
+
+                        if(this.includeMatch(matchedEntries,fileAEntries[i],fileBEntries[j])) {
+                            matchedEntries.push([fileAEntries[i],fileBEntries[j]]);
+                        }
+
                         fileASimilar[i] = true;
                         fileBSimilar[j] = true;
                     }
@@ -501,7 +528,7 @@ export interface ISubmission {
             //Generate a similarity score for the AnalysisResult
             let numFileASimilar = fileASimilar.filter(val => val == true).length;
             let numFileBSimilar = fileBSimilar.filter(val => val == true).length;
-            let H = matchedEntries.length;
+            let H = totalMatchedEntries;
             let L = fileAEntries.length - numFileASimilar;
             let R = fileBEntries.length - numFileBSimilar;
             let similarityScore = (2 * H) / ((2 * H) + R + L);
@@ -530,6 +557,9 @@ export interface ISubmission {
 
             //Apply sort
             mergeSorter.sort(matchedEntries,compareFunction);
+
+            //Apply exclusions
+            matchedEntries = matchedEntries.filter(it => !AppConfig.excludedContextTypes().includes(it[0].getContextType()) && !AppConfig.excludedContextTypes().includes(it[1].getContextType()));
 
             //Add only the first n entries to the AnalysisResult
             let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());

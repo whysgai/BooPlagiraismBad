@@ -4,6 +4,9 @@ import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/Analysis
 import { ISubmission, Submission } from "../src/model/Submission";
 import { readFileSync } from 'fs';
 import { AnalysisResult } from "../src/model/AnalysisResult";
+import fs from 'fs';
+import util from 'util';
+const readFileContent = util.promisify(fs.readFile);
 
 describe("Submission.ts.SubmissionBuilder",() => {
 
@@ -180,26 +183,27 @@ describe("Submission.ts",() => {
             return testSubmissionA.compare(testSubmissionB).then((resultA) => {
                 expect(resultA).to.not.be.undefined;
                 let asJSON = resultA[0].asJSON() as any;
-                expect(asJSON['similarityScore']).to.be.equal(0); //the two hashes will not match, so simscore will be 0
+                expect(asJSON['similarityScore']).to.equal(0); //the two hashes will not match, so simscore will be 0
+                
                 let files = new Map(asJSON['files']);
                 expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
                 expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
-                expect(asJSON['matches'].length).to.be.equal(0);
+                expect(asJSON['matches'].length).to.equal(0);
             });
             
         });
-        
+
         it("Should return a valid AnalysisResult[] with expected values if comparator submission is valid (right direction)",() => {
             testSubmissionA.addAnalysisResultEntry(testEntryA);
             testSubmissionB.addAnalysisResultEntry(testEntryB);
             return testSubmissionB.compare(testSubmissionA).then((resultB)=> {
                 expect(resultB).to.not.be.undefined;
                 let asJSON = resultB[0].asJSON() as any;
-                expect(asJSON['similarityScore']).to.be.equal(0); //the two hashes will not match, so simscore will be 0%
+                expect(asJSON['similarityScore']).to.equal(0);
                 let files = new Map(asJSON['files']);
                 expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
                 expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
-                expect(asJSON['matches'].length).to.be.equal(0);
+                expect(asJSON['matches'].length).to.equal(0);
             });
         });
 
@@ -215,7 +219,7 @@ describe("Submission.ts",() => {
                 let files = new Map(asJSON['files']);
                 expect(files.get(testEntryA.getSubmissionID())).to.be.equal(testEntryA.getFileName());
                 expect(files.get(testEntryB.getSubmissionID())).to.be.equal(testEntryB.getFileName());
-                expect(asJSON['matches'].length).to.be.equal(1);
+                expect(asJSON['matches'].length).to.not.equal(0);
                 expect(asJSON['matches'][0]).to.have.deep.members([testEntryA, testEntryC]);
                 });
             });

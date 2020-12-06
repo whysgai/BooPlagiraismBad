@@ -39,4 +39,11 @@ export class AppConfig {
         return Number(process.env.MAXMATCHESPERFILE);
     
     }
+
+    /**
+     * Excludes specific (overly large) subtree context types from being returned for visualization 
+     */
+    public static excludedContextTypes() : string[] {
+        return ["compilationUnit","typeDeclaration","classBody","classBodyDeclaration"];
+    }
 }
