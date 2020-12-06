@@ -157,7 +157,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                 <div className="col-10"></div>
                 <div className="col-2 float-right">
                       <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
-                        x 
+                        <i className="fa fa-window-close-o" aria-hidden="true"></i> 
                       </Link>
                   </div>
               </div>
