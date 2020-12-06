@@ -22,7 +22,7 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <NavbarComponent />
-      <Route exact path="/"><AssignmentListComponent /></Route>
+      <Route exact path={["/","/Assignments"]}><AssignmentListComponent/></Route>
       <Route path="/CreateAssignment" component={CreateAssignmentComponent}/>
       <Route exact path="/Assignments/:assignmentId/Submissions" component={SubmissionListComponent}/>
       <Route path="/Assignments/:assignmentId/CreateSubmission" component={CreateSubmissionComponent}/>
