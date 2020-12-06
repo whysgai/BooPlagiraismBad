@@ -45,6 +45,9 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
 
   deleteSubmission() {
     store.dispatch(removeSubmission(this.props.submission))
+    this.setState({
+
+    })
   }
 
   render() {
@@ -58,8 +61,7 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
         <span>
           {this.props.submission.name}
         </span>
-        <br/>
-        <button onClick={() => this.deleteSubmission()}>delete</button>
+        <button className='btn btn-outline-danger ml-2' onClick={() => {this.deleteSubmission(); window.location.reload()}}>delete</button>
       </div>
     );
   }
