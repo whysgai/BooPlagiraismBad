@@ -206,8 +206,11 @@ class ComparisonComponent extends React.Component <PropsType, {
                     <DocumentPaneComponent fileContent={this.state.submissionOneFileContent} snippet={this.state.submissionOneDisplaySnippet} side={0} highlights={this.state.activeMatches} />
                   </div>
                 </div>
-                <div className="col-3" onClick={() => this.selectComparisonForFiles()}>
+                <div className="col-3">
+                  <div className="btn btn-outline-info" onClick={() => this.resetCurrentMatch()}>Clear Match</div>
+                  <div onClick={() => this.selectComparisonForFiles()}>
                     <MatchBoxComponent comparison={this.state.activeMatches} />
+                  </div>
                 </div>
                 <div className="sub2 row col-4">
                   
