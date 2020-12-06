@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './css/style.css';
 import './css/index.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import AssignmentListComponent from './components/assignment/AssignmentListComponent';

@@ -41,8 +41,8 @@ class DocumentPaneComponent extends React.Component <PropsType, {}> {
 
   render() {
     return (
-      <div className="submission-compare-pane border">
-        <pre>
+      <div className="submission-compare-pane border viewport-height">
+        <pre className="mh-100">
           {
             (this.props.fileContent && this.props.fileContent !== "") &&
               this.props.fileContent.split(/\r?\n/).map((line, index) => 

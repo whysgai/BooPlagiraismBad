@@ -162,8 +162,8 @@ class ComparisonComponent extends React.Component <PropsType, {
                   </div>
               </div>
               <div className="row col-12">
-                <h3 className="col-6">Submission: {this.state.submissionOne.name}</h3>
-                <h3 className="col-6">Submission: {this.state.submissionTwo.name}</h3>
+                <h3 className="col-6 text-center">Submission: {this.state.submissionOne.name}</h3>
+                <h3 className="col-6 text-center">Submission: {this.state.submissionTwo.name}</h3>
               </div> 
               <div className="card">
                 <div className="card-body">
@@ -182,8 +182,7 @@ class ComparisonComponent extends React.Component <PropsType, {
               </div>  
               <div className="row col-12 align-items-start">
           
-                <div className="sub1 row col-4 ">
-                  
+                <div className="sub1 row col-5">                  
                   <div className="col-3">
                     <div className="submission-compare-pane border">
                       DirectoryListComponent
@@ -206,13 +205,13 @@ class ComparisonComponent extends React.Component <PropsType, {
                     <DocumentPaneComponent fileContent={this.state.submissionOneFileContent} snippet={this.state.submissionOneDisplaySnippet} side={0} highlights={this.state.activeMatches} />
                   </div>
                 </div>
-                <div className="col-3">
+                <div className="col-2">
                   <div className={`btn btn-outline-info ${(!this.state.submissionOneDisplaySnippet.fileName || !this.state.submissionTwoDisplaySnippet.fileName)? "d-none" : ""}`} onClick={() => this.resetCurrentMatch()}>Clear Match</div>
                   <div onClick={() => this.selectComparisonForFiles()}>
                     <MatchBoxComponent comparison={this.state.activeMatches} />
                   </div>
                 </div>
-                <div className="sub2 row col-4">
+                <div className="sub2 row col-5">
                   
                   <div className="col-9">
                     <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent} snippet={this.state.submissionTwoDisplaySnippet} side={1} highlights={this.state.activeMatches}/>
