@@ -14,18 +14,31 @@ export interface IAssignmentManager {
     updateAssignment(assignmentId : string, data : AssignmentData) : Promise<IAssignment>;
     deleteAssignment(assignmentId : string) : Promise<void>;
     warmCaches() : Promise<void>;
+    invalidateCaches() : void;
 }
 
 export class AssignmentManager implements IAssignmentManager {
 
+    private static instance : IAssignmentManager;
     private assignmentCache : Map<string,IAssignment>;
     private cacheCount : number
 
-    constructor() {
+    private constructor() {
         this.assignmentCache = new Map<string,IAssignment>();
         this.cacheCount = 0;
     }   
-   
+    
+    /**
+     * Gets or creates singleton instance of AssignmentManager 
+     */
+    public static getInstance() : IAssignmentManager {
+        if(!AssignmentManager.instance) {
+            AssignmentManager.instance = new AssignmentManager();
+        }
+
+        return AssignmentManager.instance;
+    }
+
     /**
      * Sets up caches for incoming requests
      */
@@ -41,6 +54,14 @@ export class AssignmentManager implements IAssignmentManager {
                 });
             
         });
+    }
+
+    /**
+     * Reset all caches (for testing)
+     */
+    invalidateCaches() : void {
+        this.assignmentCache = new Map<string,IAssignment>();
+        this.cacheCount = 0;
     }
 
     /**
