@@ -207,7 +207,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                   </div>
                 </div>
                 <div className="col-2">
-                  <div className={`btn btn-outline-info ${(!this.state.submissionOneDisplaySnippet.fileName || !this.state.submissionTwoDisplaySnippet.fileName)? "d-none" : ""}`} onClick={() => this.resetCurrentMatch()}>Clear Match</div>
+                  <div className={`btn btn-outline-info col-12 ${(!this.state.submissionOneDisplaySnippet.fileName || !this.state.submissionTwoDisplaySnippet.fileName)? "d-none" : ""}`} onClick={() => this.resetCurrentMatch()}>Clear Match</div>
                   <div onClick={() => this.selectComparisonForFiles()}>
                     <MatchBoxComponent comparison={this.state.activeMatches} />
                   </div>
