@@ -1,6 +1,6 @@
 import { expect } from "chai";
-var chai = require('chai');
-var spies = require('chai-spies');
+import chai from 'chai';
+import spies from 'chai-spies';
 import Sinon from "sinon";
 import { AnalysisResult, IAnalysisResult } from "../src/model/AnalysisResult";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";

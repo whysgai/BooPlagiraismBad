@@ -2,14 +2,12 @@ import { parse } from 'java-ast';
 import { ParseTree, RuleNode } from 'antlr4ts/tree';
 import { readFileSync } from 'fs';
 import { expect } from 'chai';
-var chai = require('chai')
+import chai from 'chai';
 import Sinon from 'sinon';
-import { IAnalysisResultEntryCollectorVisitor, AnalysisResultEntryCollectorVisitor } from 
-    '../src/model/AnalysisResultEntryCollectorVisitor';
-var spies = require('chai-spies');
+import { IAnalysisResultEntryCollectorVisitor, AnalysisResultEntryCollectorVisitor } from '../src/model/AnalysisResultEntryCollectorVisitor';
+import spies from 'chai-spies';
 import { ISubmission, Submission } from '../src/model/Submission';
 import { AnalysisResultEntry } from '../src/model/AnalysisResultEntry';
-import { doesIntersect } from 'tslint';
 
 describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     let exampleTree : ParseTree;

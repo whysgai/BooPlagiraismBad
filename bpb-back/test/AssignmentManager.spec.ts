@@ -86,7 +86,6 @@ describe("AssignmentManager.ts",() => {
         it("Should return the specified assignment if one exists with the given id",() => {
 
             let mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
-            //var mockGetAssignment = chai.spy.on(testAssignmentManager, 'getAssignment', () => { return Promise.resolve(testAssignment) });
 
             return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentMiss) => {
                 expect(mockReadAssignment).to.have.been.called.once.with(testAssignment.getId());

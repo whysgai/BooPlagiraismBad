@@ -76,10 +76,10 @@
  * See tlsh.html for example use.
  */
 
-var debug = false; 
+let debug = false; 
 ///////////////////////////////////////////////////////////////////////////////////
 // From tlsh_util.cpp
-var v_table = new Uint8Array([
+let v_table = new Uint8Array([
     1, 87, 49, 12, 176, 178, 102, 166, 121, 193, 6, 84, 249, 230, 44, 163,
     14, 197, 213, 181, 161, 85, 218, 80, 64, 239, 24, 226, 236, 142, 38, 200,
     110, 177, 104, 103, 141, 253, 255, 50, 77, 101, 81, 18, 45, 96, 31, 222,
@@ -108,9 +108,9 @@ function b_mapping(salt, i, j, k)
     return h;
 }
 
-var LOG_1_5 = 0.4054651;
-var LOG_1_3 = 0.26236426;
-var LOG_1_1 = 0.095310180;
+let LOG_1_5 = 0.4054651;
+let LOG_1_3 = 0.26236426;
+let LOG_1_1 = 0.095310180;
 
 function l_capturing(len) {
     let i;
@@ -137,7 +137,7 @@ function to_hex( data, len )
 {
     // Use TLSH.java implementation for to_hex
     let s = new String;
-    for (var i=0; i<len; i++) {
+    for (let i=0; i<len; i++) {
         if (data[i] < 16) {
             s = s.concat("0");
         }   
@@ -152,7 +152,7 @@ function from_hex( str )
 {
     // Use TLSH.java implementation for from_hex
     let ret = new Uint8Array(str.length / 2);   // unsigned char array}
-	for (var i = 0; i < str.length; i += 2) {
+	for (let i = 0; i < str.length; i += 2) {
 		ret[i / 2] = parseInt(str.substring(i, i + 2), 16);
 	}
 	return ret;
@@ -177,13 +177,13 @@ function generateTable()
 {
     let arraySize = 256;
     let result = new Array(arraySize);
-    for (var i=0; i<result.length; i++)
+    for (let i=0; i<result.length; i++)
     {
         result[i] = new Uint8Array(arraySize);   
     }
 
-    for (var i = 0; i < arraySize; i++) {
-        for (var j = 0; j < arraySize; j++) {
+    for (let i = 0; i < arraySize; i++) {
+        for (let j = 0; j < arraySize; j++) {
             let x = i, y = j, d, diff = 0;
             d = Math.abs(x % 4 - y % 4); diff += (d == 3 ? 6 : d);
             x = Math.floor(x / 4);
@@ -204,7 +204,7 @@ function generateTable()
     return result;
 }    
 
-var bit_pairs_diff_table = generateTable();
+let bit_pairs_diff_table = generateTable();
 
 function h_distance( len, x, y)
 {
@@ -219,16 +219,16 @@ function h_distance( len, x, y)
 
 ///////////////////////////////////////////////////////////////////////////////////
 // from C #defines in tlsh_impl.h and tlsh_impl.cpp
-var SLIDING_WND_SIZE = 5;
-var RNG_SIZE = SLIDING_WND_SIZE;
+let SLIDING_WND_SIZE = 5;
+let RNG_SIZE = SLIDING_WND_SIZE;
 function RNG_IDX(i) { return (i+RNG_SIZE) % RNG_SIZE; }
-var TLSH_CHECKSUM_LEN = 1;
-var BUCKETS = 256;
-var EFF_BUCKETS = 128;
-var CODE_SIZE = 32;   // 128 * 2 bits = 32 bytes
-var TLSH_STRING_LEN = 70;  // 2 + 1 + 32 bytes = 70 hexidecimal chars
-var RANGE_LVALUE = 256;
-var RANGE_QRATIO = 16;
+let TLSH_CHECKSUM_LEN = 1;
+let BUCKETS = 256;
+let EFF_BUCKETS = 128;
+let CODE_SIZE = 32;   // 128 * 2 bits = 32 bytes
+let TLSH_STRING_LEN = 70;  // 2 + 1 + 32 bytes = 70 hexidecimal chars
+let RANGE_LVALUE = 256;
+let RANGE_QRATIO = 16;
 
 function SWAP_UINT(buf, x, y) 
 { 
@@ -285,7 +285,7 @@ function find_quartile(tlsh, quartiles)
     let p3 = EFF_BUCKETS-EFF_BUCKETS/4-1;
     let end = EFF_BUCKETS-1;
 
-    for(var i=0; i<=end; i++) {
+    for(let i=0; i<=end; i++) {
         buf.bucket_copy[i] = tlsh.a_bucket[i];
     }
 
@@ -377,7 +377,7 @@ export class Tlsh {
         length = typeof length !== 'undefined' ? length : str.length;
 
         let data = [];
-        for (var i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             let code = str.charCodeAt(i);
             if (code > 255) {
                 throw new Error("Unexpected " + str[i] + " has value " + code + " which is too large");
@@ -396,7 +396,7 @@ export class Tlsh {
         let j = this.data_len % RNG_SIZE;
         let fed_len = this.data_len;
 
-        for (var i = 0; i < length; i++, fed_len++, j = RNG_IDX(j + 1)) {
+        for (let i = 0; i < length; i++, fed_len++, j = RNG_IDX(j + 1)) {
             this.slide_window[j] = data[i];
             debug && console.log("slide_window[" + j + "]=" + this.slide_window[j]);
 
@@ -407,7 +407,7 @@ export class Tlsh {
                 let j_3 = RNG_IDX(j - 3);
                 let j_4 = RNG_IDX(j - 4);
 
-                for (var k = 0; k < TLSH_CHECKSUM_LEN; k++) {
+                for (let k = 0; k < TLSH_CHECKSUM_LEN; k++) {
                     if (k == 0) {
                         this.checksum[k] = b_mapping(0, this.slide_window[j], this.slide_window[j_1], this.checksum[k]);
                         debug && console.log("tlsh.checksum[" + k + "]=" + this.checksum[k]);
@@ -458,20 +458,20 @@ export class Tlsh {
 
         // buckets must be more than 50% non-zero
         let nonzero = 0;
-        for (var i = 0; i < CODE_SIZE; i++) {
-            for (var j = 0; j < 4; j++) {
+        for (let i = 0; i < CODE_SIZE; i++) {
+            for (let j = 0; j < 4; j++) {
                 if (this.a_bucket[4 * i + j] > 0) {
                     nonzero++;
                 }
             }
         }
         if (nonzero <= 4 * CODE_SIZE / 2) {
-            throw new Error("ERROR: not enough variation in input - " + nonzero + " < " + 4 * CODE_SIZE / 2);
+            throw new Error("ERROR: not enough letiation in input - " + nonzero + " < " + 4 * CODE_SIZE / 2);
         }
 
-        for (var i = 0; i < CODE_SIZE; i++) {
+        for (let i = 0; i < CODE_SIZE; i++) {
             let h = 0;
-            for (var j = 0; j < 4; j++) {
+            for (let j = 0; j < 4; j++) {
                 let k = this.a_bucket[4 * i + j];
                 if (quartiles.q3 < k) {
                     h += 3 << (j * 2); // leave the optimization j*2 = j<<1 or j*2 = j+j for compiler
@@ -500,14 +500,14 @@ export class Tlsh {
         tmp.Q = 0;
         tmp.tmp_code = new Uint8Array(CODE_SIZE);
 
-        for (var k = 0; k < TLSH_CHECKSUM_LEN; k++) {
+        for (let k = 0; k < TLSH_CHECKSUM_LEN; k++) {
             tmp.checksum[k] = swap_byte(this.checksum[k]);
             debug && console.log("After swap_byte for checksum: tmp.checksum:" + tmp.checksum[k] + ", tlsh.checksum:" + this.checksum[k]);
         }
         tmp.Lvalue = swap_byte(this.Lvalue);
         tmp.Q = swap_byte(this.Q);
         debug && console.log("After swap_byte for Q: tmp.Q:" + tmp.Q + ", tlsh.Q:" + this.Q);
-        for (var i = 0; i < CODE_SIZE; i++) {
+        for (let i = 0; i < CODE_SIZE; i++) {
             tmp.tmp_code[i] = this.tmp_code[CODE_SIZE - 1 - i];
             debug && console.log("tmp.tmp_code[" + i + "]:" + tmp.tmp_code[i]);
         }
@@ -568,7 +568,7 @@ export class Tlsh {
         else
             diff += (q2diff - 1) * 12;
 
-        for (var k = 0; k < TLSH_CHECKSUM_LEN; k++) {
+        for (let k = 0; k < TLSH_CHECKSUM_LEN; k++) {
             if (this.checksum[k] != other.checksum[k]) {
                 diff++;
                 break;
@@ -584,7 +584,7 @@ export class Tlsh {
             throw new Error("Tlsh.fromTlshStr() - string has wrong length (" + str.length + " != " + TLSH_STRING_LEN + ")");
             return;
         }
-        for (var i = 0; i < TLSH_STRING_LEN; i++) {
+        for (let i = 0; i < TLSH_STRING_LEN; i++) {
             if (!(
                 (str[i] >= '0' && str[i] <= '9') ||
                 (str[i] >= 'A' && str[i] <= 'F') ||
@@ -602,7 +602,7 @@ export class Tlsh {
         this.Lvalue = swap_byte(tmp[i++]);
         this.Q = swap_byte(tmp[i++]);
 
-        for (var j = 0; j < CODE_SIZE; j++) {
+        for (let j = 0; j < CODE_SIZE; j++) {
             this.tmp_code[j] = (tmp[i + CODE_SIZE - 1 - j]);
         }
         this.lsh_code_valid = true;

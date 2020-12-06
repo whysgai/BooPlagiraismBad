@@ -2,11 +2,10 @@ import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
 import { AppConfig } from "../src/AppConfig";
-import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
-var mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
 

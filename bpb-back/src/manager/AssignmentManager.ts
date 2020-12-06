@@ -101,7 +101,7 @@ export class AssignmentManager implements IAssignmentManager {
             if(this.cacheCount <= 0) {
                 AssignmentDAO.readAssignments().then((assignments) => {
 
-                    for(var assignment of assignments) {
+                    for(let assignment of assignments) {
                         this.assignmentCache.set(assignment.getId(),assignment);
                         this.cacheCount++;
                     }
