@@ -466,7 +466,7 @@ export class Tlsh {
             }
         }
         if (nonzero <= 4 * CODE_SIZE / 2) {
-            throw new Error("ERROR: not enough letiation in input - " + nonzero + " < " + 4 * CODE_SIZE / 2);
+            throw new Error("ERROR: not enough variation in input - " + nonzero + " < " + 4 * CODE_SIZE / 2);
         }
 
         for (let i = 0; i < CODE_SIZE; i++) {
