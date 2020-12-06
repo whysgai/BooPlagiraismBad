@@ -27,10 +27,14 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
 
   render() {
     return (
-      <div className="submission-compare-pane border">
+      <div className="matchbox">
         {
           (this.props.comparison.matches && this.props.comparison.matches.length <= 0) &&
-            <span>No matches found.</span>            
+            <div className="card text-center">
+              <div className="card-body">
+                <p className="card-text">No matches found</p>
+              </div>
+            </div>                        
         }        
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore < 1) &&
