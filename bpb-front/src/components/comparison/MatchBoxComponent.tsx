@@ -21,8 +21,7 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
     };
   }
 
-  clickMatch(match: Snippet[]) {
-    // Use this to make things happen when you click matches
+  selectMatch(match: Snippet[]) {
     store.dispatch(selectSnippets(match));
   }
 
@@ -40,8 +39,8 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
               <div className="col-12 text-align-center">Matches:</div>
               <ul className="nav flex-column col-12">
                 {
-                  this.props.comparison.matches.map((match, index) => 
-                    <li className="nav-item" key={index} onClick={() => this.clickMatch(match)}>
+                  this.props.comparison.matches.slice(0, 5).map((match, index) => 
+                    <li className="nav-item" key={index} onClick={() => this.selectMatch(match)}>
                       <ul>
                         <li className="nav-item-link">Match {index+1}</li>
                         <li>Context {match[0].contextType}</li>
