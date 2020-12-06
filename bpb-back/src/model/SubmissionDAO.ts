@@ -17,13 +17,13 @@ export const SubmissionDAO : ISubmissionDAO = class {
        
         return new Promise((resolve,reject) => {
             
-            var submissionBuilder = new Submission.builder();
+            let submissionBuilder = new Submission.builder();
             submissionBuilder.setName(name);
             submissionBuilder.setAssignmentId(assignmentId);
             
-            var submission = submissionBuilder.build();
+            let submission = submissionBuilder.build();
 
-            var submissionModel = submission.getModelInstance();
+            let submissionModel = submission.getModelInstance();
 
             submissionModel.save().then(() => {
                 resolve(submission);
@@ -69,8 +69,8 @@ export const SubmissionDAO : ISubmissionDAO = class {
                 if(model == undefined) {
                     reject(new Error("Cannot find: No submission with the given id exists in the database"));
                 } else {
-                    var builder = new Submission.builder();
-                    var submission = builder.buildFromExisting(model);
+                    let builder = new Submission.builder();
+                    let submission = builder.buildFromExisting(model);
                     resolve(submission);
                 }
             }).catch((err) => {

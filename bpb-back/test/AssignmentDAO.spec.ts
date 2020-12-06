@@ -7,9 +7,9 @@ import { AssignmentDAO } from '../src/model/AssignmentDAO'
 
 describe("AssignmentDAO.ts",() => {
 
-    var testAssignment : IAssignment;
-    var testAssignmentName : string;
-    var testAssignmentSubmissionIds : string[];
+    let testAssignment : IAssignment;
+    let testAssignmentName : string;
+    let testAssignmentSubmissionIds : string[];
 
     before((done) => {
         chai.use(chaiAsPromised);
@@ -30,7 +30,7 @@ describe("AssignmentDAO.ts",() => {
 
         //Drop assignment collection
         mongoose.connection.collections.assignments.drop(() => {
-            var testAssignmentBuilder = new Assignment.builder();
+            let testAssignmentBuilder = new Assignment.builder();
             testAssignmentBuilder.setName(testAssignmentName);
             testAssignmentBuilder.setSubmissionIds(testAssignmentSubmissionIds);
             testAssignment = testAssignmentBuilder.build();
@@ -75,7 +75,7 @@ describe("AssignmentDAO.ts",() => {
         });
 
         it("Should throw an appropriate error when trying to read a nonexistent assignment",() => {
-            var nonPersistedAssignment = new Assignment.builder().build(); 
+            let nonPersistedAssignment = new Assignment.builder().build(); 
             return expect(AssignmentDAO.readAssignment(nonPersistedAssignment.getId())).to.eventually.be.rejectedWith("Cannot find: No assignment with the given id exists in the database");
         });
 
@@ -93,7 +93,7 @@ describe("AssignmentDAO.ts",() => {
         });
 
         it("should return all assignments if at least one assignment exists in the database", () => {
-            var testAssignment2 = new Assignment.builder().build();
+            let testAssignment2 = new Assignment.builder().build();
 
             return AssignmentDAO.createAssignment(testAssignment.getName(),testAssignment.getSubmissionIds()).then((createdAssignment)  => {
                 return AssignmentDAO.createAssignment(testAssignment2.getName(),testAssignment2.getSubmissionIds()).then((createdAssignment2) => {
@@ -124,8 +124,8 @@ describe("AssignmentDAO.ts",() => {
         it("Should update an assignment database object if {id} is valid",() => {
            
             //New values to assign after creation
-            var updatedName = "Newer Name";
-            var updatedSubmissionIds = ["5fc2a8b18636ab0ada9a21bb"] //One removed
+            let updatedName = "Newer Name";
+            let updatedSubmissionIds = ["5fc2a8b18636ab0ada9a21bb"] //One removed
 
 
             return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
@@ -158,7 +158,7 @@ describe("AssignmentDAO.ts",() => {
         });
 
         it("Should throw an appropriate error if no assignment exists with the specified {id}",() =>  {
-            var newAssignment = new Assignment.builder().build();
+            let newAssignment = new Assignment.builder().build();
             return AssignmentDAO.updateAssignment(newAssignment).then(updatedAssignment => {
                 expect(true,"updateAssignment should have failed, but it succeeded").to.equal(false);
             }).catch((err) =>{
@@ -200,7 +200,7 @@ describe("AssignmentDAO.ts",() => {
         });
 
         it("Should throw an appropriate error if {id} is invalid",() => {
-            var newAssignment= new Assignment.builder().build();
+            let newAssignment= new Assignment.builder().build();
             return expect(AssignmentDAO.deleteAssignment(newAssignment.getId())).to.eventually.be.rejectedWith("Cannot delete: No assignment with the given id exists in the database");
         });
 

@@ -47,10 +47,10 @@ class App {
                 });
 
                 // Set up AssignmentManager
-                var assignmentManager = new AssignmentManager();
+                let assignmentManager = new AssignmentManager();
 
                 // Set up SubmissionManager
-                var submissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
+                let submissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
 
                 // Set up routers
                 this.routers.push(new SubmissionRouter(this.app,'/submissions',submissionManager,assignmentManager));

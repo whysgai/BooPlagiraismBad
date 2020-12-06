@@ -105,8 +105,8 @@ export class SubmissionManager implements ISubmissionManager {
     createSubmission = async(data : SubmissionData): Promise<ISubmission> => {
         
         return new Promise((resolve,reject) => {
-            var name = data.name;
-            var assignmentId = data.assignment_id;
+            let name = data.name;
+            let assignmentId = data.assignment_id;
     
             SubmissionDAO.createSubmission(name,assignmentId)
                 .then((submission) => {
@@ -114,7 +114,7 @@ export class SubmissionManager implements ISubmissionManager {
                     this.submissionCache.set(submission.getId(),submission);
                     // submissionCacheByAssignment
                     if(this.submissionCacheByAssignment.get(assignmentId) != undefined) {
-                        var updatedList = this.submissionCacheByAssignment.get(assignmentId).concat([submission]);
+                        let updatedList = this.submissionCacheByAssignment.get(assignmentId).concat([submission]);
                         this.submissionCacheByAssignment.set(assignmentId,updatedList);   
                     }
                     resolve(submission);
@@ -182,8 +182,8 @@ export class SubmissionManager implements ISubmissionManager {
     updateSubmission = async(submissionId : string, data : SubmissionData): Promise<ISubmission> => {
         
         return new Promise((resolve,reject) => {
-            var name = data.name;
-            var assignmentId = data.assignment_id;
+            let name = data.name;
+            let assignmentId = data.assignment_id;
     
             this.getSubmission(submissionId).then((submission) => {
                 submission.setName(name);

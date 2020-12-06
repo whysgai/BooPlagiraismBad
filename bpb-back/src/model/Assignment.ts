@@ -60,10 +60,10 @@ export class Assignment implements IAssignment {
          * @returns a new Assignment with the appropriate properties and a database model
          */
         build() : IAssignment {
-            var assignment = new Assignment();
+            let assignment = new Assignment();
 
-            var assignmentModel = Assignment.getStaticModel();
-            var modelInstance = new assignmentModel({"name" : this.name, "submissionIds" : this.setSubmissionIds});
+            let assignmentModel = Assignment.getStaticModel();
+            let modelInstance = new assignmentModel({"name" : this.name, "submissionIds" : this.setSubmissionIds});
 
             assignment.setId(modelInstance.id);
             assignment.setName(this.name);
@@ -80,7 +80,7 @@ export class Assignment implements IAssignment {
          * @returns an Assignment object which matches (and contains) the provided model
          */
         buildFromExisting(model : IAssignmentModel) : IAssignment {
-            var assignment = new Assignment();
+            let assignment = new Assignment();
 
             if (!model.id || !model.name || !model.submissionIds) {
                 throw new Error("At least one required assignment model property is not present on the provided model");
@@ -162,7 +162,7 @@ export class Assignment implements IAssignment {
      * @param submissionId Id of sumbisison to remove
      */
     removeSubmission(submissionId: string): void {
-        var foundValueIndex = this.submissionIds.findIndex( it => it == submissionId);
+        let foundValueIndex = this.submissionIds.findIndex( it => it == submissionId);
         if(foundValueIndex != -1) {
             this.submissionIds.splice(foundValueIndex,1);
         }

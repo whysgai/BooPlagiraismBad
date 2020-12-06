@@ -51,8 +51,8 @@ export class AssignmentManager implements IAssignmentManager {
     createAssignment = async(data : AssignmentData): Promise<IAssignment> => {
 
         return new Promise((resolve, reject) => {
-            var name = data.name;
-            var submissionIds = data.submissionIds;
+            let name = data.name;
+            let submissionIds = data.submissionIds;
 
             AssignmentDAO.createAssignment(name, submissionIds)
                 .then((assignment) => {
@@ -112,7 +112,7 @@ export class AssignmentManager implements IAssignmentManager {
                 });
             } else {
                 //Read from cache if entries exist
-                var rtnAssignments : IAssignment[] = [];
+                let rtnAssignments : IAssignment[] = [];
                 for (var assignment of this.assignmentCache.values()) {
                     rtnAssignments.push(assignment);
                 }

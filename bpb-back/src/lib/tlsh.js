@@ -99,7 +99,7 @@ var v_table = new Uint8Array([
 
 function b_mapping(salt, i, j, k) 
 {
-    var h = 0;
+    let h = 0;
     
     h = v_table[h ^ salt];
     h = v_table[h ^ i];
@@ -113,7 +113,7 @@ var LOG_1_3 = 0.26236426;
 var LOG_1_1 = 0.095310180;
 
 function l_capturing(len) {
-    var i;
+    let i;
     if( len <= 656 ) {
         i = Math.floor( Math.log(len) / LOG_1_5 );
     } else if( len <= 3199 ) {
@@ -127,7 +127,7 @@ function l_capturing(len) {
 
 function swap_byte( i )
 {
-    var byte = 0;
+    let byte = 0;
     byte = ((i & 0xF0) >> 4) & 0x0F;
     byte |= ((i & 0x0F) << 4) & 0xF0;
     return byte;
@@ -136,7 +136,7 @@ function swap_byte( i )
 function to_hex( data, len )
 {
     // Use TLSH.java implementation for to_hex
-    var s = new String;
+    let s = new String;
     for (var i=0; i<len; i++) {
         if (data[i] < 16) {
             s = s.concat("0");
@@ -151,7 +151,7 @@ function to_hex( data, len )
 function from_hex( str )
 {
     // Use TLSH.java implementation for from_hex
-    var ret = new Uint8Array(str.length / 2);   // unsigned char array}
+    let ret = new Uint8Array(str.length / 2);   // unsigned char array}
 	for (var i = 0; i < str.length; i += 2) {
 		ret[i / 2] = parseInt(str.substring(i, i + 2), 16);
 	}
@@ -160,8 +160,8 @@ function from_hex( str )
 
 function mod_diff(x, y, R)
 {
-    var dl = 0;
-    var dr = 0;
+    let dl = 0;
+    let dr = 0;
     if ( y > x ){
         dl = y - x;
         dr = x + R - y;
@@ -175,8 +175,8 @@ function mod_diff(x, y, R)
 // Use  generateTable() from TLSH.java implementation 
 function generateTable()
 {
-    var arraySize = 256;
-    var result = new Array(arraySize);
+    let arraySize = 256;
+    let result = new Array(arraySize);
     for (var i=0; i<result.length; i++)
     {
         result[i] = new Uint8Array(arraySize);   
@@ -184,7 +184,7 @@ function generateTable()
 
     for (var i = 0; i < arraySize; i++) {
         for (var j = 0; j < arraySize; j++) {
-            var x = i, y = j, d, diff = 0;
+            let x = i, y = j, d, diff = 0;
             d = Math.abs(x % 4 - y % 4); diff += (d == 3 ? 6 : d);
             x = Math.floor(x / 4);
             y = Math.floor(y / 4);
@@ -208,8 +208,8 @@ var bit_pairs_diff_table = generateTable();
 
 function h_distance( len, x, y)
 {
-    var diff = 0;
-    for( var i=0; i<len; i++ ){
+    let diff = 0;
+    for( let i=0; i<len; i++ ){
         debug && console.log("bit_pairs_diff_table["+x[i]+"]["+y[i]+"]="+bit_pairs_diff_table[x[i]][y[i]]);
         diff += bit_pairs_diff_table[ x[i] ][ y[i] ];
     }
@@ -232,7 +232,7 @@ var RANGE_QRATIO = 16;
 
 function SWAP_UINT(buf, x, y) 
 { 
-    var int_tmp = buf.bucket_copy[x];
+    let int_tmp = buf.bucket_copy[x];
     buf.bucket_copy[x] = buf.bucket_copy[y];
     buf.bucket_copy[y] = int_tmp; 
 }
@@ -252,15 +252,15 @@ function partition(buf, left, right)
         return left;
     }
         
-    var ret = left;
-    var pivot = (left + right)>>1;
+    let ret = left;
+    let pivot = (left + right)>>1;
     
-    var val = buf.bucket_copy[pivot];
+    let val = buf.bucket_copy[pivot];
     
     buf.bucket_copy[pivot] = buf.bucket_copy[right];
     buf.bucket_copy[right] = val;
     
-    for( var i = left; i < right; i++ ) {
+    for( let i = left; i < right; i++ ) {
         if( buf.bucket_copy[i] < val ) {
             SWAP_UINT( buf, ret, i );
             ret++;
@@ -274,23 +274,23 @@ function partition(buf, left, right)
 
 function find_quartile(tlsh, quartiles) 
 {
-    var buf = new Object();
+    let buf = new Object();
     buf.bucket_copy = new Uint32Array(EFF_BUCKETS);
-    var short_cut_left = new Uint32Array(EFF_BUCKETS);
-    var short_cut_right = new Uint32Array(EFF_BUCKETS);
-    var spl = 0;
-    var spr = 0;
-    var p1 = EFF_BUCKETS/4-1;
-    var p2 = EFF_BUCKETS/2-1;
-    var p3 = EFF_BUCKETS-EFF_BUCKETS/4-1;
-    var end = EFF_BUCKETS-1;
+    let short_cut_left = new Uint32Array(EFF_BUCKETS);
+    let short_cut_right = new Uint32Array(EFF_BUCKETS);
+    let spl = 0;
+    let spr = 0;
+    let p1 = EFF_BUCKETS/4-1;
+    let p2 = EFF_BUCKETS/2-1;
+    let p3 = EFF_BUCKETS-EFF_BUCKETS/4-1;
+    let end = EFF_BUCKETS-1;
 
     for(var i=0; i<=end; i++) {
         buf.bucket_copy[i] = tlsh.a_bucket[i];
     }
 
-    for( var l=0, r=end; ; ) {
-        var ret = partition( buf, l, r );
+    for( let l=0, r=end; ; ) {
+        let ret = partition( buf, l, r );
         if( ret > p2 ) {
             r = ret - 1;
             short_cut_right[spr] = ret;
@@ -308,11 +308,11 @@ function find_quartile(tlsh, quartiles)
     short_cut_left[spl] = p2-1;
     short_cut_right[spr] = p2+1;
 
-    for( var i=0, l=0; i<=spl; i++ ) {
-        var r = short_cut_left[i];
+    for( let i=0, l=0; i<=spl; i++ ) {
+        let r = short_cut_left[i];
         if( r > p1 ) {
             for( ; ; ) {
-                var ret = partition( buf, l, r );
+                let ret = partition( buf, l, r );
                 if( ret > p1 ) {
                     r = ret-1;
                 } else if( ret < p1 ) {
@@ -331,11 +331,11 @@ function find_quartile(tlsh, quartiles)
         }
     }
 
-    for( var i=0, r=end; i<=spr; i++ ) {
-        var l = short_cut_right[i];
+    for( let i=0, r=end; i<=spr; i++ ) {
+        let l = short_cut_right[i];
         if( l < p3 ) {
             for( ; ; ) {
-                var ret = partition( buf, l, r );
+                let ret = partition( buf, l, r );
                 if( ret > p3 ) {
                     r = ret-1;
                 } else if( ret < p3 ) {
@@ -376,9 +376,9 @@ export class Tlsh {
     update(str, length) {
         length = typeof length !== 'undefined' ? length : str.length;
 
-        var data = [];
+        let data = [];
         for (var i = 0; i < length; i++) {
-            var code = str.charCodeAt(i);
+            let code = str.charCodeAt(i);
             if (code > 255) {
                 throw new Error("Unexpected " + str[i] + " has value " + code + " which is too large");
                 return;
@@ -393,8 +393,8 @@ export class Tlsh {
             return;
         }
 
-        var j = this.data_len % RNG_SIZE;
-        var fed_len = this.data_len;
+        let j = this.data_len % RNG_SIZE;
+        let fed_len = this.data_len;
 
         for (var i = 0; i < length; i++, fed_len++, j = RNG_IDX(j + 1)) {
             this.slide_window[j] = data[i];
@@ -402,10 +402,10 @@ export class Tlsh {
 
             if (fed_len >= 4) {
                 //only calculate when input >= 5 bytes
-                var j_1 = RNG_IDX(j - 1);
-                var j_2 = RNG_IDX(j - 2);
-                var j_3 = RNG_IDX(j - 3);
-                var j_4 = RNG_IDX(j - 4);
+                let j_1 = RNG_IDX(j - 1);
+                let j_2 = RNG_IDX(j - 2);
+                let j_3 = RNG_IDX(j - 3);
+                let j_4 = RNG_IDX(j - 4);
 
                 for (var k = 0; k < TLSH_CHECKSUM_LEN; k++) {
                     if (k == 0) {
@@ -418,7 +418,7 @@ export class Tlsh {
                     }
                 }
 
-                var r;
+                let r;
                 r = b_mapping(2, this.slide_window[j], this.slide_window[j_1], this.slide_window[j_2]);
                 r = b_mapping(2, this.slide_window[j], this.slide_window[j_1], this.slide_window[j_2]);
                 r = b_mapping(2, this.slide_window[j], this.slide_window[j_1], this.slide_window[j_2]);
@@ -450,14 +450,14 @@ export class Tlsh {
             throw new Error("ERROR: length too small - " + this.data_len); //  + ")");
         }
 
-        var quartiles = new Object();
+        let quartiles = new Object();
         quartiles.q1 = 0;
         quartiles.q2 = 0;
         quartiles.q3 = 0;
         find_quartile(this, quartiles);
 
         // buckets must be more than 50% non-zero
-        var nonzero = 0;
+        let nonzero = 0;
         for (var i = 0; i < CODE_SIZE; i++) {
             for (var j = 0; j < 4; j++) {
                 if (this.a_bucket[4 * i + j] > 0) {
@@ -470,9 +470,9 @@ export class Tlsh {
         }
 
         for (var i = 0; i < CODE_SIZE; i++) {
-            var h = 0;
+            let h = 0;
             for (var j = 0; j < 4; j++) {
-                var k = this.a_bucket[4 * i + j];
+                let k = this.a_bucket[4 * i + j];
                 if (quartiles.q3 < k) {
                     h += 3 << (j * 2); // leave the optimization j*2 = j<<1 or j*2 = j+j for compiler
                 } else if (quartiles.q2 < k) {
@@ -494,7 +494,7 @@ export class Tlsh {
             return "ERROR IN PROCESSING";
         }
 
-        var tmp = new Object();
+        let tmp = new Object();
         tmp.checksum = new Uint8Array(TLSH_CHECKSUM_LEN);
         tmp.Lvalue = 0;
         tmp.Q = 0;
@@ -514,7 +514,7 @@ export class Tlsh {
 
         this.lsh_code = to_hex(tmp.checksum, TLSH_CHECKSUM_LEN);
 
-        var tmpArray = new Uint8Array(1);
+        let tmpArray = new Uint8Array(1);
         tmpArray[0] = tmp.Lvalue;
         this.lsh_code = this.lsh_code.concat(to_hex(tmpArray, 1));
 
@@ -541,10 +541,10 @@ export class Tlsh {
         }
 
         len_diff = typeof len_diff !== 'undefined' ? len_diff : true;
-        var diff = 0;
+        let diff = 0;
 
         if (len_diff) {
-            var ldiff = mod_diff(this.Lvalue, other.Lvalue, RANGE_LVALUE);
+            let ldiff = mod_diff(this.Lvalue, other.Lvalue, RANGE_LVALUE);
             if (ldiff == 0)
                 diff = 0;
             else if (ldiff == 1)
@@ -554,14 +554,14 @@ export class Tlsh {
                 diff += ldiff * 12;
         }
 
-        var q1diff = mod_diff(getQLo(this.Q), getQLo(other.Q), RANGE_QRATIO);
+        let q1diff = mod_diff(getQLo(this.Q), getQLo(other.Q), RANGE_QRATIO);
         if (q1diff <= 1)
             diff += q1diff;
 
         else
             diff += (q1diff - 1) * 12;
 
-        var q2diff = mod_diff(getQHi(this.Q), getQHi(other.Q), RANGE_QRATIO);
+        let q2diff = mod_diff(getQHi(this.Q), getQHi(other.Q), RANGE_QRATIO);
         if (q2diff <= 1)
             diff += q2diff;
 
@@ -594,10 +594,10 @@ export class Tlsh {
             }
         }
 
-        var tmp = from_hex(str);
+        let tmp = from_hex(str);
         // Order of assignment is based on order of fields in lsh_bin
         // Also note that TLSH_CHECKSUM_LEN is 1
-        var i = 0;
+        let i = 0;
         this.checksum[i] = swap_byte(tmp[i++]);
         this.Lvalue = swap_byte(tmp[i++]);
         this.Q = swap_byte(tmp[i++]);

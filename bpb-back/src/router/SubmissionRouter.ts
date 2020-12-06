@@ -36,8 +36,8 @@ class SubmissionRouter extends AbstractRouter {
    * @param res 200 and JSON body if submission is created, 400 otherwise
    */
   createSubmissionFn = async(req : express.Request,res : express.Response) => {
-    var submissionName = req.body.name;
-    var assignmentId = req.body.assignment_id;
+    let submissionName = req.body.name;
+    let assignmentId = req.body.assignment_id;
 
     if(submissionName == undefined || assignmentId == undefined) {
       res.status(400);
@@ -48,7 +48,7 @@ class SubmissionRouter extends AbstractRouter {
     this.assignmentManager.getAssignment(assignmentId)
       .then((assignment) => {
         
-        var createBody = {name:submissionName,assignment_id:assignment.getId()};
+        let createBody = {name:submissionName,assignment_id:assignment.getId()};
         
         this.submissionManager.createSubmission(createBody)
         .then((submission) =>{
@@ -71,13 +71,13 @@ class SubmissionRouter extends AbstractRouter {
    * @param res 200 and JSON body if submissions are found, 400 otherwise
    */
   getSubmissionsOfAssignmentFn = async(req : express.Request,res : express.Response) => {
-    var assignmentId = req.params.id; 
+    let assignmentId = req.params.id; 
     this.assignmentManager.getAssignment(assignmentId)
       .then((assignment) => {
         this.submissionManager.getSubmissions(assignmentId)
           .then((submissions: ISubmission[]) => {
-            var submissionEntries = submissions.map((submission) => { return submission.getId(); });
-            var responseBody = { submissionIds:submissionEntries }
+            let submissionEntries = submissions.map((submission) => { return submission.getId(); });
+            let responseBody = { submissionIds:submissionEntries }
             res.send(responseBody);
           }).catch((err) => {
             res.status(400)
@@ -95,7 +95,7 @@ class SubmissionRouter extends AbstractRouter {
    * @param res 200 and JSON body if submission is found, 400 otherwise
    */
   getSubmissionFn = async(req : express.Request,res : express.Response) => {    
-    var submissionId = req.params.id; 
+    let submissionId = req.params.id; 
     this.submissionManager.getSubmission(submissionId)
       .then((submission) => {
         res.send(submission.asJSON());  
@@ -111,15 +111,15 @@ class SubmissionRouter extends AbstractRouter {
    * @param res 200 and JSON body if submission was updated, 400 otherwise
    */
   updateSubmissionFn = async(req : express.Request,res : express.Response) => {
-    var submissionId = req.params.id; 
-    var name = req.body.name;
-    var assignment_id = req.body.assignment_id;
+    let submissionId = req.params.id; 
+    let name = req.body.name;
+    let assignment_id = req.body.assignment_id;
 
     if(name == undefined || assignment_id == undefined) {
       res.status(400);
       res.send({"response":"name and assignment_id properties must both be defined on the request body"});
     } else {
-      var submissionData = {name:name,assignment_id:assignment_id}
+      let submissionData = {name:name,assignment_id:assignment_id}
       this.submissionManager.updateSubmission(submissionId, submissionData)
       .then((submission) => {
         res.send(submission.asJSON());  
@@ -136,7 +136,7 @@ class SubmissionRouter extends AbstractRouter {
    * @param res 200 and JSON body if submission is deleted, 400 otherwise
    */
   deleteSubmissionFn = async(req : express.Request,res : express.Response) => {
-    var submissionId = req.params.id; 
+    let submissionId = req.params.id; 
     this.submissionManager.deleteSubmission(submissionId)
       .then(() => {
         res.status(200);
@@ -172,7 +172,7 @@ class SubmissionRouter extends AbstractRouter {
    */
   createSubmissionFileFn = async (req : express.Request,res : express.Response) => {
 
-    var submissionId = req.params.id;
+    let submissionId = req.params.id;
 
     if(!req.files) {
         res.status(400);
@@ -220,12 +220,12 @@ class SubmissionRouter extends AbstractRouter {
    */
   getSubmissionFileContentsFn = async (req : express.Request,res : express.Response) => {
 
-    var submissionId = req.params.id;
-    var fileIndex = Number(req.params.fileId); 
+    let submissionId = req.params.id;
+    let fileIndex = Number(req.params.fileId); 
     
     this.submissionManager.getSubmission(submissionId).then((submission) => {
 
-      var fileNames = submission.getFiles();
+      let fileNames = submission.getFiles();
 
       if(fileNames.length == 0) {
         res.status(400);

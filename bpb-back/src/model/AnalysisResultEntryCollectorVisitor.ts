@@ -109,12 +109,12 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
         if(parseTree instanceof ParserRuleContext) {
         //Cast ParseTree to ParserRuleContext to access certain tokens and properties
             let asParserRuleContext = parseTree as ParserRuleContext;
-            var textContent = asParserRuleContext.text;
-            var contextType = JavaParser.ruleNames[asParserRuleContext.ruleContext.ruleIndex];
-            var lineStart = asParserRuleContext._start.line;
-            var lineStop = asParserRuleContext._stop.line;
-            var charPosStart = asParserRuleContext._start.charPositionInLine;
-            var charPosStop = asParserRuleContext._stop.charPositionInLine;
+            let textContent = asParserRuleContext.text;
+            let contextType = JavaParser.ruleNames[asParserRuleContext.ruleContext.ruleIndex];
+            let lineStart = asParserRuleContext._start.line;
+            let lineStop = asParserRuleContext._stop.line;
+            let charPosStart = asParserRuleContext._start.charPositionInLine;
+            let charPosStop = asParserRuleContext._stop.charPositionInLine;
         }
         return new AnalysisResultEntry("",submissionId, this.fileName, contextType, lineStart, charPosStart, lineStop, charPosStop, hashValue, textContent);
     }

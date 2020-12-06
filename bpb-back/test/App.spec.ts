@@ -6,7 +6,7 @@ describe('App.ts',()=> {
 
     it('Should run, not explode, and shut down gracefully', () => {
         
-        var app = new App(AppConfig.dbConnectionString(),AppConfig.port());
+        let app = new App(AppConfig.dbConnectionString(),AppConfig.port());
         
         expect(app).to.not.be.undefined;
         
@@ -17,7 +17,7 @@ describe('App.ts',()=> {
 
     it("Should throw an appropriate error if a database connection can't be acquired due to invalid connection string",() => {
         
-        var app = new App("invalid_connection_string","6656");
+        let app = new App("invalid_connection_string","6656");
         
         return app.run().then((res) => {
             expect(true,"App should fail to run, but it did not").to.equal(false);

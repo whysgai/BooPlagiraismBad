@@ -6,23 +6,23 @@ import { AnalysisResult, IAnalysisResult } from "../src/model/AnalysisResult";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 
 describe("AnalysisResult.ts", () => {
-    var mockEntry1 : IAnalysisResultEntry;
-    var mockEntry2 : IAnalysisResultEntry;
-    var mockEntry3 : IAnalysisResultEntry;
-    var mockEntry4 : IAnalysisResultEntry;
+    let mockEntry1 : IAnalysisResultEntry;
+    let mockEntry2 : IAnalysisResultEntry;
+    let mockEntry3 : IAnalysisResultEntry;
+    let mockEntry4 : IAnalysisResultEntry;
     
     //Used in our spy-ed functions
-    var filename1 : string;
-    var subId1 : string;
-    var filename2 : string;
-    var subId2 : string;
-    var filename3 : string;
-    var subId3 : string;
-    var filename4 : string;
-    var subId4 : string;
+    let filename1 : string;
+    let subId1 : string;
+    let filename2 : string;
+    let subId2 : string;
+    let filename3 : string;
+    let subId3 : string;
+    let filename4 : string;
+    let subId4 : string;
     
-    var testSimilarityScore : number;
-    var testAnalysisResult : IAnalysisResult;
+    let testSimilarityScore : number;
+    let testAnalysisResult : IAnalysisResult;
 
 
     before(() => {
@@ -182,10 +182,10 @@ describe("AnalysisResult.ts", () => {
             let matches = [[are1, are2]];
             let files = new Map<string, string>().set(subId1, filename1).set(subId2, filename2)
             let matchesJSON = [[are1, are2]].map((match) => {return [match[0].asJSON(), match[1].asJSON()]})
-            var expectedJSON = {'similarityScore': 5,
+            let expectedJSON = {'similarityScore': 5,
                                 'files': [...files],
                                 'matches': matchesJSON}
-            var analysisResult = new AnalysisResult(matches, 5, subId1, subId2, filename1, filename2);
+            let analysisResult = new AnalysisResult(matches, 5, subId1, subId2, filename1, filename2);
             expect(analysisResult.asJSON()).to.deep.equal(expectedJSON);
         });
     });

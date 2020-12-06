@@ -33,14 +33,14 @@ class AssignmentRouter extends AbstractRouter {
   createAssignmentFn = async(req : express.Request,res : express.Response) => {
 
   //TODO: Add checks to ensure submission ids exist before creating 
-    var assignmentName = req.body.name;
+    let assignmentName = req.body.name;
 
     if(assignmentName == undefined) {
       res.status(400);
       res.send({"response":"An assignment name was not provided"});
     } else {
 
-      var createBody = {"name":assignmentName,"submissionIds":[] as string[]}
+      let createBody = {"name":assignmentName,"submissionIds":[] as string[]}
 
       this.assignmentManager.createAssignment(createBody)
       .then(assignment => {
@@ -61,8 +61,8 @@ class AssignmentRouter extends AbstractRouter {
       
     this.assignmentManager.getAssignments()
         .then((assignments: IAssignment[]) => {
-          var assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
-          var responseBody = { assignments:assignmentEntries }
+          let assignmentEntries = assignments.map((assignment) => { return assignment.asJSON(); });
+          let responseBody = { assignments:assignmentEntries }
           res.send(responseBody);
         }).catch((err) => {
           res.status(400)
@@ -77,7 +77,7 @@ class AssignmentRouter extends AbstractRouter {
    */
   getAssignmentFn = async(req : express.Request,res : express.Response) => {
     
-    var assignmentId = req.params.id;
+    let assignmentId = req.params.id;
   
     this.assignmentManager.getAssignment(assignmentId)
     .then(assignment => {
@@ -95,14 +95,14 @@ class AssignmentRouter extends AbstractRouter {
   updateAssignmentFn = async(req : express.Request,res : express.Response) => {
 
   //TODO: Add checks to ensure submission ids exist before update
-    var assignmentId = req.params.id;
+    let assignmentId = req.params.id;
     
     if(!req.body.name || !req.body.submissionIds) {
       res.status(400);
       res.send({"response":"A request body was not provided, or the provided request body is missing either name or submissionIds properties"});
     } else {
       
-      var updateBody = {"name":req.body.name,"submissionIds":req.body.submissionIds}
+      let updateBody = {"name":req.body.name,"submissionIds":req.body.submissionIds}
 
       this.assignmentManager.updateAssignment(assignmentId,updateBody)
       .then(assignment => {
@@ -121,7 +121,7 @@ class AssignmentRouter extends AbstractRouter {
    */
   deleteAssignmentFn = async(req : express.Request,res : express.Response) => {
 
-    var assignmentId = req.params.id;
+    let assignmentId = req.params.id;
     
       this.assignmentManager.deleteAssignment(assignmentId)
       .then(() => {

@@ -3,9 +3,9 @@ import {Assignment,IAssignment} from "../src/model/Assignment"
 
 describe("Assignment.ts",() => {
 
-    var assignment : IAssignment;
-    var assignmentName : string;
-    var subIds : string[];
+    let assignment : IAssignment;
+    let assignmentName : string;
+    let subIds : string[];
 
     beforeEach(() => {
         assignmentName = "Dr Hugo Z. Hackenbush"        
@@ -123,16 +123,16 @@ describe("Assignment.ts",() => {
 
     describe("getModelInstance()",() => {
         it("should return a new model instance that matches the Assignment object if there are no submissions",() => {
-            var modelInstance = assignment.getModelInstance();
-            var expected  = '{\n  submissionIds: [],\n  _id: ' + assignment.getId() + ',\n  name: \'' + assignmentName + '\'\n}';
+            let modelInstance = assignment.getModelInstance();
+            let expected  = '{\n  submissionIds: [],\n  _id: ' + assignment.getId() + ',\n  name: \'' + assignmentName + '\'\n}';
             expect(modelInstance.toString()).to.equal(expected);
         });
         
         it("should return a new model instance that matches the Assignment object if there are submissions added",() => {
             assignment.addSubmission("testy");
             assignment.addSubmission("testy2");
-            var modelInstance = assignment.getModelInstance();
-            var expected  = '{\n  submissionIds: [ \'testy\', \'testy2\' ],\n  _id: ' + assignment.getId() + ',\n  name: \'' + assignmentName + '\'\n}';
+            let modelInstance = assignment.getModelInstance();
+            let expected  = '{\n  submissionIds: [ \'testy\', \'testy2\' ],\n  _id: ' + assignment.getId() + ',\n  name: \'' + assignmentName + '\'\n}';
             expect(modelInstance.toString()).to.equal(expected);
         });
 
@@ -140,7 +140,7 @@ describe("Assignment.ts",() => {
 
     describe("getStaticModel()",() => {
         it("should return a valid Assignment model",() => {
-            var staticModel = Assignment.getStaticModel();
+            let staticModel = Assignment.getStaticModel();
             expect(staticModel.schema).to.not.be.undefined;
         });
     });
@@ -153,7 +153,7 @@ describe("Assignment.ts",() => {
             assignmentBuilder.setSubmissionIds(subIds);
             assignment = assignmentBuilder.build();
 
-            var expectedJSON = {
+            let expectedJSON = {
                 "_id": assignment.getId(),
                 "name": assignment.getName(),
                 "submissionIds": assignment.getSubmissionIds()

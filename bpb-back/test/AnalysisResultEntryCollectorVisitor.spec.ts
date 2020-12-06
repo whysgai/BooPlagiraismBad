@@ -12,10 +12,10 @@ import { AnalysisResultEntry } from '../src/model/AnalysisResultEntry';
 import { doesIntersect } from 'tslint';
 
 describe("AnalysisResultEntryCollectorVisitor.ts", () => {
-    var exampleTree : ParseTree;
-    var exampleFileName: string;
-    var exampleSubmissionId = '8675309';
-    var mockSubmission : ISubmission;
+    let exampleTree : ParseTree;
+    let exampleFileName: string;
+    let exampleSubmissionId = '8675309';
+    let mockSubmission : ISubmission;
 
     before((done) => {
         mockSubmission = Sinon.createStubInstance(Submission);
@@ -45,7 +45,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     });
 
     describe("getAnalysisResultEntries()", () => {
-        var newVisitor : AnalysisResultEntryCollectorVisitor;
+        let newVisitor : AnalysisResultEntryCollectorVisitor;
 
         beforeEach(() => {
             newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
@@ -83,7 +83,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     });
 
     describe("hasVisited()", () => {
-        var newVisitor : IAnalysisResultEntryCollectorVisitor;
+        let newVisitor : IAnalysisResultEntryCollectorVisitor;
 
         beforeEach(() => {
             newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
@@ -100,18 +100,18 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     })
 
     describe("visit()", () => {
-        var analysisResultEntries : AnalysisResultEntry[];
-        var firstEntry : AnalysisResultEntry;
+        let analysisResultEntries : AnalysisResultEntry[];
+        let firstEntry : AnalysisResultEntry;
 
         before(() => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             newVisitor.visit(exampleTree);
             analysisResultEntries = newVisitor.getAnalysisResultEntries();
             firstEntry = analysisResultEntries[0];
         });
 
         it("Should throw an error if there is not enough variation in a subtree's text content", () => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             let errorMsg = 'ERROR: not enough variation in input - ';
             chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
             let badVisitAttempt = () => newVisitor.visit(exampleTree);
@@ -120,7 +120,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("Should throw an error if a subtree's text content is too small", () => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             let errorMsg = "ERROR: not enough variation in input - "
             chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
             let badVisitAttempt = () => newVisitor.visit(exampleTree);
@@ -129,7 +129,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("Should throw an error if an unexpected error is thrown by createAnalysisResultEntry", () => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             let errorMsg = "some unexpected error"
             chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
             let badVisitAttempt = () => newVisitor.visit(exampleTree);
@@ -177,7 +177,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
     describe("visitChildren()", () => {
 
         it("Should throw an error if attempting to visit a child node throws an unanticipated error.", () => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             let errorMsg = "some unexpected error";
             chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
             let exampleRuleNode = exampleTree as RuleNode;
@@ -186,7 +186,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("Should not throw an error if createAnalysisResultEntry throws an error because the string content is too short.", () => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             let errorMsg = "ERROR: length too small -";
             chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
             let exampleRuleNode = exampleTree as RuleNode;
@@ -195,7 +195,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("Should not throw an error if createAnalysisResultEntry throws an error because the string content is too short.", () => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             let errorMsg = "ERROR: not enough variation in input - ";
             chai.spy.on(newVisitor, 'createAnalysisResultEntry', () => {throw new Error(errorMsg);});
             let exampleRuleNode = exampleTree as RuleNode;
@@ -204,7 +204,7 @@ describe("AnalysisResultEntryCollectorVisitor.ts", () => {
         });
 
         it("Should break loop in function if shouldVisitNextChild returns false.", () => {
-            var newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
+            let newVisitor = new AnalysisResultEntryCollectorVisitor(exampleFileName, mockSubmission);
             let errorMsg = "ERROR: not enough variation in input - ";
             chai.spy.on(newVisitor, 'shouldVisitNextChild', () => false);
             let exampleRuleNode = exampleTree as RuleNode;

@@ -21,13 +21,13 @@ export const AssignmentDAO : IAssignmentDAO = class {
     static async createAssignment(name : string, submissionIds : string[]): Promise<IAssignment> {
         return new Promise((resolve,reject) => {
             
-            var assignmentBuilder = new Assignment.builder();
+            let assignmentBuilder = new Assignment.builder();
             assignmentBuilder.setName(name);
             assignmentBuilder.setSubmissionIds(submissionIds);
             
-            var assignment = assignmentBuilder.build();
+            let assignment = assignmentBuilder.build();
 
-            var assignmentModel = assignment.getModelInstance();
+            let assignmentModel = assignment.getModelInstance();
 
             assignmentModel.save().then(() => {
                 resolve(assignment);
@@ -74,8 +74,8 @@ export const AssignmentDAO : IAssignmentDAO = class {
                 if(model == undefined) {
                     reject(new Error("Cannot find: No assignment with the given id exists in the database"));
                 } else {
-                    var builder = new Assignment.builder();
-                    var assignment = builder.buildFromExisting(model);
+                    let builder = new Assignment.builder();
+                    let assignment = builder.buildFromExisting(model);
                     resolve(assignment);
                 }
             }).catch((err) => {

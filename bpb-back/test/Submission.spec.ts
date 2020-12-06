@@ -10,8 +10,8 @@ const readFileContent = util.promisify(fs.readFile);
 
 describe("Submission.ts.SubmissionBuilder",() => {
 
-    var testSubmission : ISubmission;
-    var testSubmissionBuilder : any;
+    let testSubmission : ISubmission;
+    let testSubmissionBuilder : any;
 
     beforeEach(() => {
         testSubmissionBuilder = new Submission.builder();
@@ -19,7 +19,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
 
     describe("setName()",() => {
         it("Should correctly set submission's name",() => {
-           var newName = "some_test";
+           let newName = "some_test";
            testSubmissionBuilder.setName(newName);
            testSubmission = testSubmissionBuilder.build();
            expect(testSubmission.getName()).to.equal(newName);
@@ -29,7 +29,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
     describe("setAssignmentId()",() => {
 
         it("Should correctly set submission's assignment ID",() => {
-            var newAssignmentId = "some_assignment_id";
+            let newAssignmentId = "some_assignment_id";
             testSubmissionBuilder.setAssignmentId(newAssignmentId);
             testSubmission = testSubmissionBuilder.build();
             expect(testSubmission.getAssignmentId()).to.equal(newAssignmentId);
@@ -38,7 +38,7 @@ describe("Submission.ts.SubmissionBuilder",() => {
 
     describe("setFiles()",() => {
         it("Should correctly set submission's files",() => {
-            var files = ["some","test","files"];
+            let files = ["some","test","files"];
             testSubmissionBuilder.setFiles(files);
             testSubmission = testSubmissionBuilder.build();
             expect(testSubmission.getFiles()).to.deep.equal(files);
@@ -59,9 +59,9 @@ describe("Submission.ts.SubmissionBuilder",() => {
 
     describe("setEntries()",() => {
         it("Should correctly set submission's entries",() => {
-            var testSubmissionNoEntries = testSubmissionBuilder.build();
+            let testSubmissionNoEntries = testSubmissionBuilder.build();
             expect(testSubmissionNoEntries.getEntries()).to.deep.equal(new Map<string, IAnalysisResultEntry>());
-            var entries = new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]);
+            let entries = new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","3","4",5,6,7,8,"9","10")]);
             testSubmissionBuilder.setEntries(entries);
             testSubmission = testSubmissionBuilder.build();
             expect(testSubmission.getEntries()).to.equal(entries);
@@ -79,8 +79,8 @@ describe("Submission.ts.SubmissionBuilder",() => {
             expect(testSubmission.getFileContents()).to.not.be.undefined;
         });
         it("Should correctly build a submission if builder methods are called",() => {
-            var newName = "some_other_name";
-            var newAssignmentId = "some_other_id";
+            let newName = "some_other_name";
+            let newAssignmentId = "some_other_id";
             testSubmissionBuilder.setName(newName);
             testSubmissionBuilder.setAssignmentId(newAssignmentId);
             testSubmission = testSubmissionBuilder.build();
@@ -95,18 +95,18 @@ describe("Submission.ts.SubmissionBuilder",() => {
 
     describe("buildFromExisting()",() => {
         it("Should correctly build a submission from an existing database model",() => {
-            var newName = "some_other_name";
-            var newAssignmentId = "some_other_id";
+            let newName = "some_other_name";
+            let newAssignmentId = "some_other_id";
             testSubmissionBuilder.setName(newName);
             testSubmissionBuilder.setAssignmentId(newAssignmentId);
             testSubmissionBuilder.setFiles(["some","files"]);
             testSubmissionBuilder.setEntries(new Map<string, IAnalysisResultEntry[]>().set("someFileName", [new AnalysisResultEntry("1","2","someFileName","4",5,6,7,8,"9","10")]));
             testSubmissionBuilder.setFileContents(["sir lancelot of camelot","robin the somewhat brave"]);
             testSubmission = testSubmissionBuilder.build();
-            var testExistingModel = testSubmission.getModelInstance();
+            let testExistingModel = testSubmission.getModelInstance();
 
-            var testSubmissionBuilderExisting = new Submission.builder();
-            var testSubmissionExisting = testSubmissionBuilderExisting.buildFromExisting(testExistingModel);
+            let testSubmissionBuilderExisting = new Submission.builder();
+            let testSubmissionExisting = testSubmissionBuilderExisting.buildFromExisting(testExistingModel);
             expect(testSubmissionExisting.getId()).to.deep.equal(testSubmission.getId());
             expect(testSubmissionExisting.getName()).to.deep.equal(testSubmission.getName());
             expect(testSubmissionExisting.getAssignmentId()).to.deep.equal(testSubmission.getAssignmentId());
@@ -124,12 +124,12 @@ describe("Submission.ts.SubmissionBuilder",() => {
 
 describe("Submission.ts",() => {
 
-    var testSubmissionA : ISubmission;
-    var testSubmissionB : ISubmission;
-    var testFileContent : string;
-    var testEntryA : IAnalysisResultEntry;
-    var testEntryB : IAnalysisResultEntry;
-    var testFileContents : string[];
+    let testSubmissionA : ISubmission;
+    let testSubmissionB : ISubmission;
+    let testFileContent : string;
+    let testEntryA : IAnalysisResultEntry;
+    let testEntryB : IAnalysisResultEntry;
+    let testFileContents : string[];
 
     before(() => {
         chai.use(chaiSpies);
@@ -140,13 +140,13 @@ describe("Submission.ts",() => {
         testFileContent = "reallylongstringwithplentyofcontenttoexceedtheminimumlengthrequiredinordertohavesufficientlevelsofdifferencetobemeasurable";
         testFileContents = ["five is","right out!"]
 
-        var builderA = new Submission.builder();
+        let builderA = new Submission.builder();
         builderA.setName("name_a");
         builderA.setAssignmentId("id_a");
         builderA.setFileContents(testFileContents);
         testSubmissionA = builderA.build();
 
-        var builderB = new Submission.builder();
+        let builderB = new Submission.builder();
         builderB.setName("name_b");
         builderB.setAssignmentId("id_b");
         testSubmissionB = builderB.build();
@@ -341,7 +341,7 @@ describe("Submission.ts",() => {
         });
 
         it("Should throw an appropriate error if the specified file was already added to the submission",() => {
-            var expectedErrorMsg = "Submission file " + testEntryA.getFileName() + " was already added to the submission";
+            let expectedErrorMsg = "Submission file " + testEntryA.getFileName() + " was already added to the submission";
 
             return testSubmissionA.addFile(testFileContent,testEntryA.getFileName()).then(() => {
                 testSubmissionA.addFile("the same file ",testEntryA.getFileName()).then(() => {
@@ -364,7 +364,7 @@ describe("Submission.ts",() => {
     describe("asJSON()",() => {
         it("Should return an object with the expected properties",() => {
             
-            var expectedJSON = {
+            let expectedJSON = {
                 "_id": testSubmissionA.getId(),
                 "assignment_id": testSubmissionA.getAssignmentId(),
                 "entries": [...new Map().set(testEntryA.getFileName(), [testEntryA]).set(testEntryB.getFileName(), [testEntryB])],
