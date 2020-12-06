@@ -9,6 +9,7 @@ import SubmissionData from "../src/types/SubmissionData"
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { AnalysisResult } from "../src/model/AnalysisResult";
 import fs from 'fs';
+import { ExplicitGenericInvocationContext } from "java-ast";
 
 describe("SubmissionManager.ts",() => {
 
@@ -32,11 +33,6 @@ describe("SubmissionManager.ts",() => {
 
     beforeEach((done)=>{
         chai.spy.restore();
-        //chai.spy.restore(SubmissionDAO,'createSubmission');
-        //chai.spy.restore(SubmissionDAO,'readSubmission');
-        //chai.spy.restore(SubmissionDAO,'readSubmissions');
-        //chai.spy.restore(SubmissionDAO,'updateSubmission');
-        //chai.spy.restore(SubmissionDAO,'deleteSubmission');
 
         let testSubmissionBuilder = new Submission.builder();
         testSubmissionBuilder.setName(testSubmissionName);
@@ -153,8 +149,37 @@ describe("SubmissionManager.ts",() => {
     });
     
     describe("invalidateCaches()",() => {
+        
+        //Note: Doesn't directly test clear for ComparisonCache
         it("Should clear the cache and reset cache count",() => {
-            
+            let mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
+
+            //Initial query accesses DAO and returns mock
+            return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
+                expect(submission).to.deep.equal(testSubmission);
+                expect(mockReadSubmission).to.have.been.called.once.with(testSubmissionId);
+
+                //Second query uses cache (doesn't access DAO)
+                return testSubmissionManager.getSubmission(testSubmissionId).then((submission2) => {
+                    expect(submission2).to.deep.equal(testSubmission);
+                    expect(mockReadSubmission).to.have.been.called.once; // Cache is used
+                    
+                    testSubmissionManager.invalidateCaches();
+
+                    return testSubmissionManager.getSubmission(testSubmissionId).then((submission2) => {
+                        expect(submission2).to.deep.equal(testSubmission);
+                        expect(mockReadSubmission).to.have.been.called.twice; // Cache is NOT used (was invalidated)
+                    });
+                });
+            });
+        });
+    });
+
+    describe("getInstance",() => {
+        it("should always return the same SubmissionManager instance",() => {
+            let smA = SubmissionManager.getInstance();
+            let smB = SubmissionManager.getInstance();
+            expect(smA).to.equal(smB);
         });
     });
 

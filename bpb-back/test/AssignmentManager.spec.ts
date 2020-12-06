@@ -27,6 +27,14 @@ describe("AssignmentManager.ts",() => {
         done();
     });
 
+    describe("getInstance",() => {
+        it("should always return the same AssignmentManager instance",() => {
+            let amA = AssignmentManager.getInstance();
+            let amB = AssignmentManager.getInstance();
+            expect(amA).to.equal(amB);
+        });
+    });
+
     describe("warmCaches()",() => {
 
         beforeEach(() => {
