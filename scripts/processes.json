@@ -14,7 +14,7 @@
                 "UPLOADDIRECTORY":"/home/vagrant/",
                 "DBCONNECTIONSTRING":"mongodb://127.0.0.1:27017/bpb",
                 "MAXFILEUPLOADSIZE":"5000000",
-                "COMPARISONTHRESHOLD":"100",
+                "COMPARISONTHRESHOLD":"60",
                 "MAXMATCHESPERFILE":"100000000"
             }
         },
