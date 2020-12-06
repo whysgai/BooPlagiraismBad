@@ -2,7 +2,7 @@ import Submission from '../types/Submission';
 import Action from "../types/Action"
 
 const initialState = {
-    submissions: [] as String[],
+    submissions: [] as Submission[],
     compareSubmissions: [] as Submission[],
     tempAssignment: {
         _id: '123',
@@ -27,7 +27,17 @@ const SubmissionReducer = (state = initialState, action : Action) => {
             }
 
         case 'DELETE_SUBMISSION':
-
+            let submission : Submission
+            let newSubmissions : Submission[] = []
+            for (submission of state.submissions) {
+                if (submission != action.removeSubmission) {
+                    newSubmissions.push(submission)
+                }
+            }
+            return {
+                ...state,
+                submissions: newSubmissions
+            }
         default:
             return state;
     }

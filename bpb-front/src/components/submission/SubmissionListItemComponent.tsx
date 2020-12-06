@@ -2,6 +2,7 @@ import React from 'react';
 import Submission from '../../types/Submission'
 import {addSubmissionComparison, removeSubmissionComparison} from '../../actions/ComparisonAction';
 import {store} from '../../store'
+import { removeSubmission } from '../../actions/SubmissionAction';
 
 interface PropsType {
   submission: Submission
@@ -42,6 +43,13 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
     }
   }
 
+  deleteSubmission() {
+    store.dispatch(removeSubmission(this.props.submission))
+    this.setState({
+
+    })
+  }
+
   render() {
     return (
       <div className='submission-list-item'>
@@ -53,6 +61,7 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
         <span>
           {this.props.submission.name}
         </span>
+        <button className='btn btn-outline-danger ml-2' onClick={() => {this.deleteSubmission(); window.location.reload()}}>delete</button>
       </div>
     );
   }

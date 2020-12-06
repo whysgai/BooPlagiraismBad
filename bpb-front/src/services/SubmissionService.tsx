@@ -12,6 +12,17 @@ export function postSubmission(name : string, assignment: Assignment, files: Fil
     }).then(response => response.json()).then(newSubmission => postFiles(newSubmission, files))
 }
 
+export function deleteSubmission(submission: Submission) : void {
+    fetch(`${vagrantURL}submissions/${submission._id}`, {
+        method: 'DELETE',
+        headers: {'content-type': 'application/json'}
+    }).then(response =>
+        response.json().then(json => {
+          return json;
+        }))
+    //.then(response => response.json()).then(newSubmission => postFiles(newSubmission, files))
+}
+
 export function postFiles(submission: Submission, files: File[]) : void { 
     let file : File
     for (file of files) {
