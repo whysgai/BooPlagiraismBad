@@ -84,10 +84,18 @@ class CreateSubmissionComponent extends React.Component <PropsType, {name: strin
           this.setState({
             files: uploadFiles
           });
+          console.log("! Files to upload", this.state.files);
         };
         // Actually runs the reader, invoking the above
         reader.readAsText(file);        
         return false;
+      },
+      onRemove : (file: any) => {
+        this.setState(state =>{
+          return {
+            files: this.state.files.filter((f : any) => f.uid !== file.uid)
+          }
+        })
       }
     };
 
