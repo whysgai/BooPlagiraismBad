@@ -34,7 +34,7 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
             <span>No matches found.</span>            
         }        
         {
-          (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore < 100) &&
+          (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore < 1) &&
             <div>
               <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
               <div className="col-12 text-align-center">Matches:</div>
@@ -55,7 +55,7 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
             </div>            
         }
         {
-          (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore >= 100) &&
+          (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore >= 1) &&
             <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
         }
       </div>
