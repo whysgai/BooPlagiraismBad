@@ -18,13 +18,14 @@ interface PropTypes extends RouteComponentProps<MatchParams> {
 
 }
 
-class SubmissionListComponent extends React.Component <PropTypes, {submissions: Submission[], compareEnabled: number}> {
+class SubmissionListComponent extends React.Component <PropTypes, {submissions: Submission[], compareEnabled: number, retrievedFromServer: boolean}> {
 
   constructor(props : PropTypes) {
     super(props);
     this.state = {
       submissions : store.getState().SubmissionReducer.submissions,
-      compareEnabled: 0
+      compareEnabled: 0,
+      retrievedFromServer: false
     };
   }
 
@@ -39,8 +40,12 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
     readSubmissions(assignmentId)
       .then((submissionAction) => store.dispatch(submissionAction))
       .then(() => {
-        this.setState({
-          submissions : store.getState().SubmissionReducer.submissions
+        this.setState((state) => {
+          return {
+            ...this.state,
+            submissions : store.getState().SubmissionReducer.submissions,
+            retrievedFromServer: true
+          }
         })
       })
   }
@@ -68,7 +73,11 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
         </div>
         <Link className='btn btn-outline-success' to={`/Assignments/${this.props.match.params.assignmentId}/CreateSubmission`}>Upload Submission</Link>
         {
-          this.state.submissions.length > 0 &&
+          (!this.state.retrievedFromServer)  &&
+            <h5>Fetching submissions from server</h5>
+        }
+        {
+          (this.state.submissions.length > 0 && this.state.retrievedFromServer) &&
             <ul>
               {this.state.submissions.map((submission, index) => 
                 <li key={index}><SubmissionListItemComponent checkboxOn={false} submission={submission} createSubmission={(arg: String) => null}/></li>
@@ -76,7 +85,7 @@ class SubmissionListComponent extends React.Component <PropTypes, {submissions: 
             </ul>
         }
         {
-          this.state.submissions.length <= 0 &&
+          (this.state.submissions.length <= 0  && this.state.retrievedFromServer)  &&
             <h5>No Submissions Exist for this Assignment</h5>
         }
         

@@ -7,11 +7,12 @@ interface PropsType {
 
 }
 
-class CreateAssignmentComponent extends React.Component <PropsType, {name: string}> {
+class CreateAssignmentComponent extends React.Component <PropsType, {name: string, uploaded: boolean}> {
     constructor(props : PropsType) {
         super(props);
         this.state = {
-          name: ''
+          name: '',
+          uploaded: false
         };
         this.onInputchange = this.onInputchange.bind(this);
   }
@@ -25,6 +26,12 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
 
   callDispatch() {
     store.dispatch(createAssignment('CREATE_ASSIGNMENT', this.state.name));
+    this.setState((state) => {
+      return {
+        ...this.state,
+        uploaded: true
+      }
+    })
   }
 
   assignmentInfoIsEntered() {
@@ -56,17 +63,24 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
                   {
                     !this.assignmentInfoIsEntered() &&
                     <Link className='create-assignment-btn btn btn-outline-secondary disabled mt-2'
-                        to="/"
+                        to="#"
                         onClick={(event) => event.preventDefault()}>
                         Create Assignment
                     </Link>
                   }
                   {
-                    this.assignmentInfoIsEntered() &&
+                    (this.assignmentInfoIsEntered() && !this.state.uploaded) &&
                     <Link className='create-assignment-btn btn btn-outline-success mt-2'
-                        to="/"
-                        onClick={() => this.callDispatch()}>
+                        to="#"
+                        onClick={(event) => {event.preventDefault(); this.callDispatch()}}>
                         Create Assignment
+                    </Link>
+                  }
+                  {
+                    (this.assignmentInfoIsEntered() && this.state.uploaded) &&
+                    <Link className='create-assignment-btn btn btn-outline-success mt-2'
+                        to="/">
+                        Success! Return to Assignments
                     </Link>
                   }
             </span>

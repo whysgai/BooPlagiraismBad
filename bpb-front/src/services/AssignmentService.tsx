@@ -7,7 +7,7 @@ export function postAssignment(name : string) : void {
         method: 'POST',
         body: JSON.stringify({'name': name, 'submissionIds': []}),
         headers: {'content-type': 'application/json'}
-    })
+    });
 }
 
 export async function getAssignments() : Promise<Assignment[]> {
