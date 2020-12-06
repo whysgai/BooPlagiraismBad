@@ -21,8 +21,7 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
     };
   }
 
-  clickMatch(match: Snippet[]) {
-    // Use this to make things happen when you click matches
+  selectMatch(match: Snippet[]) {
     store.dispatch(selectSnippets(match));
   }
 
@@ -34,14 +33,14 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
             <span>No matches found.</span>            
         }        
         {
-          (this.props.comparison.matches && this.props.comparison.matches.length > 0) &&
+          (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore < 1) &&
             <div>
-              <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
-              <div className="col-12 text-align-center">Matches:</div>
+              <div className="col-12 text-align-center">Similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
+              <div className="col-12 text-align-center">Prominent Matches:</div>
               <ul className="nav flex-column col-12">
                 {
-                  this.props.comparison.matches.map((match, index) => 
-                    <li className="nav-item" key={index} onClick={() => this.clickMatch(match)}>
+                  this.props.comparison.matches.slice(0, 10).map((match, index) => 
+                    <li className="nav-item" key={index} onClick={() => this.selectMatch(match)}>
                       <ul>
                         <li className="nav-item-link">Match {index+1}</li>
                         <li>Context {match[0].contextType}</li>
@@ -52,8 +51,11 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
                   )
                 }
               </ul> 
-            </div>
-            
+            </div>            
+        }
+        {
+          (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore >= 1) &&
+            <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
         }
       </div>
     );
