@@ -9,7 +9,7 @@ import { IAssignment, Assignment } from "../src/model/Assignment";
 describe("AssignmentManager.ts",() => {
 
     const testAssignment = new Assignment.builder().build();
-    let testAssignmentManager : AssignmentManager;
+    let testAssignmentManager : IAssignmentManager;
 
     before(() => {
         chai.use(chaiSpies);
@@ -23,11 +23,23 @@ describe("AssignmentManager.ts",() => {
         chai.spy.restore(AssignmentDAO,'updateAssignment');
         chai.spy.restore(AssignmentDAO,'deleteAssignment');
         chai.spy.restore(AssignmentManager,'getAssignments');
-        testAssignmentManager = new AssignmentManager();
+        testAssignmentManager = AssignmentManager.getInstance();
         done();
     });
 
+    describe("getInstance",() => {
+        it("should always return the same AssignmentManager instance",() => {
+            let amA = AssignmentManager.getInstance();
+            let amB = AssignmentManager.getInstance();
+            expect(amA).to.equal(amB);
+        });
+    });
+
     describe("warmCaches()",() => {
+
+        beforeEach(() => {
+          testAssignmentManager.invalidateCaches();  
+        });
 
         it("Should warm cache",() => {
 
@@ -81,7 +93,37 @@ describe("AssignmentManager.ts",() => {
         });
     });
 
+    describe("invalidateCaches()",() => {
+
+        beforeEach(() => {
+            testAssignmentManager.invalidateCaches();
+        });
+
+        it("Should clear the cache and reset cache count",() => {
+            let mockReadAssignment = chai.spy.on(AssignmentDAO,'readAssignment',() => { return Promise.resolve(testAssignment)});
+
+            return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentMiss) => {
+                expect(mockReadAssignment).to.have.been.called.once.with(testAssignment.getId());
+                expect(assignmentMiss).to.deep.equal(testAssignment);
+                
+                return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentHit) => {
+                    expect(mockReadAssignment).to.have.been.called.once.with(testAssignment.getId());
+
+                    testAssignmentManager.invalidateCaches();
+
+                    return testAssignmentManager.getAssignment(testAssignment.getId()).then((assignmentHit) => {
+                        expect(mockReadAssignment).to.have.been.called.twice.with(testAssignment.getId());
+                    });
+                });
+            });
+        });
+    });
+
     describe("getAssignment()",() => {
+
+        beforeEach(() => {
+            testAssignmentManager.invalidateCaches();
+        });
 
         it("Should return the specified assignment if one exists with the given id",() => {
 
@@ -110,6 +152,10 @@ describe("AssignmentManager.ts",() => {
     })
 
     describe("getAssignments()",() => {
+        
+        beforeEach(() => {
+            testAssignmentManager.invalidateCaches();
+        });
 
         it("Should not utilise cache to return assignments if assignments exist but are not in cache",() => {
             let mockAssignment = new Assignment.builder().build();
@@ -155,6 +201,10 @@ describe("AssignmentManager.ts",() => {
     });
 
     describe("updateAssignment()",()=> {
+
+        beforeEach(() => {
+            testAssignmentManager.invalidateCaches();
+        });
 
         it("Should correctly manipulate AssignmentDAO to update the specified assignment if {id} is valid",() => {
             let updatedAssignmentBuilder = new Assignment.builder();

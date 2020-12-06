@@ -3,7 +3,6 @@ import chaiSpies from "chai-spies";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { ISubmission, Submission } from "../src/model/Submission";
 import { readFileSync } from 'fs';
-import { AnalysisResult } from "../src/model/AnalysisResult";
 import fs from 'fs';
 import util from 'util';
 const readFileContent = util.promisify(fs.readFile);

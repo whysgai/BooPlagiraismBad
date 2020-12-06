@@ -70,33 +70,65 @@ export interface ISubmissionManager {
     deleteSubmission(submissionId : string) : Promise<void>;
     compareSubmissions(submissionIdA : string, submissionIdB : string) : Promise<string>
     getSubmissionFileContent(submissionId : string, index : number) : Promise<string>
-    getComparisonCache() : ComparisonCache;
+    setComparisonCache(cache : ComparisonCache) : void;
+    setCompareWorker(workerFilePath : string) : void;
+    invalidateCaches() : void;
 }
 
 export class SubmissionManager implements ISubmissionManager {
 
+    private static instance : ISubmissionManager;
     private submissionCache : Map<string,ISubmission>;
     private submissionCacheByAssignment : Map<string, ISubmission[]>;
     private submissionComparisonSemaphores : Map<string, boolean>;
     private comparisonCache : ComparisonCache;
     private workerFilePath : string;
     
-    constructor(workerFilePath : string) {
+    private constructor() {
         this.submissionCache = new Map<string,ISubmission>();
         this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
         this.submissionComparisonSemaphores = new Map<string,boolean>();
         this.comparisonCache = new ComparisonCache();
+        this.workerFilePath = "./src/worker/CompareWorker.js";
+    }
+
+    /**
+     * Gets or creates singleton instance of SubmissionManager
+     */
+    public static getInstance() : ISubmissionManager {
+        if(!SubmissionManager.instance) {
+            SubmissionManager.instance = new SubmissionManager();
+        }
+
+        return SubmissionManager.instance;
+    }
+
+    /**
+     * Set the worker called on comparison (for testing)
+     * @param workerFilePath 
+     */
+    setCompareWorker(workerFilePath : string) : void {
         this.workerFilePath = workerFilePath;
     }
 
     /**
-     * For testing
-     *  
+     * Set the comparison cache to the provided cache (for testing)
+     * @param cache
      */
-    getComparisonCache() : ComparisonCache {
-        return this.comparisonCache;
+    setComparisonCache(cache : ComparisonCache) : void {
+        this.comparisonCache = cache;
     }
-     
+
+    /**
+     * Reset all caches (for testing)
+     */
+    invalidateCaches() : void {
+        this.submissionCache = new Map<string,ISubmission>();
+        this.submissionCacheByAssignment = new Map<string, ISubmission[]>();
+        this.submissionComparisonSemaphores = new Map<string,boolean>();
+        this.comparisonCache = new ComparisonCache();
+    }
+
     /**
      * Creates a submission with the given SubmissionData
      * @param data 

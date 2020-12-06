@@ -7,12 +7,12 @@ import util from 'util';
 import chai = require("chai");
 import chaiHttp = require("chai-http");
 import chaiSpies = require("chai-spies");
-import { SubmissionManager } from "../src/manager/SubmissionManager";
+import { ISubmissionManager, SubmissionManager } from "../src/manager/SubmissionManager";
 import { Submission, ISubmission } from "../src/model/Submission";
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import { AnalysisResult } from "../src/model/AnalysisResult";
 import { Assignment, IAssignment } from "../src/model/Assignment";
-import { AssignmentManager } from "../src/manager/AssignmentManager";
+import { IAssignmentManager, AssignmentManager } from "../src/manager/AssignmentManager";
 import { AnalysisResultEntryCollectorVisitor } from "../src/model/AnalysisResultEntryCollectorVisitor";
 import fileUpload = require("express-fileupload");
 import { AppConfig } from '../src/AppConfig';
@@ -24,8 +24,8 @@ describe('SubmissionRouter.ts',()=> {
     let app : express.Application;
     let testServer : any;
     let testRouter : IRouter;
-    let testSubmissionManager : SubmissionManager;
-    let testAssignmentManager : AssignmentManager;
+    let testSubmissionManager : ISubmissionManager;
+    let testAssignmentManager : IAssignmentManager;
     let testSubmission : ISubmission;
     let testAssignment : IAssignment;
     let testAre1 : AnalysisResultEntry;
@@ -41,11 +41,14 @@ describe('SubmissionRouter.ts',()=> {
     beforeEach(() => {
         app = express();
         app.use(express.json());
-        app.use(fileUpload()); //Need to use for multipart data, rather than bodyparser.json()
+        app.use(fileUpload());
 
-        testSubmissionManager = new SubmissionManager("./src/worker/CompareWorker.js");
-        testAssignmentManager = new AssignmentManager();
-        
+        testAssignmentManager = AssignmentManager.getInstance();
+        testSubmissionManager = SubmissionManager.getInstance();
+        testAssignmentManager.invalidateCaches();
+        testSubmissionManager.invalidateCaches();
+        chai.spy.restore();
+
         testAssignment = new Assignment.builder().build();
 
         let builder = new Submission.builder();

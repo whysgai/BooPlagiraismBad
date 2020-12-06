@@ -31,8 +31,13 @@ describe('AssignmentRouter.ts',()=> {
         app = express();
         app.use(express.json());
         app.use(fileUpload());      
-        testAssignmentMgr = new AssignmentManager();
-        testSubmissionMgr = new SubmissionManager("./src/worker/CompareWorker.js");
+        testAssignmentMgr = AssignmentManager.getInstance();
+        testSubmissionMgr = SubmissionManager.getInstance();
+        testAssignmentMgr.invalidateCaches();
+        testSubmissionMgr.invalidateCaches();
+        chai.spy.restore();
+        
+        
         testRouter = new AssignmentRouter(app,"/assignments",testSubmissionMgr,testAssignmentMgr); 
         testServer = app.listen(8081);
 
@@ -83,9 +88,6 @@ describe('AssignmentRouter.ts',()=> {
             expect(res.body).to.have.property("response").which.equals("An assignment name was not provided");
         });
     });
-
-    //TODO: Add later
-    it.skip('Should be able to interpret a failed request to POST /assignments/ if any specified submission IDs do not exist');
     
     it('Should be able to interpret a failed request to POST /assignments/ if manager fails to create submission',() => {
 
