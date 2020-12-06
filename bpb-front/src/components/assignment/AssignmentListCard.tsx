@@ -2,7 +2,7 @@ import React from 'react';
 import Assignment from '../../types/Assignment'
 import { Link } from 'react-router-dom';
 import { store } from '../../store';
-import {setCurrentAssignment} from '../../actions/AssignmentAction'
+import {setCurrentAssignment, removeAssignment} from '../../actions/AssignmentAction'
 
 interface PropsType {
   assignment: Assignment
@@ -21,6 +21,10 @@ class AssignmentListCard extends React.Component <PropsType,{}> {
   setAssignment() {
     store.dispatch(setCurrentAssignment('SET_CURRENT_ASSIGNMENT', this.props.assignment))
   }
+
+  deleteAssignment() {
+    store.dispatch(removeAssignment(this.props.assignment))
+  }
   
   render() {
     return (
@@ -30,6 +34,7 @@ class AssignmentListCard extends React.Component <PropsType,{}> {
             {this.props.assignment.name}
           </span>
         </Link>
+        <button className='btn btn-outline-danger ml-2' onClick={() => {this.deleteAssignment(); window.location.reload()}}>delete</button>
       </div>
     );
   }

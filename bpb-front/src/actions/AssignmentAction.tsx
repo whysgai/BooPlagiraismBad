@@ -1,5 +1,7 @@
-import {postAssignment, getAssignments, getAssignment} from '../services/AssignmentService'
+import {postAssignment, getAssignments, getAssignment, deleteAssignment} from '../services/AssignmentService'
 import Assignment from '../types/Assignment'
+import { getSubmissionIds, deleteSubmission } from '../services/SubmissionService';
+import { removeSubmissionComparison } from './ComparisonAction';
 
 export function createAssignment(type : string, name : string) {
     return {
@@ -35,3 +37,16 @@ export function readAssignments() {
         }
     });
 }
+
+export function removeAssignment(assignment: Assignment) : any {
+    getSubmissionIds(assignment._id).then((submissionIds) => {
+        for (let submissionId of submissionIds) {
+            deleteSubmission(submissionId)
+        }
+    }) //removed return on getSubmissionIds, this may need some refactoring if async is messed up
+    deleteAssignment(assignment)
+    return {
+        type: 'DELETE_ASSIGNMENT',
+        assignment: assignment,
+    }
+};
