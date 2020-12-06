@@ -12,14 +12,14 @@ import { ISubmissionManager, SubmissionManager } from "../src/manager/Submission
 
 describe('AssignmentRouter.ts',()=> {
     
-    var app : express.Application;
-    var testServer : any;
-    var testRouter : IRouter;
-    var testAssignmentMgr : IAssignmentManager;
-    var testSubmissionMgr : ISubmissionManager;
+    let app : express.Application;
+    let testServer : any;
+    let testRouter : IRouter;
+    let testAssignmentMgr : IAssignmentManager;
+    let testSubmissionMgr : ISubmissionManager;
 
-    var expectedName: string;
-    var mockAssignment: IAssignment;
+    let expectedName: string;
+    let mockAssignment: IAssignment;
 
 
     before(() => {
@@ -50,9 +50,9 @@ describe('AssignmentRouter.ts',()=> {
 
         const postBody = {"name":expectedName};
 
-        var mockCreateAssignment = chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.resolve(mockAssignment)})
+        let mockCreateAssignment = chai.spy.on(testAssignmentMgr,'createAssignment',() => {return Promise.resolve(mockAssignment)})
         
-        var expectedPostBody = {"name":expectedName,"submissionIds":[] as string[]}
+        let expectedPostBody = {"name":expectedName,"submissionIds":[] as string[]}
         
         chai.request(testServer).post("/assignments/")
         .send(postBody)
@@ -175,7 +175,7 @@ describe('AssignmentRouter.ts',()=> {
         const putBody = {"name":expectedName,"submissionIds":["test1","test2"]}
 
         chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment2)});
-        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment2)});
+        let mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment2)});
  
         chai.request(testServer).put("/assignments/" + mockAssignment2.getId())
         .send(putBody)
@@ -191,7 +191,7 @@ describe('AssignmentRouter.ts',()=> {
         const putBody = {"name":expectedName,"submissionIds":["test21"]}
 
         chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
-        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
+        let mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
  
         chai.request(testServer).put("/assignments/"+expectedId)
         .send(putBody)
@@ -205,7 +205,7 @@ describe('AssignmentRouter.ts',()=> {
     it('Should be able to interpret a failed request to PUT /assignments/{id} if request body does not include all expected properties',() => {
 
         chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
-        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
+        let mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.resolve(mockAssignment)});
  
         chai.request(testServer).put("/assignments/" + mockAssignment.getId())
         .then(res => {
@@ -220,7 +220,7 @@ describe('AssignmentRouter.ts',()=> {
         const putBody = {"name":expectedName,"submissionIds":["test1","test2"]}
 
         chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
-        var mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("Update failed"))});
+        let mockUpdateMethod = chai.spy.on(testAssignmentMgr,'updateAssignment',() =>{return Promise.reject(new Error("Update failed"))});
  
         chai.request(testServer).put("/assignments/" + mockAssignment.getId())
         .send(putBody)
@@ -234,7 +234,7 @@ describe('AssignmentRouter.ts',()=> {
     it("Should be able to interpret a request to DELETE /assignments/{id} where {id} is valid",() => {
 
         chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
-        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.resolve()});
+        let mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.resolve()});
  
         chai.request(testServer).delete("/assignments/"+mockAssignment.getId())
         .then(res => {
@@ -247,7 +247,7 @@ describe('AssignmentRouter.ts',()=> {
     it("Should be able to interpret a failed request to DELETE /assignments/{id} where {id} is invalid",() => {
 
         chai.spy.on(testAssignmentMgr,'getAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
-        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
+        let mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.reject(new Error("The requested assignment does not exist"))});
  
         chai.request(testServer).delete("/assignments/" + mockAssignment.getId())
         .then(res => {
@@ -260,7 +260,7 @@ describe('AssignmentRouter.ts',()=> {
     it("Should be able to interpret a failed request to DELETE /assignments/{id} where manager.deleteAssignment fails",() => {
 
         chai.spy.on(testAssignmentMgr,'getAssignment',() => {return Promise.resolve(mockAssignment)});
-        var mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.reject(new Error("Delete failed"))});
+        let mockDeleteMethod = chai.spy.on(testAssignmentMgr,'deleteAssignment',() =>{return Promise.reject(new Error("Delete failed"))});
  
         chai.request(testServer).delete("/assignments/"+mockAssignment.getId())
         .then(res => {

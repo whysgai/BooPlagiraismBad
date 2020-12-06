@@ -7,7 +7,7 @@ let submissionB = new Submission.builder().buildFromJson(input[1]);
 
 submissionA.compare(submissionB).then((analysisResults) => {
 
-    var results = [] as any[];
+    let results = [] as any[];
 
     analysisResults.forEach(res => {
         results.push(res.asJSON());

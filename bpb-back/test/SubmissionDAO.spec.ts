@@ -2,19 +2,18 @@ import { expect } from "chai";
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
 import { AppConfig } from "../src/AppConfig";
-import { SubmissionManager } from "../src/manager/SubmissionManager";
 import { AnalysisResultEntry, IAnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 import {ISubmission, Submission} from "../src/model/Submission";
 
-var mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 import { SubmissionDAO } from "../src/model/SubmissionDAO";
 
 describe("SubmissionDAO.ts",() => {
 
-    var testSubmission : ISubmission;
-    var testSubmissionName : string;
-    var testAssignmentId : string;
+    let testSubmission : ISubmission;
+    let testSubmissionName : string;
+    let testAssignmentId : string;
 
     before((done) => {
         chai.use(chaiAsPromised);
@@ -35,7 +34,7 @@ describe("SubmissionDAO.ts",() => {
 
         mongoose.connection.collections.submissions.drop(() => {
 
-            var builder = new Submission.builder();
+            let builder = new Submission.builder();
             builder.setName(testSubmissionName);
             builder.setAssignmentId(testAssignmentId);
             testSubmission = builder.build();
@@ -104,7 +103,7 @@ describe("SubmissionDAO.ts",() => {
         });
     
         it("Should throw an appropriate error if {id} of submission to be read is invalid",() => {
-            var nonPersistedSubmission = new Submission.builder().build(); 
+            let nonPersistedSubmission = new Submission.builder().build(); 
             return expect(SubmissionDAO.readSubmission(nonPersistedSubmission.getId())).to.eventually.be.rejectedWith("Cannot find: No submission with the given id exists in the database");
         });
 
@@ -126,7 +125,7 @@ describe("SubmissionDAO.ts",() => {
         });
 
         it("should return all submissions with the provided assignmentid if some exist", () => {
-            var testSubmission2 = new Submission.builder().build(); 
+            let testSubmission2 = new Submission.builder().build(); 
 
             return SubmissionDAO.createSubmission(testSubmission.getName(), testSubmission.getAssignmentId()).then((createdSubmission) => {
                 
@@ -216,7 +215,7 @@ describe("SubmissionDAO.ts",() => {
         });
 
         it("Should throw an appropriate error if no submissions exist in the database with the specified id",() => {
-            var newSubmission = new Submission.builder().build();
+            let newSubmission = new Submission.builder().build();
             return SubmissionDAO.updateSubmission(newSubmission).then(updatedSubmission => {
                 expect(true,"updateSubmission should have failed, but it succeeded").to.equal(false);
             }).catch((err) =>{
@@ -259,7 +258,7 @@ describe("SubmissionDAO.ts",() => {
         });
     
         it("Should throw an appropriate error if {id} specified for deletion is invalid",() => {
-            var newSubmission = new Submission.builder().build();
+            let newSubmission = new Submission.builder().build();
             return expect(SubmissionDAO.deleteSubmission(newSubmission.getId())).to.eventually.be.rejectedWith("Cannot delete: No submission with the given id exists in the database");
         });
 

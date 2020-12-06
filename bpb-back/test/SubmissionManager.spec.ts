@@ -15,13 +15,13 @@ import { AppConfig } from '../src/AppConfig';
 
 describe("SubmissionManager.ts",() => {
 
-    var testSubmissionManager : ISubmissionManager;
-    var testSubmission : ISubmission;
-    var testSubmissionId : string;
-    var testSubmissionName : string;
-    var testSubmissionAssignmentId : string;
-    var testFileName : string;
-    var testFilePath : string;
+    let testSubmissionManager : ISubmissionManager;
+    let testSubmission : ISubmission;
+    let testSubmissionId : string;
+    let testSubmissionName : string;
+    let testSubmissionAssignmentId : string;
+    let testFileName : string;
+    let testFilePath : string;
 
     before(()=>{
         chai.use(chaiSpies);
@@ -39,7 +39,7 @@ describe("SubmissionManager.ts",() => {
         chai.spy.restore(SubmissionDAO,'updateSubmission');
         chai.spy.restore(SubmissionDAO,'deleteSubmission');
 
-        var testSubmissionBuilder = new Submission.builder();
+        let testSubmissionBuilder = new Submission.builder();
         testSubmissionBuilder.setName(testSubmissionName);
         testSubmissionBuilder.setAssignmentId(testSubmissionAssignmentId);
         testSubmission = testSubmissionBuilder.build();
@@ -49,11 +49,11 @@ describe("SubmissionManager.ts",() => {
     });
 
     describe("ComparisonCache", () => {
-        var testComparisonCache : ComparisonCache;
-        var submissionIdA : string;
-        var submissionIdB : string;
-        var analysisResults : string;
-        var analysisResultEntries : IAnalysisResultEntry[][];
+        let testComparisonCache : ComparisonCache;
+        let submissionIdA : string;
+        let submissionIdB : string;
+        let analysisResults : string;
+        let analysisResultEntries : IAnalysisResultEntry[][];
         
         before(() => {
             submissionIdA = 'abcd';
@@ -160,7 +160,7 @@ describe("SubmissionManager.ts",() => {
         });
         
         it("Should return submission if the provided ID is valid",()=> {
-            var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
+            let mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
             //Initial query accesses DAO and returns mock
             return testSubmissionManager.getSubmission(testSubmissionId).then((submission) => {
@@ -177,7 +177,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should throw an error if there is no submission with the provided ID",() =>{
             
-            var mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
+            let mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
             
             return testSubmissionManager.getSubmission("some_nonexistent_id").then((submission) => {
                 expect(true,"getSubmission is succeeding where it should fail (should not find submission with nonexistent id)").to.equal(false);
@@ -194,7 +194,7 @@ describe("SubmissionManager.ts",() => {
         });
         
         it("Should return submissions of the given assignment if there are some",()=> {
-            var mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
+            let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() =>{return Promise.resolve([testSubmission])});
             let mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
             //First call pulls from database, since cache is empty
@@ -263,7 +263,7 @@ describe("SubmissionManager.ts",() => {
         it("Should properly create a submission if body parameters are correct (includes name, assignment_id)",() => {
             
             chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
-            var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+            let createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
 
             return testSubmissionManager.createSubmission(createBody).then((submission) => {
                 expect(submission.getName()).to.equal(testSubmission.getName());
@@ -280,7 +280,7 @@ describe("SubmissionManager.ts",() => {
             it("Should properly cache the submission in submissionCache",() => {
                 chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
                 let mockReadSubmission = chai.spy.on(SubmissionDAO, 'readSubmission', () => {return Promise.resolve(testSubmission)});
-                var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+                let createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
     
                 return testSubmissionManager.createSubmission(createBody).then((submission) => {
                     return testSubmissionManager.getSubmission(submission.getId()).then((fetchedSubmission) => {
@@ -293,7 +293,7 @@ describe("SubmissionManager.ts",() => {
             it("Should not update the submissionCacheByAssignment if it is empty", () => {
                 chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
                 let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions',() => {return Promise.resolve([testSubmission])});
-                var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+                let createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
     
                 return testSubmissionManager.createSubmission(createBody).then((submission) => {
                     return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((submissionsFromRead) => {
@@ -306,7 +306,7 @@ describe("SubmissionManager.ts",() => {
             it("Should update the submissionCacheByAssignment if it is not empty and contains a submission with a matching assignmentId", () => {
                 chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
                 let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions',() => {return Promise.resolve([testSubmission])});
-                var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+                let createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
                 
                 return testSubmissionManager.createSubmission(createBody).then((submission) => {
                     return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((submissionsFromRead1) => {
@@ -327,8 +327,8 @@ describe("SubmissionManager.ts",() => {
             it("Should not update the submissionCacheByAssignment if it is not empty and does not a submission with a matching assignmentId", () => {
                 chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.resolve(testSubmission)});
                 let mockReadSubmissions = chai.spy.on(SubmissionDAO, 'readSubmissions',() => {return Promise.resolve([testSubmission])});
-                var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
-                var createBody2 : SubmissionData = {name:testSubmission.getName(),assignment_id:'a different assignment Id'}
+                let createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId}
+                let createBody2 : SubmissionData = {name:testSubmission.getName(),assignment_id:'a different assignment Id'}
                 
                 return testSubmissionManager.createSubmission(createBody).then((submission) => {
                     return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((submissionsFromRead1) => {
@@ -350,7 +350,7 @@ describe("SubmissionManager.ts",() => {
         it("Should throw an appropriate error if DAO fails to create a submission",() => {
             chai.spy.on(SubmissionDAO,'createSubmission',() => {return Promise.reject(new Error("Failed to create"))});
 
-            var createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
+            let createBody : SubmissionData = {name:testSubmission.getName(),assignment_id:testSubmissionAssignmentId};
             
             return testSubmissionManager.createSubmission(createBody).then(() => {
                 expect(true,"createSubmission should fail, but it didn't").to.equal(false);
@@ -371,10 +371,10 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(SubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass through
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = "test2";
+            let expectedNewName = "test";
+            let expectedNewAssnId = "test2";
 
-            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
 
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(expectedNewName);
@@ -387,9 +387,9 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(SubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass through
 
-            var expectedNewName = "test";
+            let expectedNewName = "test";
 
-            var updateBody : SubmissionData = {name:expectedNewName, assignment_id: testSubmission.getAssignmentId()};
+            let updateBody : SubmissionData = {name:expectedNewName, assignment_id: testSubmission.getAssignmentId()};
 
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(expectedNewName);
@@ -402,9 +402,9 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(SubmissionDAO,'updateSubmission',(submission) => {return Promise.resolve(submission)}); //Pass-through updated submission
 
-            var expectedNewAssnId = "test2";
+            let expectedNewAssnId = "test2";
 
-            var updateBody : SubmissionData = {name: testSubmission.getName(), assignment_id:expectedNewAssnId};
+            let updateBody : SubmissionData = {name: testSubmission.getName(), assignment_id:expectedNewAssnId};
 
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(submission.getName()).to.equal(testSubmissionName);
@@ -417,10 +417,10 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.reject(new Error("Submission does not exist"))});
             chai.spy.on(SubmissionDAO,'updateSubmission');
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = "test2";
+            let expectedNewName = "test";
+            let expectedNewAssnId = "test2";
 
-            var updateBody : SubmissionData = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let updateBody : SubmissionData = {name:expectedNewName,assignment_id:expectedNewAssnId};
 
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(true,"updateSubmission is succeeding where it should fail (no submission exists with submission id)").to.equal(false);
@@ -434,10 +434,10 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.reject(new Error("updateSubmission failed"))});
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = "test2";
+            let expectedNewName = "test";
+            let expectedNewAssnId = "test2";
 
-            var updateBody : SubmissionData = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let updateBody : SubmissionData = {name:expectedNewName,assignment_id:expectedNewAssnId};
 
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission) => {
                 expect(true,"updateSubmission is succeeding where it should fail (updateSubmission should fail)").to.equal(false);
@@ -452,10 +452,10 @@ describe("SubmissionManager.ts",() => {
             let mockReadSubmission = chai.spy.on(SubmissionDAO,'readSubmission',() => {return Promise.resolve(testSubmission)});
             chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)}); //Pass through
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = "test2";
+            let expectedNewName = "test";
+            let expectedNewAssnId = "test2";
 
-            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
 
             //initial call to update
             return testSubmissionManager.updateSubmission(testSubmission.getId(),updateBody).then((submission1) => {
@@ -494,9 +494,9 @@ describe("SubmissionManager.ts",() => {
             let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() => {return Promise.resolve([testSubmission])});
             chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)}); //Pass through
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = testSubmissionAssignmentId;
-            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let expectedNewName = "test";
+            let expectedNewAssnId = testSubmissionAssignmentId;
+            let updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
             
             return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissionArr) => {
                 expect(mockReadSubmissions).to.have.been.called.once;
@@ -514,9 +514,9 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO, 'readSubmission', () => {return Promise.resolve(testSubmission)})
             chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)}); //Pass through
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = "test2";
-            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let expectedNewName = "test";
+            let expectedNewAssnId = "test2";
+            let updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
 
             return testSubmissionManager.updateSubmission(testSubmissionId, updateBody).then((updatedSubmission) => {
                 return testSubmissionManager.getSubmissions(updatedSubmission.getAssignmentId()).then((fromCacheArr) => {
@@ -531,9 +531,9 @@ describe("SubmissionManager.ts",() => {
             chai.spy.on(SubmissionDAO, 'readSubmission', () => {return Promise.resolve(testSubmission)})
             chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)}); //Pass through
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = "test2";
-            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let expectedNewName = "test";
+            let expectedNewAssnId = "test2";
+            let updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
             
             return testSubmissionManager.updateSubmission(testSubmissionId, updateBody).then((updatedSubmission) => {
                 return testSubmissionManager.getSubmissions(testSubmission.getAssignmentId()).then((fromCacheArr) => {
@@ -547,9 +547,9 @@ describe("SubmissionManager.ts",() => {
             let mockReadSubmissions = chai.spy.on(SubmissionDAO,'readSubmissions',() => {return Promise.resolve([testSubmission])});
             chai.spy.on(SubmissionDAO,'updateSubmission',() => {return Promise.resolve(testSubmission)}); //Pass through
 
-            var expectedNewName = "test";
-            var expectedNewAssnId = "test2";
-            var updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
+            let expectedNewName = "test";
+            let expectedNewAssnId = "test2";
+            let updateBody = {name:expectedNewName,assignment_id:expectedNewAssnId};
             
             return testSubmissionManager.getSubmissions(testSubmissionAssignmentId).then((submissionArr) => {
                 expect(mockReadSubmissions).to.have.been.called.once;
@@ -576,13 +576,13 @@ describe("SubmissionManager.ts",() => {
 
         it("Should save and add a file into the submission specified by the client",() => {
 
-            var mockSubmission = new Submission.builder().build();
+            let mockSubmission = new Submission.builder().build();
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
-            var mockUpdateSubmission = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(mockSubmission)}); //Required
+            let mockUpdateSubmission = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(mockSubmission)}); //Required
 
-            var mockAddFile = chai.spy.on(mockSubmission,'addFile',() => { return Promise.resolve() });
-            var expectedContent = 'HOT CONTENT';
+            let mockAddFile = chai.spy.on(mockSubmission,'addFile',() => { return Promise.resolve() });
+            let expectedContent = 'HOT CONTENT';
             
             testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName, expectedContent).then(() => {
                 expect(mockAddFile).to.have.been.called.with(expectedContent,testFileName);
@@ -592,14 +592,14 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if file was already added to the submission",() => {
             
-            var mockSubmission = new Submission.builder().build();
+            let mockSubmission = new Submission.builder().build();
             mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1","tset",testFileName,"test",1,1,2,2,"test","Test"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
-            var mockUpdate = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{ return Promise.resolve(testSubmission)}); //Required
+            let mockUpdate = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{ return Promise.resolve(testSubmission)}); //Required
             
             chai.spy.on(testSubmission,'addFile',() => {return Promise.reject(new Error("Submission file " + testFileName + " was already added to the submission"))});
-            var expectedContent = 'HOT CONTENT';
+            let expectedContent = 'HOT CONTENT';
         
             return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName, expectedContent).then(() => {
                 expect(true,"processSubmissionFile is succeeding where it should fail (file name was already added)").to.equal(false);
@@ -612,11 +612,11 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if submission ID is invalid",() => {
             
-            var mockSubmission = new Submission.builder().build();
+            let mockSubmission = new Submission.builder().build();
             
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("Submission does not exist"))});
-            var mockUpdate = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
-            var mockAddFile = chai.spy.on(testSubmission,'addFile');
+            let mockUpdate = chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.resolve(testSubmission)}); //Required
+            let mockAddFile = chai.spy.on(testSubmission,'addFile');
             let expectedContent = 'HOT CONTENT';
             return testSubmissionManager.processSubmissionFile(mockSubmission.getId(),testFileName, expectedContent).then(() => {
                 expect(true,"processSubmissionFile is succeeding where it should fail (submission doesn't exist with id)").to.equal(false);
@@ -630,7 +630,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if DAO fails to update the submission",() => {
 
-            var mockSubmission = new Submission.builder().build();
+            let mockSubmission = new Submission.builder().build();
             
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
             chai.spy.on(SubmissionDAO,'updateSubmission',() =>{return Promise.reject(new Error("Failed to update"))}); 
@@ -663,7 +663,7 @@ describe("SubmissionManager.ts",() => {
             updatedModel.entries = [['fileName', [new AnalysisResultEntry("are1",testSubmission.getId(),'fileName',"test",1,2,1,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e")]]];
             
             let updatedTestSubmission = new Submission.builder().buildFromExisting(updatedModel);
-            var testSubmission2 = new Submission.builder().build(); 
+            let testSubmission2 = new Submission.builder().build(); 
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),'anotherFileName',"test2",1,1,2,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
             testSubmission2.addFile('anotherFileName', newContent); 
             
@@ -672,7 +672,7 @@ describe("SubmissionManager.ts",() => {
             let mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission',() => {return Promise.resolve(testSubmission)});
 
             let cache = testSubmissionManager.getComparisonCache();
-            var cacheGet = chai.spy.on(cache,'get',()=>{return "some string"});
+            let cacheGet = chai.spy.on(cache,'get',()=>{return "some string"});
 
             return testSubmissionManager.compareSubmissions(testSubmission.getId(), testSubmission2.getId()).then((analysisResults) => {
 
@@ -717,7 +717,7 @@ describe("SubmissionManager.ts",() => {
             
             chai.spy.on(SubmissionDAO,'readSubmission',() =>{return Promise.resolve(testSubmission)});
 
-            var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.resolve(testSubmission)}); 
+            let mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.resolve(testSubmission)}); 
             
             return testSubmissionManager.deleteSubmission(testSubmissionId).then(() => {
                 expect(mockDeleteSubmission).to.have.been.called.with(testSubmissionId);
@@ -727,7 +727,7 @@ describe("SubmissionManager.ts",() => {
         it("Should throw an error if there is no submission with the provided ID",() =>{
             
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("No submission exists with id"))});
-            var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {}); 
+            let mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {}); 
             
             return testSubmissionManager.deleteSubmission("some_nonexistent_id").then((submission) => {
                 expect(true,"deleteSubmission is succeeding where it should fail (should not find submission with nonexistent id)").to.equal(false);
@@ -741,7 +741,7 @@ describe("SubmissionManager.ts",() => {
         it("Should throw an error if the DAO fails to delete the specified submission",() =>{
             
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(testSubmission)});
-            var mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.reject(new Error("Delete failed"))}); 
+            let mockDeleteSubmission = chai.spy.on(SubmissionDAO,'deleteSubmission',() => {return Promise.reject(new Error("Delete failed"))}); 
             
             return testSubmissionManager.deleteSubmission("some_nonexistent_id").then((submission) => {
                 expect(true,"deleteSubmission is succeeding where it should fail (DAO deletion failed)").to.equal(false);
@@ -806,7 +806,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return a valid AnalysisResult if both submissions are valid",() => {
             
-            var testSubmission2 = new Submission.builder().build(); 
+            let testSubmission2 = new Submission.builder().build(); 
 
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"977365D9D3264C4874F181D4B5BF388F7E6CBA8D69BD2965DBF9C00010A8EF2D4A6C94","e"));
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission.getId(),"test2","test2",1,2,1,2,"4FA0029B4085EC515EE16451073904145553E520460994D545522AB121555C5E6A450C","e"));
@@ -814,7 +814,7 @@ describe("SubmissionManager.ts",() => {
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are4",testSubmission2.getId(),"test4","test4",1,1,2,2,"656354D9D3265C4874F182D4B57F388F7E6CBA8D69BD2965CBF9C00010A8EF2D4A6C94","e"));
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are5",testSubmission2.getId(),"test5","test5",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
             
-            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
                     if(submissionId === testSubmission.getId()) {
                         resolve(testSubmission);
@@ -837,11 +837,11 @@ describe("SubmissionManager.ts",() => {
                     expect(mockGetSubmission).to.have.been.called.twice;
                 });
             });
-        }).timeout(5000);
+        }).timeout(8000);
 
         it("Should return a valid AnalysisResult if both submissions are valid (2, sorter coverage)",() => {
             
-            var testSubmission2 = new Submission.builder().build(); 
+            let testSubmission2 = new Submission.builder().build(); 
 
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"977365D9D3264C4874F181D4B5BF388F7E6CBA8D69BD2965DBF9C00010A8EF2D4A6C94","e"));
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test2","test2",1,2,1,2,"4FA0029B4085EC515EE16451073904145553E520460994D545522AB121555C5E6A450C","e"));
@@ -849,7 +849,7 @@ describe("SubmissionManager.ts",() => {
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are4",testSubmission2.getId(),"test4","test4",1,1,2,2,"656354D9D3265C4874F182D4B57F388F7E6CBA8D69BD2965CBF9C00010A8EF2D4A6C94","e"));
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are5",testSubmission.getId(),"test5","test5",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
             
-            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
                     if(submissionId === testSubmission.getId()) {
                         resolve(testSubmission);
@@ -866,16 +866,16 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(mockGetSubmission).to.have.been.called.twice;
             });
-        }).timeout(5000);
+        }).timeout(8000);
 
         it("Should return an appropriate error message if comparison is in progress already",() => {
             
-            var testSubmission2 = new Submission.builder().build(); 
+            let testSubmission2 = new Submission.builder().build(); 
 
             testSubmission.addAnalysisResultEntry(new AnalysisResultEntry("are1",testSubmission.getId(),"test1","test1",1,2,1,2,"890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd890abcd","e"));
             testSubmission2.addAnalysisResultEntry(new AnalysisResultEntry("are2",testSubmission2.getId(),"test4","test4",1,1,2,2,"1234567123456712345671234567123456712345671234567123456712345671234567","e"));
             
-            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
                     setTimeout(()=>{
 
@@ -896,7 +896,7 @@ describe("SubmissionManager.ts",() => {
             }).catch((err) => {
                 expect(err).to.have.property("message").which.equals("Comparison between " + testSubmission2.getId() + " and " + testSubmission.getId() +" is already in progress, please wait!");
             });
-        }).timeout(5000);
+        }).timeout(8000);
 
         it("Should return an appropriate error if submission compare fails",() => {
 
@@ -913,13 +913,13 @@ describe("SubmissionManager.ts",() => {
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(err).to.have.property("message").which.equals("Some error!");
             });
-        }).timeout(5000);
+        }).timeout(8000);
 
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
-            var testSubmission2 = new Submission.builder().build();
+            let testSubmission2 = new Submission.builder().build();
 
-            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
                     if(submissionId === testSubmission2.getId()) {
                         reject(new Error("No submission exists with id"));
@@ -937,13 +937,13 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.not.be.undefined;
                 expect(err).to.have.property("message").which.equals("No submission exists with id");
             });
-        }).timeout(5000);
+        }).timeout(8000);
         
         it("Should return an appropriate error if {id_b} is valid and {id_a} does not exist",() => {
 
-            var testSubmission2 = new Submission.builder().build(); 
+            let testSubmission2 = new Submission.builder().build(); 
 
-            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) =>{
                 return new Promise((resolve,reject) => {
                     if(submissionId === testSubmission.getId()) {
                     reject(new Error("No submission exists with id"));
@@ -965,7 +965,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should return an appropriate error if getSubmissions fails",() => {
 
-            var testSubmission2 = new Submission.builder().build(); 
+            let testSubmission2 = new Submission.builder().build(); 
 
             chai.spy.on(testSubmissionManager,'getSubmission',() => {return Promise.reject(new Error("getSubmission failed"))});
 
@@ -1000,7 +1000,7 @@ describe("SubmissionManager.ts",() => {
             expect(mockSubmission.getFileContents()).to.deep.equal(fileContents)
 
             mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
-            var mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});
     
             return testSubmissionManager.getSubmissionFileContent(mockSubmission.getId(),0).then((content) => {
                 expect(content).to.deep.equal(testContent);
@@ -1010,7 +1010,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should throw an appropriate error if the specified submission does not exist",() => {
             
-            var mockSubmission = new Submission.builder().build();
+            let mockSubmission = new Submission.builder().build();
             mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.reject(new Error("Submission does not exist"))});
@@ -1024,7 +1024,7 @@ describe("SubmissionManager.ts",() => {
 
         it("Should throw an appropriate error if the specified file does not exist",() => {
             
-            var mockSubmission = new Submission.builder().build();
+            let mockSubmission = new Submission.builder().build();
             mockSubmission.addAnalysisResultEntry(new AnalysisResultEntry("",mockSubmission.getId(),testFileName,"1",2,3,4,5,"5","5"));
 
             chai.spy.on(testSubmissionManager,'getSubmission',() =>{return Promise.resolve(mockSubmission)});

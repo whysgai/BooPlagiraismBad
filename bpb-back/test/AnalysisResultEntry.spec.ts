@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { AnalysisResultEntry } from "../src/model/AnalysisResultEntry";
 
 describe("AnalysisResultEntry",() => {
-    var testARE : AnalysisResultEntry;
+    let testARE : AnalysisResultEntry;
 
     before(() => {
         testARE = new AnalysisResultEntry("are1","subid1", "test.java", "method", 
@@ -67,10 +67,10 @@ describe("AnalysisResultEntry",() => {
     
     describe("asJSON",() => {
         it("Should return a valid JSON object with the expected properties",() => {
-            var expected = '{"id":"are1","fileName":"test.java",\
+            let expected = '{"id":"are1","fileName":"test.java",\
             "contextType":"method","lineNumberStart":1, "charPosStart":3, "lineNumberEnd":2, "charPosEnd":4,\
             "hashValue":"245rr1", "submissionId":"subid1", "text":"void test() { }"}'
-            var expectedJSON = JSON.parse(expected);
+            let expectedJSON = JSON.parse(expected);
             expect(testARE.asJSON()).to.deep.equal(expectedJSON);
         });
     });

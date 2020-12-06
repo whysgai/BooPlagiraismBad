@@ -21,16 +21,16 @@ const readFileContent = util.promisify(fs.readFile);
 //Note: these tests depend on environment variables set in scripts/test_* (MAXFILEUPLOADSIZE)
 describe('SubmissionRouter.ts',()=> {
 
-    var app : express.Application;
-    var testServer : any;
-    var testRouter : IRouter;
-    var testSubmissionManager : SubmissionManager;
-    var testAssignmentManager : AssignmentManager;
-    var testSubmission : ISubmission;
-    var testAssignment : IAssignment;
-    var testAre1 : AnalysisResultEntry;
-    var testAre2 : AnalysisResultEntry;
-    var count : number;
+    let app : express.Application;
+    let testServer : any;
+    let testRouter : IRouter;
+    let testSubmissionManager : SubmissionManager;
+    let testAssignmentManager : AssignmentManager;
+    let testSubmission : ISubmission;
+    let testAssignment : IAssignment;
+    let testAre1 : AnalysisResultEntry;
+    let testAre2 : AnalysisResultEntry;
+    let count : number;
 
     before(() => {
         chai.use(chaiHttp);
@@ -48,7 +48,7 @@ describe('SubmissionRouter.ts',()=> {
         
         testAssignment = new Assignment.builder().build();
 
-        var builder = new Submission.builder();
+        let builder = new Submission.builder();
         builder.setAssignmentId(testAssignment.getId());
         builder.setName("test");
         testSubmission = builder.build();
@@ -72,9 +72,9 @@ describe('SubmissionRouter.ts',()=> {
 
         const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getId()};
         
-        var mockARECollector = chai.spy.on(AnalysisResultEntryCollectorVisitor, 'getAnalysisResultEntries', () => { return [testAre1, testAre2]})
+        let mockARECollector = chai.spy.on(AnalysisResultEntryCollectorVisitor, 'getAnalysisResultEntries', () => { return [testAre1, testAre2]})
 
-        var mockGetAssignment = chai.spy.on(
+        let mockGetAssignment = chai.spy.on(
             testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);}
         )
         chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission)});
@@ -93,10 +93,10 @@ describe('SubmissionRouter.ts',()=> {
 
         const postBody = {"name": testSubmission.getName(), "assignment_id": testAssignment.getId()};
         
-        var mockGetAssignment = chai.spy.on(
+        let mockGetAssignment = chai.spy.on(
             testAssignmentManager, 'getAssignment', () => {return Promise.reject(new Error("The requested assignment does not exist"));}
         )
-        var mockCreateSubmission = chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission)});
+        let mockCreateSubmission = chai.spy.on(testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission)});
 
         chai.request(testServer).post("/submissions")
             .send(postBody)
@@ -114,10 +114,10 @@ describe('SubmissionRouter.ts',()=> {
 
         const postBody = {"assignment_id": testAssignment.getId()};
         
-        var mockGetAssignment = chai.spy.on(
+        let mockGetAssignment = chai.spy.on(
             testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
 
-        var mockCreateSubmission = chai.spy.on(
+        let mockCreateSubmission = chai.spy.on(
             testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission);});
 
         chai.request(testServer).post("/submissions")
@@ -135,10 +135,10 @@ describe('SubmissionRouter.ts',()=> {
 
         const postBody = {"name": testSubmission.getName()};
         
-        var mockGetAssignment = chai.spy.on(
+        let mockGetAssignment = chai.spy.on(
             testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
 
-        var mockCreateSubmission = chai.spy.on(
+        let mockCreateSubmission = chai.spy.on(
             testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission);});
 
         chai.request(testServer).post("/submissions")
@@ -158,7 +158,7 @@ describe('SubmissionRouter.ts',()=> {
         
         chai.spy.on(testAssignmentManager, 'getAssignment', () => {return Promise.resolve(testAssignment);});
 
-        var mockCreateSubmission = chai.spy.on(
+        let mockCreateSubmission = chai.spy.on(
             testSubmissionManager, 'createSubmission', () => {return Promise.resolve(testSubmission);});
 
         chai.request(testServer).post("/submissions")
@@ -194,8 +194,8 @@ describe('SubmissionRouter.ts',()=> {
         const sampleFileContent = await readFileContent(sampleFilePath);
         const sampleFileName = 'javaExample.java';
 
-        var mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
-        var mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
+        let mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        let mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
 
         return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
             .attach("submissionFile", sampleFileContent, sampleFileName)
@@ -217,8 +217,8 @@ describe('SubmissionRouter.ts',()=> {
         const sampleFileContent2 = await readFileContent(sampleFilePath2);
         const sampleFileName2 = "javaExample2.java";
 
-        var mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
-        var mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
+        let mockGetSubmission = chai.spy.on(testSubmissionManager, 'getSubmission', () => {return Promise.resolve(testSubmission);});
+        let mockProcessSubmissionFile = chai.spy.on(testSubmissionManager, 'processSubmissionFile', () => {return Promise.resolve();});    
 
         return chai.request(testServer).post("/submissions/" + testSubmission.getId() + "/files")
         .attach("submissionFile", sampleFileContent, sampleFileName)
@@ -334,7 +334,7 @@ describe('SubmissionRouter.ts',()=> {
             testAssignmentManager,'getAssignment',() => {return Promise.resolve(testAssignment);}
         )
 
-        var mockGetSubmissions = chai.spy.on(
+        let mockGetSubmissions = chai.spy.on(
             testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);}
         );
 
@@ -367,7 +367,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.spy.on(
             testAssignmentManager,'getAssignment',() => {return Promise.resolve(mockAssignment);}
         )
-        var mockGetSubmissions = chai.spy.on(
+        let mockGetSubmissions = chai.spy.on(
             testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([]);}
         );
         chai.request(testServer).get("/submissions/ofAssignment/test")
@@ -551,7 +551,7 @@ describe('SubmissionRouter.ts',()=> {
 
         const mockAnalysisResult = new AnalysisResult([[testAre1, testAre2]], 5, testAre1.getSubmissionID(), 
         testAre2.getSubmissionID(), testAre1.getFileName(), testAre2.getFileName());
-        var mockAnalysisResultArray = new Array<AnalysisResult>();
+        let mockAnalysisResultArray = new Array<AnalysisResult>();
         mockAnalysisResultArray.push(mockAnalysisResult);
 
         chai.spy.on(testSubmissionManager, 'compareSubmissions', () => {return Promise.resolve(mockAnalysisResultArray)});
@@ -625,7 +625,7 @@ describe('SubmissionRouter.ts',()=> {
     it("Should be able to interpret a failed request to GET /submissions/{id}/files/{index} if the submission has no files",() => {
 
         testRouter = new SubmissionRouter(app,"/submissions",testSubmissionManager,testAssignmentManager); 
-        var mockSubmission = new Submission.builder().build();
+        let mockSubmission = new Submission.builder().build();
 
         chai.spy.on(testSubmissionManager,"getSubmission",() => { return Promise.resolve(mockSubmission)});
 

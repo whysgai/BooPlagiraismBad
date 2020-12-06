@@ -126,10 +126,10 @@ export interface ISubmission {
          * @returns a new Submission with the provided data, new database model, and corresponding Id
          */
         build() : ISubmission {
-            var submission = new Submission();
+            let submission = new Submission();
             
-            var submissionModel = Submission.getStaticModel();
-            var modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"fileContents":this.fileContents,"entries":[...this.entries]});
+            let submissionModel = Submission.getStaticModel();
+            let modelInstance = new submissionModel({"assignment_id":this.assignment_id,"name":this.name,"files":this.files,"fileContents":this.fileContents,"entries":[...this.entries]});
             
             submission.setId(modelInstance.id);
             submission.setName(this.name);
@@ -148,9 +148,9 @@ export interface ISubmission {
           */
          buildFromJson(object : any): ISubmission {
 
-            var submission = new Submission();
+            let submission = new Submission();
 
-            var entryObjects = object.entries as Array<Array<any>>;
+            let entryObjects = object.entries as Array<Array<any>>;
 
             for(let entry of entryObjects) {
 
@@ -192,7 +192,7 @@ export interface ISubmission {
           * @returns  A submission with the provided data, the provided database model, and the model's id
           */
          buildFromExisting(model : ISubmissionModel) : ISubmission {
-             var submission = new Submission();
+             let submission = new Submission();
             
              if(!model.id || !model.name || !model.assignment_id || !model.entries || !model.files || !model.fileContents) {
                 throw new Error("At least one required model property is not present on the provided model");
@@ -377,8 +377,8 @@ export interface ISubmission {
                 this.files.push(fileName);
                 this.fileContents.push(content); 
     
-                var parseTree = parse(content.toString());
-                var visitor = new AnalysisResultEntryCollectorVisitor(fileName,this); 
+                let parseTree = parse(content.toString());
+                let visitor = new AnalysisResultEntryCollectorVisitor(fileName,this); 
         
                 visitor.visit(parseTree);
         
@@ -508,7 +508,7 @@ export interface ISubmission {
                     let hashB = fileBEntries[j].getHashValue();
 
                     let comparison = this.compareHashValues(hashA, hashB);
-                    var threshold = AppConfig.comparisonThreshold();
+                    let threshold = AppConfig.comparisonThreshold();
 
                     if(comparison < threshold) {
 

@@ -27,8 +27,8 @@ class SorterFactory<E> {
 //Helper function to check SortableObject[] equivalence
 //Throws error if SortableObject[]s are not deeply equal
 function expectDeeplyEqual(actual : SortableObject[],  expected : SortableObject[]) {
-    var it = 0;
-    for(var expectedElement of expected) {
+    let it = 0;
+    for(let expectedElement of expected) {
         expect(actual[it].getValue()).to.equal(expectedElement.getValue());
         it++;
     }
