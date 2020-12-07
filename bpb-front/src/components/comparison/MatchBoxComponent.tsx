@@ -47,12 +47,13 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
                   </div>
                   {
                     this.props.comparison.matches.slice(0, 10).map((match, index) => 
-                      <div className="list-group-item w-100" key={index} onClick={() => this.selectMatch(match)}>
+                      <div className="btn btn-outline-dark list-group-item w-100 text-center" key={index} onClick={() => this.selectMatch(match)}>
                         {/* <ul> */}
                           {/* <span className="">Match {index+1}</span> */}
-                          <div>Context {match[0].contextType}</div>
-                          <div>{match[0].fileName} lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</div>
-                          <div>{match[1].fileName} lines {match[1].lineNumberStart} - {match[1].lineNumberEnd}</div>
+                          <div>Match context:</div>
+                          <div>{match[0].contextType}</div>
+                          <div><i className="fa fa-arrow-left fa-xs" aria-hidden="true"></i> Lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</div>
+                          <div>Lines {match[1].lineNumberStart} - {match[1].lineNumberEnd} <i className="fa fa-arrow-right fa-xs" aria-hidden="true"></i></div>
                         {/* </ul> */}
                       </div>
                     )

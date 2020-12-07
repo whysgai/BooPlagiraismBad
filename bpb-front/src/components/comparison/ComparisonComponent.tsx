@@ -199,7 +199,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                               <li key={index}
                                 className={`${this.state.activeFileOne === file ? "active" : ""} list-group-item`}                                  
                                 onClick={() => {this.showFileContent(1, index); this.resetCurrentMatch()}}>
-                                <a href="#" className={`${this.state.activeFileOne === file ? "text-white" : ""} text-decoration-none`}>{file}</a>
+                                <a href="#" className={`${this.state.activeFileOne === file ? "text-white" : ""} text-decoration-none  text-wrap`}>{file}</a>
                               </li>
                             )
                           }
@@ -233,7 +233,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                                 <li key={index}
                                   className={`${this.state.activeFileTwo === file ? "active" : ""} list-group-item`}
                                   onClick={() => {this.showFileContent(2, index); this.resetCurrentMatch()}}>
-                                  <a href="#" className={`${this.state.activeFileTwo === file ? "text-white" : ""} text-decoration-none`}>{file}</a>
+                                  <a href="#" className={`${this.state.activeFileTwo === file ? "text-white" : ""} text-decoration-none text-wrap`}>{file}</a>
                                 </li>
                               )
                             }
