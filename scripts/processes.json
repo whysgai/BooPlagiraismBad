@@ -28,7 +28,6 @@
             },
             "env_vagrant":{
                 "NODE_ENV":"vagrant",
-                "REACT_APP_TESTVAR":"TESTY!",
                 "REACT_APP_BPB_CLTADDR":"client placeholder address",
                 "REACT_APP_BPB_SRVADDR":"http://192.168.33.10:8080/"
             } 

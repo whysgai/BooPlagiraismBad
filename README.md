@@ -48,6 +48,12 @@ Comparison information is used to calculate overall sensitivity using the Deckar
 
 Example Value: 50 (default)
 
+*REACT_APP_BPB_SRVADDR*
+
+Determines location of the back-end server. Must point to where the back-end is hosted.
+
+Example Value: http://127.0.0.1:8080/
+
 # Scripts
 * Run `scripts/reload.sh` to resync files and restart app components in Vagrant
 * Run `scripts/test.sh` to execute all tests in the Vagrant environment

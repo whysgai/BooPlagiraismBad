@@ -2,7 +2,6 @@ import Assignment from "../types/Assignment"
 import Submission from "../types/Submission"
 
 // the URL that is used for the server
-const vagrantURL = 'http://192.168.33.10:8080/'
 const envURL = process.env.REACT_APP_BPB_SRVADDR
 
 /**

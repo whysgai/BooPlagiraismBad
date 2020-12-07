@@ -1,7 +1,6 @@
 import Assignment from "../types/Assignment"
 
 // the URL that is used for the server
-const vagrantURL = 'http://192.168.33.10:8080/'
 const envURL = process.env.REACT_APP_BPB_SRVADDR
 /**
  * The post assignment function adds an assignment to the server.
