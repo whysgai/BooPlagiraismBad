@@ -1,9 +1,12 @@
-import SubmissionListComponent from "../components/submission/SubmissionListComponent";
 import Action from "../types/Action"
 import Submission from "../types/Submission";
 import Snippet from "../types/Snippet";
 import Comparison from "../types/Comparison";
 
+/**
+ * Set the initial state of the comparison reducer. This can be used to read state and set state from a users actions
+ * in the client side.
+ */
 const initialState = {
     compareSubmissions: [] as Submission[],
     comparisons: [] as Comparison[],
@@ -17,6 +20,13 @@ const initialState = {
     snippetFileTwo: {} as Snippet
 }
 
+/**
+ * The comparison reducer allows a user to add, remove and clear submissions from the compareSubmissions list, get
+ * the files of each submission being compared, get the comparisons of two submissions and set the snippet that
+ * has been accessed by a user.
+ * @param state the state of the comparison reducer.
+ * @param action the action that is being used.
+ */
 const ComparisonReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case 'ADD_COMPARE':
@@ -52,7 +62,6 @@ const ComparisonReducer = (state = initialState, action: Action) => {
                 fileTwoContents: action.fileContents
             }   
         case 'SET_SNIPPET':
-            console.log("reducer snippets", action.snippets)
             return {
                 ...state,
                 snippetFileOne: action.snippets[0],
