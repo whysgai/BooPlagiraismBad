@@ -63,7 +63,6 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
   }
 
   componentDidMount() {
-    console.log("Did mount");
     // First, clear the store of the compareSubmissions array, in case user navigated here
     // Using foward/back after filling the store with different comparisons
     store.dispatch(clearComparisonSubmissions());
@@ -113,17 +112,15 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
 
   filterMatches() {
     if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
-      let parseObjects = this.state.comparisons as any as any[] as Comparison[]
-      console.log("Parse Objects", parseObjects)
+      let parseObjects = this.state.comparisons as any as any[] as Comparison[];
       this.setState({
         activeMatches: parseObjects.filter((arrayMatch) => {
           let match = arrayMatch as any as Comparison
           return (match.files[0][1] === this.state.activeFileOne) &&
           (match.files[1][1] === this.state.activeFileTwo)
         })[0] as any as any as Comparison
-      })
+      });
     }
-    console.log("Active Matches", this.state.activeMatches)
   }
 
   showFileContent(submissionIndex: number, fileIndex: number) {
@@ -162,12 +159,6 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
           this.state.comparisonIsReady &&
             <div className="submission-compare-pane col-12">
               <div>
-                {/* <div className="col-10"></div>
-                <div className="col-2 float-right">
-                  <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
-                    <i className="fa fa-window-close-o" aria-hidden="true"></i> 
-                  </Link>
-                </div> */}
               </div>
               <div className="row col-12">
                 <div className="col-1"></div>
@@ -264,8 +255,7 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
           !this.state.comparisonIsReady &&
             <ComparisonPendingComponent submissionOne={this.state.submissionOne} submissionTwo={this.state.submissionTwo}/>
         }
-      </div>
-                  
+      </div>                  
     );
   }
 }
