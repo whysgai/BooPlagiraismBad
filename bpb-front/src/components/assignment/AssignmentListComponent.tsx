@@ -62,7 +62,7 @@ class AssignmentListComponent extends React.Component <PropsType, ConstructorTyp
                   <div className=''>
                     {
                       this.state.assignments.map((assignment,index) => 
-                          <div className='card mb-2' key={index}><AssignmentListCard assignment={assignment} createAssignment={(arg: String) => null}/></div>
+                          <div className='card col-12 mb-2' key={index}><AssignmentListCard assignment={assignment} createAssignment={(arg: String) => null}/></div>
                       )
                     }
                   </div>

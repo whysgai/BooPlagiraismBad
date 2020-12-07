@@ -39,13 +39,18 @@ class AssignmentListCard extends React.Component <PropsType,{}> {
   
   render() {
     return (
-      <div className="assignment-list-card card">
-        <Link to={`/Assignments/${this.props.assignment._id}/Submissions`} className='card-body' onClick={() => this.setAssignment()}>
-          <span className='card-title'>
+      <div className="assignment-list-card card-body">
+        <h5 className='card-title col-12 text-center'>
             {this.props.assignment.name}
-          </span>
+        </h5>
+        <Link
+          className="btn btn-outline-primary col-12 mb-2" 
+          to={`/Assignments/${this.props.assignment._id}/Submissions`}
+          onClick={() => this.setAssignment()}            
+        >
+          View Submissions
         </Link>
-        <button className='btn btn-outline-danger ml-2' onClick={() => {this.deleteAssignment(); window.location.reload()}}>delete</button>
+        <button className='btn btn-outline-danger col-12' onClick={() => {this.deleteAssignment(); window.location.reload()}}>Delete</button>
       </div>
     );
   }
