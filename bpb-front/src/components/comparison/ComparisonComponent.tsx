@@ -154,15 +154,16 @@ class ComparisonComponent extends React.Component <PropsType, {
           this.state.comparisonIsReady &&
             <div className="submission-compare-pane col-12">
               <div>
-                <div className="col-10"></div>
+                {/* <div className="col-10"></div>
                 <div className="col-2 float-right">
-                      <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
-                        <i className="fa fa-window-close-o" aria-hidden="true"></i> 
-                      </Link>
-                  </div>
+                  <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
+                    <i className="fa fa-window-close-o" aria-hidden="true"></i> 
+                  </Link>
+                </div> */}
               </div>
               <div className="row col-12">
-                <h3 className="col-4 text-right pr-10">Submission: {this.state.submissionOne.name}</h3>
+                <div className="col-1"></div>
+                <h3 className="col-3 text-right pr-10">Submission: {this.state.submissionOne.name}</h3>
                 <div className="col-4 mb-4 no-gutters">
                   <div className="card text-center ">
                     <div className="card-header">Top 5 Prominent Matches</div>
@@ -184,7 +185,12 @@ class ComparisonComponent extends React.Component <PropsType, {
                     </div>
                   </div>
                 </div>   
-                <h3 className="col-4 pl-10">Submission: {this.state.submissionTwo.name}</h3>
+                <h3 className="col-3 pl-10">Submission: {this.state.submissionTwo.name}</h3>
+                <div className="col-1 float-right">
+                  <Link className="btn btn-outline-danger mt-2 mw-100" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
+                    <i className="fa fa-window-close-o" aria-hidden="true"></i> 
+                  </Link>
+                </div>
               </div> 
               <div className="row col-12 align-items-start">
                   
