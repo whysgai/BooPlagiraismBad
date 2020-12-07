@@ -39,8 +39,7 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore < 1) &&
             <div className="card">
-              {/* <div className="card-body"> */}
-              
+              {/* <div className="card-body"> */}              
                 <div className="list-group list-group-flush w-100">
                   <div className="list-group-item w-100">
                     <h5 className="card-title text-center">Similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</h5>
@@ -64,7 +63,11 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
         }
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore >= 1) &&
-            <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
+            <div className="card text-center">
+              <div className="card-body">
+                <h5 className="card-title text-center">Similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</h5>
+              </div>
+            </div>
         }
       </div>
     );
