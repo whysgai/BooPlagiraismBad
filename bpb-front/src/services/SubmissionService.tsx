@@ -3,6 +3,7 @@ import Submission from "../types/Submission"
 
 // the URL that is used for the server
 const vagrantURL = 'http://192.168.33.10:8080/'
+const envURL = process.env.REACT_APP_BPB_SRVADDR
 
 /**
  * The post submission function adds a submission to the server.
@@ -11,7 +12,7 @@ const vagrantURL = 'http://192.168.33.10:8080/'
  * @param files the files contained in a submission
  */
 export function postSubmission(name : string, assignment: Assignment, files: File[]) : void {
-    fetch(`${vagrantURL}submissions`, {
+    fetch(`${envURL}submissions`, {
         method: 'POST',
         body: JSON.stringify({"name": name, "assignment_id": assignment._id}),
         headers: {'content-type': 'application/json'}
@@ -23,7 +24,7 @@ export function postSubmission(name : string, assignment: Assignment, files: Fil
  * @param submissionId the submission that is being deleted from the server.
  */
 export function deleteSubmission(submissionId: String) : void {
-    fetch(`${vagrantURL}submissions/${submissionId}`, {
+    fetch(`${envURL}submissions/${submissionId}`, {
         method: 'DELETE',
         headers: {'content-type': 'application/json'}
     }).then(response =>
@@ -43,7 +44,7 @@ export function postFiles(submission: Submission, files: File[]) : void {
         //convert string to formData
         let formData = new FormData();
         formData.append("submissionFile", file);
-        fetch(`${vagrantURL}submissions/${submission._id}/files`, {
+        fetch(`${envURL}submissions/${submission._id}/files`, {
             method: 'POST',
             body: formData
         })
@@ -55,7 +56,7 @@ export function postFiles(submission: Submission, files: File[]) : void {
  * @param assignmentId the assignment id that we are getting submissions from
  */
 export async function getSubmissionIds(assignmentId : String) : Promise<String[]> {
-    let response = await fetch(`${vagrantURL}submissions/ofAssignment/${assignmentId}`);
+    let response = await fetch(`${envURL}submissions/ofAssignment/${assignmentId}`);
     let asJson = await response.json();
     return Promise.resolve(asJson.submissionIds as String[]);
 }
@@ -67,7 +68,7 @@ export async function getSubmissionIds(assignmentId : String) : Promise<String[]
  */
 export async function getSubmission(submissionId : String) : Promise<Submission> {
     console.log("Getting submission from server with id", submissionId);
-    let response = await fetch(`${vagrantURL}submissions/${submissionId}`);
+    let response = await fetch(`${envURL}submissions/${submissionId}`);
     let asJson = await response.json();
     console.log('getSubmission asJson', asJson)
     return Promise.resolve(asJson as Submission)
