@@ -559,10 +559,28 @@ export interface ISubmission {
             mergeSorter.sort(matchedEntries,compareFunction);
 
             //Apply exclusions
-            matchedEntries = matchedEntries.filter(it => !AppConfig.excludedContextTypes().includes(it[0].getContextType()) && !AppConfig.excludedContextTypes().includes(it[1].getContextType()));
+            matchedEntries = matchedEntries.filter(it => !AppConfig.excludedContextTypes()
+                .includes(it[0].getContextType()) && !AppConfig.excludedContextTypes().includes(it[1].getContextType()));
 
+            //Remove entries that occur on the same line[s]
+            let nonDuplicatedMatchedEntries : IAnalysisResultEntry[][] = new Array<IAnalysisResultEntry[]>();
+            matchedEntries.forEach(entryPair => {
+                if(nonDuplicatedMatchedEntries.some((it) => {
+                    return (it[0].getLineNumberStart() === entryPair[0].getLineNumberStart() &&
+                    it[0].getLineNumberEnd() === entryPair[0].getLineNumberEnd()) ||
+                    (it[1].getLineNumberStart() === entryPair[1].getLineNumberStart() &&
+                    it[1].getLineNumberEnd() === entryPair[1].getLineNumberEnd()) 
+                })) {
+                    //Do nothing (using else to handle main case for efficency since Array.some() 
+                    //will stop iterating over the array if it finds a case and returns true.)
+                } else {
+                    //If no matching entry is found between entryPair[n] and nonDuplicatedMatchedEntries[n], 
+                    //then push to nonDuplicatedMatchedEntries
+                    nonDuplicatedMatchedEntries.push(entryPair);
+                } 
+            });
             //Add only the first n entries to the AnalysisResult
-            let reducedMatchedEntries = matchedEntries.slice(0,AppConfig.maxMatchesPerFile());
+            let reducedMatchedEntries = nonDuplicatedMatchedEntries.slice(0,AppConfig.maxMatchesPerFile());
 
             //Log that analysis was completed
             //console.log("[BPB] [" + submissionIdA + "][" + submissionIdB + "] Analyzed " + fileNameA + " -> " + fileNameB);
