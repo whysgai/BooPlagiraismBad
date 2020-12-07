@@ -19,7 +19,7 @@ interface PropsType {
 class AssignmentListCard extends React.Component <PropsType,{}> {
 
   constructor(props : PropsType) {
-    super(props)
+    super(props);
   }
   
   /**
