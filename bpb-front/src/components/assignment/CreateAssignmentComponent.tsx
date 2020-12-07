@@ -56,7 +56,8 @@ class CreateAssignmentComponent extends React.Component <PropsType, {name: strin
                 <input 
                   name="name" 
                   className='assignment-name-input' 
-                  type="text" 
+                  type="text"
+                  disabled={this.state.uploaded} 
                   onChange={this.onInputchange}
                 />
                 <br/>
