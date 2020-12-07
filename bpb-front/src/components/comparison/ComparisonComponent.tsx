@@ -87,7 +87,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                 .then(() => this.setState({
                   subTwoFileContents: store.getState().ComparisonReducer.fileTwoContents
                 }));
-            compareSubmissions(this.state.compareSubmissions)
+            compareSubmissions(store.getState().ComparisonReducer.compareSubmissions)
               .then((comparisonAction) => store.dispatch(comparisonAction))
               .then(() => {
                   this.setState({
