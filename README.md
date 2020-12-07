@@ -1,23 +1,32 @@
 # BPB
 
+BPB is a web-based application intended to allow users to compare submissions of Java programming assignments to determine whether a given submission was likely plagiarized from another submission.
+
 # Getting Started (Vagrant)
-* Install Vagrant and Virtualbox
+* Install [Vagrant](https://www.vagrantup.com/docs/installation) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+Note: On Windows, ensure [Hyper-V is disabled](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
+* Navigate to the BPB repository directory
 * Run `vagrant up`
+* After a delay, the application should be available at `http://192.168.33.10:3000` in your web browser of choice.
 
 # Getting Started (Manually)
-* Install MongoDB
+* [Install MongoDB](https://docs.mongodb.com/manual/administration/install-community/)
+* Create an empty MongoDB database called 'bpb' (without quotes)
 * Export the following environment variables: 
 `APIPORT`
 `DBCONNECTIONSTRING`
 `MAXFILEUPLOADSIZE`
 `COMPARISONTHRESHOLD`
+`REACT_APP_BPB_SRVADDR`
 * Navigate to `bpb-back/`, run `npm run start`
 * Navigate to `bpb-front/`, run `npm run start`
 
 # Required Environment Variables
 *APIPORT*
 
-Specifies the port that bpb-back will serve API requests on
+Specifies the port that bpb-back will serve API requests on.
+
+Must match the port value specified in REACT_APP_BPB_SRVADDR (see below)
 
 Example Value: 8080
 
