@@ -130,10 +130,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
     }
 
     private addAnalysisResultEntry(entry : AnalysisResultEntry) {
-        //Ensure that severely overlapping entries aren't returned
-        if(!this.analysisResultEntries.find(it=> it.getLineNumberStart() === entry.getLineNumberStart() && it.getLineNumberEnd() === it.getLineNumberEnd())) {
-            this.analysisResultEntries.push(entry);
-        }
+        this.analysisResultEntries.push(entry);
     }
 
     /**

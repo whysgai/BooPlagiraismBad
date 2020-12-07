@@ -328,7 +328,47 @@ describe("Submission.ts",() => {
             return testSubmissionA.compare(testSubmissionB).then((analysisResults) => {
                 expect(analysisResults[0].getSimilarityScore()).to.equal(1);
             });
-        })
+        });
+
+        it("Should properly filter out a matched analysisResult if one of the fileA contains a match on on the same lines.", () => {
+            let hash1 = "1234567123456712345671234567123456712345671234567123456712345671234567";
+            let testEntryA = new AnalysisResultEntry("ARE-A", testSubmissionA.getId(), "someFile.txt", "MethodContext", 1, 0, 5, 10, hash1, "Bigbird is a giant yellow bird");
+            let testEntryB = new AnalysisResultEntry("ARE-B", testSubmissionA.getId(), "someFile.txt", "MethodDeclContext", 1, 0, 5, 10, hash1, "who just hangs out with children.");
+            let testEntryC = new AnalysisResultEntry("ARE-C", testSubmissionA.getId(), "someFile.txt", "AnyOtherContext", 20, 0, 40, 10, hash1, "Do we know what big bird consumes for food in the wild?");
+            let testEntryD = new AnalysisResultEntry("ARE-D", testSubmissionB.getId(), "someOtherFile.txt", "MethodContext", 1, 0, 5, 10, hash1, "Why are we not more concerned for");
+            let testEntryE = new AnalysisResultEntry("ARE-E", testSubmissionB.getId(), "someOtherFile.txt", "AnyOtherContext", 20, 0, 40, 10, hash1, "the safety of the children in their proximity?");
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionA.addAnalysisResultEntry(testEntryB);
+            testSubmissionA.addAnalysisResultEntry(testEntryC);
+            testSubmissionB.addAnalysisResultEntry(testEntryD);
+            testSubmissionB.addAnalysisResultEntry(testEntryE);
+            
+            return testSubmissionA.compare(testSubmissionB).then((analysisResults) => {
+                expect(analysisResults[0].getMatches().length).to.be.equal(2);
+                expect(analysisResults[0].getMatches()[0]).to.have.deep.members([testEntryC, testEntryE]);
+                expect(analysisResults[0].getMatches()[1]).to.have.deep.members([testEntryA, testEntryD]);
+            });
+        });
+
+        it("Should properly filter out a matched analysisResult if one of the fileB contains a match on on the same lines.", () => {
+            let hash1 = "1234567123456712345671234567123456712345671234567123456712345671234567";
+            let testEntryA = new AnalysisResultEntry("ARE-A", testSubmissionA.getId(), "someFile.txt", "MethodContext", 1, 0, 5, 10, hash1, "Bigbird is a giant yellow bird");
+            let testEntryB = new AnalysisResultEntry("ARE-B", testSubmissionA.getId(), "someFile.txt", "MethodDeclContext", 1, 0, 5, 10, hash1, "who just hangs out with children.");
+            let testEntryC = new AnalysisResultEntry("ARE-C", testSubmissionA.getId(), "someFile.txt", "AnyOtherContext", 20, 0, 40, 10, hash1, "Do we know what big bird consumes for food in the wild?");
+            let testEntryD = new AnalysisResultEntry("ARE-D", testSubmissionB.getId(), "someOtherFile.txt", "MethodContext", 1, 0, 5, 10, hash1, "Why are we not more concerned for");
+            let testEntryE = new AnalysisResultEntry("ARE-E", testSubmissionB.getId(), "someOtherFile.txt", "AnyOtherContext", 20, 0, 40, 10, hash1, "the safety of the children in their proximity?");
+            testSubmissionA.addAnalysisResultEntry(testEntryA);
+            testSubmissionA.addAnalysisResultEntry(testEntryB);
+            testSubmissionA.addAnalysisResultEntry(testEntryC);
+            testSubmissionB.addAnalysisResultEntry(testEntryD);
+            testSubmissionB.addAnalysisResultEntry(testEntryE);
+            
+            return testSubmissionB.compare(testSubmissionA).then((analysisResults) => {
+                expect(analysisResults[0].getMatches().length).to.be.equal(2);
+                expect(analysisResults[0].getMatches()[0]).to.have.deep.members([testEntryC, testEntryE]);
+                expect(analysisResults[0].getMatches()[1]).to.have.deep.members([testEntryA, testEntryD]);
+            });
+        });
     });
     
     describe("addFile()",() => {
