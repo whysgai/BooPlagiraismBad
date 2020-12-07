@@ -165,19 +165,25 @@ class ComparisonComponent extends React.Component <PropsType, {
                 <h3 className="col-6 text-center">Submission: {this.state.submissionOne.name}</h3>
                 <h3 className="col-6 text-center">Submission: {this.state.submissionTwo.name}</h3>
               </div> 
-              <div className="card">
-                <div className="card-body">
-                  <span>Closest Matches: </span>
-                  {
-                    (this.state.comparisons && this.state.comparisons.length > 0) &&
-                      this.state.comparisons.slice(0, 5).map((comparison, index) => 
-                        <span key={index}>{comparison.files[0][1]} &amp; {comparison.files[1][1]} : {(comparison.similarityScore * 100).toFixed(2)}%; </span>
-                      )
-                  }
-                  {
-                    (this.state.comparisons && this.state.comparisons.length <= 0) &&
-                      <span>There are no matches detected between these submissions.</span>
-                  }
+              <div className="col-4 offset-md-4 mb-4">
+                <div className="card text-center no-gutters">
+                  <div className="card-header">Closest Matches</div>
+                  <div className="card-body"> 
+                    {
+                      (this.state.comparisons && this.state.comparisons.length > 0) &&
+                        <ul>
+                          {
+                            this.state.comparisons.slice(0, 5).map((comparison, index) => 
+                              <li key={index} className="m-2 d-inline">{comparison.files[0][1]} &amp; {comparison.files[1][1]} : {(comparison.similarityScore * 100).toFixed(2)}%; </li>
+                            )
+                          }
+                        </ul>  
+                    }
+                    {
+                      (this.state.comparisons && this.state.comparisons.length <= 0) &&
+                        <span>There are no matches detected between these submissions.</span>
+                    }
+                  </div>
                 </div>
               </div>  
               <div className="row col-12 align-items-start">
