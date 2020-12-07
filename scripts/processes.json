@@ -9,7 +9,7 @@
                 "TEST":"global value"
             },
             "env_vagrant":{
-                "NODE_ENV":"vagrant",
+                "NODE_ENV":"production",
                 "APIPORT":"8080",
                 "DBCONNECTIONSTRING":"mongodb://127.0.0.1:27017/bpb",
                 "MAXFILEUPLOADSIZE":"5000000",
