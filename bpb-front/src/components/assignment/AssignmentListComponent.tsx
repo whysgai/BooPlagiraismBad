@@ -5,11 +5,13 @@ import {Link} from 'react-router-dom'
 import {store} from '../../store'
 import { readAssignments } from '../../actions/AssignmentAction';
 
-interface PropsType {
-  
+interface ConstructorType {
+  assignments: Assignment[]
 }
 
-class AssignmentListComponent extends React.Component <PropsType, {assignments: Assignment[]}> {
+interface PropsType {}
+
+class AssignmentListComponent extends React.Component <PropsType, ConstructorType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {

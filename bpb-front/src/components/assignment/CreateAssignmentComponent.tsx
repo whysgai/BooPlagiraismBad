@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { store } from '../../store';
 import { createAssignment } from '../../actions/AssignmentAction';
 
-interface PropsType {
-
+interface ConstructorType {
+  name: string,
+  uploaded: boolean
 }
 
-class CreateAssignmentComponent extends React.Component <PropsType, {name: string, uploaded: boolean}> {
+interface PropsType {}
+
+class CreateAssignmentComponent extends React.Component <PropsType, ConstructorType> {
     constructor(props : PropsType) {
         super(props);
         this.state = {

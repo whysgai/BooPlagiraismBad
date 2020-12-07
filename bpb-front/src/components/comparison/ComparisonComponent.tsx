@@ -10,6 +10,23 @@ import Comparison from '../../types/Comparison';
 import ComparisonPendingComponent from './ComparisonPendingComponent';
 import Snippet from '../../types/Snippet';
 
+interface ConstructorType {
+  compareSubmissions: Submission[],
+  comparisons: Comparison[],
+  submissionOne: Submission,
+  submissionTwo: Submission
+  subOneFileContents: String[], 
+  subTwoFileContents: String[],
+  submissionOneFileContent: String, 
+  submissionTwoFileContent: String,
+  activeFileOne: String, 
+  activeFileTwo: String, 
+  activeMatches: Comparison,
+  comparisonIsReady: boolean, 
+  submissionOneDisplaySnippet: Snippet, 
+  submissionTwoDisplaySnippet: Snippet
+}
+
 interface MatchParams {
   assignmentId: string,
   subIdOne: string,
@@ -17,26 +34,17 @@ interface MatchParams {
 }
 
 interface PropsType extends RouteComponentProps<MatchParams> {
-  //submissions : Submission[]
 }
 
 /**
  * Represents a comparison view between two submissions
  */
-class ComparisonComponent extends React.Component <PropsType, {
-  compareSubmissions: Submission[], comparisons: Comparison[],
-  submissionOne: Submission, submissionTwo: Submission
-  subOneFileContents: String[], subTwoFileContents: String[]
-  submissionOneFileContent: String, submissionTwoFileContent: String,
-  activeFileOne: String, activeFileTwo: String, activeMatches: Comparison,
-  comparisonIsReady: boolean, submissionOneDisplaySnippet: Snippet, submissionTwoDisplaySnippet: Snippet
-}> {
+class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
 
   constructor(props : PropsType) {
     super(props);
     
     this.state = {
-      //submissions:this.props.submissions
       compareSubmissions: store.getState().ComparisonReducer.compareSubmissions,
       comparisons: store.getState().ComparisonReducer.comparisons,
       submissionOne: store.getState().ComparisonReducer.compareSubmissions[0],
@@ -112,7 +120,7 @@ class ComparisonComponent extends React.Component <PropsType, {
           let match = arrayMatch as any as Comparison
           return (match.files[0][1] === this.state.activeFileOne) &&
           (match.files[1][1] === this.state.activeFileTwo)
-        })[0] as any as any as Comparison //TODO too many anys?
+        })[0] as any as any as Comparison
       })
     }
     console.log("Active Matches", this.state.activeMatches)

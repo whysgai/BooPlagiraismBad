@@ -8,6 +8,13 @@ import { InboxOutlined } from '@ant-design/icons';
 import { setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
 
 
+interface ConstructorType {
+  name: string, 
+  files: File[], 
+  count: number, 
+  uploaded: boolean
+}
+
 interface MatchParams {
   assignmentId: string,
 }
@@ -15,7 +22,7 @@ interface MatchParams {
 interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
-class CreateSubmissionComponent extends React.Component <PropsType, {name: string, files: File[], count: number, uploaded: boolean}> {
+class CreateSubmissionComponent extends React.Component <PropsType, ConstructorType> {
     constructor(props : PropsType) {
         super(props);
         this.state = {

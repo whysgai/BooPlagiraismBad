@@ -10,6 +10,12 @@ import { readSubmissions } from '../../actions/SubmissionAction';
 import { Match } from '@testing-library/react';
 import { setCurrentAssignment, setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
 
+interface ConstructorTypes {
+  submissions: Submission[], 
+  compareEnabled: number, 
+  retrievedFromServer: boolean
+}
+
 interface MatchParams {
   assignmentId: string,
 }
@@ -18,7 +24,7 @@ interface PropTypes extends RouteComponentProps<MatchParams> {
 
 }
 
-class SubmissionListComponent extends React.Component <PropTypes, {submissions: Submission[], compareEnabled: number, retrievedFromServer: boolean}> {
+class SubmissionListComponent extends React.Component <PropTypes, ConstructorTypes> {
 
   constructor(props : PropTypes) {
     super(props);
