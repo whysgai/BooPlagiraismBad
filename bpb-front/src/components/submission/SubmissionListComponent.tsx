@@ -87,9 +87,9 @@ class SubmissionListComponent extends React.Component <PropTypes, ConstructorTyp
             }
             {
               (this.state.submissions.length > 0 && this.state.retrievedFromServer) &&
-                <ul>
+                <ul className="list-group">
                   {this.state.submissions.map((submission, index) => 
-                    <li key={index}><SubmissionListItemComponent checkboxOn={false} submission={submission} createSubmission={(arg: String) => null}/></li>
+                    <li key={index} className="list-group-item"><SubmissionListItemComponent checkboxOn={false} submission={submission} createSubmission={(arg: String) => null}/></li>
                   )}
                 </ul>
             }
