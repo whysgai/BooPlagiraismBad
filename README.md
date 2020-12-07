@@ -18,6 +18,8 @@ Note: On Windows, ensure [Hyper-V is disabled](https://docs.microsoft.com/en-us/
 `MAXFILEUPLOADSIZE`
 `COMPARISONTHRESHOLD`
 `REACT_APP_BPB_SRVADDR`
+
+Note: See below for recommended default values for each variable
 * Navigate to `bpb-back/`, run `npm run start`
 * Navigate to `bpb-front/`, run `npm run start`
 
