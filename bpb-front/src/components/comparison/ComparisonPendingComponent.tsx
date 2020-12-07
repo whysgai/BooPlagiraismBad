@@ -30,32 +30,32 @@ class ComparisonPendingComponent extends React.Component <PropsType, {}> {
                             {
                                 (this.props.submissionOne) &&
                                     <div className="col-4">
-                                        <h5 className="card-subtitle">{this.props.submissionOne.name} files:</h5>
-                                            <ul>            
-                                                    {
-                                                        (this.props.submissionOne && this.props.submissionOne.files.length > 0) &&
-                                                        this.props.submissionOne.files.map((file, index) => 
-                                                            <li className="card-text" key={index}>
-                                                                {file}
-                                                            </li>
-                                                        )
-                                                    }            
+                                            <ul className="list-group">
+                                                <li className="active list-group-item"><h5 className="card-subtitle">{this.props.submissionOne.name} files:</h5></li>     
+                                                {
+                                                    (this.props.submissionOne && this.props.submissionOne.files.length > 0) &&
+                                                    this.props.submissionOne.files.map((file, index) => 
+                                                        <li className="card-text list-group-item" key={index}>
+                                                            {file}
+                                                        </li>
+                                                    )
+                                                }            
                                             </ul>
                                     </div>
                             }
                             {
                                 (this.props.submissionTwo) &&
                                     <div className="col-4">
-                                        <h5 className="card-subtitle">{this.props.submissionTwo.name} files:</h5>
-                                        <ul>            
-                                                {
-                                                    (this.props.submissionTwo && this.props.submissionTwo.files.length > 0) &&
-                                                    this.props.submissionTwo.files.map((file, index) => 
-                                                        <li className="card-text" key={index}>
-                                                            {file}
-                                                        </li>
-                                                    )
-                                                }            
+                                        <ul className="list-group"> 
+                                            <li className="active list-group-item"><h5 className="card-subtitle">{this.props.submissionTwo.name} files:</h5></li>           
+                                            {
+                                                (this.props.submissionTwo && this.props.submissionTwo.files.length > 0) &&
+                                                this.props.submissionTwo.files.map((file, index) => 
+                                                    <li className="card-text list-group-item" key={index}>
+                                                        {file}
+                                                    </li>
+                                                )
+                                            }            
                                         </ul>
                                     </div>
                             }                            

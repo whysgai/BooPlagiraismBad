@@ -95,7 +95,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                   });
                   setTimeout(() => {
                     this.setState({
-                      comparisonIsReady: true
+                      //comparisonIsReady: true
                     });
                   }, 100);
               });          
