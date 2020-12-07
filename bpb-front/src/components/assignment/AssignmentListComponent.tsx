@@ -55,8 +55,7 @@ class AssignmentListComponent extends React.Component <PropsType, ConstructorTyp
             <div className="row">
               <h3 className="col-6 text-center">Assignments</h3>
               <Link to="/CreateAssignment" className="btn btn-outline-info col-6 mt-2 mb-2">Create New Assignment</Link>
-            </div>
-            
+            </div>            
               {
                 this.state.assignments.length > 0 &&
                   <div className=''>
