@@ -32,11 +32,20 @@ When using the Vagrant deployment, the following *.sh scripts can be executed fr
 * Navigate to `bpb-front/`, run `npm run start`
 
 # Required Environment Variables
+
+Note: all environment variables must be specified as strings
+
+*REACT_APP_BPB_SRVADDR*
+
+Specifies the location of the back-end server. Must point to where the back-end is hosted.
+
+Example Value: http://127.0.0.1:8080/
+
 *APIPORT*
 
 Specifies the port that bpb-back will serve API requests on.
 
-Must match the port value specified in REACT_APP_BPB_SRVADDR (see below)
+Must match the port value specified in REACT_APP_BPB_SRVADDR (above)
 
 Example Value: 8080
 
@@ -59,9 +68,3 @@ Determines similarity sensitivity for individual subtree element comparisons.
 Determines whether BPB considers submission subelements to be similar (or not)
 
 Example Value: 60 (default)
-
-*REACT_APP_BPB_SRVADDR*
-
-Specifies the location of the back-end server. Must point to where the back-end is hosted.
-
-Example Value: http://127.0.0.1:8080/
