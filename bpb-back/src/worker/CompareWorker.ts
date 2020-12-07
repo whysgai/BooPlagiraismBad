@@ -15,4 +15,10 @@ submissionA.compare(submissionB).then((analysisResults) => {
 
     parentPort.postMessage(results);
     process.exit();
+}).catch((err) => {
+    let errorMessage = err as string;
+    let msg = ['ERROR'];
+    msg.push(errorMessage);
+    parentPort.postMessage(msg);
+    process.exit();
 });

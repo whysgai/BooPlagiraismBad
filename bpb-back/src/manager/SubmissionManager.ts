@@ -349,10 +349,15 @@ export class SubmissionManager implements ISubmissionManager {
                                 workerData: [submissionA.asJSON(),submissionB.asJSON()]
                             });
                             
-                            worker.once('message', (analysisResults) => {
+                            worker.once('message', (message) => {
+                                let messageArray = message as string[];
+                                if(messageArray[0] === 'ERROR') {
+                                    let error = messageArray[1] as unknown as Error;
+                                    reject(error);
+                                }
                                 console.log("[BPB] Resolved Comparison " + "[" + key + "]");
-                                this.comparisonCache.set(submissionIdA, submissionIdB, analysisResults);
-                                resolve(analysisResults);
+                                this.comparisonCache.set(submissionIdA, submissionIdB, message);
+                                resolve(message);
                             });
     
                             worker.once('error',(err) => {
