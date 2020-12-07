@@ -162,30 +162,33 @@ class ComparisonComponent extends React.Component <PropsType, {
                   </div>
               </div>
               <div className="row col-12">
-                <h3 className="col-6 text-center">Submission: {this.state.submissionOne.name}</h3>
-                <h3 className="col-6 text-center">Submission: {this.state.submissionTwo.name}</h3>
-              </div> 
-              <div className="col-4 offset-md-4 mb-4">
-                <div className="card text-center no-gutters">
-                  <div className="card-header">Closest Matches</div>
-                  <div className="card-body"> 
-                    {
-                      (this.state.comparisons && this.state.comparisons.length > 0) &&
-                        <ul>
-                          {
-                            this.state.comparisons.slice(0, 5).map((comparison, index) => 
-                              <li key={index} className="m-2 d-inline">{comparison.files[0][1]} &amp; {comparison.files[1][1]} : {(comparison.similarityScore * 100).toFixed(2)}%; </li>
-                            )
-                          }
-                        </ul>  
-                    }
-                    {
-                      (this.state.comparisons && this.state.comparisons.length <= 0) &&
-                        <span>There are no matches detected between these submissions.</span>
-                    }
+                <h3 className="col-4 text-right pr-10">Submission: {this.state.submissionOne.name}</h3>
+                <div className="col-4 mb-4 no-gutters">
+                  <div className="card text-center ">
+                    <div className="card-header">Top 5 Prominent Matches</div>
+                    <div className="card-body"> 
+                      {
+                        (this.state.comparisons && this.state.comparisons.length > 0) &&
+                          <ul className="pl-0 mb-0">
+                            {
+                              this.state.comparisons.slice(0, 5).map((comparison, index) => 
+                                <li key={index} className="d-inline"> &middot; {comparison.files[0][1]} &amp; {comparison.files[1][1]} : {(comparison.similarityScore * 100).toFixed(2)}%</li>
+                              )
+                            }
+                          </ul>  
+                      }
+                      {
+                        (this.state.comparisons && this.state.comparisons.length <= 0) &&
+                          <span>There are no matches detected between these submissions.</span>
+                      }
+                    </div>
                   </div>
-                </div>
-              </div>  
+                </div>   
+                <h3 className="col-4 pl-10">Submission: {this.state.submissionTwo.name}</h3>
+              
+              
+                
+              </div> 
               <div className="row col-12 align-items-start">
                   
                 <div className="sub1 row col-5">
