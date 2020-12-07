@@ -3,13 +3,23 @@ import { Link } from 'react-router-dom';
 import { store } from '../../store';
 import { createAssignment } from '../../actions/AssignmentAction';
 
+/**
+ * Constructor type interface to set the types of any properties in the constructor of the component.
+ */
 interface ConstructorType {
   name: string,
   uploaded: boolean
 }
 
+/**
+ * Props type interface to set the types of any props that are passed from a parent component.
+ */
 interface PropsType {}
 
+/**
+ * This component holds the ability for a user to create an assignment by inputting a name and selecting the create
+ * assignment button.
+ */
 class CreateAssignmentComponent extends React.Component <PropsType, ConstructorType> {
     constructor(props : PropsType) {
         super(props);
@@ -20,6 +30,10 @@ class CreateAssignmentComponent extends React.Component <PropsType, ConstructorT
         this.onInputchange = this.onInputchange.bind(this);
   }
 
+  /**
+   * On input change sets and then binds (in the constructor) the text that has been entered into the assignment name field.
+   * @param event the event by which the user is entering the assignment name
+   */
   onInputchange(event : ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
     this.setState((state) => {
@@ -27,6 +41,9 @@ class CreateAssignmentComponent extends React.Component <PropsType, ConstructorT
     });   
   }
 
+  /**
+   * Call dispatch creates an assignment in store and sets uploaded to true so that the success button appears.
+   */
   callDispatch() {
     store.dispatch(createAssignment('CREATE_ASSIGNMENT', this.state.name));
     this.setState((state) => {
@@ -37,6 +54,9 @@ class CreateAssignmentComponent extends React.Component <PropsType, ConstructorT
     })
   }
 
+  /**
+   * Assignment info is entered creates a check for whether a name has been entered for assignment.
+   */
   assignmentInfoIsEntered() {
     if (this.state.name.length > 0) {
       return true
