@@ -42,7 +42,7 @@ Example Value: 8080
 
 *DBCONNECTIONSTRING*
 
-Specifies the location of the bpb MongoDB database
+Specifies the location of the bpb MongoDB database. Must point to where the database is hosted.
 
 Example Value: "mongodb://127.0.0.1:27017/bpb"
 
@@ -54,15 +54,14 @@ Example Value: 5000000
 
 *COMPARISONTHRESHOLD*
 
-Determines similarity sensitivity for individual subtree element comparisons
+Determines similarity sensitivity for individual subtree element comparisons.
 
-Comparison information is used to calculate overall sensitivity using the Deckard algorithm.
+Determines whether BPB considers submission subelements to be similar (or not)
 
-Example Value: 50 (default)
+Example Value: 60 (default)
 
 *REACT_APP_BPB_SRVADDR*
 
-Determines location of the back-end server. Must point to where the back-end is hosted.
+Specifies the location of the back-end server. Must point to where the back-end is hosted.
 
 Example Value: http://127.0.0.1:8080/
-s
