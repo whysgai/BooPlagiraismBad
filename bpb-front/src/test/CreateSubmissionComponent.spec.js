@@ -7,7 +7,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import configureMockStore from 'redux-mock-store'
 import CreateSubmissionComponent from '../components/submission/CreateSubmissionComponent';
 
-describe("CreateSubmissionComponent tests:", () => {
+describe.skip("CreateSubmissionComponent tests:", () => {
     let container;
     let mockStore;
     beforeEach(() => {

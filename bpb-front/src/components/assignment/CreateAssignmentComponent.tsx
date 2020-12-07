@@ -66,7 +66,7 @@ class CreateAssignmentComponent extends React.Component <PropsType, ConstructorT
 
   render() {
     return (
-        <div className="container card mt-3">
+        <div className="container card mt-3 assignment-creation">
           <div className="card-body">
             <div className="row col-12">
               <div className="col-11"><h3>Create Assignment</h3></div>
@@ -88,7 +88,7 @@ class CreateAssignmentComponent extends React.Component <PropsType, ConstructorT
               />
               {
                 !this.assignmentInfoIsEntered() &&
-                <Link className='col-12 create-assignment-btn btn btn-outline-secondary disabled mt-2'
+                <Link className='col-12 create-assignment-btn-disabled btn btn-outline-secondary disabled mt-2'
                     to="#"
                     onClick={(event) => event.preventDefault()}>
                     Create Assignment
