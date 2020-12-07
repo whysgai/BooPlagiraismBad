@@ -99,7 +99,6 @@ class CreateSubmissionComponent extends React.Component <PropsType, ConstructorT
             this.setState({
               files: uploadFiles
             });
-            console.log("! Files to upload", this.state.files);
           };
           // Actually runs the reader, invoking the above
           reader.readAsText(file);        
