@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 
 interface PropTypes extends RouteComponentProps {}
 
+/**
+ * The help component consists of a basic render page where a user can see descriptions of how to create a submission
+ * and an assignment as well as how to compare two submissions.
+ */
 class HelpComponent extends React.Component <PropTypes, {}> {
 
   constructor(props : PropTypes) {

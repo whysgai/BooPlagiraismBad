@@ -1,5 +1,4 @@
 import React from 'react';
-//import "font-awesome/css/font-awesome.min";
 import ReactDOM from 'react-dom';
 import './css/index.css';
 import { BrowserRouter, Route } from 'react-router-dom';
@@ -15,9 +14,9 @@ import {store} from './store'
 import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-//import "../node_modules/bootstrap/dist/css/bootstrap.min";
-//require('bootstrap');
-
+/**
+ * Render the pages as directed by a user. Provider adds store so that it is accessible from any page the client selects.
+ */
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

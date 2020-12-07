@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * The navbar creates an easy navigation system for a user so that they can select the help section or return
+ * back to the assignments page.
+ */
 export default class NavbarComponent extends React.Component {
     render() {
         return (
