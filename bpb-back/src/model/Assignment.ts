@@ -6,7 +6,6 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IAssignmentModel extends Document {
     _id : string
     name : string
-    submissionIds : string[]
 }
 
 /**
@@ -16,10 +15,6 @@ export interface IAssignment {
     getId() : string
     getName() : string
     setName(name: string) : void
-    getSubmissionIds() : string[]
-    setSubmissionIds(submissionIds : string[]) : void
-    addSubmission(submissionID : string) : void
-    removeSubmission(submissionID : string) : void
     getModelInstance() : IAssignmentModel;
     asJSON() : Object;
 }
@@ -32,11 +27,9 @@ export class Assignment implements IAssignment {
     static builder = class AssignmentBuilder {
 
         private name : string;
-        private submissionIds: string[];
 
         constructor() {
             this.name = "Name Not Defined";
-            this.submissionIds = [];
         }
         
         /**
@@ -48,14 +41,6 @@ export class Assignment implements IAssignment {
         }
 
         /**
-         * Sets the submissionIds of the Assignment to be created
-         * @param submissionIds Ids of submissions associated with the assignment
-         */
-        setSubmissionIds(submissionIds : string[]) : void {
-            this.submissionIds = submissionIds;
-        }
-
-        /**
          * Builds a new Assignment
          * @returns a new Assignment with the appropriate properties and a database model
          */
@@ -63,11 +48,10 @@ export class Assignment implements IAssignment {
             let assignment = new Assignment();
 
             let assignmentModel = Assignment.getStaticModel();
-            let modelInstance = new assignmentModel({"name" : this.name, "submissionIds" : this.setSubmissionIds});
+            let modelInstance = new assignmentModel({"name" : this.name});
 
             assignment.setId(modelInstance.id);
             assignment.setName(this.name);
-            assignment.setSubmissionIds(this.submissionIds);
             assignment.setModelInstance(modelInstance);
             
             return assignment;
@@ -82,14 +66,13 @@ export class Assignment implements IAssignment {
         buildFromExisting(model : IAssignmentModel) : IAssignment {
             let assignment = new Assignment();
 
-            if (!model.id || !model.name || !model.submissionIds) {
+            if (!model.id || !model.name) {
                 throw new Error("At least one required assignment model property is not present on the provided model");
             }
 
             assignment.setId(model.id);
             assignment.setModelInstance(model);
             assignment.setName(model.name);
-            assignment.setSubmissionIds(model.submissionIds);
 
             return assignment;
         }
@@ -100,7 +83,6 @@ export class Assignment implements IAssignment {
      */
     private static assignmentSchema = new Schema({
         name: String,
-        submissionIds: [String]
       });
 
     /**
@@ -110,7 +92,6 @@ export class Assignment implements IAssignment {
     
     private id : string;
     private name : string;
-    private submissionIds : string[];
     private modelInstance : IAssignmentModel;    
 
     protected constructor() { }
@@ -140,47 +121,18 @@ export class Assignment implements IAssignment {
     }
 
     /**
-     * Returns a list of all submission Ids associated with the Assignment
-     * @return list of submission ids
-     */
-    getSubmissionIds(): string[] {
-        return this.submissionIds;
-    }
-
-    /**
-     * Adds the specified submission to the assignment
-     * @param submissionId Id of submission to add
-     */
-    addSubmission(submissionId: string): void {
-        if(!this.submissionIds.find( it => it == submissionId)) {
-            this.submissionIds.push(submissionId);
-        }
-    }
-
-    /**
-     * Removes the specified submission from the assignment
-     * @param submissionId Id of sumbisison to remove
-     */
-    removeSubmission(submissionId: string): void {
-        let foundValueIndex = this.submissionIds.findIndex( it => it == submissionId);
-        if(foundValueIndex != -1) {
-            this.submissionIds.splice(foundValueIndex,1);
-        }
-    }
-
-    /**
      * Returns a new Mongoose document model instance for the current entry
      * @returns Mongoose document model instance
      */
     getModelInstance() : IAssignmentModel {
-        return new Assignment.assignmentModel({"_id":this.id,"name":this.name,"submissionIds":this.submissionIds});
+        return new Assignment.assignmentModel({"_id":this.id,"name":this.name});
     }
 
     /**
      * Returns the current object as as JSON object
      */
     asJSON() : Object {
-        return {_id:this.id, name:this.name, submissionIds:this.submissionIds};
+        return {_id:this.id, name:this.name};
     }
     
     /**
@@ -207,11 +159,4 @@ export class Assignment implements IAssignment {
         this.name = name;
     }
 
-    /**
-     * Sets the submissions of the assignment (by id)
-     * @param submissionIds submissionIds to set
-     */
-    setSubmissionIds(submissionIds : string[]) {
-        this.submissionIds = submissionIds;
-    }
 }

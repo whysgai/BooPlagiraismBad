@@ -32,7 +32,6 @@ describe("AssignmentDAO.ts",() => {
         mongoose.connection.collections.assignments.drop(() => {
             let testAssignmentBuilder = new Assignment.builder();
             testAssignmentBuilder.setName(testAssignmentName);
-            testAssignmentBuilder.setSubmissionIds(testAssignmentSubmissionIds);
             testAssignment = testAssignmentBuilder.build();
             done();
         });
@@ -45,14 +44,13 @@ describe("AssignmentDAO.ts",() => {
 
     describe("createAssignment()",() => {
         it("Should create an assignment database object if inputs are valid",() => {
-            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName()).then((createdAssignment) => {
                 
                 expect(createdAssignment.getName()).to.equal(testAssignment.getName());
                 expect(createdAssignment.getId()).to.not.be.undefined;
 
                 return Assignment.getStaticModel().findOne({"_id":createdAssignment.getId()}).then((document) => {
                     expect(document).to.have.property("name").which.equals(createdAssignment.getName());
-                    expect(document).to.have.property("submissionIds").which.deep.equals(createdAssignment.getSubmissionIds());
                 });
             }); 
         });
@@ -60,13 +58,13 @@ describe("AssignmentDAO.ts",() => {
         it("Should throw an appropriate error if saving fails during creation",() => {
             chai.spy.on(Assignment.getStaticModel().prototype,'save',() => {return Promise.reject(new Error("Cannot save"))});
 
-            return expect(AssignmentDAO.createAssignment(testAssignment.getName(),testAssignment.getSubmissionIds())).to.eventually.be.rejectedWith("Cannot save");
+            return expect(AssignmentDAO.createAssignment(testAssignment.getName())).to.eventually.be.rejectedWith("Cannot save");
         });
     });
 
     describe("readAssignment()",() => {
         it("Should read an assignment database object if {id} is valid",() => {
-            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((assignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName()).then((assignment) => {
                 return AssignmentDAO.readAssignment(assignment.getId()).then((readAssignment) => {
                     expect(readAssignment.getName()).to.equal(assignment.getName());
                     expect(readAssignment.getId()).to.equal(assignment.getId());
@@ -95,16 +93,14 @@ describe("AssignmentDAO.ts",() => {
         it("should return all assignments if at least one assignment exists in the database", () => {
             let testAssignment2 = new Assignment.builder().build();
 
-            return AssignmentDAO.createAssignment(testAssignment.getName(),testAssignment.getSubmissionIds()).then((createdAssignment)  => {
-                return AssignmentDAO.createAssignment(testAssignment2.getName(),testAssignment2.getSubmissionIds()).then((createdAssignment2) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName()).then((createdAssignment)  => {
+                return AssignmentDAO.createAssignment(testAssignment2.getName()).then((createdAssignment2) => {
                     return AssignmentDAO.readAssignments().then((assignments) => {
                         expect(assignments[0].getId()).to.equal(createdAssignment.getId());
                         expect(assignments[0].getName()).to.equal(createdAssignment.getName());
-                        expect(assignments[0].getSubmissionIds()).to.deep.equal(createdAssignment.getSubmissionIds());
 
                         expect(assignments[1].getId()).to.equal(createdAssignment2.getId());
                         expect(assignments[1].getName()).to.equal(createdAssignment2.getName());
-                        expect(assignments[1].getSubmissionIds()).to.deep.equal(createdAssignment2.getSubmissionIds());
                     });
                 });
             });
@@ -128,30 +124,26 @@ describe("AssignmentDAO.ts",() => {
             let updatedSubmissionIds = ["5fc2a8b18636ab0ada9a21bb"] //One removed
 
 
-            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName()).then((createdAssignment) => {
                 
                 //Ensure created assignment starts with expected default values
                 expect(createdAssignment.getId()).to.not.be.undefined;
                 expect(createdAssignment.getName()).to.equal(testAssignment.getName());
-                expect(createdAssignment.getSubmissionIds()).to.equal(testAssignment.getSubmissionIds());
                 
                 //Update created assignment
                 createdAssignment.setName(updatedName);
-                createdAssignment.setSubmissionIds(updatedSubmissionIds);
 
                 return AssignmentDAO.updateAssignment(createdAssignment).then((updatedAssignment) => {
                    
                     //Expect updates to be returned on pass-through
                     expect(updatedAssignment.getId()).to.deep.equal(createdAssignment.getId());
                     expect(updatedAssignment.getName()).to.deep.equal(updatedName);
-                    expect(updatedAssignment.getSubmissionIds()).to.deep.equal(updatedSubmissionIds);
 
                     return AssignmentDAO.readAssignment(createdAssignment.getId()).then((readUpdatedAssignment) => {
                         
                         //Expect updates to be returned on read
                         expect(readUpdatedAssignment.getId()).to.deep.equal(createdAssignment.getId())
                         expect(readUpdatedAssignment.getName()).to.deep.equal(updatedName);
-                        expect(readUpdatedAssignment.getSubmissionIds()).to.deep.equal(updatedSubmissionIds);
                     });
                 });
             });
@@ -174,7 +166,7 @@ describe("AssignmentDAO.ts",() => {
         it("Should throw an appropriate error if database findOneAndUpdate fails during update",()  => {
             chai.spy.on(Assignment.getStaticModel(),'findOneAndUpdate',() => { return Promise.reject(new Error("Cannot findOneAndUpdate"))});
             
-            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName()).then((createdAssignment) => {
                 return expect(AssignmentDAO.updateAssignment(createdAssignment)).to.eventually.be.rejectedWith("Cannot findOneAndUpdate");
             });
         });
@@ -183,7 +175,7 @@ describe("AssignmentDAO.ts",() => {
     describe("deleteAssignment()",() => {
         it("Should be able to delete an assignment database object",() => {
 
-            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName()).then((createdAssignment) => {
 
                 return Assignment.getStaticModel().findOne({_id:createdAssignment.getId()}).then((firstFindRes) => {  
 
@@ -212,7 +204,7 @@ describe("AssignmentDAO.ts",() => {
         it("Should throw an appropriate error if database findOneAndDelete fails during deletion",() => {
             chai.spy.on(Assignment.getStaticModel(),'findOneAndDelete',() => { return Promise.reject(new Error("Cannot findOneAndDelete"))});
             
-            return AssignmentDAO.createAssignment(testAssignment.getName(), testAssignment.getSubmissionIds()).then((createdAssignment) => {
+            return AssignmentDAO.createAssignment(testAssignment.getName()).then((createdAssignment) => {
                 return expect(AssignmentDAO.deleteAssignment(createdAssignment.getId())).to.eventually.be.rejectedWith("Cannot findOneAndDelete");
             });
         });

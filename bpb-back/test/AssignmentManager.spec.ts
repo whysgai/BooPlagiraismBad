@@ -75,11 +75,10 @@ describe("AssignmentManager.ts",() => {
 
             chai.spy.on(AssignmentDAO,'createAssignment',() => { return Promise.resolve(testAssignment) });
 
-            let createData = {"name":testAssignment.getName(),"submissionIds":testAssignment.getSubmissionIds()};
+            let createData = {"name":testAssignment.getName()};
 
             return testAssignmentManager.createAssignment(createData).then((assignment) => {
                 expect(assignment.getName()).to.equal(testAssignment.getName());
-                expect(assignment.getSubmissionIds()).to.equal(testAssignment.getSubmissionIds());
             });
         });
 
@@ -87,7 +86,7 @@ describe("AssignmentManager.ts",() => {
    
             chai.spy.on(AssignmentDAO,'createAssignment',() => { return Promise.reject(new Error("Create failed")) });
 
-            let createData = {"name":testAssignment.getName(),"submissionIds":testAssignment.getSubmissionIds()};
+            let createData = {"name":testAssignment.getName()};
 
             return expect(testAssignmentManager.createAssignment(createData)).to.be.rejectedWith("Create failed");        
         });
@@ -211,11 +210,10 @@ describe("AssignmentManager.ts",() => {
             let expectedName = "Updated Name";
             let expectedSubmissionIds = ["Updated","List"];
 
-            updatedAssignmentBuilder.setSubmissionIds(expectedSubmissionIds);
             updatedAssignmentBuilder.setName(expectedName);
             let updatedAssignment = updatedAssignmentBuilder.build();
 
-            let updateBody ={"name":expectedName,"submissionIds":expectedSubmissionIds}
+            let updateBody ={"name":expectedName}
 
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
             let mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',(assn) => {return Promise.resolve(assn)}); // Should be updated by method (thus, mock is passthrough)
@@ -223,12 +221,11 @@ describe("AssignmentManager.ts",() => {
             return testAssignmentManager.updateAssignment(testAssignment.getId(),updateBody).then((assignment) => {
                 expect(mockUpdateAssignment).to.have.been.called.with(testAssignment);
                 expect(assignment.getName()).to.equal(updatedAssignment.getName());
-                expect(assignment.getSubmissionIds()).to.equal(updatedAssignment.getSubmissionIds());
             });
         });
 
         it("Should throw an appropriate error when trying to update the specified assignment if {id} is invalid",() => {
-            let updateBody ={"name":"test","submissionIds":["test"]}
+            let updateBody ={"name":"test"}
 
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.reject(new Error("Assignment not found"))});
             let mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.reject(new Error("Assignment could not be updated"))});
@@ -241,7 +238,7 @@ describe("AssignmentManager.ts",() => {
             });;
         });
         it("Should throw an appropriate error when trying to update the specified assignment if update fails",() => {
-            let updateBody ={"name":"test","submissionIds":["test"]}
+            let updateBody ={"name":"test"}
 
             chai.spy.on(AssignmentDAO,'readAssignment',() => {return Promise.resolve(testAssignment)});
             let mockUpdateAssignment = chai.spy.on(AssignmentDAO,'updateAssignment',() => {return Promise.reject(new Error("Assignment could not be updated"))});

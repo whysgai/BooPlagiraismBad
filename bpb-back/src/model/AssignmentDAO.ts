@@ -1,7 +1,7 @@
 import {IAssignment, Assignment } from './Assignment'
 
 export interface IAssignmentDAO {
-    createAssignment(name : string, submissionIds : string[]) : Promise<IAssignment>; 
+    createAssignment(name : string) : Promise<IAssignment>; 
     readAssignments() : Promise<IAssignment[]>;
     readAssignment(assignmentId : string) : Promise<IAssignment>;
     updateAssignment(assignment : IAssignment) : Promise<IAssignment>;
@@ -13,17 +13,15 @@ export interface IAssignmentDAO {
 export const AssignmentDAO : IAssignmentDAO = class {
     
     /**
-     * Creates an assignment with the given name and submissionIds
+     * Creates an assignment with the given name
      * @param name 
-     * @param submissionIds 
      * @returns A Promise containing the created Assignment
      */
-    static async createAssignment(name : string, submissionIds : string[]): Promise<IAssignment> {
+    static async createAssignment(name : string): Promise<IAssignment> {
         return new Promise((resolve,reject) => {
             
             let assignmentBuilder = new Assignment.builder();
             assignmentBuilder.setName(name);
-            assignmentBuilder.setSubmissionIds(submissionIds);
             
             let assignment = assignmentBuilder.build();
 
@@ -104,9 +102,7 @@ export const AssignmentDAO : IAssignmentDAO = class {
                         },
                         {
                             _id : assignment.getId(), 
-                            name : assignment.getName(),
-                            submissionIds : assignment.getSubmissionIds()
-                        },
+                            name : assignment.getName()                        },
                         {
                             new:true
                         }

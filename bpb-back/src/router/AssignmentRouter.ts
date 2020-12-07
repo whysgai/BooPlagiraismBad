@@ -40,7 +40,7 @@ class AssignmentRouter extends AbstractRouter {
       res.send({"response":"An assignment name was not provided"});
     } else {
 
-      let createBody = {"name":assignmentName,"submissionIds":[] as string[]}
+      let createBody = {"name":assignmentName}
 
       this.assignmentManager.createAssignment(createBody)
       .then(assignment => {
@@ -89,7 +89,7 @@ class AssignmentRouter extends AbstractRouter {
 }
   /**
    * PUT /assignments: Update an assignment's metadata
-   * @param req must have a body with id,submissionIds properties
+   * @param req must have a body with id properties
    * @param res 200 and JSON body if assignment is updated, otherwise 400
    */
   updateAssignmentFn = async(req : express.Request,res : express.Response) => {
@@ -97,12 +97,12 @@ class AssignmentRouter extends AbstractRouter {
   //TODO: Add checks to ensure submission ids exist before update
     let assignmentId = req.params.id;
     
-    if(!req.body.name || !req.body.submissionIds) {
+    if(!req.body.name) {
       res.status(400);
-      res.send({"response":"A request body was not provided, or the provided request body is missing either name or submissionIds properties"});
+      res.send({"response":"A request body was not provided, or the provided request body is missing name property"});
     } else {
       
-      let updateBody = {"name":req.body.name,"submissionIds":req.body.submissionIds}
+      let updateBody = {"name":req.body.name}
 
       this.assignmentManager.updateAssignment(assignmentId,updateBody)
       .then(assignment => {

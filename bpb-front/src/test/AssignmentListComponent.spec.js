@@ -32,7 +32,7 @@ describe("AssignmentListComponent tests:", () => {
         document.body.appendChild(container);
 
         act(() =>{
-            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[{_id:"01", name:"Peter Parker", submissionIds:['1','2','3']}]}/></StaticRouter>, container);  
+            render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[{_id:"01", name:"Peter Parker"}]}/></StaticRouter>, container);  
         });
 
         expect(container.getElementsByClassName('assignment-list-card').length).toBe(1);
@@ -44,9 +44,9 @@ describe("AssignmentListComponent tests:", () => {
 
         act(() =>{
             render(<StaticRouter location='/' context={{}}><AssignmentListComponent assignments={[
-                {_id:"02", name:"Gwen Stacey", submissionIds:['1','2','3']},
-                {_id:"03", name:"Flash Thompson", submissionIds:['1','3']},
-                {_id:"04", name:"Mary Jane Watson", submissionIds:['1']}
+                {_id:"02", name:"Gwen Stacey"},
+                {_id:"03", name:"Flash Thompson"},
+                {_id:"04", name:"Mary Jane Watson"}
             ]}/></StaticRouter>, container);  
         });
 
