@@ -3,9 +3,9 @@ import ComparisonReducer from './reducers/ComparisonReducer';
 import SubmissionReducer from './reducers/SubmissionReducer';
 import AssignmentReducer from './reducers/AssignmentReducer';
 
-//import "../node_modules/bootstrap/dist/css/bootstrap.min";
-//require('bootstrap');
-
+/**
+ * Bind the reducers to the store so that they are accessible from any component they're needed in.
+ */
 const reducers = combineReducers({
   ComparisonReducer: ComparisonReducer,
   SubmissionReducer: SubmissionReducer,
