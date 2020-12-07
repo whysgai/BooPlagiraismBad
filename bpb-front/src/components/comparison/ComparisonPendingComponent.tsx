@@ -18,12 +18,17 @@ class ComparisonPendingComponent extends React.Component <PropsType, {}> {
     render() {
         return(
             <div className="container">
-                <div className="card col-12 text-center">
+                <div className="card col-12 text-center mt-4">
                     <div className="card-body">
                         <h4 className="card-title">Comparing Submissions</h4>
-                        <div className="row">
+                        <div className="row mb-3">
                             <div className="col-3"/>
-                            <div className="card-subtitle col-6">Please be patient, this may take some time. It depends on the quantity, size, and complexity of your submission files.</div>
+                            <div className="card-subtitle text-justify col-6">
+                                Please be patient, as this may take some time.
+                                The comparison calculation is dependent on the quantity, size, and complexity of your submission files.
+                                Make yourself a cup of tea, create new assignments and submissions, or kick off another comparison.
+                                When you come back to this one, it will let you know if it's finished.
+                            </div>
                             <div className="col-3"/>
                         </div>                        
                         <div className="row justify-content-around">                            
