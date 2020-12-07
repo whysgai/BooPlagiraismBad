@@ -33,7 +33,6 @@ export function deleteAssignment(assignment: Assignment) : void {
  * stored and displayed for users.
  */
 export async function getAssignments() : Promise<Assignment[]> {
-    console.log("Get all assignments at", envURL);
     let response = await fetch(`${envURL}Assignments`);
     let asJson = await response.json();
     return Promise.resolve(asJson.assignments as Assignment[]);
