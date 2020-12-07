@@ -69,13 +69,14 @@ export async function readComparisonSubmission(submissionId: String) {
  * @param type the type is passed to the reducer to determine which action has been taken.
  */
 export async function readFileContent(submission: Submission, type: String) {
-    // for each file in submission.files
-    // request the file contents and add that to an array of strings
-    // then return the object with the type and the array of strings
+
     let fileContents : String[] = [];
+    // For each filename in in submission.files...
     for (let i: number = 0; i < submission.files.length; i++) {
+        // ...request the file contents and add that to an array of strings...
         fileContents.push(await getFileContent(submission._id, i));
     }
+    // ...then return the action object with the reducer type and the array of strings
     return {
         type: type,
         fileContents: fileContents

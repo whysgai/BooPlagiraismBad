@@ -28,7 +28,7 @@ export function readSubmissions(assignmentId : String) {
     return getSubmissionIds(assignmentId).then(async (submissionIds) => {
         let submissions = [] as Submission[]
         for (let submissionId of submissionIds) {
-            submissions.push(await getSubmission(submissionId))
+            submissions.push(await getSubmission(submissionId));
         }
         return {
             type: 'READ_SUBMISSIONS',
