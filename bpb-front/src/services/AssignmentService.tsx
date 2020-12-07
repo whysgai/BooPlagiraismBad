@@ -1,14 +1,13 @@
 import Assignment from "../types/Assignment"
 
 // the URL that is used for the server
-const vagrantURL = 'http://192.168.33.10:8080/'
-
+const envURL = process.env.REACT_APP_BPB_SRVADDR
 /**
  * The post assignment function adds an assignment to the server.
  * @param name the name of an assignment that is being created.
  */
 export function postAssignment(name : string) : void {
-    fetch(`${vagrantURL}Assignments`, {
+    fetch(`${envURL}Assignments`, {
         method: 'POST',
         body: JSON.stringify({'name': name, 'submissionIds': []}),
         headers: {'content-type': 'application/json'}
@@ -20,7 +19,7 @@ export function postAssignment(name : string) : void {
  * @param assignment the assignment thats being deleted from the server.
  */
 export function deleteAssignment(assignment: Assignment) : void {
-    fetch(`${vagrantURL}Assignments/${assignment._id}`, {
+    fetch(`${envURL}Assignments/${assignment._id}`, {
         method: 'DELETE',
         headers: {'content-type': 'application/json'}
     }).then(response =>
@@ -34,7 +33,7 @@ export function deleteAssignment(assignment: Assignment) : void {
  * stored and displayed for users.
  */
 export async function getAssignments() : Promise<Assignment[]> {
-    let response = await fetch(`${vagrantURL}Assignments`);
+    let response = await fetch(`${envURL}Assignments`);
     let asJson = await response.json();
     return Promise.resolve(asJson.assignments as Assignment[]);
 }
@@ -46,9 +45,8 @@ export async function getAssignments() : Promise<Assignment[]> {
  * @param assignmentId the assignment ID of the assignment whose information is being fetched from the server.
  */
 export async function getAssignment(assignmentId : String) : Promise<Assignment> {
-    let response = await fetch(`${vagrantURL}Assignments/${assignmentId}`);
+    let response = await fetch(`${envURL}Assignments/${assignmentId}`);
     let asJson = await response.json();
-    //console.log("get assignment service", asJson)
     return Promise.resolve(asJson as Assignment);
 }
 
