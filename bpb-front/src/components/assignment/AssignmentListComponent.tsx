@@ -48,24 +48,31 @@ class AssignmentListComponent extends React.Component <PropsType, ConstructorTyp
    * or if there are none it will display that none exist.
    */
   render () {
-    return (        
-      <div className='assignment-list pl-2'>
-        <Link to="/CreateAssignment" className="new-assignment-btn btn btn-outline-info ml-2">Create New Assignment</Link>      
-          {
-            this.state.assignments.length > 0 &&
-              <ul className='nav'>
-                {
-                  this.state.assignments.map((assignment,index) => 
-                      <li className='nav-item' key={index}><AssignmentListCard assignment={assignment} createAssignment={(arg: String) => null}/></li>
-                  )
-                }
-              </ul>
-          }
-          {
-            this.state.assignments.length <= 0 &&
-              <h4>No assignments to display</h4>
-          }        
-      </div>
+    return (    
+      <div className="container card">
+        <div className="card-body">    
+          <div className='assignment-list col-12'>
+            <div className="row">
+              <h3 className="col-6 text-center">Assignments</h3>
+              <Link to="/CreateAssignment" className="btn btn-outline-info col-6 mt-2 mb-2">Create New Assignment</Link>
+            </div>            
+              {
+                this.state.assignments.length > 0 &&
+                  <div className=''>
+                    {
+                      this.state.assignments.map((assignment,index) => 
+                          <div className='card col-12 mb-2' key={index}><AssignmentListCard assignment={assignment} createAssignment={(arg: String) => null}/></div>
+                      )
+                    }
+                  </div>
+              }
+              {
+                this.state.assignments.length <= 0 &&
+                  <h5>No assignments to display</h5>
+              }        
+          </div>
+        </div>  
+      </div>  
     );
   }
 }

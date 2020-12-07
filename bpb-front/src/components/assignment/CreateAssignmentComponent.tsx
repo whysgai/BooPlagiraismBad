@@ -66,48 +66,50 @@ class CreateAssignmentComponent extends React.Component <PropsType, ConstructorT
 
   render() {
     return (
-        <div style={{ textAlign: 'center', paddingTop: '20px' }}>
-            <div style={{textAlign: 'right', paddingRight: '100px', paddingTop: '30px', fontWeight: 'bolder'}}>
-                <Link className="btn btn-outline-danger mt-2" to="/">
-                  x 
-                </Link>
+        <div className="container card mt-3">
+          <div className="card-body">
+            <div className="row col-12">
+              <div className="col-11"><h3>Create Assignment</h3></div>
+              <Link className="col-1 btn btn-outline-dark" to="/Assignments">
+                <i className="fa fa-arrow-circle-left" aria-hidden="true"/> 
+              </Link>
             </div>
-            <h3>Create Assignment</h3>
-            <br/>
-            <span text-align="center">
-                <h5>Assignment Name:</h5>
-                <input 
-                  name="name" 
-                  className='assignment-name-input' 
-                  type="text"
-                  disabled={this.state.uploaded} 
-                  onChange={this.onInputchange}
-                />
-                <br/>
-                  {
-                    !this.assignmentInfoIsEntered() &&
-                    <Link className='create-assignment-btn btn btn-outline-secondary disabled mt-2'
-                        to="#"
-                        onClick={(event) => event.preventDefault()}>
-                        Create Assignment
-                    </Link>
-                  }
-                  {
-                    (this.assignmentInfoIsEntered() && !this.state.uploaded) &&
-                    <Link className='create-assignment-btn btn btn-outline-success mt-2'
-                        to="#"
-                        onClick={(event) => {event.preventDefault(); this.callDispatch()}}>
-                        Create Assignment
-                    </Link>
-                  }
-                  {
-                    (this.assignmentInfoIsEntered() && this.state.uploaded) &&
-                    <Link className='create-assignment-btn btn btn-outline-success mt-2'
-                        to="/">
-                        Success! Return to Assignments
-                    </Link>
-                  }
-            </span>
+          </div>
+          <div className="col-12 text-center form-group">
+              <label className="mr-2" htmlFor="assignment-name-input"><h5>Assignment Name:</h5></label>
+              <input 
+                id="assignment-name-input"
+                name="name" 
+                placeholder="name"
+                className='assignment-name-input form-control' 
+                type="text"
+                disabled={this.state.uploaded} 
+                onChange={this.onInputchange}
+              />
+              {
+                !this.assignmentInfoIsEntered() &&
+                <Link className='col-12 create-assignment-btn btn btn-outline-secondary disabled mt-2'
+                    to="#"
+                    onClick={(event) => event.preventDefault()}>
+                    Create Assignment
+                </Link>
+              }
+              {
+                (this.assignmentInfoIsEntered() && !this.state.uploaded) &&
+                <Link className='col-12 create-assignment-btn btn btn-success mt-2'
+                    to="#"
+                    onClick={(event) => {event.preventDefault(); this.callDispatch()}}>
+                    Create Assignment
+                </Link>
+              }
+              {
+                (this.assignmentInfoIsEntered() && this.state.uploaded) &&
+                <Link className='col-12 create-assignment-btn btn btn-outline-info mt-2'
+                    to="/">
+                    Success! Return to Assignments
+                </Link>
+              }
+          </div>
         </div>
     );
 }
