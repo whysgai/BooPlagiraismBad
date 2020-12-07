@@ -52,16 +52,14 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
 
   render() {
     return (
-      <div className='submission-list-item'>
-        <div>
-          <input type="checkbox" className="form-check-input" id="exampleCheck1"
-          disabled={(!this.submissionAlreadySelected() && store.getState().ComparisonReducer.compareSubmissions.length >= 2)} 
-          onClick={() => this.checkbox()} />
-        </div>
-        <span>
-          {this.props.submission.name}
-        </span>
-        <button className='btn btn-outline-danger ml-2' onClick={() => {this.deleteSubmission(); window.location.reload()}}>delete</button>
+      <div className='submission-list-item col-12'>
+        <input type="checkbox" className="form-check-input" id={`${this.props.submission._id}`}
+        disabled={(!this.submissionAlreadySelected() && store.getState().ComparisonReducer.compareSubmissions.length >= 2)} 
+        onClick={() => this.checkbox()}/>
+        <label className="ml-4" htmlFor={`${this.props.submission._id}`}>
+          <h5>{this.props.submission.name}</h5>
+        </label>
+        <button className='btn btn-outline-danger float-right' onClick={() => {this.deleteSubmission(); window.location.reload()}}><i className="fa fa-trash" aria-hidden="true"/></button>
       </div>
     );
   }
