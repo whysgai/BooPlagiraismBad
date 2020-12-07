@@ -1,0 +1,6 @@
+.viewport-height {
+    max-height: 70vh;
+    max-width: 100%;
+    overflow-x: scroll;
+    overflow-y: auto;
+}

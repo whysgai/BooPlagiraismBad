@@ -27,35 +27,48 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
 
   render() {
     return (
-      <div className="submission-compare-pane border">
+      <div className="matchbox">
         {
           (this.props.comparison.matches && this.props.comparison.matches.length <= 0) &&
-            <span>No matches found.</span>            
+            <div className="card text-center">
+              <div className="card-body">
+                <p className="card-text">No matches found</p>
+              </div>
+            </div>                        
         }        
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore < 1) &&
-            <div>
-              <div className="col-12 text-align-center">Similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
-              <div className="col-12 text-align-center">Prominent Matches:</div>
-              <ul className="nav flex-column col-12">
-                {
-                  this.props.comparison.matches.slice(0, 10).map((match, index) => 
-                    <li className="nav-item" key={index} onClick={() => this.selectMatch(match)}>
-                      <ul>
-                        <li className="nav-item-link">Match {index+1}</li>
-                        <li>Context {match[0].contextType}</li>
-                        <li>{match[0].fileName} lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</li>
-                        <li>{match[1].fileName} lines {match[1].lineNumberStart} - {match[1].lineNumberEnd}</li>
-                      </ul>
-                    </li>
-                  )
-                }
-              </ul> 
+            <div className="card">
+              {/* <div className="card-body"> */}              
+                <div className="list-group list-group-flush w-100">
+                  <div className="list-group-item w-100">
+                    <h5 className="card-title text-center">Similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</h5>
+                    <h6 className="card-subtitle text-center">Prominent Matches:</h6>
+                  </div>
+                  {
+                    this.props.comparison.matches.slice(0, 10).map((match, index) => 
+                      <div className="btn btn-outline-dark list-group-item w-100 text-center" key={index} onClick={() => this.selectMatch(match)}>
+                        {/* <ul> */}
+                          {/* <span className="">Match {index+1}</span> */}
+                          <div>Match context:</div>
+                          <div>{match[0].contextType}</div>
+                          <div><i className="fa fa-arrow-left fa-xs" aria-hidden="true"></i> Lines {match[0].lineNumberStart} - {match[0].lineNumberEnd}</div>
+                          <div>Lines {match[1].lineNumberStart} - {match[1].lineNumberEnd} <i className="fa fa-arrow-right fa-xs" aria-hidden="true"></i></div>
+                        {/* </ul> */}
+                      </div>
+                    )
+                  }
+                </div> 
+              {/* </div> */}
             </div>            
         }
         {
           (this.props.comparison.matches && this.props.comparison.matches.length > 0 && this.props.comparison.similarityScore >= 1) &&
-            <div className="col-12 text-align-center">File similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</div>
+            <div className="card text-center">
+              <div className="card-body">
+                <h5 className="card-title text-center">Similarity: {(this.props.comparison.similarityScore * 100).toFixed(2)}%</h5>
+              </div>
+            </div>
         }
       </div>
     );

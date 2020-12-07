@@ -87,7 +87,7 @@ class ComparisonComponent extends React.Component <PropsType, {
                 .then(() => this.setState({
                   subTwoFileContents: store.getState().ComparisonReducer.fileTwoContents
                 }));
-            compareSubmissions(this.state.compareSubmissions)
+            compareSubmissions(store.getState().ComparisonReducer.compareSubmissions)
               .then((comparisonAction) => store.dispatch(comparisonAction))
               .then(() => {
                   this.setState({
@@ -154,90 +154,104 @@ class ComparisonComponent extends React.Component <PropsType, {
           this.state.comparisonIsReady &&
             <div className="submission-compare-pane col-12">
               <div>
-                <div className="col-10"></div>
+                {/* <div className="col-10"></div>
                 <div className="col-2 float-right">
-                      <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
-                        x 
-                      </Link>
-                  </div>
+                  <Link className="btn btn-outline-danger mt-2" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
+                    <i className="fa fa-window-close-o" aria-hidden="true"></i> 
+                  </Link>
+                </div> */}
               </div>
               <div className="row col-12">
-                <h3 className="col-6">Submission: {this.state.submissionOne.name}</h3>
-                <h3 className="col-6">Submission: {this.state.submissionTwo.name}</h3>
-              </div> 
-              <div className="card">
-                <div className="card-body">
-                  <span>Closest Matches: </span>
-                  {
-                    (this.state.comparisons && this.state.comparisons.length > 0) &&
-                      this.state.comparisons.slice(0, 5).map((comparison, index) => 
-                        <span key={index}>{comparison.files[0][1]} &amp; {comparison.files[1][1]} : {(comparison.similarityScore * 100).toFixed(2)}%; </span>
-                      )
-                  }
-                  {
-                    (this.state.comparisons && this.state.comparisons.length <= 0) &&
-                      <span>There are no matches detected between these submissions.</span>
-                  }
-                </div>
-              </div>  
-              <div className="row col-12 align-items-start">
-          
-                <div className="sub1 row col-4 ">
-                  
-                  <div className="col-3">
-                    <div className="submission-compare-pane border">
-                      DirectoryListComponent
+                <div className="col-1"></div>
+                <h3 className="col-3 text-right pr-10">Submission: {this.state.submissionOne.name}</h3>
+                <div className="col-4 mb-4 no-gutters">
+                  <div className="card text-center ">
+                    <div className="card-header">Top 5 Prominent Matches</div>
+                    <div className="card-body"> 
                       {
-                        (this.state.submissionOne.files && this.state.submissionOne.files.length > 0) &&
-                          <ol>
+                        (this.state.comparisons && this.state.comparisons.length > 0) &&
+                          <ul className="pl-0 mb-0">
                             {
-                              this.state.submissionOne.files.map((file, index) => 
-                                <li key={index} onClick={() => {this.showFileContent(1, index); this.resetCurrentMatch()}}>
-                                  <a href="#" className={`${this.state.activeFileOne === file ? "text-secondary" : "text-primary"}`}>{file}</a>
-                                </li>
+                              this.state.comparisons.slice(0, 5).map((comparison, index) => 
+                                <li key={index} className="d-inline"> &middot; {comparison.files[0][1]} &amp; {comparison.files[1][1]} : {(comparison.similarityScore * 100).toFixed(2)}%</li>
                               )
                             }
-                          </ol>
-                      } 
+                          </ul>  
+                      }
+                      {
+                        (this.state.comparisons && this.state.comparisons.length <= 0) &&
+                          <span>There are no matches detected between these submissions.</span>
+                      }
                     </div>
                   </div>
+                </div>   
+                <h3 className="col-3 pl-10">Submission: {this.state.submissionTwo.name}</h3>
+                <div className="col-1 float-right">
+                  <Link className="btn btn-outline-danger mt-2 mw-100" to={`/Assignments/${this.props.match.params.assignmentId}/Submissions`}>
+                    <i className="fa fa-window-close-o" aria-hidden="true"></i> 
+                  </Link>
+                </div>
+              </div> 
+              <div className="row col-12 align-items-start">
+                  
+                <div className="sub1 row col-5">
+                  {/* Left Directory List */}
+                  <div className="directory-list col-3">
+                    {
+                      (this.state.submissionOne.files && this.state.submissionOne.files.length > 0) &&
+                        <ul className="list-group">
+                          {
+                            this.state.submissionOne.files.map((file, index) => 
+                              <li key={index}
+                                className={`${this.state.activeFileOne === file ? "active" : ""} list-group-item`}                                  
+                                onClick={() => {this.showFileContent(1, index); this.resetCurrentMatch()}}>
+                                <a href="#" className={`${this.state.activeFileOne === file ? "text-white" : ""} text-decoration-none  text-wrap`}>{file}</a>
+                              </li>
+                            )
+                          }
+                        </ul>
+                    } 
+                  </div>  
+                  {/* Left Document Pane */}
                   <div className="col-9">
                     <span></span>
                     <DocumentPaneComponent fileContent={this.state.submissionOneFileContent} snippet={this.state.submissionOneDisplaySnippet} side={0} highlights={this.state.activeMatches} />
                   </div>
                 </div>
-                <div className="col-3">
-                  <div className={`btn btn-outline-info ${(!this.state.submissionOneDisplaySnippet.fileName || !this.state.submissionTwoDisplaySnippet.fileName)? "d-none" : ""}`} onClick={() => this.resetCurrentMatch()}>Clear Match</div>
+                <div className="col-2">
+                  <div className={`btn btn-outline-info col-12 ${(!this.state.submissionOneDisplaySnippet.fileName || !this.state.submissionTwoDisplaySnippet.fileName)? "d-none" : ""}`} onClick={() => this.resetCurrentMatch()}>Clear Match</div>
                   <div onClick={() => this.selectComparisonForFiles()}>
                     <MatchBoxComponent comparison={this.state.activeMatches} />
                   </div>
                 </div>
-                <div className="sub2 row col-4">
-                  
+                <div className="sub2 row col-5">
+                  {/* Right Document Pane */}
                   <div className="col-9">
                     <DocumentPaneComponent fileContent={this.state.submissionTwoFileContent} snippet={this.state.submissionTwoDisplaySnippet} side={1} highlights={this.state.activeMatches}/>
                   </div>
-                  <div className="col-3">
-                    <div className="submission-compare-pane border">
-                        DirectoryListComponent
-                        {
-                          (this.state.submissionTwo.files && this.state.submissionTwo.files.length > 0) &&
-                            <ol>
-                              {
-                                this.state.submissionTwo.files.map((file, index) => 
-                                  <li key={index} onClick={() => {this.showFileContent(2, index); this.resetCurrentMatch()}}>
-                                    <a href="#" className={`${this.state.activeFileTwo === file ? "text-secondary" : "text-primary"}`}>{file}</a>
-                                  </li>
-                                )
-                              }
-                            </ol>
-                        } 
-                      </div>
-                  </div>
+                  {/* Right Directory List */}
+                  <div className="directory-list col-3">
+                      {
+                        (this.state.submissionTwo.files && this.state.submissionTwo.files.length > 0) &&
+                          <ul className="list-group">
+                            {
+                              this.state.submissionTwo.files.map((file, index) => 
+                                <li key={index}
+                                  className={`${this.state.activeFileTwo === file ? "active" : ""} list-group-item`}
+                                  onClick={() => {this.showFileContent(2, index); this.resetCurrentMatch()}}>
+                                  <a href="#" className={`${this.state.activeFileTwo === file ? "text-white" : ""} text-decoration-none text-wrap`}>{file}</a>
+                                </li>
+                              )
+                            }
+                          </ul>
+                      } 
+                    </div>
+                  
                 </div>
               </div>
             </div>  
         }
+        {/* If the comparison has not returned from the server, display this message. */}
         {
           !this.state.comparisonIsReady &&
             <ComparisonPendingComponent submissionOne={this.state.submissionOne} submissionTwo={this.state.submissionTwo}/>

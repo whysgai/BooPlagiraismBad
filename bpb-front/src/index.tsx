@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './css/style.css';
 import './css/index.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import AssignmentListComponent from './components/assignment/AssignmentListComponent';
@@ -13,6 +14,7 @@ import NavbarComponent from './components/NavbarComponent';
 import {store} from './store'
 import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "font-awesome/css/font-awesome.min.css";
 
 /**
  * Render the pages as directed by a user. Provider adds store so that it is accessible from any page the client selects.
