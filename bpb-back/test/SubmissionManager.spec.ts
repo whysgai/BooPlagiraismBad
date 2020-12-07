@@ -928,8 +928,30 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.equals("Comparison between " + testSubmission2.getId() + " and " + testSubmission.getId() +" is already in progress, please wait!");
             });
         }).timeout(8000);
+        
+        it("Should return an appropriate error if submission.compare throws an error",() => {
 
-        it("Should return an appropriate error if submission compare fails",() => {
+            testSubmissionManager.invalidateCaches(); 
+
+            let testSubmission2 = new Submission.builder().build();//no entries
+            let expectedError = 'Cannot compare: One or more comparator submissions has no entries';
+            let mockGetSubmission = chai.spy.on(testSubmissionManager,'getSubmission',(submissionId) => { 
+                if(submissionId == testSubmission.getId()) {
+                    return Promise.resolve(testSubmission);
+                } else {
+                    return Promise.resolve(testSubmission2)};
+                });
+
+            return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then(res => {
+                expect(true,"compareSubmission is succeeding where it should fail (submission.compare failed)").to.be.false;
+            }).catch((err) => {
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
+                expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
+                expect(err).to.have.property("message").which.equals(expectedError);
+            });
+        }).timeout(8000);
+
+        it("Should return an appropriate error if compare worker throws an error",() => {
 
             testSubmissionManager.invalidateCaches(); 
             testSubmissionManager.setCompareWorker("./test/res/TestCompareWorker.js");
@@ -946,6 +968,7 @@ describe("SubmissionManager.ts",() => {
                 expect(err).to.have.property("message").which.equals("Some error!");
             });
         }).timeout(8000);
+
 
         it("Should return an appropriate error if {id_a} is valid and {id_b} does not exist",() => {
 
