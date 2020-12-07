@@ -185,9 +185,6 @@ class ComparisonComponent extends React.Component <PropsType, {
                   </div>
                 </div>   
                 <h3 className="col-4 pl-10">Submission: {this.state.submissionTwo.name}</h3>
-              
-              
-                
               </div> 
               <div className="row col-12 align-items-start">
                   
@@ -248,6 +245,7 @@ class ComparisonComponent extends React.Component <PropsType, {
               </div>
             </div>  
         }
+        {/* If the comparison has not returned from the server, display this message. */}
         {
           !this.state.comparisonIsReady &&
             <ComparisonPendingComponent submissionOne={this.state.submissionOne} submissionTwo={this.state.submissionTwo}/>
