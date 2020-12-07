@@ -9,6 +9,16 @@ Note: On Windows, ensure [Hyper-V is disabled](https://docs.microsoft.com/en-us/
 * Run `vagrant up`
 * After a delay, the application should be available at `http://192.168.33.10:3000` in your web browser of choice.
 
+# Scripts (Vagrant)
+When using the Vagrant deployment, the following *.sh scripts can be executed from the repository directory (e.g. `sh scripts/reload.sh` while in `bpb/`)
+* Run `scripts/reload.sh` to resync files and restart app components in Vagrant
+* Run `scripts/test.sh` to execute all tests in the Vagrant environment
+* Run `scripts/test_back.sh` to run back-end tests only
+* Run `scripts/test_front.sh` to run front-end tests only
+* Run `scripts/test_integration.sh` to run integration tests
+* Run `scripts/test_all.sh` to run all tests
+* Run `scripts/monitor.sh` to monitor running apps and view log
+
 # Getting Started (Manually)
 * [Install MongoDB](https://docs.mongodb.com/manual/administration/install-community/)
 * Create an empty MongoDB database called 'bpb' (without quotes)
@@ -55,12 +65,4 @@ Example Value: 50 (default)
 Determines location of the back-end server. Must point to where the back-end is hosted.
 
 Example Value: http://127.0.0.1:8080/
-
-# Scripts
-* Run `scripts/reload.sh` to resync files and restart app components in Vagrant
-* Run `scripts/test.sh` to execute all tests in the Vagrant environment
-* Run `scripts/test_back.sh` to run back-end tests only
-* Run `scripts/test_front.sh` to run front-end tests only
-* Run `scripts/test_integration.sh` to run integration tests
-* Run `scripts/test_all.sh` to run all tests
-* Run `scripts.monitor.sh` to monitor running apps and view logs
+s
