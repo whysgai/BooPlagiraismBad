@@ -44,13 +44,13 @@ class AssignmentListCard extends React.Component <PropsType,{}> {
             {this.props.assignment.name}
         </h5>
         <Link
-          className="btn btn-outline-primary col-12 mb-2" 
+          className="btn btn-outline-primary btn-view-submissions col-12 mb-2" 
           to={`/Assignments/${this.props.assignment._id}/Submissions`}
           onClick={() => this.setAssignment()}            
         >
           View Submissions
         </Link>
-        <button className='btn btn-outline-danger col-12' onClick={() => {this.deleteAssignment(); window.location.reload()}}>Delete</button>
+        <button className='btn btn-outline-danger btn-delete col-12' onClick={() => {this.deleteAssignment(); window.location.reload()}}>Delete</button>
       </div>
     );
   }

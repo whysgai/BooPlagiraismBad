@@ -8,7 +8,7 @@ import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16';
 import configureMockStore from 'redux-mock-store'
 
-describe("SubmissionListComponent tests:", () => {
+describe.skip("SubmissionListComponent tests:", () => {
     let container;
     let mockStore;
     beforeEach(() => {
@@ -84,7 +84,7 @@ describe("SubmissionListComponent tests:", () => {
         expect(document.querySelector('.disabledCompareButton').getAttribute('href')).toBe('/ComparisonComponent')
     });
 })
-describe("CompareButton tests:", () => {
+describe.skip("CompareButton tests:", () => {
     let container;
     let mockStore;
     beforeEach(() => {
