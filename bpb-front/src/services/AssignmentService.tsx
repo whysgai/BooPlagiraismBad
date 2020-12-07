@@ -9,7 +9,7 @@ const envURL = process.env.REACT_APP_BPB_SRVADDR
 export function postAssignment(name : string) : void {
     fetch(`${envURL}Assignments`, {
         method: 'POST',
-        body: JSON.stringify({'name': name, 'submissionIds': []}),
+        body: JSON.stringify({'name': name}),
         headers: {'content-type': 'application/json'}
     });
 }

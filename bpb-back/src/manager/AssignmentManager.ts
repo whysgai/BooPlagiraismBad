@@ -73,9 +73,8 @@ export class AssignmentManager implements IAssignmentManager {
 
         return new Promise((resolve, reject) => {
             let name = data.name;
-            let submissionIds = data.submissionIds;
 
-            AssignmentDAO.createAssignment(name, submissionIds)
+            AssignmentDAO.createAssignment(name)
                 .then((assignment) => {
                     this.assignmentCache.set(assignment.getId(), assignment);
                     this.cacheCount++;
@@ -155,7 +154,6 @@ export class AssignmentManager implements IAssignmentManager {
             this.getAssignment(assignmentId).then((assignment) => {
 
                 assignment.setName(data.name);
-                assignment.setSubmissionIds(data.submissionIds);
 
                 AssignmentDAO.updateAssignment(assignment).then((updatedAssignment) => {
                     

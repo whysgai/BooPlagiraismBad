@@ -45,7 +45,7 @@ describe("App (Integration)",() =>  {
         let fileContentC = await readFileContent("test/res/javaExample3.java");
         let fileContentD = await readFileContent("test/res/javaExample4.java");
 
-        return chai.request(baseURI).post("/Assignments").send({"name":"Test Assignment","submissionIds":[]}).then((createdAssignmentRes) => {
+        return chai.request(baseURI).post("/Assignments").send({"name":"Test Assignment"}).then((createdAssignmentRes) => {
             expect(createdAssignmentRes.status).to.equal(200);
             let assignmentId = createdAssignmentRes.body._id;
 

@@ -56,7 +56,6 @@ describe('SubmissionRouter.ts',()=> {
         builder.setName("test");
         testSubmission = builder.build();
 
-        testAssignment.addSubmission(testSubmission.getId());
         testAre1 = new AnalysisResultEntry("ID117",testSubmission.getId(),"test.java","method",1,3,7,9,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
         testAre2 = new AnalysisResultEntry("ID666","some_other_submission_id","testing.java","method",2,4,6,8,"245rr1","void test(Itaque quod qui autem natus illum est. Ab voluptate consequuntur nulla. Molestias odio ex dolorem cumque non ad ullam. Quo nihil voluptatem explicabo voluptas. Et facere odio rem dolores rerum eos minima quos.) { }");
         testSubmission.addAnalysisResultEntry(testAre1);
@@ -331,8 +330,6 @@ describe('SubmissionRouter.ts',()=> {
         const expectedSubs = {submissionIds: [testSubmission.getId()]};
 
     
-        testAssignment.addSubmission(testSubmission.getId());
-
         chai.spy.on(
             testAssignmentManager,'getAssignment',() => {return Promise.resolve(testAssignment);}
         )
@@ -387,8 +384,6 @@ describe('SubmissionRouter.ts',()=> {
         const expectedSubs = {submissions: [testSubmission.asJSON()]};
 
     
-        testAssignment.addSubmission(testSubmission.getId());
-
         chai.spy.on(testAssignmentManager,'getAssignment',() => {return Promise.reject(new Error("Failed to find assignment"));})
 
         chai.spy.on(testSubmissionManager, 'getSubmissions', () => {return Promise.resolve([testSubmission]);});
@@ -407,8 +402,6 @@ describe('SubmissionRouter.ts',()=> {
         const expectedSubs = {submissions: [testSubmission.asJSON()]};
 
     
-        testAssignment.addSubmission(testSubmission.getId());
-
         chai.spy.on(testAssignmentManager,'getAssignment',() => {return Promise.resolve(testAssignment);})
 
         chai.spy.on(testSubmissionManager, 'getSubmissions', () => {return Promise.reject(new Error("Failed to get submissions"));});

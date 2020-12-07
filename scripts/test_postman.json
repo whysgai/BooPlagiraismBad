@@ -44,12 +44,6 @@
 							"value": "test",
 							"description": "",
 							"type": "text"
-						},
-						{
-							"key": "submissionIds",
-							"value": "[]",
-							"description": "",
-							"type": "text"
 						}
 					]
 				},
