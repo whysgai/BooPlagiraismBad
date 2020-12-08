@@ -1,18 +1,23 @@
 import React from 'react';
 import Submission from '../../types/Submission';
 
+/**
+ * Props type interface to set the types of any props that are passed from a parent component.
+ */
 interface PropsType {
   submissionOne: Submission,
   submissionTwo: Submission 
 }
 
+/**
+ * Renders a message asking the user to wait while the server processes the comparison
+ * calculations. Displays the files of each submission as well.
+ */
 class ComparisonPendingComponent extends React.Component <PropsType, {}> {
 
     constructor(props : PropsType) {
-        super(props);
-        
-        this.state = {
-        };
+        super(props);        
+        this.state = { };
     }
 
     render() {
@@ -30,8 +35,9 @@ class ComparisonPendingComponent extends React.Component <PropsType, {}> {
                                 When you come back to this one, it will let you know if it's finished.
                             </div>
                             <div className="col-3"/>
-                        </div>                        
-                        <div className="row justify-content-around">                            
+                        </div>
+                        <div className="row justify-content-around">
+                            {/*Left-hand list of files in submission one*/}                         
                             {
                                 (this.props.submissionOne) &&
                                     <div className="col-4">
@@ -48,6 +54,7 @@ class ComparisonPendingComponent extends React.Component <PropsType, {}> {
                                             </ul>
                                     </div>
                             }
+                            {/*Right-hand list of files in submission two*/}
                             {
                                 (this.props.submissionTwo) &&
                                     <div className="col-4">

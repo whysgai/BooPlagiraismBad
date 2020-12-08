@@ -10,6 +10,9 @@ import Comparison from '../../types/Comparison';
 import ComparisonPendingComponent from './ComparisonPendingComponent';
 import Snippet from '../../types/Snippet';
 
+/**
+ * Constructor type interface to set the types of class properties
+ */
 interface ConstructorType {
   compareSubmissions: Submission[],
   comparisons: Comparison[],
@@ -27,17 +30,23 @@ interface ConstructorType {
   submissionTwoDisplaySnippet: Snippet
 }
 
+/**
+ * MatchParams type interface to set the types of any paramaters encoded in the URL.
+ */
 interface MatchParams {
   assignmentId: string,
   subIdOne: string,
   subIdTwo: string
 }
 
+/**
+ * Props type interface to set the types of any props that are passed from a parent component.
+ */
 interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
 /**
- * Represents a comparison view between two submissions
+ * Renders a comparison view between two submissions
  */
 class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
 
@@ -62,6 +71,11 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
     };
   }
 
+  /**
+   * Runs when the page finishes loading, and contains the necessary requests to re-populate the store
+   * from the server. Fetches the two submissions encoded in the url and requests a comparison and
+   * their file contents. Utilizes promise-chaining to increase efficiency.
+   */
   componentDidMount() {
     // First, clear the store of the compareSubmissions array, in case user navigated here
     // Using foward/back after filling the store with different comparisons
@@ -110,6 +124,12 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
       })
   }
 
+  /**
+  * The server returns all sets of file-to-file matches, but we only want to display them for
+  * one file pair at a time. This function filters to make sure we are seeing the correct set
+  * of matches by making sure the left file we are showing matches the left file of the pair,
+  * and the same for the right side.
+  */
   filterMatches() {
     if (this.state.activeFileOne != "" && this.state.activeFileTwo != "") {
       let parseObjects = this.state.comparisons as any as any[] as Comparison[];
@@ -123,6 +143,11 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
     }
   }
 
+  /**
+  * When a file is selected, updates the displayed file content accordingly
+  * @param submissionIndex indicating whether the submission is on the left or right
+  * @param fileIndex the position of the file in the submission's list
+  */
   showFileContent(submissionIndex: number, fileIndex: number) {
     if (submissionIndex === 1) {
       this.setState({
@@ -138,6 +163,10 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
     setTimeout(() => {this.filterMatches()}, 500);
   }
 
+  /**
+  * When a match is selected, updates the displayed file content accordingly
+  * by pulling from the store (which was in turn set within the MatchBox component)
+  */
   selectComparisonForFiles() {
     this.setState({
       submissionOneDisplaySnippet: store.getState().ComparisonReducer.snippetFileOne,
@@ -145,6 +174,9 @@ class ComparisonComponent extends React.Component <PropsType, ConstructorType> {
     })
   }
 
+  /**
+  * Removes the current match, returning the displays to the full files
+  */
   resetCurrentMatch() {
     this.setState({
       submissionOneDisplaySnippet: {} as Snippet,
