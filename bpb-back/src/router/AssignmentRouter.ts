@@ -32,7 +32,6 @@ class AssignmentRouter extends AbstractRouter {
    */
   createAssignmentFn = async(req : express.Request,res : express.Response) => {
 
-  //TODO: Add checks to ensure submission ids exist before creating 
     let assignmentName = req.body.name;
 
     if(assignmentName == undefined) {
@@ -94,7 +93,6 @@ class AssignmentRouter extends AbstractRouter {
    */
   updateAssignmentFn = async(req : express.Request,res : express.Response) => {
 
-  //TODO: Add checks to ensure submission ids exist before update
     let assignmentId = req.params.id;
     
     if(!req.body.name) {

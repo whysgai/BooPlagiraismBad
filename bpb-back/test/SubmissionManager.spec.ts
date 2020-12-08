@@ -857,14 +857,14 @@ describe("SubmissionManager.ts",() => {
 
             //Performs Comparison
             return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
-                expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
+                expect(analysisResult).to.not.be.undefined; 
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(mockGetSubmission).to.have.been.called.twice;
 
                 //Pulls from cache
                 return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
-                    expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
+                    expect(analysisResult).to.not.be.undefined;
                     expect(mockGetSubmission).to.have.been.called.twice;
                 });
             });
@@ -892,7 +892,7 @@ describe("SubmissionManager.ts",() => {
 
             //Performs Comparison
             return testSubmissionManager.compareSubmissions(testSubmission2.getId(),testSubmission.getId()).then((analysisResult) => {
-                expect(analysisResult).to.not.be.undefined; //TODO: Replace with better assertion (?)
+                expect(analysisResult).to.not.be.undefined; 
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission.getId());
                 expect(mockGetSubmission).to.have.been.called.with(testSubmission2.getId());
                 expect(mockGetSubmission).to.have.been.called.twice;
