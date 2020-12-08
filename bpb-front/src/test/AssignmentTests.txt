@@ -1,0 +1,19 @@
+Description of manual tests:
+
+Create Assignment tests:
+
+Assignment can be created:
+1. Navigate to home page
+2. Select 'Create New Assignment'
+3. Enter an assignment name
+4. Select 'Create Assignment'
+5. Select 'Success! Return to Assignments'
+6. Verify redirected to the home page and the new assignment appears with the buttons 'Delete' and 'View Submissions'
+
+Assignment cannot be created without a name being entered:
+1. Navigate to home page
+2. Select 'Create New Assignment'
+3. Skip entering an assignment name
+4. Verify 'Create Assignment' button is not clickable
+5. Select back icon in top right corner
+6. Verify redirected to the home page and no new assignment has been created

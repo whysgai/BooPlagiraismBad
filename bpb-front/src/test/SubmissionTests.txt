@@ -1,0 +1,77 @@
+Description of manual tests:
+
+Upload Submission tests:
+
+Prerequisites:
+1. One or more assignments exist on the homepage
+
+Submission can be created for a particular assignment:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select 'Upload Submission'
+3. Verify assignment name appears for the upload submission screen
+4. Enter a submission name
+5. Select 'Click or drag submission files to this area for upload' and select files with .java extension for upload
+6. Select 'Upload Submission'
+7. Select 'Success! Return to assignment'
+8. Verify redirected to the selected assignment page and the new submission is available in the submission list
+
+Submission cannot be created when a name is not entered:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select 'Upload Submission'
+3. Verify assignment name appears for the upload submission screen
+4. Select 'Click or drag submission files to this area for upload' and select files with .java extension for upload
+5. Verify 'Upload Submission' button is not clickable and does not redirect the user
+
+Submission cannot be created when a file is not entered:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select 'Upload Submission'
+3. Verify assignment name appears for the upload submission screen
+4. Enter a submission name
+5. Verify 'Upload Submission' button is not clickable and does not redirect the user
+
+Submission cannot be created when a file with a something other than a .java extension is selected:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select 'Upload Submission'
+3. Verify assignment name appears for the upload submission screen
+4. Enter a submission name
+5. Select a file with a .java extension and one without a .java extension
+6. Verify 'Upload Submission' button is not clickable and does not redirect the user
+
+
+Submissions Component tests:
+
+Prerequisites:
+1. One or more assignments exist on the homepage with one or more submissions associated
+
+Submissions can be accessed for a particular assignment:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Verify the selected assignment name appears at the top of the page
+2. Verify existing submissions are retained on the screen
+
+One submission can be selected for comparison:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a checkbox
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+
+Two submissions can be selected for comparison:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Verify the 'Compare Submissions 1/2' button has updated to 'Compare Submissions 2/2' and it has become clickable
+
+A submission can be deleted:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select 'delete' button for a submission
+3. Verify submission has been removed from the assignments page
+4. Select 'Assignments' in navbar
+5. Select 'View Submissions' for the same assignment
+6. Verify the submission still does not exist
+
+The back button redirects to 'Assignments' page:
+1. Select 'View Submissions' for an assignment to add submissions to
+2. Select 'Back' button
+3. Verify the 'Assignments' page appears

@@ -1,0 +1,161 @@
+Description of manual tests:
+
+Comparison tests:
+
+Prerequisites:
+1. Multiple submissions exist with multiple files
+
+Two submissions can be selected for comparison:
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+
+No more than two submissions can be selected for comparison:
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Verify that no other submissions can be selected
+
+Verify two renamed files find a 100% match: (prerequisite: two submissions contain files that are identical)
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the two submissions and their files render on the comparison page
+9. Verify that within the 'Top Five Most Prominent Matches' box the two files that are identical appear with a 100% similarity score
+10. Select the identical file on the right, verify the file content appears under its submission name
+11. Select the identical file on the left, verify the file content appears under its submission name
+12. Verify the center column on the page states 'Similarity 100%' and no snippet matches appear within that column
+13. Verify that all code appears highlighted
+
+Verify two files with no similarities produces a 0% match: (prerequisite: two submission contain files that have no similarities)
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the two submissions and their files render on the comparison page
+9. Verify that within the 'Top Five Most Prominent Matches' box the two files that are identical appear with a 100% similarity score
+10. Select the prerequisite file on the right, verify the file content appears under its submission name
+11. Select the prerequisite file on the left, verify the file content appears under its submission name
+12. Verify the center column on the page states 'Similarity 0%' and no snippet matches appear within that column
+13. Verify that no code appears highlighted
+
+Similar but not identical files: (prerequisite: two submissions exist that contain files with some similarities but are not identical)
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the two submissions and their files render on the comparison page
+9. Select the similar file on the right, verify the file content appears under its submission name
+10. Select the similar file on the left, verify the file content appears under its submission name
+11. Verify the center column on the page states 'Similarity __%' and multiple snippet matches appear within that column
+12. Verify that some code appears highlighted, note: the percentage similarity match does not correspond to meaning there is 
+identical code within the compared files
+
+View specific match: (two submissions exist with similar files)
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the two submissions and their files render on the comparison page
+9. Select a file on the right, verify the file content appears under its submission name
+10. Select a file on the left, verify the file content appears under its submission name
+11. Verify the center column on the page states 'Similarity __%' and multiple snippet matches appear within that column
+12. Select a match
+13. Verify the selected match matches to the code that is displayed on the left and right submission
+
+Verify the clear match button redisplays full file content for both submission files that have been selected:
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the two submissions and their files render on the comparison page
+9. Select a file on the right, verify the file content appears under its submission name
+10. Select a file on the left, verify the file content appears under its submission name
+11. Verify the center column on the page states 'Similarity __%' and multiple snippet matches appear within that column
+12. Select a match
+13. Verify the selected match matches to the code that is displayed on the left and right submission
+14. Select 'Clear Match'
+15. Verify both full files are brought back up with the top 10 most prominent matches redisplayed and highlighted similar code appears
+
+Verify the selecting a file redisplays full file content for both submission files that have been selected:
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the two submissions and their files render on the comparison page
+9. Select a file on the right, verify the file content appears under its submission name
+10. Select a file on the left, verify the file content appears under its submission name
+11. Verify the center column on the page states 'Similarity __%' and multiple snippet matches appear within that column
+12. Select a match
+13. Verify the selected match matches to the code that is displayed on the left and right submission
+14. Select the file for either submission that is being looked at currently
+15. Verify both full files are brought back up with the top 10 most prominent matches redisplayed and highlighted similar code appears
+
+Verify switching between files in a comparison view: (prerequisite: multiple files exist under two submissions)
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the two submissions and their files render on the comparison page
+9. Select a file on the right, verify the file content appears under its submission name
+10. Select a file on the left, verify the file content appears under its submission name
+11. Verify the center column on the page states 'Similarity __%' and multiple snippet matches appear within that column
+12. Select another file on the right or left
+13. Verify the selected files content appears, the similarity score updates and the matches update
+
+Verify that a comparison pending page eventually redirects to comparison page (prerequisite: create submissions that have more than 5 
+complex files to compare)
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the 'Comparing Submissions' page appears
+9. Verify that once the comparison completes (be patient please) the comparison page appears and the user can select files
+
+
+Verify that a comparison pending page still allows a user to open another tab and navigate through the Boo Plagiarism Bad site 
+while a comparison is loading
+1. Select 'View Submissions' for an assignment to compare two submissions
+2. Select checkbox of one submission
+3. Verify the checkbox has turned blue and appears with a check
+4. Verify the 'Compare Submissions 0/2' button has updated to 'Compare Submissions 1/2' and it is not clickable
+5. Select checkbox of additional submission
+6. Verify there is an additional checkbox that has turned blue and appears with a check
+7. Select 'Compare Submissions 2/2' button
+8. Verify the 'Comparing Submissions' page appears
+9. Open an additional tab and navigate to BooPlagiarismBad 
+10. Verify that you can add an assignment or submission while waiting for the comparison to complete
+11. Navigate back to the comparison being completed in a different tab
+12. Verify that once the comparison completes (be patient please) the comparison page appears and the user can select files

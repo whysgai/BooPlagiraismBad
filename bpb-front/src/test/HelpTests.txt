@@ -1,0 +1,6 @@
+Help Component tests:
+
+Help can be accessed:
+1. Navigate to home page
+2. Select 'Help' in navbar
+3. Verify help information appears
