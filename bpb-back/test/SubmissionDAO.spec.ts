@@ -20,7 +20,6 @@ describe("SubmissionDAO.ts",() => {
         testAssignmentId = "testassignmentid";
         testSubmissionName = "testsubmissionname";
 
-        //TODO: Replace this (and beforeEach) with database mock (or something more elegant)
         //This is really fragile!
         mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
             done();

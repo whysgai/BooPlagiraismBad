@@ -16,7 +16,6 @@ describe("AssignmentDAO.ts",() => {
         testAssignmentName =  "Prof. Sophira's CS6666 Assignment of Pointless Extremity";
         testAssignmentSubmissionIds =  ["5fc2a8b18636ab0ada9a21bb","5fbd82f618333b41055c1dff"];
 
-        //TODO: Replace this (and beforeEach) with database mock (or something more elegant)
         //This is really fragile!
         mongoose.connect(AppConfig.dbConnectionString(), {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
             done();

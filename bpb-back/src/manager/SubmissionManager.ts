@@ -301,7 +301,7 @@ export class SubmissionManager implements ISubmissionManager {
                     this.submissionCacheByAssignment.set(submission.getAssignmentId(), updatedCache);
                 }
                 // comparisonCache
-                this.comparisonCache.delete(submissionId);//TODO test
+                this.comparisonCache.delete(submissionId);
                 
                 SubmissionDAO.deleteSubmission(submissionId).then((submission) => {
                     resolve();

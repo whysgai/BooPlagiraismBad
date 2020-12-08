@@ -38,7 +38,6 @@ export interface IAnalysisResultEntryCollectorVisitor extends ParseTreeVisitor<a
     hasVisited() : boolean;
 }
 
-//TODO: change <any> to appropriate type
 /**
  * Implementation of the {@link IAnalysisResultEntryCollectorVisitor} interface. Extends {@link AbstractParseTreeVisitor} 
  * to visit a given {@link ParseTree}, and creates an array of {@link AnalysisResultEntry | analysisResultEntries} of 
@@ -149,7 +148,7 @@ export class AnalysisResultEntryCollectorVisitor extends AbstractParseTreeVisito
              * we will skip this node, as its content is not viable for us to perform a 
              * LocalitySensitiveHash upon, using the trendmicro/tlsh library.
             */
-            if (err.message.includes("ERROR: length too small -") || //TODO: get this file to 100% coverage
+            if (err.message.includes("ERROR: length too small -") ||
             err.message.includes("ERROR: not enough variation in input - ")) {
                 throw new Error("Cannot perform a LocalitySensitiveHash upon the " +
                 "root node of the subtree. The following error was thrown: " + err.message);

@@ -373,7 +373,7 @@ describe('SubmissionRouter.ts',()=> {
         chai.request(testServer).get("/submissions/ofAssignment/test")
             .then(res => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.have.property("submissionIds").with.lengthOf(0); //TODO: ?
+                expect(res.body).to.have.property("submissionIds").with.lengthOf(0);
             });
     });
 
