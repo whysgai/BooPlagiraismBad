@@ -67,4 +67,4 @@ Determines similarity sensitivity for individual subtree element comparisons.
 
 Determines whether BPB considers submission subelements to be similar (or not)
 
-Example Value: 60 (default)
+Example Value: 120 (default)
