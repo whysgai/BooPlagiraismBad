@@ -7,7 +7,9 @@ import { Upload } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
 
-
+/**
+ * Constructor type interface to set the types of any properties in the constructor of the component.
+ */
 interface ConstructorType {
   name: string, 
   files: File[], 
@@ -15,13 +17,22 @@ interface ConstructorType {
   uploaded: boolean
 }
 
+/**
+ * MatchParams type interface to set the types of the parameters controlled by the current assignmentId in the URL.
+ */
 interface MatchParams {
   assignmentId: string,
 }
 
+/**
+ * Props type interface to set the types of any props that are passed from a parent component.
+ */
 interface PropsType extends RouteComponentProps<MatchParams> {
 }
 
+/**
+ * CreateSubmissionComponent allows a user to create a submission and registers the submission and its files in the server.
+ */
 class CreateSubmissionComponent extends React.Component <PropsType, ConstructorType> {
     constructor(props : PropsType) {
         super(props);
@@ -34,6 +45,10 @@ class CreateSubmissionComponent extends React.Component <PropsType, ConstructorT
         this.onInputchange = this.onInputchange.bind(this);
   }
 
+    /**
+   * On input change sets and then binds (in the constructor) the text that has been entered into the submission name field.
+   * @param event the event by which the user is entering the submission name
+   */
   onInputchange(event : ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
     this.setState((state) => {
@@ -41,6 +56,10 @@ class CreateSubmissionComponent extends React.Component <PropsType, ConstructorT
     });
   } 
 
+  /**
+   * CallDispatch registers a submission to the server and sets the uploaded state to true so that the component displays
+   * the success button
+   */
   callDispatch() {
     store.dispatch(createSubmission('UPLOAD_SUBMISSION', this.state.name, store.getState().AssignmentReducer.currentAssignment, this.state.files))
     this.setState((state) => {
@@ -51,22 +70,18 @@ class CreateSubmissionComponent extends React.Component <PropsType, ConstructorT
     })
   }
 
+  /**
+   * On componentDidMount the assignment is pulled from the URL and set as the assignment name at the top of the create submission page.
+   */
   componentDidMount() {
     const assignmentId = this.props.match.params.assignmentId
     setCurrentAssignmentFromId('SET_CURRENT_ASSIGNMENT', assignmentId)
       .then((assignmentAction) => store.dispatch(assignmentAction))
   }
 
-  alertClick() {
-    alert("Please provide a submission name and files.")
-  }
-
-  count() {
-    this.setState({
-      count: this.state.count + 1
-    })
-  }
-
+  /**
+   * SubmissionInfoIsEntered determines whether the criteria has been met for creating a submission.
+   */
   submissionInfoIsEntered() {
     if (this.state.files.length > 0 && this.state.name.length > 0) {
       for (let file of this.state.files) {
@@ -171,7 +186,7 @@ class CreateSubmissionComponent extends React.Component <PropsType, ConstructorT
                     <div>
                       Please enter a name and files. All files must be of the form .java to continue.<br/>
                       <Link className='create-submission-btn btn btn-outline-secondary disabled col-12 mt-2 mb-2' 
-                        onClick={ (event) => {event.preventDefault(); this.alertClick() }} to='#'>
+                        onClick={ (event) => {event.preventDefault()}} to='#'>
                           Upload Submission
                       </Link>
                     </div>

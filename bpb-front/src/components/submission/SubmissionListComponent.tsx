@@ -10,20 +10,32 @@ import { readSubmissions } from '../../actions/SubmissionAction';
 import { Match } from '@testing-library/react';
 import { setCurrentAssignment, setCurrentAssignmentFromId } from '../../actions/AssignmentAction';
 
+/**
+ * Constructor type interface to set the types of any properties in the constructor of the component.
+ */
 interface ConstructorTypes {
   submissions: Submission[], 
   compareEnabled: number, 
   retrievedFromServer: boolean
 }
 
+/**
+ * MatchParams type interface to set the types of the parameters controlled by the current assignmentId in the URL.
+ */
 interface MatchParams {
   assignmentId: string,
 }
 
-interface PropTypes extends RouteComponentProps<MatchParams> {
+/**
+ * Props type interface to set the types of any props that are passed from the MatchParams type.
+ */
+interface PropTypes extends RouteComponentProps<MatchParams> {}
 
-}
-
+/**
+ * SubmissionListComponent renders the submissions for a selected assignment. It allows a user to add submissions and compare submissions.
+ * The compare submissions button will render as disabled if there have been less than 2 submissions selected, if there are 2
+ * submissions selected it will be clickable, but no more than two submissions can be selected at any time.
+ */
 class SubmissionListComponent extends React.Component <PropTypes, ConstructorTypes> {
 
   constructor(props : PropTypes) {
@@ -35,6 +47,9 @@ class SubmissionListComponent extends React.Component <PropTypes, ConstructorTyp
     };
   }
 
+  /**
+   * In mounting a component 
+   */
   componentDidMount() {
     // Clear the store of lingering compareSubmissions values
     store.dispatch(clearComparisonSubmissions());
@@ -56,6 +71,9 @@ class SubmissionListComponent extends React.Component <PropTypes, ConstructorTyp
       })
   }
 
+  /**
+   * Set the compare enabled state to be the length of the comparison reducers compareSubmissions array.
+   */
   setDisabled() {
     if (store.getState().ComparisonReducer.compareSubmissions.length <= 2) {
       let newNum = this.state.compareEnabled + 1

@@ -4,14 +4,19 @@ import {addSubmissionComparison, removeSubmissionComparison} from '../../actions
 import {store} from '../../store'
 import { removeSubmission } from '../../actions/SubmissionAction';
 
+/**
+ * Props type interface to set the types of any props that are passed from a parent component.
+ */
 interface PropsType {
   submission: Submission
   createSubmission: (arg: String) => void
   checkboxOn: boolean
 }
 
-//({submission, createSubmission}:{submission : Submission, createSubmission: (arg: String) => void })
-
+/**
+ * The submission list item component renders a single submission. It allows a user to select that submission to be compared
+ * against another submission list item, along with allowing them to delete the submission.
+ */
 class SubmissionListItemComponent extends React.Component <PropsType, {}> {
   
   constructor(props : PropsType) {
@@ -22,6 +27,10 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
     };
   }
 
+  /**
+   * Submission is already selected determines whether or not to disable the checkbox based on if the submission list item
+   * has been added to the compare submissions array in store.
+   */
   submissionAlreadySelected() {
     return store.getState().ComparisonReducer.compareSubmissions.filter(
       (submission : Submission) =>
@@ -29,6 +38,9 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
     ).length === 1
   }
 
+  /**
+   * Checkbox changes the state of a checkbox to true or false based on whether a submission has been selected for comparison.
+   */
   checkbox() {
     if(this.submissionAlreadySelected()){
       store.dispatch(removeSubmissionComparison(this.props.submission))
@@ -43,11 +55,11 @@ class SubmissionListItemComponent extends React.Component <PropsType, {}> {
     }
   }
 
+  /**
+   * Delete a submission from the submission list.
+   */
   deleteSubmission() {
     store.dispatch(removeSubmission(this.props.submission))
-    this.setState({
-
-    })
   }
 
   render() {
