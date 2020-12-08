@@ -5,7 +5,7 @@ import NavbarComponent from "../components/NavbarComponent";
 import { StaticRouter } from 'react-router'
 
 
-describe.skip("NavbarComponent tests:", () => {
+describe("NavbarComponent tests:", () => {
     let container;
 
     beforeEach(() => {
