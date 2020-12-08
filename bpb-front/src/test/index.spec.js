@@ -4,8 +4,7 @@ import renderer from 'react-test-renderer';
 import { StaticRouter } from 'react-router'
 import HelpComponent from '../components/HelpComponent';
 
-
-describe.skip('index.js', () => {
+describe('index.js', () => {
     it('should render AssignmentListComponent', () => {
         const component = renderer.create(
             <StaticRouter location='/' context={{}}>
@@ -25,5 +24,3 @@ describe.skip('index.js', () => {
         expect(tree).toMatchSnapshot();
     });
 });
-
-// add additional testing for onclicking nav bar
