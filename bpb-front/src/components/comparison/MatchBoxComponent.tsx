@@ -4,12 +4,16 @@ import Snippet from '../../types/Snippet';
 import { selectSnippets } from '../../actions/ComparisonAction';
 import { store } from '../../store';
 
+/**
+ * Props type interface to set the types of any props that are passed from a parent component.
+ */
 interface PropsType {
   comparison: Comparison
 }
 
 /**
- * Represents a document pane which displays the contents of a file of a given submission 
+ * Renders a list displaying up to ten most prominent matches between the currently
+ * selected files and provides operations to select those matches for scrutiny 
  */
 class MatchBoxComponent extends React.Component <PropsType, {}> {
 
@@ -21,6 +25,10 @@ class MatchBoxComponent extends React.Component <PropsType, {}> {
     };
   }
 
+  /**
+   * Sets the provided match in the store to be used for rendering highlights
+   * @param match a list of snippets to be set as "active"
+   */
   selectMatch(match: Snippet[]) {
     store.dispatch(selectSnippets(match));
   }
