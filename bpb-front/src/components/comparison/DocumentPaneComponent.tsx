@@ -19,11 +19,8 @@ interface PropsType {
 class DocumentPaneComponent extends React.Component <PropsType, {}> {
 
   constructor(props : PropsType) {
-    super(props);
-    
-    this.state = {
-
-    };
+    super(props);    
+    this.state = { };
   }
   /**
    * Uses line numbers of the current line and those contained within the list of highlights

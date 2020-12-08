@@ -18,11 +18,8 @@ interface PropsType {
 class MatchBoxComponent extends React.Component <PropsType, {}> {
 
   constructor(props : PropsType) {
-    super(props);
-    
-    this.state = {
-
-    };
+    super(props);    
+    this.state = { };
   }
 
   /**
