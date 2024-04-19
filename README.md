@@ -1,6 +1,41 @@
-# BPB
+<div align="center">
 
-BPB is a web-based application intended to allow users to compare submissions of Java programming assignments to determine whether a given submission was likely plagiarized from another submission.
+  <h1>BPB</h1>
+  
+  <p>
+	A full-stack Typescript, React.js + Node.js plagiarism analysis application
+  </p>
+
+</div>
+
+
+# Table of Contents
+
+- [About the Project](#about-the-project)
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Usage](#usage)
+
+## About the Project
+
+This application provides a web-based user interface that leverages LSH (Locality Sensitive Hashing) via [TLSH](https://github.com/trendmicro/tlsh) and Abstract Syntax Tree parsing to allow users to compare Java code files and determine if the files are highly similar, i.e. one has been plagiarized from the other.
+
+BPB leverages 
+
+### Tech Stack
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#)
+[![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB)](#)
+[![NodeJS](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white)](#)
+
+### Features
+
+* Upload multiple files as a "Submission" for comparison against prior/existing submissions.
+* Determine the likelihood of plagiarism by reviewing a "similarity" score and visual analysis of a comparison across submissions.
+
+### Usage 
+
+This project includes scripts that allow simple setup in a Vagrant virtual environment.
 
 # Getting Started (Vagrant)
 * Install [Vagrant](https://www.vagrantup.com/docs/installation) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
